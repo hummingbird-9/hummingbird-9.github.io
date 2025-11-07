@@ -3,32 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML gallery</title>
+    <title>Html Code Gallery</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>HTML Gallery</h1>
+        <h1>Game Gallery</h1>
         <nav><a href="index.html">Home</a></nav>
     </header>
     <main class="gallery-container">
         <!-- Game 1 Link -->
-        <div class="game-card" onclick="window.location.href='game1/index.html'">
-            <h2>Undertale</h2>
-            <p>Made into an HTML by BREADBY, original made by Toby Fox</p>
+        <div class="game-card" onclick="window.location.href='game-loader.html?game=game1/index.html'">
+            <img src="images/thumbnail1.png" alt="" class="game-thumbnail">
+            <div class="card-content">
+                <h2>Undertale</h2>
+                <p>Html adaptation by BreadB, original by Toby Fox</p>
+            </div>
         </div>
         
         <!-- Game 2 Link -->
-        <div class="game-card" onclick="window.location.href='game2/index.html'">
-            <h2>Deltarune</h2>
-            <p>Made into an HTML by bog/aukak, original made by Toby Fox</p>
+        <div class="game-card" onclick="window.location.href='game-loader.html?game=game2/index.html'">
+            <img src="images/.png" alt="Tic-Tac-Toe Thumbnail" class="game-thumbnail">
+            <div class="card-content">
+                <h2>Deltarune</h2>
+                <p>Html adaptation by bog/aukak, original by Toby Fox</p>
+            </div>
         </div>
 
+               <!-- Game 3 Link -->
+        <div class="game-card" onclick="window.location.href='game-loader.html?game=game2/index.html'">
+            <img src="images/.png" alt="Tic-Tac-Toe Thumbnail" class="game-thumbnail">
+            <div class="card-content">
+                <h2>Hollow Knight</h2>
+                <p>Html adaptation by bog/aukak and fixed by me, original by Team Cherry</p>
+            </div>
+        </div>
         <!-- Add more games here following the same structure -->
     </main>
     <footer>
-        <p>&copy; HummingStudios</p>
+        <p>&copy; HTML adaptations of different codes</p>
     </footer>
-    <script src="script.js"></script>
 </body>
 </html>
