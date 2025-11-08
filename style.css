@@ -1,169 +1,158 @@
-/* General Reset */
-body, html {
+/* General Body Styles */
+body {
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    height: 100%;
-    font-family: sans-serif;
+    color: #fff;
+    line-height: 1.6;
+    background-color: #1a1a1a;
 }
 
-/* Update this section in style.css */
-
-.landing-page {
-    /* Change 'your-background-image.jpg' to your actual file name */
-    background-image: url('images/bg.png'); 
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover; /* Ensures image covers the whole screen */
+/* Home Screen Specific Styles */
+.home-container {
+    height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: white;
     text-align: center;
-
-.landing-page h1 {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
-    font-size: 3em;
-}
-
-/* Gallery Page Styling */
-.gallery-page {
-    background-color: #f0f0f0;
-    padding: 20px;
-    text-align: center;
-}
-
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
-    gap: 20px;
-    padding: 20px;
-}
-
-.game-item {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    cursor: pointer;
+    /* Example Background Image - Replace 'background.jpg' with your image file name/path */
+    background: url('background.jpg') no-repeat center center/cover; 
+    position: relative;
     overflow: hidden;
-    transition: transform 0.2s;
 }
 
-.game-item:hover {
-    transform: scale(1.05);
+/* Optional: Add an overlay for better text readability */
+.home-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1;
 }
 
-.game-item img {
+.content {
+    position: relative;
+    z-index: 2;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+p {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* Game Gallery Specific Styles (used for game-gallery.html) */
+.gallery-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.search-bar {
     width: 100%;
-    height: 150px; 
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.game-card {
+    background: #333;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+    text-align: center;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+}
+
+.game-card img {
+    width: 100%;
+    height: 140px; /* Standardize image height */
     object-fit: cover;
 }
 
-.game-item p {
+.game-info {
     padding: 10px;
-    margin: 0;
-    color: #333;
 }
 
-/* Fullscreen Game Styling (hidden by default) */
-.fullscreen-game {
-    display: none;
+.game-info h3 {
+    margin: 0;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Fullscreen Modal/Overlay Styles */
+.game-overlay {
+    display: none; /* Hidden by default */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: black;
+    background: #000;
     z-index: 1000;
+    flex-direction: column;
 }
 
-#game-iframe {
+.game-frame {
     width: 100%;
-    height: 100%;
+    height: calc(100% - 40px); /* Adjust height for close button */
+    border: none;
 }
 
 .close-btn {
     position: absolute;
     top: 10px;
     right: 10px;
-    z-index: 1001;
-    background-color: red;
+    background: #ff4d4d;
     color: white;
     border: none;
     padding: 10px 15px;
     cursor: pointer;
-    border-radius: 5px;
-}
-
-/* Loading Screen Styles */
-.loading-screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #fff; /* Minecraft-style red */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    z-index: 999;
-}
-
-.custom-logo {
-    width: 300px;
-    image-rendering: pixelated; 
-    margin-bottom: 20px;
-}
-
-.loading-bar-container {
-    width: 300px;
-    height: 16px;
-    border: 2px solid #000;
-    background-color: #fff;
-    position: relative;
-    overflow: hidden;
-    image-rendering: pixelated;
-}
-
-.loading-bar {
-    height: 100%;
-    width: 0;
-    background-color: #000;
-    image-rendering: pixelated;
-    transition: width 1s linear; 
-}
-
-.byte-counter {
-    margin-top: 10px;
-    font-family: 'Courier New', Courier, monospace; 
-    font-size: 14px;
-    color: white;
-    text-shadow: 2px 2px #00; 
-}
-
-/* Add these styles to the end of your style.css file */
-
-/* Style for the title at the top of the gallery */
-.gallery-page h1 {
-    text-align: center;
-    font-size: 2.5em;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-/* Style for the search bar */
-#game-search {
-    width: 90%;
-    max-width: 500px;
-    padding: 10px;
-    margin: 10px 0 20px 0;
-    font-size: 1em;
-    border: 2px solid #ccc;
+    font-size: 1rem;
+    z-index: 1001;
     border-radius: 4px;
-    box-sizing: border-box; /* Ensures padding doesn't increase width */
-    display: block;
-    margin-left: auto; /* Centers the search bar */
-    margin-right: auto; /* Centers the search bar */
+}
+
+.close-btn:hover {
+    background: #e60000;
 }
