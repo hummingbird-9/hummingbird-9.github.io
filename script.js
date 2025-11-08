@@ -1,100 +1,80 @@
-const fullscreenContainer = document.getElementById('fullscreen-container');
-const gameIframe = document.getElementById('game-iframe');
-const loadingScreen = document.getElementById('loading-screen');
-const progressBar = document.getElementById('progress-bar');
-const byteCounter = document.getElementById('byte-counter');
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Search Functionality ---
+    const searchBar = document.querySelector('.search-bar');
+    if (searchBar) {
+        searchBar.addEventListener('keyup', searchGames);
+    }
 
-let loadingInterval;
+    function searchGames(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const gameCards = document.querySelectorAll('.game-card');
 
-function launchGame(gameUrl) {
-    loadingScreen.style.display = 'flex'; 
-    progressBar.style.width = '0%';
-    byteCounter.textContent = '0/1000 bytes';
+        gameCards.forEach(card => {
+            const gameName = card.querySelector('h3').textContent.toLowerCase();
+            if (gameName.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
 
-    gameIframe.src = gameUrl;
-    fullscreenContainer.style.display = 'block';
+    // --- Fullscreen Modal Functionality ---
+    const gameOverlay = document.querySelector('.game-overlay');
+    const gameFrame = document.querySelector('.game-frame');
+    const closeBtn = document.querySelector('.close-btn');
+    const gameGrid = document.querySelector('.game-grid');
 
-    // Start a simulated loading animation
-    let progress = 0;
-    const totalBytes = 1000;
-    loadingInterval = setInterval(() => {
-        if (progress < 95) { // Stop just short of 100% to wait for real onload
-            progress += Math.floor(Math.random() * 5) + 1; // Simulate loading
-            if (progress > 95) progress = 95;
-            
-            const loadedBytes = Math.round(totalBytes * (progress / 100));
-            progressBar.style.width = `${progress}%`;
-            byteCounter.textContent = `${loadedBytes}/${totalBytes} bytes`;
+    if (gameGrid) {
+        gameGrid.addEventListener('click', (e) => {
+            const card = e.target.closest('.game-card');
+            if (card) {
+                const gameUrl = card.getAttribute('data-game-url');
+                openFullscreenGame(gameUrl);
+            }
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeFullscreenGame);
+    }
+
+    function openFullscreenGame(url) {
+        gameFrame.src = url;
+        gameOverlay.style.display = 'flex';
+        // Optional: request actual browser fullscreen mode on the overlay container
+        if (gameOverlay.requestFullscreen) {
+            gameOverlay.requestFullscreen();
+        } else if (gameOverlay.webkitRequestFullscreen) { /* Safari */
+            gameOverlay.webkitRequestFullscreen();
+        } else if (gameOverlay.msRequestFullscreen) { /* IE11 */
+            gameOverlay.msRequestFullscreen();
         }
-    }, 100);
-
-    // Request fullscreen mode
-    if (fullscreenContainer.requestFullscreen) {
-        fullscreenContainer.requestFullscreen();
-    } else if (fullscreenContainer.mozRequestFullScreen) { /* Firefox */
-        fullscreenContainer.mozRequestFullScreen();
-    } else if (fullscreenContainer.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-        fullscreenContainer.webkitRequestFullscreen();
-    } else if (fullscreenContainer.msRequestFullscreen) { /* IE/Edge */
-        fullscreenContainer.msRequestFullscreen();
+        
+        // Add a class to the body to prevent scrolling if needed
+        document.body.style.overflow = 'hidden';
     }
-}
 
-// Function called by the iframe's onload attribute
-function hideLoader() {
-    clearInterval(loadingInterval); // Stop the simulation
-    progressBar.style.width = '100%';
-    byteCounter.textContent = '1000/1000 bytes';
-    
-    // Give a small delay to show the "full" bar before hiding
-    setTimeout(() => {
-        loadingScreen.style.display = 'none';
-    }, 500); 
-}
+    function closeFullscreenGame() {
+        gameOverlay.style.display = 'none';
+        gameFrame.src = ''; // Stop the game/iframe content
 
-function closeGame() {
-    // Exit fullscreen mode
-    if (document.exitFullscreen) {
-        document.exitFullscreen();
-    } else if (document.mozCancelFullScreen) { /* Firefox */
-        document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
-        document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) { /* IE/Edge */
-        document.msExitFullscreen();
+        // Exit actual browser fullscreen mode
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+
+        document.body.style.overflow = 'auto'; // Restore scrolling
     }
-    
-    clearInterval(loadingInterval); // Ensure interval stops if closed manually
-    fullscreenContainer.style.display = 'none';
-    gameIframe.src = ''; // Stop the game when closing
-    loadingScreen.style.display = 'none'; // Ensure loader is hidden
-}
 
-// Add event listeners to detect when fullscreen is exited by the user (e.g., pressing Esc)
-document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement) {
-        closeGame(); 
-    }
+    // Listen for the escape key to exit modal/fullscreen naturally
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && gameOverlay.style.display === 'flex') {
+            closeFullscreenGame();
+        }
+    });
 });
-document.addEventListener('webkitfullscreenchange', () => { if (!document.webkitFullscreenElement) closeGame(); });
-document.addEventListener('mozfullscreenchange', () => { if (!document.mozFullScreenElement) closeGame(); });
-document.addEventListener('msfullscreenchange', () => { if (!document.msFullscreenElement) closeGame(); });
-
-// Add this function to the end of your script.js file
-
-function searchGames() {
-    const input = document.getElementById('game-search');
-    const filter = input.value.toLowerCase();
-    const galleryItems = document.getElementsByClassName('game-item');
-
-    // Loop through all gallery items, hiding those that don't match the search filter
-    for (let i = 0; i < galleryItems.length; i++) {
-        // We use the data-title attribute to search
-        const title = galleryItems[i].getAttribute('data-title'); 
-        if (title.toLowerCase().indexOf(filter) > -1) {
-            galleryItems[i].style.display = ""; // Show the item (use default display)
-        } else {
-            galleryItems[i].style.display = "none"; // Hide the item
-        }
-    }
-}
