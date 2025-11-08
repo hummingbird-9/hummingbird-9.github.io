@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="gallery-page">
-    <h1>HummingStudioa HTML Gallery</h1>
+    <h1>HummingStudios HTML Gallery</h1>
     <div class="gallery-grid">
         <!-- Game 1 Item -->
         <div class="game-item" onclick="launchGame('game1.html')">
@@ -63,3 +63,23 @@
     <script src="script.js"></script>
 </body>
 </html>
+
+
+    <!-- Fullscreen Game Container -->
+    <div id="fullscreen-container" class="fullscreen-game">
+        <button class="close-btn" onclick="closeGame()">X</button>
+        
+        <!-- Loading Screen Element -->
+        <div id="loading-screen" class="loading-screen">
+            <div class="loader"></div>
+            <p>Loading Game...</p>
+        </div>
+
+        <!-- Iframe for the game -->
+        <iframe id="game-iframe" src="" frameborder="0" allowfullscreen onload="hideLoader()"></iframe>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
