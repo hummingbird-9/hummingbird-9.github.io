@@ -6,31 +6,18 @@ body, html {
     font-family: sans-serif;
 }
 
-/* Landing Page Styling */
-.landing-page {
-    background-image: url('hummingstudiosloading.png'); /* Updated path */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    text-align: center;
-}
+/* Update this section in style.css */
 
 .landing-page .container {
-    background-color: rgba(0, 0, 0, 0.5); 
-    padding: 20px;
-    border-radius: 10px;
+
+    padding: 0px;
+
+
+.landing-page h1 {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
+    font-size: 3em;
 }
 
-.landing-page button {
-    padding: 10px 20px;
-    font-size: 1.2em;
-    cursor: pointer;
-    margin-top: 10px;
-}
 
 /* Gallery Page Styling */
 .gallery-page {
