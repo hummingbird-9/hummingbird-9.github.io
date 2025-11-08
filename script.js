@@ -1,16 +1,69 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Search Functionality ---
-    const searchBar = document.querySelector('.search-bar');
-    if (searchBar) {
-        searchBar.addEventListener('keyup', searchGames);
+// Loading Screen
+document.addEventListener('DOMContentLoaded', function() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    const homeScreen = document.getElementById('homeScreen');
+    const galleryScreen = document.getElementById('galleryScreen');
+    const startButton = document.getElementById('startButton');
+    const searchBar = document.getElementById('searchBar');
+    const gameGrid = document.getElementById('gameGrid');
+    
+    // Simulate loading progress
+    let progress = 0;
+    const loadingInterval = setInterval(() => {
+        progress += Math.random() * 10;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(loadingInterval);
+            
+            // Hide loading screen after completion
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                homeScreen.style.display = 'flex';
+            }, 500);
+        }
+        document.querySelector('.loading-bar').style.width = progress + '%';
+    }, 200);
+
+    // Start button click handler
+    startButton.addEventListener('click', function() {
+        homeScreen.classList.add('hidden');
+        galleryScreen.classList.remove('hidden');
+        loadGames();
+    });
+
+    // Search functionality
+    searchBar.addEventListener('input', filterGames);
+
+    // Game data - in a real app this would come from a JSON file
+    const games = [
+        { name: "Space Shooter", file: "games/game1/index.html", image: "images/thumbnail1.png" },
+        { name: "Puzzle Quest", file: "games/game2/index.html", image: "images/thumbnail2.png" },
+        { name: "Racing Challenge", file: "games/game3/index.html", image: "images/thumbnail3.png" },
+        { name: "Math Master", file: "games/game4/index.html", image: "images/thumbnail4.png" },
+        { name: "Word Search", file: "games/game5/index.html", image: "images/thumbnail5.png" },
+        { name: "Memory Match", file: "games/game6/index.html", image: "images/thumbnail6.png" }
+    ];
+
+    function loadGames() {
+        gameGrid.innerHTML = '';
+        games.forEach(game => {
+            const gameCard = document.createElement('div');
+            gameCard.className = 'game-card';
+            gameCard.innerHTML = `
+                <img src="${game.image}" alt="${game.name}">
+                <div class="game-name">${game.name}</div>
+            `;
+            gameCard.addEventListener('click', () => openGame(game.file));
+            gameGrid.appendChild(gameCard);
+        });
     }
 
-    function searchGames(e) {
-        const searchTerm = e.target.value.toLowerCase();
+    function filterGames() {
+        const searchTerm = searchBar.value.toLowerCase();
         const gameCards = document.querySelectorAll('.game-card');
-
+        
         gameCards.forEach(card => {
-            const gameName = card.querySelector('h3').textContent.toLowerCase();
+            const gameName = card.querySelector('.game-name').textContent.toLowerCase();
             if (gameName.includes(searchTerm)) {
                 card.style.display = 'block';
             } else {
@@ -19,62 +72,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Fullscreen Modal Functionality ---
-    const gameOverlay = document.querySelector('.game-overlay');
-    const gameFrame = document.querySelector('.game-frame');
-    const closeBtn = document.querySelector('.close-btn');
-    const gameGrid = document.querySelector('.game-grid');
-
-    if (gameGrid) {
-        gameGrid.addEventListener('click', (e) => {
-            const card = e.target.closest('.game-card');
-            if (card) {
-                const gameUrl = card.getAttribute('data-game-url');
-                openFullscreenGame(gameUrl);
-            }
-        });
+    function openGame(gameFile) {
+        // Create a new window for the game
+        const gameWindow = window.open('', '_blank');
+        gameWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>${gameFile.split('/').pop().split('.')[0]}</title>
+                <style>
+                    body, html {
+                        margin: 0;
+                        padding: 0;
+                        width: 100%;
+                        height: 100%;
+                        overflow: hidden;
+                    }
+                    iframe {
+                        width: 100%;
+                        height: 100%;
+                        border: none;
+                    }
+                </style>
+            </head>
+            <body>
+                <iframe src="${gameFile}" frameborder="0"></iframe>
+            </body>
+            </html>
+        `);
+        gameWindow.document.close();
     }
-
-    if (closeBtn) {
-        closeBtn.addEventListener('click', closeFullscreenGame);
-    }
-
-    function openFullscreenGame(url) {
-        gameFrame.src = url;
-        gameOverlay.style.display = 'flex';
-        // Optional: request actual browser fullscreen mode on the overlay container
-        if (gameOverlay.requestFullscreen) {
-            gameOverlay.requestFullscreen();
-        } else if (gameOverlay.webkitRequestFullscreen) { /* Safari */
-            gameOverlay.webkitRequestFullscreen();
-        } else if (gameOverlay.msRequestFullscreen) { /* IE11 */
-            gameOverlay.msRequestFullscreen();
-        }
-        
-        // Add a class to the body to prevent scrolling if needed
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeFullscreenGame() {
-        gameOverlay.style.display = 'none';
-        gameFrame.src = ''; // Stop the game/iframe content
-
-        // Exit actual browser fullscreen mode
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { /* Safari */
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { /* IE11 */
-            document.msExitFullscreen();
-        }
-
-        document.body.style.overflow = 'auto'; // Restore scrolling
-    }
-
-    // Listen for the escape key to exit modal/fullscreen naturally
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && gameOverlay.style.display === 'flex') {
-            closeFullscreenGame();
-        }
-    });
 });
