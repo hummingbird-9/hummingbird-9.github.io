@@ -100,3 +100,44 @@ body, html {
     cursor: pointer;
     border-radius: 5px;
 }
+
+/* ... existing styles for .loading-screen ... */
+
+.loading-screen {
+    /* ... existing styles ... */
+    background-color: #d12027; /* Minecraft-style red */
+    z-index: 999;
+}
+
+.custom-logo {
+    width: 200px; /* Adjust size as needed */
+    image-rendering: pixelated; /* Makes the image sharp and blocky */
+    margin-bottom: 20px;
+}
+
+.loading-bar-container {
+    width: 300px;
+    height: 16px;
+    border: 2px solid #555;
+    background-color: #aaa;
+    position: relative;
+    overflow: hidden;
+    image-rendering: pixelated;
+}
+
+.loading-bar {
+    height: 100%;
+    width: 0;
+    background-color: #2196f3; /* A blue color, can be changed to green */
+    image-rendering: pixelated;
+    transition: width 1s linear; /* Animate the bar filling up */
+}
+
+.byte-counter {
+    margin-top: 10px;
+    font-family: 'Courier New', Courier, monospace; /* Use a monospace font for a techy feel */
+    font-size: 14px;
+    color: white;
+    text-shadow: 2px 2px #000; /* Add a shadow for readability */
+}
+
