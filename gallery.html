@@ -54,25 +54,17 @@
 
     </div>
 
-    <!-- Fullscreen Game Container (initially hidden) -->
-    <div id="fullscreen-container" class="fullscreen-game">
-        <button class="close-btn" onclick="closeGame()">X</button>
-        <iframe id="game-iframe" src="" frameborder="0" allowfullscreen></iframe>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
-
-
     <!-- Fullscreen Game Container -->
     <div id="fullscreen-container" class="fullscreen-game">
         <button class="close-btn" onclick="closeGame()">X</button>
         
-        <!-- Loading Screen Element -->
+        <!-- Custom Loading Screen -->
         <div id="loading-screen" class="loading-screen">
-            <div class="loader"></div>
-            <p>Loading Game...</p>
+            <img src="images/your-mojang-style-logo.png" alt="Custom Loading Logo" class="custom-logo">
+            <div class="loading-bar-container">
+                <div id="progress-bar" class="loading-bar"></div>
+            </div>
+            <div id="byte-counter" class="byte-counter">0/1000 bytes</div>
         </div>
 
         <!-- Iframe for the game -->
