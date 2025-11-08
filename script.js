@@ -79,3 +79,22 @@ document.addEventListener('fullscreenchange', () => {
 document.addEventListener('webkitfullscreenchange', () => { if (!document.webkitFullscreenElement) closeGame(); });
 document.addEventListener('mozfullscreenchange', () => { if (!document.mozFullScreenElement) closeGame(); });
 document.addEventListener('msfullscreenchange', () => { if (!document.msFullscreenElement) closeGame(); });
+
+// Add this function to the end of your script.js file
+
+function searchGames() {
+    const input = document.getElementById('game-search');
+    const filter = input.value.toLowerCase();
+    const galleryItems = document.getElementsByClassName('game-item');
+
+    // Loop through all gallery items, hiding those that don't match the search filter
+    for (let i = 0; i < galleryItems.length; i++) {
+        // We use the data-title attribute to search
+        const title = galleryItems[i].getAttribute('data-title'); 
+        if (title.toLowerCase().indexOf(filter) > -1) {
+            galleryItems[i].style.display = ""; // Show the item (use default display)
+        } else {
+            galleryItems[i].style.display = "none"; // Hide the item
+        }
+    }
+}
