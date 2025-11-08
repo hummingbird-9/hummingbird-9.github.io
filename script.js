@@ -1,65 +1,5 @@
 const fullscreenContainer = document.getElementById('fullscreen-container');
 const gameIframe = document.getElementById('game-iframe');
-
-function launchGame(gameUrl) {
-    gameIframe.src = gameUrl;
-    fullscreenContainer.style.display = 'block';
-
-    // Request fullscreen mode for the container
-    if (fullscreenContainer.requestFullscreen) {
-        fullscreenContainer.requestFullscreen();
-    } else if (fullscreenContainer.mozRequestFullScreen) { /* Firefox */
-        fullscreenContainer.mozRequestFullScreen();
-    } else if (fullscreenContainer.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-        fullscreenContainer.webkitRequestFullscreen();
-    } else if (fullscreenContainer.msRequestFullscreen) { /* IE/Edge */
-        fullscreenContainer.msRequestFullscreen();
-    }
-}
-
-function closeGame() {
-    // Exit fullscreen mode
-    if (document.exitFullscreen) {
-        document.exitFullscreen();
-    } else if (document.mozCancelFullScreen) { /* Firefox */
-        document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
-        document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) { /* IE/Edge */
-        document.msExitFullscreen();
-    }
-    
-    fullscreenContainer.style.display = 'none';
-    gameIframe.src = ''; // Stop the game when closing
-}
-
-// Add an event listener to detect when fullscreen is exited by the user (e.g., pressing Esc)
-document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement) {
-        fullscreenContainer.style.display = 'none';
-        gameIframe.src = '';
-    }
-});
-document.addEventListener('webkitfullscreenchange', () => {
-    if (!document.webkitFullscreenElement) {
-        fullscreenContainer.style.display = 'none';
-        gameIframe.src = '';
-    }
-});
-document.addEventListener('mozfullscreenchange', () => {
-    if (!document.mozFullScreenElement) {
-        fullscreenContainer.style.display = 'none';
-        gameIframe.src = '';
-    }
-});
-document.addEventListener('msfullscreenchange', () => {
-    if (!document.msFullscreenElement) {
-        fullscreenContainer.style.display = 'none';
-        gameIframe.src = '';
-    }
-});
-const fullscreenContainer = document.getElementById('fullscreen-container');
-const gameIframe = document.getElementById('game-iframe');
 const loadingScreen = document.getElementById('loading-screen');
 const progressBar = document.getElementById('progress-bar');
 const byteCounter = document.getElementById('byte-counter');
@@ -91,15 +31,16 @@ function launchGame(gameUrl) {
     // Request fullscreen mode
     if (fullscreenContainer.requestFullscreen) {
         fullscreenContainer.requestFullscreen();
-    } else if (fullscreenContainer.mozRequestFullScreen) {
+    } else if (fullscreenContainer.mozRequestFullScreen) { /* Firefox */
         fullscreenContainer.mozRequestFullScreen();
-    } else if (fullscreenContainer.webkitRequestFullscreen) {
+    } else if (fullscreenContainer.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
         fullscreenContainer.webkitRequestFullscreen();
-    } else if (fullscreenContainer.msRequestFullscreen) {
+    } else if (fullscreenContainer.msRequestFullscreen) { /* IE/Edge */
         fullscreenContainer.msRequestFullscreen();
     }
 }
 
+// Function called by the iframe's onload attribute
 function hideLoader() {
     clearInterval(loadingInterval); // Stop the simulation
     progressBar.style.width = '100%';
@@ -112,15 +53,29 @@ function hideLoader() {
 }
 
 function closeGame() {
-    // ... existing closeGame logic ...
-    clearInterval(loadingInterval);
-    loadingScreen.style.display = 'none';
-    gameIframe.src = ''; 
+    // Exit fullscreen mode
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) { /* Firefox */
+        document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { /* IE/Edge */
+        document.msExitFullscreen();
+    }
+    
+    clearInterval(loadingInterval); // Ensure interval stops if closed manually
+    fullscreenContainer.style.display = 'none';
+    gameIframe.src = ''; // Stop the game when closing
+    loadingScreen.style.display = 'none'; // Ensure loader is hidden
 }
 
-// ... existing fullscreenchange event listeners ...
+// Add event listeners to detect when fullscreen is exited by the user (e.g., pressing Esc)
 document.addEventListener('fullscreenchange', () => {
     if (!document.fullscreenElement) {
-        closeGame();
+        closeGame(); 
     }
 });
+document.addEventListener('webkitfullscreenchange', () => { if (!document.webkitFullscreenElement) closeGame(); });
+document.addEventListener('mozfullscreenchange', () => { if (!document.mozFullScreenElement) closeGame(); });
+document.addEventListener('msfullscreenchange', () => { if (!document.msFullscreenElement) closeGame(); });
