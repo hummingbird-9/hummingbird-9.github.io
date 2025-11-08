@@ -8,10 +8,10 @@ body, html {
 
 /* Landing Page Styling */
 .landing-page {
-    background-image: url('images/bg.png'); /* Replace with your image file */
+    background-image: url('images/your-background-image.jpg'); /* Updated path */
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover; /* Ensures image covers the whole screen */
+    background-size: cover; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,7 +20,7 @@ body, html {
 }
 
 .landing-page .container {
-    background-color: rgba(0, 0, 0, 0.5); /* Optional: adds a dark overlay for text readability */
+    background-color: rgba(0, 0, 0, 0.5); 
     padding: 20px;
     border-radius: 10px;
 }
@@ -41,7 +41,7 @@ body, html {
 
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid layout */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
     gap: 20px;
     padding: 20px;
 }
@@ -61,7 +61,7 @@ body, html {
 
 .game-item img {
     width: 100%;
-    height: 150px; /* Adjust as needed */
+    height: 150px; 
     object-fit: cover;
 }
 
@@ -101,17 +101,25 @@ body, html {
     border-radius: 5px;
 }
 
-/* ... existing styles for .loading-screen ... */
-
+/* Loading Screen Styles */
 .loading-screen {
-    /* ... existing styles ... */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-color: #d12027; /* Minecraft-style red */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
     z-index: 999;
 }
 
 .custom-logo {
-    width: 200px; /* Adjust size as needed */
-    image-rendering: pixelated; /* Makes the image sharp and blocky */
+    width: 200px;
+    image-rendering: pixelated; 
     margin-bottom: 20px;
 }
 
@@ -128,16 +136,16 @@ body, html {
 .loading-bar {
     height: 100%;
     width: 0;
-    background-color: #2196f3; /* A blue color, can be changed to green */
+    background-color: #2196f3;
     image-rendering: pixelated;
-    transition: width 1s linear; /* Animate the bar filling up */
+    transition: width 1s linear; 
 }
 
 .byte-counter {
     margin-top: 10px;
-    font-family: 'Courier New', Courier, monospace; /* Use a monospace font for a techy feel */
+    font-family: 'Courier New', Courier, monospace; 
     font-size: 14px;
     color: white;
-    text-shadow: 2px 2px #000; /* Add a shadow for readability */
+    text-shadow: 2px 2px #000; 
 }
 
