@@ -1,24 +1,73 @@
+<!-- File: gallery.html -->
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Applications</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+<html>
+  <head>
+    <title>HTML Gallery</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="gallery-body">
+    <h1 class="title">HTML Gallery</h1>
+    <p class="content"></p>
+
     <div class="gallery-container">
-        <h1 class="title">HTML Applications</h1>
+      
+      <!-- Game Card 1 -->
+      <a href="games/game1/index.html" class="game-card">
+        <img src="images/thumbnail1.png" alt="Game 1 Thumbnail" class="game-thumbnail">
+        <h3>Undertale</h3>
+        <p>HTML'd by BreadB, original by Toby Fox.</p>
+      </a>
+
+      <!-- Game Card 2 -->
+      <a href="games/game2/index.html" class="game-card">
+         <img src="images/thumbnail2.png" alt="Game 2 Thumbnail" class="game-thumbnail">
+        <h3>Deltarune</h3>
+        <p>HTML'd by bog/aukak, original by Toby Fox</p>
+      </a>
+
+      <!-- Game Card 3 -->
+      <a href="games/game3/index.html" class="game-card">
+         <img src="images/thumbnail3.png" alt="Game 3 Thumbnail" class="game-thumbnail">
+        <h3>Hollow Knight</h3>
+        <p>HTML'd by aukak/bog and fixes by me, original by Team Cherry.</p>
+      </a>
+
+      <!-- Game Card 4 -->
+      <a href="games/game4/index.html" class="game-card">
+         <img src="images/thumbnail4.png" alt="Game 4 Thumbnail" class="game-thumbnail">
+        <h3>Hollow Knight Debug</h3>
+        <p>Same as other Hollow Knight, but now there's a console and FPS viewer (added by me [hummingbird_9])</p>
+      </a>
+
+      <a href="games/game5/index.html" class="game-card">
+         <img src="images/thumbnail5.png" alt="Game 5 Thumbnail" class="game-thumbnail">
+        <h3>Eagetcraft 1.8.8</h3>
+        <p>HTML'd by lax1dude and optimized by PlanetDoge. Original by Mojang</p>
+      </a>        
+
+      <a href="games/game6/index.html" class="game-card">
+         <img src="images/thumbnail6.png" alt="Game 5 Thumbnail" class="game-thumbnail">
+        <h3>Eagetcraft 1.12.2</h3>
+        <p>HTML'd by PeytonPlayz595 and optimized by PlanetDoge. Original by Mojang</p>
+      </a>               
+
         
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search " class="search-bar">
-        </div>
+       <div class="game-card disabled">
+        <img src="images/placeholder.png" alt="Coming Soon Thumbnail" class="game-thumbnail">
+        <h3>Coming Soon...</h3>
+        <p>Hollow Knight No Dreamer Crash game is in development.</p>
+      </div>
         
-        <div id="gameGrid" class="game-grid">
-            <!-- Game cards will be generated here -->
-        </div>
+      
+       <div class="game-card disabled">
+        <img src="images/placeholder1.png" alt="Coming Soon Thumbnail" class="game-thumbnail">
+        <h3>Coming Soon...</h3>
+        <p>Silksong game is in development.</p>
+      </div>
+
     </div>
 
-    <script src="gallery-script.js"></script>
-</body>
+    <a href="index.html" class="open-page-btn back-btn">Go Back Home</a>
+
+  </body>
 </html>
