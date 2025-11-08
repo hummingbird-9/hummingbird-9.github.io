@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     const games = [
-        { id: 1, name: "Space Shooter", description: "Classic space shooting game" },
-        { id: 2, name: "Puzzle Master", description: "Challenging puzzle game" },
-        { id: 3, name: "Racing Extreme", description: "High-speed racing game" },
-        { id: 4, name: "Adventure Quest", description: "Epic adventure game" },
-        { id: 5, name: "Tower Defense", description: "Strategic tower defense game" },
-        { id: 6, name: "Platform Jumper", description: "Jump and run platformer" }
+        { id: 1, name: "Undertale", description: "Made as HTML by BreadB, original by Toby Fox" },
+        { id: 2, name: "Deltarune", description: "Brought to the web by bog/aukak, original by Toby Fox" },
+        { id: 3, name: "Hollow Knight", description: "HTML made by bok/aukak and lag fixes and fixed other issues by hummingbird_9, original by Team Cherry" },
+        { id: 4, name: "Hollow Knight Debug", description: "Debug version of previous hollow knight, but this time with a console and FPS viewer" },
+        { id: 5, name: "Eagletcraft 1.8.8", description: "Made by lax1dude and optomized by PlanetDoge, original by Mojang Studios" },
+        { id: 6, name: "Eagletcraft 1.12.2", description: "Made by PeytonPlayz595 and optomized by PlanetDoge, original by Mojang Studios" }
     ];
 
     const gameGrid = document.getElementById('gameGrid');
