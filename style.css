@@ -8,7 +8,7 @@ body, html {
 
 /* Landing Page Styling */
 .landing-page {
-    background-image: url('your-background-image.jpg'); /* Replace with your image file */
+    background-image: url('images/bg.png'); /* Replace with your image file */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover; /* Ensures image covers the whole screen */
