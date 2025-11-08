@@ -1,66 +1,102 @@
-body {
-    font-family: sans-serif;
+/* General Reset */
+body, html {
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    height: 100%;
+    font-family: sans-serif;
+}
+
+/* Landing Page Styling */
+.landing-page {
+    background-image: url('your-background-image.jpg'); /* Replace with your image file */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover; /* Ensures image covers the whole screen */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
     text-align: center;
 }
 
-header {
-    background-color: #333;
-    color: white;
-    padding: 1rem 0;
+.landing-page .container {
+    background-color: rgba(0, 0, 0, 0.5); /* Optional: adds a dark overlay for text readability */
+    padding: 20px;
+    border-radius: 10px;
 }
 
-nav a {
-    color: white;
-    text-decoration: none;
-    margin-left: 1rem;
-}
-
-main {
-    padding: 2rem 1rem;
-}
-
-.gallery-button {
-    display: inline-block;
+.landing-page button {
     padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-top: 1rem;
-}
-
-.gallery-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.game-card {
-    background-color: white;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    font-size: 1.2em;
     cursor: pointer;
-    width: 200px;
+    margin-top: 10px;
+}
+
+/* Gallery Page Styling */
+.gallery-page {
+    background-color: #f0f0f0;
+    padding: 20px;
+    text-align: center;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid layout */
+    gap: 20px;
+    padding: 20px;
+}
+
+.game-item {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    overflow: hidden;
     transition: transform 0.2s;
 }
 
-.game-card:hover {
-    transform: translateY(-5px);
+.game-item:hover {
+    transform: scale(1.05);
 }
 
-footer {
-    margin-top: 2rem;
-    padding: 1rem 0;
-    background-color: #333;
-    color: white;
-    position: fixed;
-    bottom: 0;
+.game-item img {
     width: 100%;
+    height: 150px; /* Adjust as needed */
+    object-fit: cover;
 }
 
+.game-item p {
+    padding: 10px;
+    margin: 0;
+    color: #333;
+}
+
+/* Fullscreen Game Styling (hidden by default) */
+.fullscreen-game {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index: 1000;
+}
+
+#game-iframe {
+    width: 100%;
+    height: 100%;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1001;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
