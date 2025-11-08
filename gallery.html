@@ -3,71 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Html Code Gallery</title>
+    <title>HTML Gallery</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <header>
-        <h1>HTML Gallery</h1>
-        <nav><a href="index.html">Home</a></nav>
-    </header>
-    <main class="gallery-container">
-        <!-- Game 1 Link -->
-        <div class="game-card" onclick="window.location.href='game-loader.html?game=game1/index.html'">
-            <img src="images/thumbnail1.png" alt="" class="game-thumbnail">
-            <div class="card-content">
-                <h2>Undertale</h2>
-                <p>Html adaptation by BreadB, original by Toby Fox</p>
-            </div>
-        </div>
-        
-        <!-- Game 2 Link -->
-        <div class="game-card" onclick="window.location.href='game-loader.html?game=game2/index.html'">
-            <img src="images/thumbnail2.png" alt="" class="game-thumbnail">
-            <div class="card-content">
-                <h2>Deltarune</h2>
-                <p>Html adaptation by bog/aukak, original by Toby Fox</p>
-            </div>
+<body class="gallery-page">
+    <h1>HummingStudioa HTML Gallery</h1>
+    <div class="gallery-grid">
+        <!-- Game 1 Item -->
+        <div class="game-item" onclick="launchGame('game1.html')">
+            <img src="thumbnail1.png" alt="Game 1">
+            <p>Undertale</p>
+            <p1>HTML adaptation by BreadB, original by Toby Fox</p1>
         </div>
 
-               <!-- Game 3 Link -->
-        <div class="game-card" onclick="window.location.href='game-loader.html?game=game3/index.html'">
-            <img src="images/thumbnail3.png" alt="" class="game-thumbnail">
-            <div class="card-content">
-                <h2>Hollow Knight</h2>
-                <p>Html adaptation by bog/aukak and fixed by me, original by Team Cherry</p>
-            </div>
+        <!-- Game 2 Item -->
+        <div class="game-item" onclick="launchGame('game2.html')">
+            <img src="thumbnail2.png" alt="Game 2">
+            <p>Deltarune</p>
+            <p1>Html adaptation by bog/aukak, original by Toby Fox</p1>
         </div>
 
-                       <!-- Game 4 Link -->
-        <div class="game-card" onclick="window.location.href='game-loader.html?game=game4/index.html'">
-            <img src="images/thumbnail4.png" alt="" class="game-thumbnail">
-            <div class="card-content">
-                <h2>Hollow Knight Debug</h2>
-                <p>Html made by hummingbird_9 with added debug console and FPS, original by Team Cherry</p>
-            </div>
-        </div>
-                          <!-- Game 5 Link -->
-        <div class="game-card" onclick="window.location.href='game-loader.html?game=game5/index.html'">
-            <img src="images/thumbnail5.png" alt="" class="game-thumbnail">
-            <div class="card-content">
-                <h2>EagletCraftX</h2>
-                <p>1.8.8 made by lax1dude and optimized by PlanetDoge, original by Mojang</p>
-            </div>
+        <!-- Game 3 Item -->
+        <div class="game-item" onclick="launchGame('game3.html')">
+            <img src="thumbnail3.png" alt="Game 2">
+            <p>Hollow Knight</p>
+            <p1>Html adaptation by bog/aukak, fixes by hummingbird_9 (me) and original by Team Cherry</p1>
         </div>
 
-                                  <!-- Game 6 Link -->
-        <div class="game-card" onclick="window.location.href='game-loader.html?game=game6/index.html'">
-            <img src="images/thumbnail6.png" alt="" class="game-thumbnail">
-            <div class="card-content">
-                <h2>EagletCraft 1.12.2</h2>
-                <p>1.12.2 made by PeytonPlayz595 and optimized by PlanetDoge, original by Mojang</p>
-            </div>
+        <!-- Game 4 Item -->
+        <div class="game-item" onclick="launchGame('game4.html')">
+            <img src="thumbnail4.png" alt="Game 2">
+            <p>Hollow Knight Debug</p>
+            <p1>Same as other Hollow Knight, but with added debug mode (added by hummingbird_9)</p1>
         </div>
-        <!-- Add more games here following the same structure -->
-    </main>
-    <footer>
-        <p>&copy; HTML adaptations of different codes</p>
-    </footer>
+
+        <!-- Game 5 Item -->
+        <div class="game-item" onclick="launchGame('game5.html')">
+            <img src="thumbnail5.png" alt="Game 2">
+            <p>EagletcraftX</p>
+            <p1>1.8.8 made by lax1dude, optomizations made by PlanetDoge, original made by Mojang</p1>
+        </div>
+
+        <!-- Game 6 Item -->
+        <div class="game-item" onclick="launchGame('game5.html')">
+            <img src="thumbnail6.png" alt="Game 2">
+            <p>Eagletcraft 1.12.2</p>
+            <p1>1.12.2 made by PeytonPlayz595, optomizations made by PlanetDoge, original made by Mojang</p1>
+        </div>
+        <!-- Add more game items as needed -->
+
+    </div>
+
+    <!-- Fullscreen Game Container (initially hidden) -->
+    <div id="fullscreen-container" class="fullscreen-game">
+        <button class="close-btn" onclick="closeGame()">X</button>
+        <iframe id="game-iframe" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
