@@ -1,4 +1,6 @@
 /* File: styles.css */
+
+/* --- General & Index Page Styles --- */
 body {
   margin: 0;
   padding: 0;
@@ -14,6 +16,13 @@ body {
   color: white;
   text-align: center;
   padding: 20px;
+}
+
+/* Gallery page specific styling */
+.gallery-body {
+    min-height: auto;
+    justify-content: flex-start;
+    padding-top: 50px;
 }
 
 @keyframes gradientBG {
@@ -38,8 +47,7 @@ body {
   line-height: 1.6;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
   max-width: 600px;
-  /* Reverted margin to original state */
-  padding: 20px; 
+  margin-bottom: 20px;
 }
 
 .open-page-btn {
@@ -63,4 +71,73 @@ body {
   background: rgba(255, 255, 255, 0.25);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
   transform: translateY(-3px);
+}
+
+.back-btn {
+    margin-bottom: 40px;
+}
+
+
+/* --- Gallery Specific Styles --- */
+.gallery-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  max-width: 1000px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.game-card {
+  flex-basis: 220px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border-radius: 10px;
+  padding: 15px; /* Slightly less padding to accommodate image */
+  color: white;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, background 0.3s ease;
+  text-align: left;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* New style for the thumbnail images */
+.game-thumbnail {
+    width: 100%; /* Image takes full width of the card */
+    height: auto;
+    border-radius: 8px; /* Rounded corners for the image */
+    margin-bottom: 10px; /* Space between image and title */
+    display: block;
+}
+
+.game-card h3 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #90E4C1;
+    text-shadow: 0 0 5px rgba(0, 255, 157, 0.5);
+}
+
+.game-card p {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: none;
+    padding: 0;
+    margin: 0;
+}
+
+.game-card.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.game-card.disabled:hover {
+    transform: none;
+    background: rgba(255, 255, 255, 0.1);
 }
