@@ -149,3 +149,28 @@ body, html {
     text-shadow: 2px 2px #00; 
 }
 
+/* Add these styles to the end of your style.css file */
+
+/* Style for the title at the top of the gallery */
+.gallery-page h1 {
+    text-align: center;
+    font-size: 2.5em;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Style for the search bar */
+#game-search {
+    width: 90%;
+    max-width: 500px;
+    padding: 10px;
+    margin: 10px 0 20px 0;
+    font-size: 1em;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding doesn't increase width */
+    display: block;
+    margin-left: auto; /* Centers the search bar */
+    margin-right: auto; /* Centers the search bar */
+}
