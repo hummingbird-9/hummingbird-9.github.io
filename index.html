@@ -1,32 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>HTML Applications Gallery</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HummingStudios</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loadingScreen" class="loading-screen">
-        <div class="logo-container">
-            <img src="images/loading-screen.png" alt="Loading Logo" class="loading-logo">
-        </div>
-        <div class="loading-bar-container">
-            <div class="loading-bar"></div>
-        </div>
-    </div>
-
-    <!-- Home Screen -->
-    <div id="homeScreen" class="home-screen">
+    <div class="container">
         <h1 class="title">HummingStudios</h1>
-        <p class="description">Turning random non-web applications into HTML for no reason whatsoever</p>
-        <button id="startButton" class="start-button">Start Playing</button>
+        <p>Making non-web applications running as HTML's since 2025</p>
+        <button id="galleryBtn" class="btn">View Gallery</button>
     </div>
 
-    <!-- Game Gallery -->
-    <div id="galleryScreen" class="gallery-screen hidden">
-        <h1 class="gallery-title">HTML Gallery</h1>
-        <input type="text" id="searchBar" placeholder="Search games..." class="search-bar">
-        <div id="gameGrid" class="game-grid"></div>
+    <script src="script.js"></script>
+</body>
+</html>
+
     </div>
 
     <script src="script.js"></script>
