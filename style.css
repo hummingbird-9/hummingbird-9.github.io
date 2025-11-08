@@ -17,7 +17,17 @@ body, html {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
     font-size: 3em;
 }
-
+.landing-page {
+    /* Change 'your-background-image.jpg' to your actual file name */
+    background-image: url('images/my_cool_background.jpg'); 
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover; /* Ensures image covers the whole screen */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
 
 /* Gallery Page Styling */
 .gallery-page {
