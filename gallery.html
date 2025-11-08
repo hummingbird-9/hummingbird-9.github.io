@@ -60,7 +60,7 @@
         
         <!-- Custom Loading Screen -->
         <div id="loading-screen" class="loading-screen">
-            <img src="images/hummingstudiosloading.png" alt="Custom Loading Logo" class="custom-logo">
+            <img src="images/hummingstudios.png" alt="Custom Loading Logo" class="custom-logo">
             <div class="loading-bar-container">
                 <div id="progress-bar" class="loading-bar"></div>
             </div>
@@ -73,5 +73,45 @@
 
     <script src="script.js"></script>
 </body>
-</html>
+
+<!-- ADD this below your opening <body> tag in gallery.html -->
+<h1>HTML Gallery</h1>
+
+<input type="text" id="game-search" placeholder="Search" onkeyup="searchGames()">
+
+<!-- Update existing game-item divs to include 'data-title' -->
+<div class="game-item" data-title="Undertale" onclick="launchGame('game1.html')">
+    <img src="images/thumbnail1.png" alt="Game 1">
+    <p>Undertale</p>
+</div>
+
+<!-- for Game 2 -->
+<div class="game-item" data-title="Deltarune" onclick="launchGame('games/game2.html')">
+    <img src="images/thumbnail2.png" alt="Game 2">
+    <p>Deltarune</p>
+</div>
+
+<!-- for Game 3 -->
+<div class="game-item" data-title="Hollow Knight" onclick="launchGame('games/game3.html')">
+    <img src="images/thumbnail3.png" alt="Game 3">
+    <p>Hollow Knight</p>
+</div>
+
+    <!-- for Game 4 -->
+<div class="game-item" data-title="Hollow Knight Debug" onclick="launchGame('games/game4.html')">
+    <img src="images/thumbnail4.png" alt="Game 4">
+    <p>Hollow Knight Debug</p>
+</div>
+
+    <!-- for Game 5 -->
+<div class="game-item" data-title="Eaglercraft 1.8.8" onclick="launchGame('games/game5.html')">
+    <img src="images/thumbnail5.png" alt="Game 5">
+    <p>Eaglercraft 1.8.8</p>
+</div>
+
+    <!-- for Game 6 -->
+<div class="game-item" data-title="Eaglercraft 1.12.2" onclick="launchGame('games/game6.html')">
+    <img src="images/thumbnail6.png" alt="Game 6">
+    <p>Eaglercraft 1.8.8</p>
+</div>
 
