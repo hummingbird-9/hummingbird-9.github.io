@@ -108,7 +108,7 @@ body, html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #d12027; /* Minecraft-style red */
+    background-color: #fff; /* Minecraft-style red */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -118,7 +118,7 @@ body, html {
 }
 
 .custom-logo {
-    width: 200px;
+    width: 300px;
     image-rendering: pixelated; 
     margin-bottom: 20px;
 }
@@ -126,8 +126,8 @@ body, html {
 .loading-bar-container {
     width: 300px;
     height: 16px;
-    border: 2px solid #555;
-    background-color: #aaa;
+    border: 2px solid #000;
+    background-color: #fff;
     position: relative;
     overflow: hidden;
     image-rendering: pixelated;
@@ -136,7 +136,7 @@ body, html {
 .loading-bar {
     height: 100%;
     width: 0;
-    background-color: #2196f3;
+    background-color: #000;
     image-rendering: pixelated;
     transition: width 1s linear; 
 }
@@ -146,6 +146,6 @@ body, html {
     font-family: 'Courier New', Courier, monospace; 
     font-size: 14px;
     color: white;
-    text-shadow: 2px 2px #000; 
+    text-shadow: 2px 2px #00; 
 }
 
