@@ -10,6 +10,12 @@
     <p class="content"></p>
 
     <div class="gallery-container">
+ 
+      <!-- Search Bar -->
+    <input type="text" id="searchInput" onkeyup="searchGallery()" placeholder="Search" class="search-bar">
+
+    <div class="gallery-container" id="galleryContainer">
+
       
       <!-- Game Card 1 -->
       <a href="games/game1/index.html" class="game-card">
@@ -68,6 +74,32 @@
     </div>
 
     <a href="index.html" class="open-page-btn back-btn">Go Back To Home</a>
+    <!-- JavaScript for the search functionality -->
+    <script>
+        function searchGallery() {
+            // Get user input and convert to lowercase for case-insensitive search
+            let input = document.getElementById('searchInput');
+            let filter = input.value.toLowerCase();
+            
+            // Get all gallery cards
+            let gallery = document.getElementById('galleryContainer');
+            let cards = gallery.getElementsByClassName('game-card');
 
+            // Loop through all cards, and hide those that don't match the search query
+            for (let i = 0; i < cards.length; i++) {
+                // Get the title of the card
+                let title = cards[i].querySelector('h3');
+                let textValue = title.textContent || title.innerText;
+                
+                if (textValue.toLowerCase().indexOf(filter) > -1) {
+                    cards[i].style.display = ""; // Show card
+                } else {
+                    cards[i].style.display = "none"; // Hide card
+                }
+            }
+        }
+    </script>
+  </body>
+</html>
   </body>
 </html>
