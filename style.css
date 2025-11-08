@@ -9,6 +9,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  /* Default Green Background (for index.html) */
   background: linear-gradient(135deg, #0a2e0a, #1a5d1a, #0a2e0a, #1a5d1a);
   background-size: 400% 400%;
   animation: gradientBG 20s ease infinite;
@@ -18,15 +19,14 @@ body {
   padding: 20px;
 }
 
-/* Gallery page specific styling - NEW BACKGROUND */
+/* Gallery page specific styling - DARK BLUE BACKGROUND */
 .gallery-body {
     min-height: auto;
     justify-content: flex-start;
     padding-top: 50px;
-    /* This overrides the body background for the gallery page only */
+    /* Overrides the body background for the gallery page only */
     background: linear-gradient(135deg, #001f3f, #003366, #001f3f, #003366); 
     background-size: 400% 400%;
-    /* Retains the same animation keyframes */
 }
 
 @keyframes gradientBG {
@@ -79,6 +79,35 @@ body {
 
 .back-btn {
     margin-bottom: 40px;
+}
+
+/* --- Search Bar Styles --- */
+.search-container {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 25px;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    color: white;
+    font-size: 1rem;
+    box-sizing: border-box; /* Ensures padding doesn't increase width */
+    backdrop-filter: blur(5px);
+}
+
+.search-bar::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-bar:focus {
+    outline: none;
+    border-color: #90E4C1;
+    background: rgba(255, 255, 255, 0.15);
 }
 
 
@@ -144,4 +173,3 @@ body {
     transform: none;
     background: rgba(255, 255, 255, 0.1);
 }
-
