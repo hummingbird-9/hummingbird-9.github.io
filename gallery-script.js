@@ -1,11 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Game data with 6 games matching thumbnail1.png through thumbnail6.png
     const games = [
-        { id: 1, name: "Undertale", description: "Made as HTML by BreadB, original by Toby Fox" },
-        { id: 2, name: "Deltarune", description: "Brought to the web by bog/aukak, original by Toby Fox" },
-        { id: 3, name: "Hollow Knight", description: "HTML made by bok/aukak and lag fixes and fixed other issues by hummingbird_9, original by Team Cherry" },
-        { id: 4, name: "Hollow Knight Debug", description: "Debug version of previous hollow knight, but this time with a console and FPS viewer" },
-        { id: 5, name: "Eagletcraft 1.8.8", description: "Made by lax1dude and optomized by PlanetDoge, original by Mojang Studios" },
-        { id: 6, name: "Eagletcraft 1.12.2", description: "Made by PeytonPlayz595 and optomized by PlanetDoge, original by Mojang Studios" }
+{ id: 1, name: "Undertale", description: "Made as HTML by BreadB, original by Toby Fox" }, 
+{ id: 2, name: "Deltarune", description: "Brought to the web by bog/aukak, original by Toby Fox" }, 
+
+{ id: 3, name: "Hollow Knight", description: "HTML made by bok/aukak and lag fixes and fixed other issues by hummingbird_9, original by Team Cherry" }, 
+{ id: 4, name: "Hollow Knight Debug", description: "Debug version of previous hollow knight, but this time with a console and FPS viewer" }, 
+{ id: 5, name: "Eagletcraft 1.8.8", description: "Made by lax1dude and optomized by PlanetDoge, original by Mojang Studios" }, 
+{ id: 6, name: "Eagletcraft 1.12.2", description: "Made by PeytonPlayz595 and optomized by PlanetDoge, original by Mojang Studios" }
     ];
 
     const gameGrid = document.getElementById('gameGrid');
@@ -48,11 +50,11 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingScreen.id = 'loadingScreen';
         loadingScreen.innerHTML = `
             <div class="loading-content">
-                <img src="images/loading-screen.png" alt="Loading...">
+                <img src="images/loading-screen.png" alt="Loading..." class="loading-image">
                 <div class="loading-bar-container">
                     <div class="loading-bar"></div>
                 </div>
-                <p>Loading Game...</p>
+                <p class="loading-text">Loading Game...</p>
             </div>
         `;
         
@@ -78,6 +80,10 @@ document.addEventListener('DOMContentLoaded', function() {
             loadingBar.style.width = `${progress}%`;
         }, 200);
     }
+
+    // Initial render
+    renderGames(games);
+});
 
     // Initial render
     renderGames(games);
