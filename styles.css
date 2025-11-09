@@ -1,5 +1,4 @@
-
-/* --- general & index page styles --- */
+/* --- General & Index Page Styles --- */
 body {
   margin: 0;
   padding: 0;
@@ -8,7 +7,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* green background (for index.html) */
+  /* Default Green Background (for index.html) */
   background: linear-gradient(135deg, #0a2e0a, #1a5d1a, #0a2e0a, #1a5d1a);
   background-size: 400% 400%;
   animation: gradientBG 20s ease infinite;
@@ -16,14 +15,15 @@ body {
   color: white;
   text-align: center;
   padding: 20px;
+  position: relative; /* Add this for proper positioning */
 }
 
-/* gallery page specific styling */
+/* Gallery page specific styling - DARK BLUE BACKGROUND */
 .gallery-body {
     min-height: auto;
     justify-content: flex-start;
     padding-top: 50px;
-    /* overrides the body background for the gallery page only */
+    /* Overrides the body background for the gallery page only */
     background: linear-gradient(135deg, #001f3f, #003366, #001f3f, #003366); 
     background-size: 400% 400%;
 }
@@ -51,6 +51,22 @@ body {
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
   max-width: 600px;
   margin-bottom: 20px;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.top-button-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .open-page-btn {
@@ -95,7 +111,7 @@ body {
     border-radius: 25px;
     color: white;
     font-size: 1rem;
-    box-sizing: border-box; /* ensures padding doesn't increase width */
+    box-sizing: border-box; /* Ensures padding doesn't increase width */
     backdrop-filter: blur(5px);
 }
 
@@ -110,7 +126,7 @@ body {
 }
 
 
-/* --- gallery specific styles --- */
+/* --- Gallery Specific Styles --- */
 .gallery-container {
   display: flex;
   flex-wrap: wrap;
