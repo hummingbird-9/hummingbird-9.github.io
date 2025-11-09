@@ -18,7 +18,7 @@ body {
   position: relative; /* Add this for proper positioning */
 }
 
-/* Gallery page specific styling - DARK BLUE BACKGROUND */
+/* Gallery page styling - */
 .gallery-body {
     min-height: auto;
     justify-content: flex-start;
