@@ -25,12 +25,26 @@
             top: 0;
             left: 0;
         }
+    
+        #softlock {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-family: sans-serif;
+            font-size: 20px;
+            z-index: 1000;
+        }
 
     </style>
 </head>
 
 <body>
     <div id="loading-text" style="color: white; font-size: 45px; font-family: monospace; text-align: center; margin-top: 20px;"> LOADING... </div>
+        <div id="softlock">WARNING: DREAMERS WILL SOFTLOCK YOU, A PATCH IS IN DEVELOPEMENT</div>
+
     <div hidden id="unity-container" class="unity-desktop">
         <canvas id="unity-canvas"></canvas>
         <div id="unity-loading-bar">
