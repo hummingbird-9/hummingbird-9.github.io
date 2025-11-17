@@ -2,10 +2,10 @@
 <html lang="en-us">
 
 <head>
-    <base href="https://cdn.jsdelivr.net/gh/Craftingdead/hollow-knight@latest/">
+    <base href="https://cdn.jsdelivr.net/gh/web-ports/hollow-knight@latest/">
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Hollow Knight Debug Mode</title>
+    <title>Unity WebGL Player | Hollow Knight</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
     <style>
@@ -15,7 +15,7 @@
             padding: 0;
             height: 100%;
             overflow: hidden;
-            background: #000;
+            background: #231F20;
         }
 
         #unity-container {
@@ -26,75 +26,18 @@
             left: 0;
         }
 
-        #fps-display {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
-            font-family: sans-serif;
-            font-size: 16px;
-            z-index: 1000;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 5px 10px;
-            border-radius: 4px;
-            display: none;
-        }
-
-        #console {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 45%;
-            height: 25%;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            font-family: monospace;
-            font-size: 14px;
-            padding: 10px;
-            border: 1px solid #555;
-            border-radius: 4px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-        }
-
-        .console-error {
-            color: #ff4444;
-        }
-
-        #toggle-instruction {
-            position: absolute;
-            bottom: 20px;
-            left: 0;
+        /* Added style for the canvas to fill its container */
+        #unity-canvas {
             width: 100%;
-            text-align: center;
-            color: white;
-            font-family: sans-serif;
-            font-size: 20px;
-            z-index: 1000;
+            height: 100%;
+            background: #231F20;
+            /* Ensures background matches body if canvas is transparent */
         }
-        
-        #softlock {
-            position: absolute;
-            bottom: 40px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            color: white;
-            font-family: sans-serif;
-            font-size: 20px;
-            z-index: 1000;
-        }
-
     </style>
 </head>
 
 <body>
-    <div id="loading-text" style="color: white; font-size: 45px; font-family: monospace; text-align: center; margin-top: 20px;">Loading...</div>
-    <div id="fps-display">FPS: 0</div>
-    <div id="console"></div>
-    <div id="softlock">WARNING: DREAMERS WILL SOFTLOCK YOU, A PATCH IS IN DEVELOPEMENT</div>
-    <div id="toggle-instruction">press equals to toggle fps, press 1 to toggle console</div>
+    <div id="loading-text" style="color: white; font-size: 48px; font-family: sans-serif; text-align: center; margin-top: 20px;"> LOADING... </div>
     <div hidden id="unity-container" class="unity-desktop">
         <canvas id="unity-canvas"></canvas>
         <div id="unity-loading-bar">
@@ -107,122 +50,39 @@
     </div>
     <script>
         var loadingText = document.querySelector("#loading-text");
-        var fpsDisplay = document.getElementById("fps-display");
-        var consoleElement = document.getElementById("console");
-        var toggleInstruction = document.getElementById("toggle-instruction");
-        let totalBytes = 0;
         let loadedBytes = 0;
-        let showFPS = false;
-        let showConsole = false;
-        let lastFrameTime = 0;
-        let frameCount = 0;
-        let fps = 0;
-
-        // Override console methods to display in our custom console
-        const originalLog = console.log;
-        const originalError = console.error;
-        
-        console.log = function(message) {
-            originalLog.apply(console, arguments);
-            addToConsole(message, false);
-        };
-        
-        console.error = function(message) {
-            originalError.apply(console, arguments);
-            addToConsole(message, true);
-        };
-
-        function addToConsole(message, isError) {
-            if (!showConsole) {
-                showConsole = true;
-                consoleElement.style.display = 'block';
-            }
-            
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            if (isError) {
-                messageElement.classList.add('console-error');
-            }
-            consoleElement.appendChild(messageElement);
-            
-            // Scroll to bottom
-            consoleElement.scrollTop = consoleElement.scrollHeight;
-        }
-
-        // Handle key press for toggling FPS and console
-        document.addEventListener('keydown', function(event) {
-            if (event.key === '=') {
-                showFPS = !showFPS;
-                fpsDisplay.style.display = showFPS ? 'block' : 'none';
-                toggleInstruction.textContent = showFPS ? 
-                    'press equals to toggle fps, press 1 to toggle console' : 
-                    'press equals to toggle fps, press 1 to toggle console';
-            }
-            
-            // Handle console toggle
-            if (event.key === '1') {
-                showConsole = !showConsole;
-                consoleElement.style.display = showConsole ? 'block' : 'none';
-                toggleInstruction.textContent = showConsole ? 
-                    'press equals to toggle fps, press 1 to toggle console' : 
-                    'press equals to toggle fps, press 1 to toggle console';
-            }
-        });
-
-        // Update FPS counter
-        function updateFPS(timestamp) {
-            if (!lastFrameTime) {
-                lastFrameTime = timestamp;
-                requestAnimationFrame(updateFPS);
-                return;
-            }
-
-            frameCount++;
-            const delta = timestamp - lastFrameTime;
-
-            if (delta >= 1000) {
-                fps = Math.round((frameCount * 1000) / delta);
-                fpsDisplay.textContent = `FPS: ${fps}`;
-                frameCount = 0;
-                lastFrameTime = timestamp;
-            }
-
-            requestAnimationFrame(updateFPS);
-        }
-
-        async function getSize(url) {
-            try {
-                const res = await fetch(url, {
-                    method: "HEAD"
-                });
-                return parseInt(res.headers.get("Content-Length") || "0", 10);
-            } catch {
-                return 0;
-            }
-        }
+        let lastLoadingTextUpdateTime = 0; // Added for throttling
+        const loadingTextUpdateInterval = 100; // Update every 100ms
 
         async function fetchWithProgress(url) {
             const response = await fetch(url);
             const reader = response.body.getReader();
             let chunks = [];
             let received = 0;
-            
             while (true) {
-                const { done, value } = await reader.read();
+                const {
+                    done,
+                    value
+                } = await reader.read();
                 if (done) break;
                 received += value.length;
                 loadedBytes += value.length;
                 chunks.push(value);
-                
-                // update loading text every few chunks to avoid too many updates
-                if (chunks.length % 5 === 0) {
+
+                // Throttling loading text updates
+                const currentTime = Date.now();
+                if (currentTime - lastLoadingTextUpdateTime > loadingTextUpdateInterval) {
                     let mbDone = (loadedBytes / (1024 * 1024)).toFixed(2);
-                    let mbTotal = '860.36';
+                    let mbTotal = '860.36'; // Hardcoded mbTotal as requested
                     loadingText.textContent = `LOADING... ${mbDone} MB / ${mbTotal} MB`;
+                    lastLoadingTextUpdateTime = currentTime;
                 }
             }
-            
-            // combines all chunks 
+            // Ensure final update after download is complete
+            let mbDone = (loadedBytes / (1024 * 1024)).toFixed(2);
+            let mbTotal = '860.36';
+            loadingText.textContent = `LOADING... ${mbDone} MB / ${mbTotal} MB`;
+
             let fullBuffer = new Uint8Array(received);
             let offset = 0;
             for (let chunk of chunks) {
@@ -231,20 +91,10 @@
             }
             return fullBuffer.buffer;
         }
-
-        async function mergeFilesSequential(fileParts) {
-            try {
-                // Load parts sequentially instead of in parallel
-                const buffers = [];
-                for (const part of fileParts) {
-                    buffers.push(await fetchWithProgress(part));
-                }
-                const mergedBlob = new Blob(buffers);
-                return URL.createObjectURL(mergedBlob);
-            } catch (error) {
-                console.error("Error merging files:", error);
-                throw new Error("Failed to load game files");
-            }
+        async function mergeFiles(fileParts) {
+            const buffers = await Promise.all(fileParts.map(part => fetchWithProgress(part)));
+            const mergedBlob = new Blob(buffers);
+            return URL.createObjectURL(mergedBlob);
         }
 
         function getParts(file, start, end) {
@@ -254,98 +104,72 @@
             }
             return parts;
         }
-
         (async () => {
-            try {
-                // Load files sequentially to reduce memory pressure
-                const dataParts = getParts("Build/hk.data", 1, 42);
-                const wasmParts = getParts("Build/hk.wasm", 1, 2);
-                
-                // Get sizes first
-                const sizes = await Promise.all(dataParts.map(getSize));
-                totalBytes = sizes.reduce((a, b) => a + b, 0);
-                
-                // Load data file first
-                loadingText.textContent = "Loading game data...";
-                const dataUrl = await mergeFilesSequential(dataParts);
-                
-                // Load wasm file second
-                loadingText.textContent = "Loading game code...";
-                const wasmurl = await mergeFilesSequential(wasmParts);
-                
-                var buildUrl = "Build";
-                var loaderUrl = buildUrl + "/hk.loader.js";
-                var config = {
-                    dataUrl: dataUrl,
-                    frameworkUrl: buildUrl + "/hk.framework.js",
-                    codeUrl: wasmurl,
-                    streamingAssetsUrl: "StreamingAssets",
-                    companyName: "Team Cherry & Truffled",
-                    productName: "Hollow Knight",
-                    productVersion: "1.0",
-                };
-                
-                var container = document.querySelector("#unity-container");
-                container.hidden = false;
-                var canvas = document.querySelector("#unity-canvas");
-                var loadingBar = document.querySelector("#unity-loading-bar");
-                var progressBarFull = document.querySelector("#unity-progress-bar-full");
-                var mobileWarning = document.querySelector("#unity-mobile-warning");
-                
-                // better mobile detection
-                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                    container.className = "unity-mobile";
-                    config.devicePixelRatio = 1;
-                    mobileWarning.style.display = "block";
-                    setTimeout(() => {
-                        mobileWarning.style.display = "none";
-                    }, 5000);
-                } else {
-                    // Desktop setup
-                    function resizeCanvas() {
-                        canvas.width = window.innerWidth;
-                        canvas.height = window.innerHeight;
-                        canvas.style.width = window.innerWidth + "px";
-                        canvas.style.height = window.innerHeight + "px";
-                    }
-                    resizeCanvas();
-                    window.addEventListener('resize', resizeCanvas);
-                }
-                
-                loadingBar.style.display = "block";
-                var script = document.createElement("script");
-                script.src = loaderUrl;
-                
-                script.onload = () => {
-                    createUnityInstance(canvas, config, (progress) => {
-                        progressBarFull.style.width = 100 * progress + "%";
-                    }).then((unityInstance) => {
-                        loadingText.remove();
-                        loadingBar.style.display = "none";
-                        canvas.style.display = "block";
-                        
-                        // Hide toggle instruction after Unity loads
-                        toggleInstruction.style.display = "none";
-                        
-                        // Start FPS tracking after Unity loads
-                        if (showFPS) {
-                            requestAnimationFrame(updateFPS);
-                        }
-                    }).catch((message) => {
-                        alert("Game failed to load: " + message);
-                    });
-                };
-                
-                script.onerror = () => {
-                    alert("Failed to load Unity loader script");
-                };
-                
-                document.body.appendChild(script);
-            } catch (error) {
-                console.error("Initialization error:", error);
-                loadingText.textContent = "ERROR: Failed to load game";
-                loadingText.style.color = "red";
+            const [dataUrl, wasmurl] = await Promise.all([
+                mergeFiles(getParts("Build/hk.data", 1, 42)),
+                mergeFiles(getParts("Build/hk.wasm", 1, 2)),
+            ]);
+            var buildUrl = "Build";
+            var loaderUrl = buildUrl + "/hk.loader.js";
+            var config = {
+                dataUrl: dataUrl,
+                frameworkUrl: buildUrl + "/hk.framework.js",
+                codeUrl: wasmurl,
+                streamingAssetsUrl: "StreamingAssets",
+                companyName: "Team Cherry & HummingTech",
+                productName: "Hollow Knight",
+                productVersion: "1.0",
+            };
+
+            // Optimization: Force devicePixelRatio to 1 for all systems to reduce rendering workload.
+            // This is the most impactful client-side rendering optimization.
+            config.devicePixelRatio = 1;
+
+            var container = document.querySelector("#unity-container");
+            container.hidden = false;
+            var canvas = document.querySelector("#unity-canvas");
+            var loadingBar = document.querySelector("#unity-loading-bar");
+            var progressBarFull = document.querySelector("#unity-progress-bar-full");
+            var mobileWarning = document.querySelector("#unity-mobile-warning");
+
+            // Corrected mobile detection logic
+            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                var meta = document.createElement('meta');
+                meta.name = 'viewport';
+                meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+                document.getElementsByTagName('head')[0].appendChild(meta);
+                container.className = "unity-mobile";
+                canvas.className = "unity-mobile"; // Ensure canvas also gets mobile class
+                mobileWarning.style.display = "block";
+                setTimeout(() => {
+                    mobileWarning.style.display = "none";
+                }, 5000);
+            } else {
+                // Desktop setup: Unity will manage canvas size within the 100% width/height container
             }
+
+            loadingBar.style.display = "block";
+            loadingText.style.display = "none"; // Hide custom loading text when Unity's loading bar appears
+
+            var script = document.createElement("script");
+            script.src = loaderUrl;
+            script.onload = () => {
+                createUnityInstance(canvas, config, (progress) => {
+                    progressBarFull.style.width = 100 * progress + "%";
+                }).then((unityInstance) => {
+                    loadingText.remove(); // Remove the hidden loading text element
+                    loadingBar.style.display = "none";
+                    canvas.style.display = "block";
+
+                    // Optimization: Explicitly revoke Blob URLs to free up memory
+                    URL.revokeObjectURL(dataUrl);
+                    URL.revokeObjectURL(wasmurl);
+
+                }).catch((message) => {
+                    alert(message);
+                });
+            };
+            document.body.appendChild(script);
         })();
     </script>
 </body>
