@@ -2,7 +2,7 @@
 <html lang="en-us">
 
 <head>
-    <base href="https://cdn.jsdelivr.net/gh/web-ports/hollow-knight@latest/">
+    <base href="//cdn.jsdelivr.net/gh/web-ports/hollow-knight@latest/">
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | Hollow Knight</title>
@@ -33,6 +33,81 @@
             background: #231F20;
             /* Ensures background matches body if canvas is transparent */
         }
+
+        /* Styles for the custom console */
+        #console-container {
+            position: fixed;
+            top: 10px;
+            /* Changed from bottom: 10px */
+            right: 10px;
+            /* Changed from left: 10px */
+            width: 400px;
+            height: 200px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-y: scroll;
+            z-index: 9999;
+            display: none;
+            /* Hidden by default */
+        }
+
+        #console-output p {
+            margin: 0;
+            padding: 2px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #console-output p:last-child {
+            border-bottom: none;
+        }
+
+        #console-output .log-log {
+            color: white;
+        }
+
+        #console-output .log-warn {
+            color: yellow;
+        }
+
+        #console-output .log-error {
+            color: red;
+        }
+
+        /* Styles for the FPS viewer */
+        #fps-viewer {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: lime;
+            font-family: monospace;
+            font-size: 18px;
+            padding: 5px 10px;
+            border-radius: 3px;
+            z-index: 9999;
+            display: none;
+            /* Hidden by default */
+        }
+
+        /* Styles for the toggle message */
+        #toggle-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            font-family: sans-serif;
+            text-align: center;
+            z-index: 10000;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            display: none;
+            /* Hidden initially, shown after load */
+        }
     </style>
 </head>
 
@@ -48,14 +123,35 @@
         </div>
         <div id="unity-mobile-warning"> WebGL builds are not supported on mobile devices. </div>
     </div>
+
+    <!-- New elements for Console, FPS, and Toggle Message -->
+    <div id="toggle-message"></div>
+    <div id="console-container">
+        <div id="console-output"></div>
+    </div>
+    <div id="fps-viewer">
+        FPS: <span id="fps-value">0</span>
+    </div>
+
     <script>
         var loadingText = document.querySelector("#loading-text");
         let loadedBytes = 0;
-        let lastLoadingTextUpdateTime = 0; // Added for throttling
-        const loadingTextUpdateInterval = 100; // Update every 100ms
+
+        // Global state for console and FPS
+        let consoleEnabled = false;
+        let fpsEnabled = false;
+        const consoleLogs = []; // Stores all console messages
+        let lastFrameTime = performance.now();
+        let frameCount = 0;
+        let fps = 0;
 
         async function fetchWithProgress(url) {
+            console.log(`[Fetch Start] Requesting: ${url}`); // Added log
             const response = await fetch(url);
+            if (!response.ok) {
+                console.error(`[Fetch Error] Failed to fetch ${url}: ${response.status} ${response.statusText}`); // Added error log
+                throw new Error(`Failed to fetch ${url}`);
+            }
             const reader = response.body.getReader();
             let chunks = [];
             let received = 0;
@@ -64,36 +160,32 @@
                     done,
                     value
                 } = await reader.read();
-                if (done) break;
-                received += value.length;
-                loadedBytes += value.length;
-                chunks.push(value);
-
-                // Throttling loading text updates
-                const currentTime = Date.now();
-                if (currentTime - lastLoadingTextUpdateTime > loadingTextUpdateInterval) {
-                    let mbDone = (loadedBytes / (1024 * 1024)).toFixed(2);
-                    let mbTotal = '860.36'; // Hardcoded mbTotal as requested
-                    loadingText.textContent = `LOADING... ${mbDone} MB / ${mbTotal} MB`;
-                    lastLoadingTextUpdateTime = currentTime;
+                if (done) {
+                    console.log(`[Fetch End] Finished reading chunks for: ${url}. Total received for this part: ${received} bytes.`); // Added log
+                    break;
                 }
+                received += value.length;
+                loadedBytes += value.length; // This increments the global loadedBytes
+                chunks.push(value);
+                let mbDone = (loadedBytes / (1024 * 1024)).toFixed(2);
+                let mbTotal = '860.36';
+                loadingText.textContent = `LOADING... ${mbDone} MB / ${mbTotal} MB`; // This updates the global loadingText
+                // console.log(`[Progress] ${url}: ${received} bytes. Global: ${mbDone} MB`); // Uncomment for very verbose logging
             }
-            // Ensure final update after download is complete
-            let mbDone = (loadedBytes / (1024 * 1024)).toFixed(2);
-            let mbTotal = '860.36';
-            loadingText.textContent = `LOADING... ${mbDone} MB / ${mbTotal} MB`;
-
             let fullBuffer = new Uint8Array(received);
             let offset = 0;
             for (let chunk of chunks) {
                 fullBuffer.set(chunk, offset);
                 offset += chunk.length;
             }
+            console.log(`[Buffer Processed] Completed processing buffer for: ${url}`); // Added log
             return fullBuffer.buffer;
         }
         async function mergeFiles(fileParts) {
+            console.log(`[Merge Start] Merging ${fileParts.length} parts.`); // Added log
             const buffers = await Promise.all(fileParts.map(part => fetchWithProgress(part)));
             const mergedBlob = new Blob(buffers);
+            console.log(`[Merge End] All parts merged into a blob.`); // Added log
             return URL.createObjectURL(mergedBlob);
         }
 
@@ -104,11 +196,114 @@
             }
             return parts;
         }
+
+        // Function to initialize dev tools (console and FPS)
+        function initDevTools() {
+            const consoleOutput = document.getElementById('console-output');
+            const consoleContainer = document.getElementById('console-container');
+            const fpsViewer = document.getElementById('fps-viewer');
+            const fpsValue = document.getElementById('fps-value');
+
+            // Override console methods to capture logs
+            const originalLog = console.log;
+            const originalWarn = console.warn;
+            const originalError = console.error;
+
+            function logToCustomConsole(type, ...args) {
+                const message = args.map(arg => {
+                    if (typeof arg === 'object' && arg !== null) {
+                        try {
+                            return JSON.stringify(arg);
+                        } catch (e) {
+                            return String(arg); // Fallback for circular structures
+                        }
+                    }
+                    return String(arg);
+                }).join(' ');
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = `<span style="color: grey;">[${timestamp}]</span> <span class="log-${type}">${message}</span>`;
+                consoleLogs.push(logEntry); // Always store the log
+
+                if (consoleEnabled) { // Only display if console is currently enabled
+                    const p = document.createElement('p');
+                    p.innerHTML = logEntry;
+                    consoleOutput.appendChild(p);
+                    consoleOutput.scrollTop = consoleOutput.scrollHeight; // Scroll to bottom
+                }
+
+                // Call original console method
+                if (type === 'log') originalLog(...args);
+                else if (type === 'warn') originalWarn(...args);
+                else if (type === 'error') originalError(...args);
+            }
+
+            console.log = (...args) => logToCustomConsole('log', ...args);
+            console.warn = (...args) => logToCustomConsole('warn', ...args);
+            console.error = (...args) => logToCustomConsole('error', ...args);
+
+            // Toggle console visibility
+            function toggleConsole() {
+                consoleEnabled = !consoleEnabled;
+                if (consoleEnabled) {
+                    consoleContainer.style.display = 'block';
+                    // Repopulate console with all stored logs when enabled
+                    consoleOutput.innerHTML = '';
+                    consoleLogs.forEach(logEntry => {
+                        const p = document.createElement('p');
+                        p.innerHTML = logEntry;
+                        consoleOutput.appendChild(p);
+                    });
+                    consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                } else {
+                    consoleContainer.style.display = 'none';
+                }
+            }
+
+            // Toggle FPS viewer visibility
+            function toggleFPS() {
+                fpsEnabled = !fpsEnabled;
+                fpsViewer.style.display = fpsEnabled ? 'block' : 'none';
+                if (fpsEnabled) {
+                    requestAnimationFrame(updateFPS); // Start FPS loop if enabled
+                }
+            }
+
+            // FPS calculation loop
+            function updateFPS(currentTime) {
+                frameCount++;
+                const deltaTime = currentTime - lastFrameTime;
+
+                if (deltaTime >= 1000) { // Update FPS every second
+                    fps = Math.round(frameCount / (deltaTime / 1000));
+                    fpsValue.textContent = fps;
+                    frameCount = 0;
+                    lastFrameTime = currentTime;
+                }
+
+                if (fpsEnabled) {
+                    requestAnimationFrame(updateFPS); // Continue loop if still enabled
+                }
+            }
+
+            // Keyboard event listeners for toggling
+            document.addEventListener('keydown', (event) => {
+                if (event.key === '1') {
+                    toggleConsole();
+                } else if (event.key === '2') {
+                    toggleFPS();
+                }
+            });
+        }
+
+
         (async () => {
+            console.log("Starting initial file merge for data and wasm..."); // Added log
             const [dataUrl, wasmurl] = await Promise.all([
                 mergeFiles(getParts("Build/hk.data", 1, 42)),
                 mergeFiles(getParts("Build/hk.wasm", 1, 2)),
             ]);
+            console.log("Initial file merge complete. Data and WASM URLs created."); // Added log
+
             var buildUrl = "Build";
             var loaderUrl = buildUrl + "/hk.loader.js";
             var config = {
@@ -116,14 +311,10 @@
                 frameworkUrl: buildUrl + "/hk.framework.js",
                 codeUrl: wasmurl,
                 streamingAssetsUrl: "StreamingAssets",
-                companyName: "Team Cherry & HummingTech",
+                companyName: "Team Cherry & Truffled",
                 productName: "Hollow Knight",
                 productVersion: "1.0",
             };
-
-            // Optimization: Force devicePixelRatio to 1 for all systems to reduce rendering workload.
-            // This is the most impactful client-side rendering optimization.
-            config.devicePixelRatio = 1;
 
             var container = document.querySelector("#unity-container");
             container.hidden = false;
@@ -132,41 +323,50 @@
             var progressBarFull = document.querySelector("#unity-progress-bar-full");
             var mobileWarning = document.querySelector("#unity-mobile-warning");
 
-            // Corrected mobile detection logic
             if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
                 var meta = document.createElement('meta');
                 meta.name = 'viewport';
                 meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
                 document.getElementsByTagName('head')[0].appendChild(meta);
                 container.className = "unity-mobile";
-                canvas.className = "unity-mobile"; // Ensure canvas also gets mobile class
+                canvas.className = "unity-mobile";
+                config.devicePixelRatio = 1;
                 mobileWarning.style.display = "block";
                 setTimeout(() => {
                     mobileWarning.style.display = "none";
                 }, 5000);
-            } else {
-                // Desktop setup: Unity will manage canvas size within the 100% width/height container
             }
-
-            loadingBar.style.display = "block";
-            loadingText.style.display = "none"; // Hide custom loading text when Unity's loading bar appears
 
             var script = document.createElement("script");
             script.src = loaderUrl;
             script.onload = () => {
+                // Now that hk.loader.js is loaded, hide custom loading text and show Unity's loading bar
+                loadingText.style.display = "none"; // Hide the MB progress text
+                loadingBar.style.display = "block"; // Show Unity's loading bar
+                console.log("Unity loader script loaded. Transitioning to Unity's loading bar."); // Added log
+
                 createUnityInstance(canvas, config, (progress) => {
                     progressBarFull.style.width = 100 * progress + "%";
                 }).then((unityInstance) => {
-                    loadingText.remove(); // Remove the hidden loading text element
+                    loadingText.remove(); // This will now remove it after it has been hidden
                     loadingBar.style.display = "none";
                     canvas.style.display = "block";
+                    console.log("Unity instance created successfully."); // Added log
 
-                    // Optimization: Explicitly revoke Blob URLs to free up memory
-                    URL.revokeObjectURL(dataUrl);
-                    URL.revokeObjectURL(wasmurl);
+                    // Initialize dev tools after Unity instance is ready
+                    initDevTools();
+
+                    // Show and hide the toggle message
+                    const toggleMessage = document.getElementById('toggle-message');
+                    toggleMessage.textContent = "Press 1 to toggle console, Press 2 to toggle FPS";
+                    toggleMessage.style.display = 'block';
+                    setTimeout(() => {
+                        toggleMessage.style.display = 'none';
+                    }, 5000); // Message disappears after 5 seconds
 
                 }).catch((message) => {
                     alert(message);
+                    console.error("Unity instance creation failed:", message); // Added error log
                 });
             };
             document.body.appendChild(script);
