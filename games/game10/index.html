@@ -37,6 +37,10 @@
     function randRange(min, max) {
       return Math.random() * (max - min) + min;
     }
+    function rotateVec(vx, vy, angle){
+      const ca = Math.cos(angle), sa = Math.sin(angle);
+      return { x: vx * ca - vy * sa, y: vx * sa + vy * ca };
+    }
 
     // ---- Constants and State ----
     const canvas = document.getElementById('gameCanvas');
@@ -87,9 +91,9 @@
 
     // Enemy
     const enemyInit = {
-      hp: 200, maxHp: 210, x: 256, y: 30,
+      hp: 180, maxHp: 180, x: 256, y: 30,
       width: 128, height: 128,
-      poisonTicks: 0, poison: 0,
+      poisonTimer: 0, poison: 0,
       targetX: 256, targetY: 30,
       dodging: false, dodgeSpeed: 4,
       shakeTimer: 0, shakeIntensity: 0,
@@ -115,8 +119,11 @@
     let finalAttackActive = false;
     let finalSpinTime = 0;
     let finalShootTimer = 0;
-    let finalPhase = 1;
-    let finalPhase2TimeLeft = 12000;
+    let finalPhase = 1; // 1 = new 4D-like attack, 2 = spin (original)
+    // New 4D-like phase timers:
+    let finalPhase1Time = 0;
+    const finalPhase1Duration = 7000; // ms
+    const finalSpinDuration = 6000; // ms (spin phase length)
     const playerForcedMoveSpeed = 0.5;
 
     // ---- Create Bullets ----
@@ -124,7 +131,8 @@
       let b = {
         x, y, vx, vy, radius: size, glow: 0, glowPulse: 0, colorG: 0,
         jitter: false, homing: false, finalRed: false, firework: false,
-        life: 9999, exploded: false, trail: []
+        life: 9999, exploded: false, trail: [],
+        pathLine: false // for drawing red path lines
       };
       bullets.push(b);
       return b;
@@ -140,7 +148,7 @@
       actionTime = actionDuration;
     }
 
-    // ---- Maze Helpers ----
+    // ---- Maze Helpers (kept but not used in final attack anymore) ----
     function buildMaze() {
       mazeLines = [];
       for(let i=0; i<=finalPhase2GridCols; i++) {
@@ -183,10 +191,10 @@
       finalAttackActive = true;
       finalSpinTime = 0;
       finalShootTimer = 0;
-      finalPhase = 1;
+      finalPhase = 1; // start with new 4D-like phase
+      finalPhase1Time = 0;
       mazeScrollX = 0;
-      finalPhase2TimeLeft = 12000;
-      buildMaze();
+      buildMaze(); // kept but not used by new flow
       enemy.dodging = true;
       enemy.targetX = canvas.width - enemy.width - 50;
       enemy.targetY = enemyInit.y;
@@ -222,11 +230,18 @@
           }
         }
       },
-      // 2) Firework Shooter
+      // 2) Firework Shooter (bullet rain with dots) -> force dvd box to move (100% chance)
       {
         name: "Firework Shooter",
         duration: 7000,
         pattern(ts) {
+          // Force the box to move like a DVD player during this attack
+          dvdBox.active = true;
+          dvdBox.x = dvdBox.x || player.boxX;
+          dvdBox.y = dvdBox.y || player.boxY;
+          dvdBox.vx = dvdBox.vx || ((Math.random() < 0.5 ? 1 : -1) * (2 + Math.random() * 2));
+          dvdBox.vy = dvdBox.vy || ((Math.random() < 0.5 ? 1 : -1) * (1 + Math.random() * 1.5));
+
           if (!this.lastShot || ts - this.lastShot > 300) {
             this.lastShot = ts;
             let x = 280 + Math.random() * 80;
@@ -304,7 +319,7 @@
           }
         }
       },
-      // 7) Horizontal Wave
+      // 7) Horizontal Wave -> now aims at the ENEMY (not the player)
       {
         name: "Horizontal Wave",
         duration: 7000,
@@ -313,12 +328,20 @@
             this.lastShot = ts;
             const startY = 130 + Math.random() * 120;
             const speed = 4;
-            spawnBullet(0, startY, speed, 0, 10);
+            // aim at enemy center
+            const ex = enemy.x + enemy.width/2;
+            const ey = enemy.y + enemy.height/2;
+            const dx = ex - 0;
+            const dy = ey - startY;
+            const dist = Math.hypot(dx, dy) || 1;
+            const vx = (dx / dist) * speed;
+            const vy = (dy / dist) * speed;
+            spawnBullet(0, startY, vx, vy, 10);
           }
           bullets.forEach(b => b.y += Math.sin(b.x / 10) * 0.1);
         }
       },
-      // 8) Twin Volley
+      // 8) Twin Volley -> now aimed at the ENEMY (not the player)
       {
         name: "Twin Volley",
         duration: 6500,
@@ -326,9 +349,17 @@
           if (!this.lastShot || ts - this.lastShot > 400) {
             this.lastShot = ts;
             const cx1 = 200, cx2 = 440, cy = 100, speed = 5;
-            for(let angleOffset of [0, Math.PI/8, -Math.PI/8]){
-              spawnBullet(cx1, cy, speed*Math.cos(angleOffset), speed*Math.sin(angleOffset), 12);
-              spawnBullet(cx2, cy, -speed*Math.cos(angleOffset), speed*Math.sin(angleOffset), 12);
+            const enemyCx = enemy.x + enemy.width/2;
+            const enemyCy = enemy.y + enemy.height/2;
+            for(let angleOffset of [0, Math.PI/12, -Math.PI/12]){
+              // left launcher
+              let baseAngle1 = Math.atan2(enemyCy - cy, enemyCx - cx1);
+              let a1 = baseAngle1 + angleOffset;
+              spawnBullet(cx1, cy, speed*Math.cos(a1), speed*Math.sin(a1), 12);
+              // right launcher
+              let baseAngle2 = Math.atan2(enemyCy - cy, enemyCx - cx2);
+              let a2 = baseAngle2 - angleOffset;
+              spawnBullet(cx2, cy, speed*Math.cos(a2), speed*Math.sin(a2), 12);
             }
           }
         }
@@ -403,175 +434,10 @@
             }
           }
         }
-      },
-      // Additional new creative phases:
-      {
-        name: "Slow Rotating Laser Line",
-        duration: 6000,
-        angle: 0,
-        pattern(ts) {
-          this.angle = (this.angle || 0) + 0.007;
-          if (!this.lastShot || ts - this.lastShot > 500) {
-            this.lastShot = ts;
-            const cx = 320;
-            const cy = 100;
-            const numBullets = 8;
-            const spacing = 18;
-            for (let i = -numBullets/2; i <= numBullets/2; i++) {
-              const offset = i * spacing;
-              const angleToUse = this.angle + Math.PI/2;
-              const x = cx + Math.cos(angleToUse)*offset;
-              const y = cy + Math.sin(angleToUse)*offset;
-              const speed = 2;
-              const vx = Math.cos(this.angle)*speed;
-              const vy = Math.sin(this.angle)*speed;
-              spawnBullet(x, y, vx, vy, 10);
-            }
-          }
-        }
-      },
-      {
-        name: "Expanding Circular Waves",
-        duration: 7000,
-        lastWave: 0,
-        waveCount: 0,
-        pattern(ts) {
-          if (!this.lastWave) this.lastWave = ts;
-          if (ts - this.lastWave > 1800) {
-            this.lastWave = ts;
-            this.waveCount++;
-            const cx = 320;
-            const cy = 120;
-            const count = 20;
-            const baseRadius = 40 * this.waveCount;
-            for(let i=0; i<count; i++){
-              let angle = (i/count)*2*Math.PI;
-              let distOffset = (i % 5) * 10;
-              let x = cx + Math.cos(angle)*baseRadius + Math.cos(angle)*distOffset;
-              let y = cy + Math.sin(angle)*baseRadius + Math.sin(angle)*distOffset;
-              let speed = 0.5 + 0.1*this.waveCount;
-              spawnBullet(x, y, Math.cos(angle)*speed, Math.sin(angle)*speed, 10);
-            }
-          }
-        }
-      },
-      {
-        name: "Bullet Rain With Gaps",
-        duration: 7000,
-        pattern(ts) {
-          if (!this.lastShot || ts - this.lastShot > 400) {
-            this.lastShot = ts;
-            const gapPositions = [80, 200, 360, 480];
-            const y = -20;
-            for(let x=0; x<=canvas.width; x+=30){
-              if(!gapPositions.some(gp => Math.abs(gp-x)<40)){
-                const speedY = 5;
-                spawnBullet(x, y, 0, speedY, 8);
-              }
-            }
-          }
-        }
-      },
-      {
-        name: "Targeted Dodge Pattern",
-        duration: 7000,
-        lastShot: 0,
-        pattern(ts) {
-          if (!this.lastShot || ts - this.lastShot > 1500) {
-            this.lastShot = ts;
-            const enemyCenterX = 320;
-            const enemyCenterY = 100;
-            for(let i=0; i<5; i++){
-              let angle = Math.atan2(player.y - enemyCenterY, player.x - enemyCenterX);
-              angle += (i-2)*0.3;
-              let speed = 4.5;
-              spawnBullet(enemyCenterX, enemyCenterY, Math.cos(angle)*speed, Math.sin(angle)*speed, 11);
-            }
-          }
-        }
       }
     ];
 
-    // ---- Final Attack Updates with requested changes ----
-    const finalSpinDuration = 6000; // ms
-
-    let finalPhase1Bullet = null;
-    function updateFinalAttack(ts, dt){
-      if(finalPhase === 1){
-        finalSpinTime += dt * 1000;
-        enemy.rotation += 0.04 + 0.0005 * finalSpinTime;
-
-        // Single slow spinning bullet follows player
-        if(!finalPhase1Bullet || finalPhase1Bullet.exploded) {
-          const cx = canvas.width/2;
-          const cy = canvas.height/2;
-          finalPhase1Bullet = spawnBullet(cx, cy, 0, 0, 18);
-          finalPhase1Bullet.finalRed = true;
-          finalPhase1Bullet.speedBase = 1.5;
-          finalPhase1Bullet.angle = 0;
-          finalPhase1Bullet.trail = [];
-        }
-
-        finalPhase1Bullet.angle += 0.035;
-        let cx = canvas.width/2;
-        let cy = canvas.height/2;
-        // Slow orbit radius 60
-        finalPhase1Bullet.x = cx + Math.cos(finalPhase1Bullet.angle) * 60;
-        finalPhase1Bullet.y = cy + Math.sin(finalPhase1Bullet.angle) * 60;
-        // Slow shift orbit center toward player: smooth follow
-        cx += (player.x - cx) * 0.01;
-        cy += (player.y - cy) * 0.01;
-
-        // Maintain trail
-        finalPhase1Bullet.trail.unshift({x: finalPhase1Bullet.x, y: finalPhase1Bullet.y});
-        if(finalPhase1Bullet.trail.length > 15) finalPhase1Bullet.trail.pop();
-
-        if(finalSpinTime >= finalSpinDuration){
-  finalPhase = 2;
-  finalSpinTime = 0;
-  mazeScrollX = 0;
-  finalPhase2TimeLeft = 12000;
-  buildMaze();
-  // Ensure the player box Y is inside the first gap of the maze to prevent instant collision:
-if(mazeLines.length > 0){
-  let firstGap = mazeLines[0];
-  // Place player boxY somewhere centered inside first gap:
-  player.boxY = firstGap.gapStart + (firstGap.gapHeight - player.boxHeight) / 2;
-}
-
-  player.x = corridorX + player.heartRadius + 10;
-  player.y = corridorY + corridorHeight / 2;
-  slowed = 1;
-  player.invincibleTime = 3;  // <-- invincibility for 3 seconds
-  if(finalPhase1Bullet){
-    const idx = bullets.indexOf(finalPhase1Bullet);
-    if(idx >= 0) bullets.splice(idx, 1);
-    finalPhase1Bullet = null;
-  }
-}
-
-
-      } else if(finalPhase === 2){
-        finalPhase2TimeLeft -= dt * 1000;
-        mazeScrollX += mazeSpeed;
-        if(mazeScrollX > corridorWidth / finalPhase2GridCols){
-          mazeLines.shift();
-          const lastX = mazeLines[mazeLines.length-1].x;
-          mazeLines.push({
-            x: lastX + corridorWidth / finalPhase2GridCols,
-            gapStart: corridorY + Math.random()*(corridorHeight - 60) + 20,
-            gapHeight: 40 + Math.random()*20
-          });
-          mazeScrollX -= corridorWidth / finalPhase2GridCols;
-        }
-        if(finalPhase2TimeLeft <= 0){
-          gameOver = true; gameWon = false; gameState = "gameover";
-          flashScreen("red"); updateMusic();
-        }
-      }
-    }
-
-    // ---- Update bullets and collisions ----
+    // ---- Game loop and logic ----
     function updateBullets(dt) {
       if (gameState !== "playing") return;
       let glowing = false, glowSum = 0;
@@ -687,7 +553,7 @@ if(mazeLines.length > 0){
           continue;
         }
 
-        if(b.x < -40 || b.x > canvas.width+40 || b.y < -40 || b.y > canvas.height+40){
+        if(b.x < -80 || b.x > canvas.width+80 || b.y < -80 || b.y > canvas.height+80){
           bullets.splice(i,1);
         }
       }
@@ -697,6 +563,32 @@ if(mazeLines.length > 0){
 
     // Drawing functions
     function drawBullets(){
+      // draw path lines for bullets that have them (so lines appear under bullets)
+      for(let b of bullets){
+        if(b.pathLine){
+          ctx.save();
+          let lenBack = 120;
+          let lenForward = 900;
+          const nv = Math.hypot(b.vx, b.vy) || 1;
+          const ux = b.vx / nv;
+          const uy = b.vy / nv;
+          const x1 = b.x - ux * lenBack;
+          const y1 = b.y - uy * lenBack;
+          const x2 = b.x + ux * lenForward;
+          const y2 = b.y + uy * lenForward;
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.strokeStyle = "rgba(255,30,30,0.22)";
+          ctx.lineWidth = 4;
+          ctx.stroke();
+          ctx.strokeStyle = "rgba(255,80,80,0.14)";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+
       for(let b of bullets){
         ctx.save();
         let angle = Math.atan2(b.vy, b.vx);
@@ -908,7 +800,7 @@ if(mazeLines.length > 0){
       ctx.fillStyle = "white";
       ctx.font = "48px Arial bold";
       ctx.textAlign = "center";
-      ctx.fillText("Elmo Fight (still in beta)", canvas.width/2, 150);
+      ctx.fillText("The deadly fight against Elmo", canvas.width/2, 150);
       drawButton(220, 225, 200, 45, "Start Game");
     }
 
@@ -1019,21 +911,17 @@ if(mazeLines.length > 0){
     }
     // --- Player Attack ---
     function performAttack(dmg) {
-  if (player.attacking) return;
-  if (finalAttackActive) return;
-
-  // If enemy hp is already <= 5 OR hp will drop to <= 5, start final attack
-  if (!finalAttackActive && (enemy.hp <= 5 || enemy.hp - dmg <= 5)) {
-    startFinalAttack();
-    return;
-  }
-
-  enemy.hp = Math.max(enemy.hp - dmg, 0);
-  flashScreen("lime");
-  showAction("Attack");
-  enemy.shakeTimer = 12; enemy.shakeIntensity = 5;
-}
-
+      if(player.attacking) return;
+      if(finalAttackActive) return;
+      if(enemy.hp - dmg <= 5 && enemy.hp > 5){
+        startFinalAttack();
+        return;
+      }
+      enemy.hp = Math.max(enemy.hp - dmg, 0);
+      flashScreen("lime");
+      showAction("Attack");
+      enemy.shakeTimer = 12; enemy.shakeIntensity = 5;
+    }
 
     function playerAct(){
       if(player.attacking || attackMeter.active || gameOver || cooldowns.act > 0 || finalAttackActive) return;
@@ -1098,9 +986,7 @@ if(mazeLines.length > 0){
 
     function movePlayer(dt){
       if(player.attacking || attackMeter.active || gameState !== "playing") return;
-      if(finalAttackActive && finalPhase === 2){
-        player.x += playerForcedMoveSpeed * dt * 60;
-      }
+
       moveBox(dt);
       const moveDist = player.speed * dt * 60;
       if(keys["arrowleft"] || keys["a"]) player.x -= moveDist;
@@ -1109,36 +995,105 @@ if(mazeLines.length > 0){
       if(keys["arrowdown"] || keys["s"]) player.y += moveDist;
       player.x = Math.min(Math.max(player.x, player.boxX + player.heartRadius), player.boxX + player.boxWidth - player.heartRadius);
       player.y = Math.min(Math.max(player.y, player.boxY + player.heartRadius), player.boxY + player.boxHeight - player.heartRadius);
-      if(finalAttackActive && finalPhase === 2){
-        // Maze walls do nothing now - no damage:
-if(player.x < corridorX + player.heartRadius || player.x > corridorX + corridorWidth - player.heartRadius){
-  // Optional: prevent going out of corridor bounds by clamping position
-  player.x = Math.min(Math.max(player.x, corridorX + player.heartRadius), corridorX + corridorWidth - player.heartRadius);
-}
-
-// Check if player's bounding box collides with maze walls (treat walls as objects)
-// but instead player box collision is instant death:
-function boxHitsMazeWall() {
-  for(let line of mazeLines){
-    let lx = line.x - mazeScrollX;
-    // Check if any part of the player's box is colliding with maze wall (outside gap)
-    if(lx + mazeLineWidth/2 > player.boxX && lx - mazeLineWidth/2 < player.boxX + player.boxWidth){
-      if(player.boxY < line.gapStart || player.boxY + player.boxHeight > line.gapStart + line.gapHeight){
-        return true;
-      }
     }
-  }
-  return false;
-}
 
-if(boxHitsMazeWall()){
-  // damage
-  player.hp = 4;
-  flashScreen("red");
-  gameOver = true; gameWon = false; gameState = "gameover";
-  updateMusic();
-}
+    // ---- Final Attack Updates ----
+    function updateFinalAttack(ts, dt){
+      if(finalPhase === 1){
+        // 4D-like attack: spawn lines of bullets from edges; reveal red path lines
+        finalPhase1Time += dt * 1000;
+        finalShootTimer += dt * 1000;
+        if(finalShootTimer > 120){
+          finalShootTimer = 0;
+          // Reduced density: fewer patterns and fewer bullets per line
+          const patterns = 1 + Math.floor(Math.random()*2); // 1-2 patterns
+          for(let p=0; p<patterns; p++){
+            // pick one of four directions
+            const dir = Math.floor(Math.random()*4);
+            const spacing = 36; // spacing between parallel bullets
+            const count = 4 + Math.floor(Math.random()*3); // 4-6 bullets per line
+            if(dir === 0){ // left -> right
+              const yCenter = 60 + Math.random() * (canvas.height - 120);
+              for(let i=0; i<count; i++){
+                const y = yCenter + (i - Math.floor(count/2)) * spacing;
+                const speed = 4 + Math.random()*2;
+                let b = spawnBullet(-20, y, speed, 0, 8 + Math.random()*4);
+                b.pathLine = true;
+              }
+            } else if(dir === 1){ // right -> left
+              const yCenter = 60 + Math.random() * (canvas.height - 120);
+              for(let i=0; i<count; i++){
+                const y = yCenter + (i - Math.floor(count/2)) * spacing;
+                const speed = - (4 + Math.random()*2);
+                let b = spawnBullet(canvas.width + 20, y, speed, 0, 8 + Math.random()*4);
+                b.pathLine = true;
+              }
+            } else if(dir === 2){ // top -> bottom
+              const xCenter = 60 + Math.random() * (canvas.width - 120);
+              for(let i=0; i<count; i++){
+                const x = xCenter + (i - Math.floor(count/2)) * spacing;
+                const speed = 4 + Math.random()*2;
+                let b = spawnBullet(x, -20, 0, speed, 8 + Math.random()*4);
+                b.pathLine = true;
+              }
+            } else { // bottom -> top
+              const xCenter = 60 + Math.random() * (canvas.width - 120);
+              for(let i=0; i<count; i++){
+                const x = xCenter + (i - Math.floor(count/2)) * spacing;
+                const speed = - (4 + Math.random()*2);
+                let b = spawnBullet(x, canvas.height + 20, 0, speed, 8 + Math.random()*4);
+                b.pathLine = true;
+              }
+            }
+          }
+        }
 
+        // Make bullets have a slight sway occasionally to mimic "4D" feel
+        bullets.forEach(b => {
+          if(b.pathLine && Math.random() < 0.002) {
+            b.vx *= 0.98 + Math.random()*0.04;
+            b.vy *= 0.98 + Math.random()*0.04;
+          }
+        });
+
+        if(finalPhase1Time >= finalPhase1Duration){
+          // transition to spin phase (original first phase)
+          finalPhase = 2;
+          finalPhase1Time = 0;
+          finalSpinTime = 0;
+          finalShootTimer = 0;
+        }
+      } else if(finalPhase === 2){
+        // original spinning red bullets (moved to be phase 2)
+        finalSpinTime += dt * 1000;
+        enemy.rotation += 0.04 + 0.0005 * finalSpinTime;
+        finalShootTimer += dt * 1000;
+        if(finalShootTimer > 160){
+          finalShootTimer = 0;
+          const cx = canvas.width/2;
+          const cy = canvas.height/2;
+          const count = 3 + Math.floor(Math.random()*3);
+          const speedBase = Math.min(4, 0.8 + 3.2 * (finalSpinTime/finalSpinDuration));
+          const baseAngle = Math.random()*2*Math.PI;
+          for(let i=0; i<count; i++){
+            let a = baseAngle + (i/count)*2*Math.PI;
+            let speed = speedBase * (0.75 + 0.5*Math.random());
+            let b = spawnBullet(cx, cy, Math.cos(a)*speed, Math.sin(a)*speed,14 + Math.random()*8);
+            b.finalRed = true;
+            b.trail = [];
+          }
+        }
+        if(finalSpinTime >= finalSpinDuration){
+          // End of final attack: declare win
+          finalAttackActive = false;
+          // set enemy to zero hp and finish the battle
+          enemy.hp = 0;
+          gameOver = true;
+          gameWon = true;
+          gameState = "gameover";
+          updateMusic();
+          flashScreen("lime");
+        }
       }
     }
 
@@ -1201,19 +1156,18 @@ if(boxHitsMazeWall()){
         }
       }
 
+      // Poison: more poison -> faster damage, but overall much slower than before
       if(enemy.poison > 0){
-  enemy.poisonTicks += dt * 60;
-  if(enemy.poisonTicks >= 60){
-    enemy.hp = Math.max(0, enemy.hp-1);
-    enemy.poisonTicks = 0;
-
-    // Trigger final attack automatically if hp <= 5 and not started yet
-    if(enemy.hp <= 5 && !finalAttackActive){
-      startFinalAttack();
-    }
-  }
-}
-
+        enemy.poisonTimer += dt;
+        // interval: 6 seconds per 1 stack, divided by stacks (so more stacks => faster)
+        const interval = Math.max(0.15, 6 / enemy.poison); // min clamp to avoid absurdly tiny intervals
+        if(enemy.poisonTimer >= interval){
+          enemy.hp = Math.max(0, enemy.hp - 1);
+          enemy.poisonTimer = 0;
+        }
+      } else {
+        enemy.poisonTimer = 0;
+      }
 
       if(enemy.shakeTimer > 0) enemy.shakeTimer--;
       if(enemy.spinTimer > 0){
@@ -1244,7 +1198,8 @@ if(boxHitsMazeWall()){
 
       ctx.save();
 
-      if(finalAttackActive && finalPhase === 1){
+      // rotate world during spin phase (now finalPhase === 2)
+      if(finalAttackActive && finalPhase === 2){
         ctx.translate(canvas.width/2, canvas.height/2);
         ctx.rotate(enemy.rotation);
         ctx.translate(-canvas.width/2, -canvas.height/2);
@@ -1253,45 +1208,17 @@ if(boxHitsMazeWall()){
       drawEnemy();
       drawTPBar();
 
-      if(finalAttackActive && finalPhase === 2){
-        ctx.lineWidth = mazeLineWidth;
-        ctx.strokeStyle = "white";
-        ctx.fillStyle = "rgba(255,0,0,0.2)";
-        for(let line of mazeLines){
-          let lx = line.x - mazeScrollX;
-          ctx.beginPath();
-          ctx.rect(lx - mazeLineWidth/2, corridorY, mazeLineWidth, line.gapStart - corridorY);
-          ctx.rect(lx - mazeLineWidth/2, line.gapStart + line.gapHeight, mazeLineWidth, corridorY + corridorHeight - (line.gapStart + line.gapHeight));
-          ctx.fill();
-          if(lx > player.x - 40 && lx < player.x + 40){
-            if(checkMazeCollision() || player.x < corridorX + player.heartRadius || player.x > corridorX + corridorWidth - player.heartRadius){
-  player.hp = Math.max(0, player.hp - 2);
-  flashScreen("red");
-  // Add invincibility frames or slowdown here someday
-  if(player.hp <= 0){
-    gameOver = true; gameWon = false; gameState = "gameover";
-    updateMusic();
-  }
-}
-
-          }
+      // No maze drawing anymore — removed per request (the second/maze phase was removed).
+      // Instead show basic UI for final attack phases
+      if(finalAttackActive){
+        if(finalPhase === 1){
+          ctx.fillStyle = "rgba(255,0,0,0.06)";
+          ctx.fillRect(0,0,canvas.width,canvas.height);
+        } else if(finalPhase === 2){
+          // subtle overlay for spin
+          ctx.fillStyle = "rgba(0,0,0,0.08)";
+          ctx.fillRect(0,0,canvas.width,canvas.height);
         }
-        // Timer bar
-        let timerBarWidth = 150;
-        let timerBarHeight = 12;
-        let timerX = canvas.width - timerBarWidth - 20;
-        let timerY = 25;
-        ctx.fillStyle = "#222";
-        ctx.fillRect(timerX, timerY, timerBarWidth, timerBarHeight);
-        ctx.fillStyle = "#f44";
-        ctx.fillRect(timerX, timerY, timerBarWidth * Math.max(0, finalPhase2TimeLeft / 12000), timerBarHeight);
-        ctx.strokeStyle = "white";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(timerX, timerY, timerBarWidth, timerBarHeight);
-        ctx.font = "14px Arial";
-        ctx.fillStyle = "white";
-        ctx.textAlign = "center";
-        ctx.fillText("Survive Time", timerX + timerBarWidth/2, timerY + timerBarHeight + 16);
       }
 
       drawBullets();
@@ -1310,7 +1237,7 @@ if(boxHitsMazeWall()){
         const phase = attackPhases[currentPhaseIndex];
         ctx.fillText(`Attack Pattern: ${phase.name}`, canvas.width / 2, 470);
       } else {
-        ctx.fillText(`Final Attack! Survive! ${finalPhase === 1?"Spin":"Maze"}`, canvas.width/2, 470);
+        ctx.fillText(`Final Attack! ${finalPhase === 1 ? "Phase 1 (4D-like)" : "Phase 2 (Spin)"} `, canvas.width/2, 470);
       }
 
       if(flashAlpha > 0){
@@ -1340,14 +1267,6 @@ if(boxHitsMazeWall()){
         }
       }
       else if(enemy.hp <= 0 && !finalAttackActive){
-        gameOver = true;
-        gameWon = true;
-        if(gameState !== "gameover"){
-          gameState = "gameover";
-          updateMusic();
-        }
-      }
-      else if(enemy.hp <= 0 && finalAttackActive && finalPhase === 2 && finalPhase2TimeLeft <= 0){
         gameOver = true;
         gameWon = true;
         if(gameState !== "gameover"){
@@ -1415,36 +1334,39 @@ if(boxHitsMazeWall()){
       requestAnimationFrame(update);
     }
 
-    canvas.addEventListener('click', (e) => {
-      if (gameState === "title") {
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+canvas.addEventListener('click', (e) => {
+  if (gameState === "title") {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
 
-        // Button position and size
-        const btnX = 220;
-        const btnY = 225;
-        const btnW = 200;
-        const btnH = 45;
+    // Button position and size
+    const btnX = 220;
+    const btnY = 225;
+    const btnW = 200;
+    const btnH = 45;
 
-        if (mouseX >= btnX && mouseX <= btnX + btnW &&
-            mouseY >= btnY && mouseY <= btnY + btnH) {
-          window.open(window.location.href + "?play=1", "_blank");
-        }
+    if (mouseX >= btnX && mouseX <= btnX + btnW &&
+    mouseY >= btnY && mouseY <= btnY + btnH) {
+      window.open(window.location.href + "?play=1", "_blank");
+    }
 
-      } else if (gameState === "gameover") {
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+  } else if (gameState === "gameover") {
+    // Optional: handle retry and quit to title buttons
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
 
-        if (mouseX >= 220 && mouseX <= 420 && mouseY >= 300 && mouseY <= 345) {
-          startGame();
-        }
-        if (mouseX >= 220 && mouseX <= 420 && mouseY >= 360 && mouseY <= 405) {
-          goToTitle();
-        }
-      }
-    });
+    // Retry button
+    if (mouseX >= 220 && mouseX <= 420 && mouseY >= 300 && mouseY <= 345) {
+      startGame();
+    }
+    // Quit to Title button
+    if (mouseX >= 220 && mouseX <= 420 && mouseY >= 360 && mouseY <= 405) {
+      goToTitle();
+    }
+  }
+});
   </script>
 </body>
 </html>
