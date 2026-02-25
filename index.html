@@ -13,8 +13,8 @@
 </head>
 
 <body class="dark-mode">
-    <h1>humming[bird]Tech HTML gallery</h1>
-    <input type="text" id="searchBar" placeholder="Search zones..." onkeyup="filterZones()">
+    <h1>humming[bird]Tech</h1>
+    <input type="text" id="searchBar" placeholder="Search..." onkeyup="filterZones()">
     <div id="topControls"> 
         <div id="dataButtons">
             <button onclick="saveData()">Save Data</button>
@@ -22,9 +22,9 @@
             <input type="file" id="file" style="display:none" onchange="loadData(event)" />
         </div>
         <select id="sortOptions" onchange="sortZones()">
-            <option value="name">by Nameㅤ</option>
-            <option value="id">by Idㅤ</option>
-            <option value="popular">by Popularityㅤ</option>
+            <option value="name">sort by Nameㅤ</option>
+            <option value="id">sort by Idㅤ</option>
+            <option value="popular">sort by Popularityㅤ</option>
         </select>
     </div>
     <div class="zone-wrapper">
@@ -39,7 +39,7 @@
             <div id="controls">
                 <button onclick="closeZone()">Close</button>
                 <button onclick="fullscreenZone()">Fullscreen</button>
-                <button onclick="aboutBlank()">about:blank (use if embed is broken)</button>
+                <button onclick="aboutBlank()">about:blank (opens fullscreen in a new tab)</button>
             </div>
         </div>
         <iframe id="zoneFrame"></iframe>
