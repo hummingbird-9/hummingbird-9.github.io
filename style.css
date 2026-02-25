@@ -1,0 +1,492 @@
+/* Dark Mode (default) */
+body.dark-mode {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0c3725 0%, #116250 100%);
+    color: #aad9c3;
+    /* Removed backdrop-filter on body for performance */
+    background-attachment: fixed;
+}
+
+body.dark-mode h1 {
+    text-align: center;
+    color: #a4d7c0;
+    text-shadow: 0 0 5px rgba(164, 215, 192, 0.8);
+}
+
+body.dark-mode #searchBar {
+    display: block;
+    margin: 20px auto;
+    padding: 10px;
+    width: 80%;
+    max-width: 800px;
+    border: 1px solid rgba(160, 220, 190, 0.4);
+    border-radius: 12px;
+    font-size: 16px;
+    background-color: rgba(10, 60, 40, 0.35);
+    color: #aad9c3;
+    /* reduced blur */
+    backdrop-filter: saturate(140%) blur(6px);
+    -webkit-backdrop-filter: saturate(140%) blur(6px);
+}
+
+body.dark-mode #container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+body.dark-mode .zone-item {
+    background: rgba(10, 60, 40, 0.4);
+    border: 1px solid rgba(15, 60, 41, 0.5);
+    border-radius: 15px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(15, 60, 41, 0.3); /* lighter shadow */
+    cursor: pointer;
+    color: #aad9c3;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: saturate(140%) blur(12px);
+    -webkit-backdrop-filter: saturate(140%) blur(12px);
+}
+
+body.dark-mode .zone-item:hover {
+    background: rgba(20, 80, 55, 0.6);
+    box-shadow: 0 8px 25px rgba(15, 60, 41, 0.5);
+}
+
+body.dark-mode .zone-item img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-bottom: 1px solid rgba(15, 60, 41, 0.7);
+}
+
+body.dark-mode .zone-item button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: rgba(15, 60, 41, 0.85);
+    color: white;
+    cursor: pointer;
+    border-radius: 0 0 15px 15px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+}
+
+body.dark-mode .zone-item button:hover {
+    background-color: rgba(15, 60, 41, 1);
+}
+
+body.dark-mode #zoneViewer {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    background: rgba(10, 60, 40, 0.35);
+    border: 2px solid rgba(20, 80, 55, 0.7);
+    z-index: 1000;
+    box-shadow: 0 6px 20px rgba(15, 60, 41, 0.5);
+    border-radius: 20px;
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+}
+
+body.dark-mode #zoneViewer iframe {
+    width: 100%;
+    height: 90%;
+    border: none;
+    background-color: transparent;
+    border-radius: 0 0 20px 20px;
+}
+
+body.dark-mode #zoneInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 15px;
+    background: rgba(20, 80, 55, 0.8);
+    color: white;
+    font-size: 16px;
+    border-radius: 20px 20px 0 0;
+}
+
+body.dark-mode #zoneTitle {
+    text-align: left;
+    text-shadow: 0 0 4px rgba(164, 215, 192, 0.8);
+}
+
+body.dark-mode #zoneId {
+    color: #91dbb3;
+}
+
+body.dark-mode #controls {
+    text-align: right;
+}
+
+body.dark-mode #controls button {
+    padding: 6px 12px;
+    margin: 0 5px;
+    border: none;
+    background-color: rgba(20, 80, 55, 0.9);
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+body.dark-mode #controls button:hover {
+    background-color: rgba(20, 80, 55, 1);
+}
+
+body.dark-mode #topControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px auto;
+    width: 80%;
+    max-width: 800px;
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    background: rgba(10, 60, 40, 0.4);
+    border-radius: 12px;
+    padding: 10px 20px;
+    box-shadow: 0 5px 16px 0 rgba(15, 60, 41, 0.15);
+}
+
+body.dark-mode #dataButtons {
+    display: flex;
+    gap: 10px;
+}
+
+body.dark-mode #dataButtons button {
+    padding: 10px 15px;
+    border: none;
+    background-color: #0d372a;
+    color: white;
+    cursor: pointer;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+}
+
+body.dark-mode #dataButtons button:hover {
+    background-color: #124e3f;
+}
+
+body.dark-mode #dataButtons input[type="file"] {
+    padding: 10px 15px;
+    border: 1px solid rgba(21, 74, 42, 0.6);
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: rgba(10, 60, 40, 0.3);
+    color: #aad9c3;
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+}
+
+body.dark-mode #sortOptions {
+    padding: 10px;
+    border: 1px solid rgba(21, 74, 42, 0.6);
+    border-radius: 12px;
+    font-size: 16px;
+    appearance: none;
+    background-color: rgba(10, 60, 40, 0.3);
+    color: #aad9c3;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23aacbb0" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 8px 10px;
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+}
+
+body.dark-mode #sortOptions:focus {
+    border-color: #63b89e;
+    outline: 0;
+    box-shadow: 0 0 10px rgba(164, 215, 192, 0.8);
+}
+
+body.dark-mode #darkModeToggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    border: none;
+    background-color: #0b2d22;
+    color: #aad9c3;
+    cursor: pointer;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    z-index: 1000;
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    box-shadow: 0 4px 18px rgba(40, 95, 80, 0.6);
+}
+
+body.dark-mode #darkModeToggle:hover {
+    background-color: #124935;
+}
+
+/* Light Mode - toggled by removing .dark-mode class on body */
+body:not(.dark-mode) {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #b6f0d4 0%, #a4dad6 100%);
+    color: #0f3c29;
+    background-attachment: fixed;
+    /* Removed backdrop-filter on body */
+}
+
+body:not(.dark-mode) h1 {
+    text-align: center;
+    color: #0a2d1d;
+    text-shadow: 0 0 4px rgba(182, 240, 212, 0.5);
+}
+
+body:not(.dark-mode) #searchBar {
+    display: block;
+    margin: 20px auto;
+    padding: 10px;
+    width: 80%;
+    max-width: 800px;
+    border: 1px solid rgba(15, 60, 41, 0.3);
+    border-radius: 12px;
+    font-size: 16px;
+    background-color: rgba(182, 240, 212, 0.35);
+    color: #0f3c29;
+    backdrop-filter: saturate(120%) blur(6px);
+    -webkit-backdrop-filter: saturate(120%) blur(6px);
+}
+
+body:not(.dark-mode) #container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+body:not(.dark-mode) .zone-item {
+    background-color: rgba(218, 243, 239, 0.7);
+    border-color: rgba(6, 48, 21, 0.3);
+    box-shadow: 0 4px 15px rgba(6, 48, 21, 0.1);
+    color: #063015;
+    border-radius: 15px;
+    overflow: hidden;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: saturate(120%) blur(15px);
+    -webkit-backdrop-filter: saturate(120%) blur(15px);
+}
+
+body:not(.dark-mode) .zone-item:hover {
+    background: rgba(182, 240, 212, 0.85);
+    box-shadow: 0 8px 30px rgba(6, 48, 21, 0.15);
+}
+
+body:not(.dark-mode) .zone-item img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-bottom: 1px solid rgba(6, 48, 21, 0.5);
+}
+
+body:not(.dark-mode) .zone-item button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: rgba(6, 48, 21, 0.85);
+    color: white;
+    cursor: pointer;
+    border-radius: 0 0 15px 15px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    backdrop-filter: saturate(120%) blur(12px);
+    -webkit-backdrop-filter: saturate(120%) blur(12px);
+}
+
+body:not(.dark-mode) .zone-item button:hover {
+    background-color: rgba(6, 48, 21, 1);
+}
+
+body:not(.dark-mode) #zoneViewer {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    background: rgba(218, 243, 239, 0.75);
+    border: 2px solid rgba(6, 48, 21, 0.5);
+    z-index: 1000;
+    box-shadow: 0 6px 18px rgba(6, 48, 21, 0.12);
+    border-radius: 20px;
+    backdrop-filter: saturate(120%) blur(15px);
+    -webkit-backdrop-filter: saturate(120%) blur(15px);
+}
+
+body:not(.dark-mode) #zoneViewer iframe {
+    width: 100%;
+    height: 90%;
+    border: none;
+    background-color: transparent;
+    border-radius: 0 0 20px 20px;
+}
+
+body:not(.dark-mode) #zoneInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 15px;
+    background: rgba(6, 48, 21, 0.75);
+    color: white;
+    font-size: 16px;
+    border-radius: 20px 20px 0 0;
+}
+
+body:not(.dark-mode) #zoneTitle {
+    text-align: left;
+    text-shadow: 0 0 3px rgba(218, 243, 239, 0.7);
+}
+
+body:not(.dark-mode) #zoneId {
+    color: #a7ddb8;
+}
+
+body:not(.dark-mode) #controls {
+    text-align: right;
+}
+
+body:not(.dark-mode) #controls button {
+    padding: 6px 12px;
+    margin: 0 5px;
+    border: none;
+    background-color: rgba(6, 48, 21, 0.8);
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+body:not(.dark-mode) #controls button:hover {
+    background-color: rgba(6, 48, 21, 1);
+}
+
+body:not(.dark-mode) #topControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px auto;
+    width: 80%;
+    max-width: 800px;
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    background: rgba(182, 240, 212, 0.4);
+    border-radius: 12px;
+    padding: 10px 20px;
+    box-shadow: 0 5px 16px 0 rgba(15, 60, 41, 0.12);
+}
+
+body:not(.dark-mode) #dataButtons {
+    display: flex;
+    gap: 10px;
+}
+
+body:not(.dark-mode) #dataButtons button {
+    padding: 10px 15px;
+    border: none;
+    background-color: #154a2a;
+    color: white;
+    cursor: pointer;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+}
+
+body:not(.dark-mode) #dataButtons button:hover {
+    background-color: #1e6f36;
+}
+
+body:not(.dark-mode) #dataButtons input[type="file"] {
+    padding: 10px 15px;
+    border: 1px solid rgba(21, 74, 42, 0.5);
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: rgba(182, 240, 212, 0.3);
+    color: #0f3c29;
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+}
+
+body:not(.dark-mode) #sortOptions {
+    padding: 10px;
+    border: 1px solid rgba(21, 74, 42, 0.5);
+    border-radius: 12px;
+    font-size: 16px;
+    appearance: none;
+    background-color: rgba(182, 240, 212, 0.4);
+    color: #0f3c29;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%130F2719" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 8px 10px;
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+}
+
+body:not(.dark-mode) #sortOptions:focus {
+    border-color: #0a2d1d;
+    outline: 0;
+    box-shadow: 0 0 8px rgba(182, 240, 212, 0.5);
+}
+
+body:not(.dark-mode) #darkModeToggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    border: none;
+    background-color: #0a2d1d;
+    color: white;
+    cursor: pointer;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    z-index: 1000;
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    box-shadow: 0 4px 12px rgba(20, 130, 93, 0.5);
+}
+
+body:not(.dark-mode) #darkModeToggle:hover {
+    background-color: #154a2a;
+}
+
+.zone-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.zone-count {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: var(--text-color, inherit);
+}
