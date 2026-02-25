@@ -242,7 +242,7 @@ body.dark-mode #darkModeToggle:hover {
 /* Light Mode - toggled by removing .dark-mode class on body */
 body:not(.dark-mode) {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #b6f0d4 0%, #a4dad6 100%);
+    background: linear-gradient(135deg, #50F244 0%, #a4dad6 100%);
     color: #0f3c29;
     background-attachment: fixed;
     /* Removed backdrop-filter on body */
