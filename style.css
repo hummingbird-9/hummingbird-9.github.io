@@ -1,10 +1,24 @@
 /* Dark Mode (default) */
 body.dark-mode {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #0c3725 0%, #116250 100%);
-    color: #aad9c3;
-    /* Removed backdrop-filter on body for performance */
+    /* Gradient blending original and blueish colors */
+    background: linear-gradient(135deg, #0c3725, #2a5d58, #116250, #2a5d58);
+    background-size: 400% 400%;
     background-attachment: fixed;
+    animation: gradientShift 20s ease infinite;
+    color: #aad9c3;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 body.dark-mode h1 {
@@ -24,7 +38,6 @@ body.dark-mode #searchBar {
     font-size: 16px;
     background-color: rgba(10, 60, 40, 0.35);
     color: #aad9c3;
-    /* reduced blur */
     backdrop-filter: saturate(140%) blur(6px);
     -webkit-backdrop-filter: saturate(140%) blur(6px);
 }
@@ -43,7 +56,7 @@ body.dark-mode .zone-item {
     border-radius: 15px;
     overflow: hidden;
     text-align: center;
-    box-shadow: 0 4px 12px rgba(15, 60, 41, 0.3); /* lighter shadow */
+    box-shadow: 0 4px 12px rgba(15, 60, 41, 0.3);
     cursor: pointer;
     color: #aad9c3;
     transition: background 0.3s ease, box-shadow 0.3s ease;
@@ -239,13 +252,15 @@ body.dark-mode #darkModeToggle:hover {
     background-color: #124935;
 }
 
-/* Light Mode - toggled by removing .dark-mode class on body */
+/* Light Mode */
 body:not(.dark-mode) {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #50F244 0%, #a4dad6 100%);
-    color: #0f3c29;
+    /* Blend original and blueish light colors */
+    background: linear-gradient(135deg, #50F244, #8adaed, #a4dad6, #8adaed);
+    background-size: 400% 400%;
     background-attachment: fixed;
-    /* Removed backdrop-filter on body */
+    animation: gradientShift 20s ease infinite;
+    color: #0f3c29;
 }
 
 body:not(.dark-mode) h1 {
@@ -443,7 +458,7 @@ body:not(.dark-mode) #sortOptions {
     appearance: none;
     background-color: rgba(182, 240, 212, 0.4);
     color: #0f3c29;
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%130F2719" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%230F2719" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
     background-repeat: no-repeat;
     background-position: right .75rem center;
     background-size: 8px 10px;
@@ -476,7 +491,7 @@ body:not(.dark-mode) #darkModeToggle {
 }
 
 body:not(.dark-mode) #darkModeToggle:hover {
-    background-color: #154a2a;
+    background-color: #15a2a;
 }
 
 .zone-wrapper {
