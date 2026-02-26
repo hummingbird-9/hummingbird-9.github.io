@@ -6,7 +6,7 @@ const sortOptions = document.getElementById('sortOptions');
 // https://www.jsdelivr.com/tools/purge
 const zonesURL = "zones.json";
 const coverURL = "https://cdn.jsdelivr.net/gh/hummingbird-9/covers@main";
-const htmlURL = "https://cdn.jsdelivr.net/gh/hummingbird-9/htmls@main";
+const htmlURL = "https://cdn.jsdelivr.net/gh/hummingbird-9/html@main";
 let zones = [];
 let popularityData = {};
 async function listZones() {
