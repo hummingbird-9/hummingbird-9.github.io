@@ -2631,7 +2631,7 @@
     "cover": "{COVER_URL}/308.png",
     "url": "{HTML_URL}/308.html",
     "author": "nzp team",
-    "authorLink": "https://nzp-team.itch.io/nazi-zombies-portable"
+    "authorLink": "https://nzp-team.itch.io/*****-zombies-portable"
   },
   {
     "id": 309,
@@ -6531,7 +6531,7 @@
     "url": "{HTML_URL}/737.html",
     "author": "びぶ/viv",
     "authorLink": "https://store.steampowered.com/app/3079280/Saihate_Station/",
-    "special": [
+    "special": 
       "port"
     ]
   },
@@ -6547,3 +6547,4 @@
     ]
 }
 ]
+  
