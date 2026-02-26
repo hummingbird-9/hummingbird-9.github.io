@@ -6531,8 +6531,8 @@
     "url": "{HTML_URL}/737.html",
     "author": "びぶ/viv",
     "authorLink": "https://store.steampowered.com/app/3079280/Saihate_Station/",
-    "special": 
-      "port"
+    "special": [
+      "port" 
     ]
   },
   {
