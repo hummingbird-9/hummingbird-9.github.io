@@ -2,22 +2,22 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>humming[bird]Tech</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body class="dark-mode">
     <h1>humming[bird]Tech</h1>
-    <input type="text" id="searchBar" placeholder="Search..." onkeyup="filterZones()">
-    <div id="topControls"> 
+    <input type="text" id="searchBar" placeholder="Search..." />
+    <div id="topControls">
         <div id="dataButtons">
             <button onclick="saveData()">Save Data</button>
             <button onclick="document.getElementById('file').click()">Load Data</button>
             <input type="file" id="file" style="display:none" onchange="loadData(event)" />
         </div>
-        <select id="sortOptions" onchange="sortZones()">
+        <select id="sortOptions">
             <option value="name">sort by Nameㅤ</option>
             <option value="id">sort by Idㅤ</option>
             <option value="popular">sort by Popularityㅤ</option>
@@ -26,7 +26,7 @@
     <div class="zone-wrapper">
         <div id="zoneCount" class="zone-count"></div>
         <div id="container">Loading...</div>
-    </div>      
+    </div>
     <div id="zoneViewer">
         <div id="zoneInfo">
             <div id="zoneTitle">
