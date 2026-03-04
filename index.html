@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>humming[bird]Tech</title>
-  <link rel="icon" type="image/png" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(6).png">
   <h1><img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png"></h1>
   <style>
  /* --- General & Index Page Styles --- */
@@ -65,8 +65,8 @@ button {
 
 button:hover,
 button:focus {
-  background: rgba(255, 255, 255, 0.1); 
-  transform: scale(1.05); /* slightly bigger when u hover over it */
+  background: rgba(255, 255, 255, 0.1); /* slightly more transparent */
+  transform: scale(1.05); /* slightly bigger */
   outline: none;
 }
 
@@ -81,13 +81,21 @@ button:active {
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
+/* Gallery page styling - */
+.gallery-body {
+    min-height: auto;
+    justify-content: flex-start;
+    padding-top: 50px;
+    /* Overrides the body background for the gallery page only */
+    background: linear-gradient(135deg, #001f3f, #003366, #001f3f, #003366);
+    background-size: 400% 400%;
+}
+
   </style>
 </head>
 
 <body>
   <button onclick="location.href='gallery.html'">Gallery of ports, flash games, and other HTMLs</button>
   <button onclick="location.href='hummingweb.html'">Search Engine</button>
-  <button onclick="<iframe width="560" height="315" src="https://www.youtube.com/embed/zZ_RBRhk13s?si=UAWMJEXQeKx3HAIY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>">About</button>
+  <button onclick="alert('Made by Oliver Boyd (hummingbird_9). humming[bird]Tech Version 1.0')">About</button>
 </body>
-
-</html>
