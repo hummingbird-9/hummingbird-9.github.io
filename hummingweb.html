@@ -39,16 +39,23 @@
     let chatHistory = [];
     let currentUser = null;
 
-    // Utility: wrap URLs with proxy to bypass blocks (kept intact)
+    // Utility: wrap URLs with proxy to bypass blocks
     function proxyUrl(url) {
       return `https://corsproxy.io/?${encodeURIComponent(url)}`;
     }
 
-    // Open links inside the app with /search?q=... proxy for external sites
-    function openUnblocked(url) {
-      const encoded = encodeURIComponent(url);
-      window.location.href = `/search?q=${encoded}`;
-    }
+    // Open links inside the app using the Proxy Viewer to bypass filters
+    window.openUnblocked = (url) => {
+      const viewer = document.getElementById("site-viewer");
+      const iframe = document.getElementById("site-iframe");
+      iframe.src = proxyUrl(url);
+      viewer.style.display = "flex";
+    };
+
+    window.closeSiteViewer = () => {
+      document.getElementById("site-viewer").style.display = "none";
+      document.getElementById("site-iframe").src = "";
+    };
 
     // --- AUTHENTICATION ---
     onAuthStateChanged(auth, async (user) => {
@@ -101,7 +108,7 @@
       if (queryInput.value) executeSearch();
     };
 
-    // --- AI CHAT SYSTEM (FIXED) ---
+    // --- AI CHAT SYSTEM ---
     async function runAiChat(q) {
       chatStream.innerHTML += `<div class="msg user"><b>You:</b> ${q}</div>`;
       chatHistory.push({ role: "user", parts: [{ text: q }] });
@@ -137,7 +144,7 @@
       const q = queryInput.value.trim();
       if (!q) return;
 
-      // Make it act like a real search engine by updating the URL bar
+      // Update URL parameters without reloading the page
       const currentUrlParams = new URLSearchParams(window.location.search);
       if (currentUrlParams.get('q') !== q) {
         window.history.pushState({ query: q }, '', '?q=' + encodeURIComponent(q));
@@ -169,7 +176,7 @@
           }
         }
 
-        // RESULTS RENDERING (Fixed direct links to remove javascript:void(0))
+        // RESULTS RENDERING (Using preventDefault to stop URL change, routing to proxy viewer)
         if (mode === "images") {
           html += `<div class="grid-container">` + data.images.map(img => `
             <div class="card" onclick="openImageModal('${img.imageUrl}', '${img.link.replace(/'/g, "\\'").replace(/"/g,'&quot;')}')">
@@ -177,18 +184,17 @@
             </div>`).join("") + `</div>`;
         } else if (mode === "shopping") {
           html += `<div class="grid-container">` + data.shopping.map(s => `
-            <div class="card"><a href="${s.link}" target="_self"><img src="${s.imageUrl}"><b>${s.price}</b><p>${s.title}</p></a></div>
+            <div class="card"><a href="${s.link}" onclick="event.preventDefault(); openUnblocked('${s.link.replace(/'/g, "\\'").replace(/"/g,'&quot;')}');"><img src="${s.imageUrl}"><b>${s.price}</b><p>${s.title}</p></a></div>
            `).join("") + `</div>`;
         } else {
           const items = data.organic || data.videos || [];
           html += items.map(i => {
-            // Aggressive thumbnail extraction
             const thumbUrl = i.imageUrl || i.thumbnailUrl || (i.pagemap && i.pagemap.cse_image ? i.pagemap.cse_image[0].src : null);
             const thumb = thumbUrl ? `<img src="${thumbUrl}" class="res-thumb" onerror="this.style.display='none'">` : "";
             return `
               <div class="result-item">
                 <div class="res-content">
-                  <a href="${i.link}" target="_self">${i.title}</a>
+                  <a href="${i.link}" onclick="event.preventDefault(); openUnblocked('${i.link.replace(/'/g, "\\'").replace(/"/g,'&quot;')}');">${i.title}</a>
                   <p>${i.snippet || i.description || ""}</p>
                 </div>
                 ${thumb}
@@ -231,7 +237,8 @@
     window.openImageModal = (imgSrc, siteUrl) => {
       document.getElementById('modal-img').src = imgSrc;
       const modalLink = document.getElementById('modal-link');
-      modalLink.href = siteUrl; // Directly link to source
+      modalLink.href = siteUrl; 
+      modalLink.onclick = (e) => { e.preventDefault(); openUnblocked(siteUrl); }; // Open in proxy viewer instead
       document.getElementById('image-modal').style.display = 'flex';
     };
     window.closeModal = () => document.getElementById('image-modal').style.display = 'none';
@@ -369,7 +376,6 @@ body.classic .btn {
   transition: transform 0.1s ease;
 }
 
-/* Pressed down effect for buttons in classic style */
 body.classic .btn:active {
   border-top: 2px solid #000;
   border-left: 2px solid #000;
@@ -390,13 +396,11 @@ body.classic .tab.active {
   border-radius: 0;
 }
 
-/* Override AI mode tab color in classic (remove neon cyan, use standard) */
 body.classic #tab-ai {
   color: #000080 !important;
   background: transparent !important;
 }
 
-/* Classic style context menu and inspect element styles */
 body.classic #context-menu {
   background: #fff;
   color: #000;
@@ -425,7 +429,6 @@ body.classic .ctx-item:hover {
   border-radius: 0;
 }
 
-/* AI overview */
 body.classic .ai-overview {
   background: #fff;
   border: 2px inset #fff;
@@ -440,10 +443,9 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 100px; /* to make space for top left/right groups */
+  margin-top: 100px; 
 }
 
-/* Header logo remains fixed top center */
 header {
   position: fixed;
   top: 0;
@@ -461,7 +463,6 @@ header {
   cursor: pointer;
 }
 
-/* Top left controls container */
 #top-left-controls {
   position: fixed;
   top: 10px;
@@ -475,14 +476,12 @@ header {
   font-weight: bold;
   user-select: none;
 }
-/* Remove background and curves from top controls in classic */
 body.classic #top-left-controls {
   background: transparent;
   color: #000;
   font-weight: normal;
 }
 
-/* Top right auth controls container */
 #top-right-controls {
   position: fixed;
   top: 10px;
@@ -503,7 +502,6 @@ body.classic #top-right-controls span {
   font-weight: normal;
 }
 
-/* Sign in and sign out buttons */
 #signin-btn-top, #signout-btn-top {
   font-weight: bold;
 }
@@ -529,7 +527,6 @@ body.classic #signout-btn-top:active {
   transform: translateY(2px);
 }
 
-/* AI summaries checkbox */
 #ai-check {
   vertical-align: middle;
   accent-color: var(--emerald);
@@ -538,18 +535,16 @@ body.classic #ai-check {
   accent-color: #000;
 }
 
-/* Mode switch text */
 #mode-text {
   cursor: pointer;
 }
 
-/* Tabs and search container positioning */
 #search-container {
   width: 100%;
   max-width: 850px;
   z-index: 50;
   position: relative;
-  margin-top: 30px; /* spacing from top left/right */
+  margin-top: 30px; 
 }
 .search-box {
   display: flex;
@@ -718,10 +713,45 @@ body.classic #ai-check {
 .close-btn:hover {
   color: var(--emerald);
 }
+
+/* --- IN-APP SITE VIEWER --- */
+#site-viewer {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: #fff;
+  z-index: 1000000;
+  flex-direction: column;
+}
+#site-viewer-header {
+  background: #111;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--emerald);
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+}
+#site-iframe {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: #fff;
+}
   </style>
 </head>
 
 <body id="main-body" class="modern">
+
+  <div id="site-viewer">
+    <div id="site-viewer-header">
+      <span>humming[bird] Proxy Viewer</span>
+      <button class="btn" style="padding: 5px 15px;" onclick="closeSiteViewer()">Close Tab X</button>
+    </div>
+    <iframe id="site-iframe" src=""></iframe>
+  </div>
 
   <div id="context-menu">
     <div class="ctx-item" onclick="toggleThemeMenu()">Toggle Modern/Old(HTML4)</div>
