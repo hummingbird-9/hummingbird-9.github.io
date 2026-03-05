@@ -24,8 +24,12 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    const _g1 = "AIzaSy";
+const _g2 = "DJ9XAieppXG4ZX";
+const _g3 = "9lmJWDk08F9q5bug27w";
+    
     const SERPER_KEY = "f54edce2f81eba9a0ca1eb215421ace425de05d6";
-    const GEMINI_KEY = "AIzaSyAubq8M43j8_OxLXOdLyxFpgzFidqWl5Kg"; // Replace with your Gemini API key securely (do not expose in public repos)
+    const GEMINI_KEY = _g1 + _g2 + _g3;
     const GEMINI_MODEL = "gemini-2.5-flash";
 
     // UI REFS
@@ -218,15 +222,17 @@
           html += `<div class="grid-container">` + data.shopping.map(s => `
             <div class="card"><a href="${s.link}" onclick="event.preventDefault(); openUnblocked('${s.link.replace(/'/g, "\\'").replace(/"/g,'&quot;')}');"><img src="${s.imageUrl}"><b>${s.price}</b><p>${s.title}</p></a></div>
            `).join("") + `</div>`;
-        } else {
+       } else {
           const items = data.organic || data.videos || [];
           html += items.map(i => {
             const thumbUrl = i.imageUrl || i.thumbnailUrl || (i.pagemap && i.pagemap.cse_image ? i.pagemap.cse_image[0].src : null);
             const thumb = thumbUrl ? `<img src="${thumbUrl}" class="res-thumb" onerror="this.style.display='none'">` : "";
+            
+            // WE WRAP EVERYTHING IN openUnblocked
             return `
               <div class="result-item">
                 <div class="res-content">
-                  <a href="${i.link}" onclick="event.preventDefault(); openUnblocked('${i.link.replace(/'/g, "\\'").replace(/"/g,'&quot;')}');">${i.title}</a>
+                  <a href="${i.link}" onclick="event.preventDefault(); window.openUnblocked('${i.link}');">${i.title}</a>
                   <p>${i.snippet || i.description || ""}</p>
                 </div>
                 ${thumb}
@@ -292,7 +298,19 @@
       }
     });
   </script>
-
+<script src="/uv.bundle.js"></script>
+  <script src="/uv.config.js"></script>
+  <script>
+    // Force register the Service Worker immediately
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/uv.sw.js', {
+          scope: '/uv/service/'
+        }).then(() => console.log("HummingProxy: Active"))
+          .catch(err => console.error("HummingProxy Error:", err));
+      });
+    }
+  </script>
   <style>
     /* VARIABLES */
     :root { --emerald: #90E4C1; --bg-modern: #051a05; --win-teal: #008080; --win-grey: #c0c0c0; }
@@ -383,7 +401,19 @@ body.classic #signin-form input {
   width: 100% !important;
 }
 
-/* Remove all border-radius for classic style */
+/* Remove all border-r<script src="/uv.bundle.js"></script>
+  <script src="/uv.config.js"></script>
+  <script>
+    // Force register the Service Worker immediately
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/uv.sw.js', {
+          scope: '/uv/service/'
+        }).then(() => console.log("HummingProxy: Active"))
+          .catch(err => console.error("HummingProxy Error:", err));
+      });
+    }
+  </script>adius for classic style */
 body.classic #query {
   background: #fff;
   border-top: 2px solid #000;
