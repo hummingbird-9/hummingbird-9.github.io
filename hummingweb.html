@@ -25,7 +25,7 @@
     const db = getFirestore(app);
 
     const SERPER_KEY = "f54edce2f81eba9a0ca1eb215421ace425de05d6";
-    const GEMINI_KEY = "INSERT_KEY_HERE"; // Replace with your Gemini API key securely (do not expose in public repos)
+    const GEMINI_KEY = "AIzaSyAubq8M43j8_OxLXOdLyxFpgzFidqWl5Kg"; // Replace with your Gemini API key securely (do not expose in public repos)
     const GEMINI_MODEL = "gemini-2.5-flash";
 
     // UI REFS
@@ -45,11 +45,18 @@
     }
 
     // Open links inside the app using the Proxy Viewer to bypass filters
+// Open links inside the app using the Interstellar/UV engine
     window.openUnblocked = (url) => {
       const viewer = document.getElementById("site-viewer");
       const iframe = document.getElementById("site-iframe");
-      iframe.src = proxyUrl(url);
-      viewer.style.display = "flex";
+      
+      if (typeof __uv$config !== 'undefined') {
+        // This is the "magic" line that makes Interstellar work
+        iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+        viewer.style.display = "flex";
+      } else {
+        alert("HummingProxy engine is still starting up... give it a second!");
+      }
     };
 
     window.closeSiteViewer = () => {
@@ -128,7 +135,7 @@
         if(data.error) throw new Error(data.error.message);
 
         const reply = data.candidates[0].content.parts[0].text;
-        chatStream.innerHTML += `<div class="msg bot"><b>humming[bird]:</b> ${reply.replace(/\n/g, '<br>')}</div>`;
+        chatStream.innerHTML += `<div class="msg bot"><b>hummingbird API:</b> ${reply.replace(/\n/g, '<br>')}</div>`;
         chatHistory.push({ role: "model", parts: [{ text: reply }] });
         aiChatWindow.scrollTop = aiChatWindow.scrollHeight;
 
@@ -140,11 +147,36 @@
     }
 
     // --- CORE SEARCH SYSTEM ---
+// --- NEW HELPER: Detect if input is a Link or IP ---
+    function isUrlOrIp(str) {
+      // Regex for IPv4 addresses
+      const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
+      // Regex for URLs (looks for dots, no spaces, or common protocols)
+      const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+      
+      // Return true if it matches an IP or looks like a valid URL with a domain extension
+      return ipRegex.test(str) || (urlRegex.test(str) && str.includes('.'));
+    }
+
+    // --- CORE SEARCH SYSTEM (REGENERATED) ---
     async function executeSearch() {
       const q = queryInput.value.trim();
       if (!q) return;
 
-      // Update URL parameters without reloading the page
+      // --- START NEW REDIRECT LOGIC ---
+      // If it's a URL or IP, jump straight to the proxy viewer
+      if (isUrlOrIp(q)) {
+        let destination = q;
+        // Ensure protocol exists for the proxy to handle it correctly
+        if (!q.startsWith('http://') && !q.startsWith('https://')) {
+          destination = 'https://' + q;
+        }
+        window.openUnblocked(destination);
+        return; // Exit here so we don't run a search in the background
+      }
+      // --- END NEW REDIRECT LOGIC ---
+
+      // Everything below is your ORIGINAL code - NO DEPRECATIONS
       const currentUrlParams = new URLSearchParams(window.location.search);
       if (currentUrlParams.get('q') !== q) {
         window.history.pushState({ query: q }, '', '?q=' + encodeURIComponent(q));
@@ -176,7 +208,7 @@
           }
         }
 
-        // RESULTS RENDERING (Using preventDefault to stop URL change, routing to proxy viewer)
+        // RESULTS RENDERING
         if (mode === "images") {
           html += `<div class="grid-container">` + data.images.map(img => `
             <div class="card" onclick="openImageModal('${img.imageUrl}', '${img.link.replace(/'/g, "\\'").replace(/"/g,'&quot;')}')">
@@ -203,8 +235,7 @@
         }
         resultsArea.innerHTML = html;
       } catch (e) { resultsArea.innerHTML = "Error fetching results."; }
-    }
-    window.doSearch = executeSearch;
+    }  window.doSearch = executeSearch;
 
     // --- LIQUID GLASS CONTEXT MENU ---
     const ctxMenu = document.getElementById("context-menu");
