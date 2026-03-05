@@ -5,6 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>humming[bird]Tech search engine</title>
 
+  <script src="assets/mathematics/bundle.js"></script>
+  <script src="assets/mathematics/config.js"></script>
+
+  <script>
+    // GLOBAL FIX: Required for the HTML buttons to find the search function
+    function doSearch() {
+      window.dispatchEvent(new CustomEvent('execute-humming-search'));
+    }
+
+    // SERVICE WORKER
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('assets/mathematics/sw.js', {
+          scope: '/uv/service/' 
+        }).then(() => console.log("HummingProxy: Online")).catch(e => console.error(e));
+      });
+    }
+  </script>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
@@ -24,13 +43,9 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const _g1 = "AIzaSy";
-const _g2 = "DJ9XAieppXG4ZX";
-const _g3 = "9lmJWDk08F9q5bug27w";
-    
     const SERPER_KEY = "f54edce2f81eba9a0ca1eb215421ace425de05d6";
-    const GEMINI_KEY = _g1 + _g2 + _g3;
-    const GEMINI_MODEL = "gemini-2.5-flash";
+    const GEMINI_KEY = "AIzaSy" + "DJ9XAieppXG4ZX" + "9lmJWDk08F9q5bug27w";
+    const GEMINI_MODEL = "gemini-1.5-flash"; // Fixed version string
 
     // UI REFS
     const mainBody = document.getElementById("main-body");
@@ -43,26 +58,15 @@ const _g3 = "9lmJWDk08F9q5bug27w";
     let chatHistory = [];
     let currentUser = null;
 
-    // Utility: wrap URLs with proxy to bypass blocks
-    function proxyUrl(url) {
-      return `https://corsproxy.io/?${encodeURIComponent(url)}`;
-    }
-
-    // Open links inside the app using the Proxy Viewer to bypass filters
-// Open links inside the app using the Interstellar/UV engine
+    // --- PROXY VIEWER ---
     window.openUnblocked = (url) => {
-      const viewer = document.getElementById("site-viewer");
-      const iframe = document.getElementById("site-iframe");
-      
       if (typeof __uv$config !== 'undefined') {
-        // This is the "magic" line that makes Interstellar work
-        iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url);
-        viewer.style.display = "flex";
+        document.getElementById("site-iframe").src = __uv$config.prefix + __uv$config.encodeUrl(url);
+        document.getElementById("site-viewer").style.display = "flex";
       } else {
-        alert("HummingProxy engine is still starting up... give it a second!");
+        alert("Proxy engine still starting...");
       }
     };
-
     window.closeSiteViewer = () => {
       document.getElementById("site-viewer").style.display = "none";
       document.getElementById("site-iframe").src = "";
@@ -75,7 +79,7 @@ const _g3 = "9lmJWDk08F9q5bug27w";
         document.getElementById("user-email-top").textContent = user.email;
         document.getElementById("signin-btn-top").style.display = "none";
         document.getElementById("signout-btn-top").style.display = "inline-block";
-        document.getElementById("signin-form").style.display = "none"; // Hide sign-in form after login
+        document.getElementById("signin-form").style.display = "none";
         const docSnap = await getDoc(doc(db, "users", user.uid));
         if (docSnap.exists() && docSnap.data().chatHistory) {
           chatHistory = docSnap.data().chatHistory;
@@ -92,18 +96,10 @@ const _g3 = "9lmJWDk08F9q5bug27w";
     });
 
     window.handleSignIn = async () => {
-      try {
-        await signInWithEmailAndPassword(auth, document.getElementById("email").value, document.getElementById("password").value);
-      } catch(e) {
-        alert(e.message);
-      }
+      try { await signInWithEmailAndPassword(auth, document.getElementById("email").value, document.getElementById("password").value); } catch(e) { alert(e.message); }
     };
     window.handleSignUp = async () => {
-      try {
-        await createUserWithEmailAndPassword(auth, document.getElementById("email").value, document.getElementById("password").value);
-      } catch(e) {
-        alert(e.message);
-      }
+      try { await createUserWithEmailAndPassword(auth, document.getElementById("email").value, document.getElementById("password").value); } catch(e) { alert(e.message); }
     };
     window.handleSignOut = () => signOut(auth);
 
@@ -111,86 +107,25 @@ const _g3 = "9lmJWDk08F9q5bug27w";
     window.setTab = (t) => {
       mode = t;
       document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-      if(t === 'shorts') t = 'videos';
-      const targetTab = document.getElementById(`tab-${t}`);
+      const targetTab = document.getElementById(`tab-${t === 'shorts' ? 'videos' : t}`);
       if(targetTab) targetTab.classList.add("active");
       aiChatWindow.style.display = (mode === "ai") ? "block" : "none";
       resultsArea.style.display = (mode === "ai") ? "none" : "block";
-      if (queryInput.value) executeSearch();
     };
 
-    // --- AI CHAT SYSTEM ---
-    async function runAiChat(q) {
-      chatStream.innerHTML += `<div class="msg user"><b>You:</b> ${q}</div>`;
-      chatHistory.push({ role: "user", parts: [{ text: q }] });
-      queryInput.value = "";
-
-      try {
-const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_KEY}`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    contents: chatHistory.map(msg => ({
-      role: msg.role === "bot" ? "model" : "user", // Gemini requires "model" not "bot"
-      parts: [{ text: msg.parts[0].text }]
-    }))
-  })
-});
-
-        const data = await response.json();
-        if(data.error) throw new Error(data.error.message);
-
-        const reply = data.candidates[0].content.parts[0].text;
-        chatStream.innerHTML += `<div class="msg bot"><b>hummingbird API:</b> ${reply.replace(/\n/g, '<br>')}</div>`;
-        chatHistory.push({ role: "model", parts: [{ text: reply }] });
-        aiChatWindow.scrollTop = aiChatWindow.scrollHeight;
-
-        if(currentUser) await setDoc(doc(db, "users", currentUser.uid), { chatHistory }, { merge: true });
-      } catch (e) {
-        chatStream.innerHTML += `<div class="msg bot" style="color:red">Error: ${e.message}</div>`;
-        chatHistory.pop();
-      }
-    }
-
-    // --- CORE SEARCH SYSTEM ---
-// --- NEW HELPER: Detect if input is a Link or IP ---
-    function isUrlOrIp(str) {
-      // Regex for IPv4 addresses
-      const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
-      // Regex for URLs (looks for dots, no spaces, or common protocols)
-      const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-      
-      // Return true if it matches an IP or looks like a valid URL with a domain extension
-      return ipRegex.test(str) || (urlRegex.test(str) && str.includes('.'));
-    }
-
-    // --- CORE SEARCH SYSTEM (REGENERATED) ---
+    // --- SEARCH SYSTEM ---
     async function executeSearch() {
       const q = queryInput.value.trim();
       if (!q) return;
 
-      // --- START NEW REDIRECT LOGIC ---
-      // If it's a URL or IP, jump straight to the proxy viewer
-      if (isUrlOrIp(q)) {
-        let destination = q;
-        // Ensure protocol exists for the proxy to handle it correctly
-        if (!q.startsWith('http://') && !q.startsWith('https://')) {
-          destination = 'https://' + q;
-        }
-        window.openUnblocked(destination);
-        return; // Exit here so we don't run a search in the background
-      }
-      // --- END NEW REDIRECT LOGIC ---
-
-      // Everything below is your ORIGINAL code - NO DEPRECATIONS
-      const currentUrlParams = new URLSearchParams(window.location.search);
-      if (currentUrlParams.get('q') !== q) {
-        window.history.pushState({ query: q }, '', '?q=' + encodeURIComponent(q));
+      if (/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})/.test(q)) {
+        window.openUnblocked(q.startsWith('http') ? q : 'https://' + q);
+        return;
       }
 
       if (mode === "ai") { await runAiChat(q); return; }
 
-      resultsArea.innerHTML = "<div class='loading'>Our hummingbird army is looking for relevant sites...</div>";
+      resultsArea.innerHTML = "<div class='loading'>Hummingbirds are searching...</div>";
       const endpoint = ["images", "videos", "shopping"].includes(mode) ? mode : "search";
 
       try {
@@ -200,688 +135,95 @@ const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/m
           body: JSON.stringify({ q, autocompleted: true })
         });
         const data = await res.json();
-        let html = "";
-
-        // AI OVERVIEW WITH IMAGES
-        if (mode === "search" && document.getElementById("ai-check").checked) {
-          const overview = data.aiOverview?.answer || data.answerBox?.snippet || data.answerBox?.answer;
-          if (overview) {
-            let aiImgs = "";
-            if (data.images && data.images.length > 0) {
-              aiImgs = `<div class="ai-img-row">` + data.images.slice(0, 4).map(img => `<img src="${img.imageUrl}" class="ai-inline-img">`).join("") + `</div>`;
-            }
-            html += `<div class="ai-overview">${aiImgs}<strong>AI Overview:</strong><br><p>${overview}</p></div>`;
-          }
-        }
-
-        // RESULTS RENDERING
-        if (mode === "images") {
-          html += `<div class="grid-container">` + data.images.map(img => `
-            <div class="card" onclick="openImageModal('${img.imageUrl}', '${img.link.replace(/'/g, "\\'").replace(/"/g,'&quot;')}')">
-              <img src="${img.imageUrl}"><p>${img.title}</p>
-            </div>`).join("") + `</div>`;
-        } else if (mode === "shopping") {
-          html += `<div class="grid-container">` + data.shopping.map(s => `
-            <div class="card"><a href="${s.link}" onclick="event.preventDefault(); openUnblocked('${s.link.replace(/'/g, "\\'").replace(/"/g,'&quot;')}');"><img src="${s.imageUrl}"><b>${s.price}</b><p>${s.title}</p></a></div>
-           `).join("") + `</div>`;
-       } else {
-          const items = data.organic || data.videos || [];
-          html += items.map(i => {
-            const thumbUrl = i.imageUrl || i.thumbnailUrl || (i.pagemap && i.pagemap.cse_image ? i.pagemap.cse_image[0].src : null);
-            const thumb = thumbUrl ? `<img src="${thumbUrl}" class="res-thumb" onerror="this.style.display='none'">` : "";
-            
-            // WE WRAP EVERYTHING IN openUnblocked
-            return `
-              <div class="result-item">
-                <div class="res-content">
-                  <a href="${i.link}" onclick="event.preventDefault(); window.openUnblocked('${i.link}');">${i.title}</a>
-                  <p>${i.snippet || i.description || ""}</p>
-                </div>
-                ${thumb}
-              </div>`;
-          }).join("");
-        }
-        resultsArea.innerHTML = html;
+        renderResults(data);
       } catch (e) { resultsArea.innerHTML = "Error fetching results."; }
-    }  window.doSearch = executeSearch;
+    }
 
-    // --- LIQUID GLASS CONTEXT MENU ---
-    const ctxMenu = document.getElementById("context-menu");
-    document.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-      ctxMenu.style.display = "block";
-      ctxMenu.style.left = e.pageX + "px";
-      ctxMenu.style.top = e.pageY + "px";
-    });
-    document.addEventListener("click", (e) => {
-      if(!ctxMenu.contains(e.target)) ctxMenu.style.display = "none";
-    });
+    function renderResults(data) {
+      let html = "";
+      // AI Overview
+      if (mode === "search" && document.getElementById("ai-check").checked) {
+        const overview = data.aiOverview?.answer || data.answerBox?.snippet;
+        if (overview) html += `<div class="ai-overview"><strong>AI Overview:</strong><p>${overview}</p></div>`;
+      }
+      
+      // Organic / Image / Shopping
+      const items = data.organic || data.images || data.shopping || data.videos || [];
+      html += items.map(i => {
+        if (mode === "images") {
+          return `<div class="card" onclick="openImageModal('${i.imageUrl}', '${i.link}')"><img src="${i.imageUrl}"><p>${i.title}</p></div>`;
+        }
+        return `<div class="result-item">
+          <a href="${i.link}" onclick="event.preventDefault(); window.openUnblocked('${i.link}');">${i.title}</a>
+          <p>${i.snippet || ""}</p>
+        </div>`;
+      }).join("");
+      
+      resultsArea.innerHTML = mode === "images" ? `<div class="grid-container">${html}</div>` : html;
+    }
 
+    async function runAiChat(q) {
+      chatStream.innerHTML += `<div class="msg user"><b>You:</b> ${q}</div>`;
+      chatHistory.push({ role: "user", parts: [{ text: q }] });
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_KEY}`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contents: chatHistory.map(m => ({ role: m.role === "bot" ? "model" : "user", parts: m.parts })) })
+        });
+        const data = await response.json();
+        const reply = data.candidates[0].content.parts[0].text;
+        chatStream.innerHTML += `<div class="msg bot"><b>hummingbird:</b> ${reply}</div>`;
+        chatHistory.push({ role: "model", parts: [{ text: reply }] });
+      } catch (e) { console.error(e); }
+    }
+
+    // Listeners & Inspector
+    window.addEventListener('execute-humming-search', executeSearch);
     window.toggleThemeMenu = () => {
-      const isModern = mainBody.className === "modern";
-      mainBody.className = isModern ? "classic" : "modern";
-      ctxMenu.style.display = "none";
+      mainBody.className = mainBody.className === "modern" ? "classic" : "modern";
     };
-
     window.launchInspector = () => {
-      if (window.eruda) { window.eruda.show(); return; }
       const script = document.createElement('script');
       script.src = "//cdn.jsdelivr.net/npm/eruda";
       document.body.appendChild(script);
       script.onload = () => { eruda.init(); eruda.show(); };
-      ctxMenu.style.display = "none";
     };
 
-    // --- IMAGE MODAL LOGIC ---
+    // Modal Logic
     window.openImageModal = (imgSrc, siteUrl) => {
       document.getElementById('modal-img').src = imgSrc;
-      const modalLink = document.getElementById('modal-link');
-      modalLink.href = siteUrl; 
-      modalLink.onclick = (e) => { e.preventDefault(); openUnblocked(siteUrl); }; // Open in proxy viewer instead
+      document.getElementById('modal-link').onclick = (e) => { e.preventDefault(); openUnblocked(siteUrl); };
       document.getElementById('image-modal').style.display = 'flex';
     };
     window.closeModal = () => document.getElementById('image-modal').style.display = 'none';
 
-    // Auto-search if URL has ?q= and reset logo click
-    document.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const q = urlParams.get('q');
-      if (q) {
-        document.getElementById('query').value = q;
-        executeSearch();
-      }
+  </script>
 
-      const logo = document.querySelector('header .logo-img');
-      if (logo) {
-        logo.style.cursor = 'pointer';
-        logo.onclick = () => {
-          window.location.href = window.location.pathname; // Resets to home
-        };
-      }
-    });
-// Add this at the end of your module script
-window.addEventListener('execute-hummingweb', executeSearch);
-    <script>
-      
-<script src="assets/-/bundle.js"></script>
-<script src="assets/-/config.js"></script>
-
-<script>
-  // 2. THE SERVICE WORKER
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('assets/mathematics/sw.js', {
-        scope: '/uv/service/' 
-      }).then(() => console.log("Proxy: Ready")).catch(e => console.error(e));
-    });
-  }
-
-  // 3. THE DOSEARCH FIX (This must be global)
-  function doSearch() {
-    const event = new CustomEvent('execute-humming-search');
-    window.dispatchEvent(event);
-  }
-</script>
   <style>
-    /* VARIABLES */
     :root { --emerald: #90E4C1; --bg-modern: #051a05; --win-teal: #008080; --win-grey: #c0c0c0; }
-
-body.modern {
-  background: linear-gradient(135deg, #0a2e0a, #1a5d1a, #0a2e0a, #1a5d1a);
-  background-size: 400% 400%;
-  animation: gradientBG 20s ease infinite;
-
-  color: #fff;
-  font-family: 'Inter', sans-serif;
-  padding: 180px 20px 40px 20px;
-  margin: 0;
-}
-
-/* gradient animation */
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-body.modern .result-item { display: flex; justify-content: space-between; gap: 20px; margin-bottom: 30px; border-bottom: 1px solid rgba(144,228,193,0.2); padding-bottom: 15px; max-width: 800px; }
-body.modern .result-item a { color: var(--emerald); font-size: 1.25rem; text-decoration: none; font-weight: 600; }
-body.modern .res-thumb { width: 120px; height: 120px; border-radius: 12px; object-fit: cover; border: 1px solid var(--emerald); }
-body.modern #query { background: rgba(0,0,0,0.6); border: 2px solid var(--emerald); color: #fff; border-radius: 12px; }
-body.modern .ai-overview { background: rgba(144, 228, 193, 0.1); border-left: 6px solid var(--emerald); border-radius: 12px; padding: 20px; margin-bottom: 30px; max-width: 800px; }
-body.modern .btn { border: 2px solid var(--emerald); background: #000; color: var(--emerald); border-radius: 8px; }
-
-/* MODERN SIGN-IN BOX POSITIONING */
-#signin-form {
-  position: fixed;
-  top: 70px;
-  right: 20px;
-  background: #000;
-  border: 2px solid var(--emerald);
-  padding: 20px;
-  border-radius: 12px;
-  z-index: 1000;
-  width: 280px;
-  box-sizing: border-box;
-}
-#signin-form input {
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 10px;
-  background: #222;
-  color: #fff;
-  border: 1px solid var(--emerald);
-  box-sizing: border-box;
-  border-radius: 6px;
-}
-
-/* AI mode tab in modern style */
-#tab-ai {
-  color: var(--emerald);
-}
-
-/* --- CLASSIC THEME  --- */
-body.classic { background: var(--win-grey); color: #000; font-family: "Tahoma", "MS Sans Serif", sans-serif; padding: 180px 20px 40px 20px; margin: 0; }
-body.classic #search-container { background: var(--win-grey); padding: 15px; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #000; border-bottom: 2px solid #000; }
-body.classic .result-item { background: #fff; border: 2px inset #fff; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; max-width: 800px; }
-body.classic .result-item a { color: #0000FF; text-decoration: underline; font-size: 1.1rem; cursor:pointer; }
-body.classic .res-thumb { width: 100px; height: 100px; border: 1px solid #000; margin-left: 15px; }
-
-/* Neutral signin form colors in classic style and NO curves */
-body.classic #signin-form {
-  background: #ddd !important;
-  border: 2px solid #666 !important;
-  border-radius: 0 !important;
-  width: 280px !important;
-  padding: 15px !important;
-  box-sizing: border-box;
-  top: 70px !important;
-  right: 20px !important;
-  position: fixed;
-  z-index: 1100;
-  display: none;
-}
-body.classic #signin-form input {
-  background: #eee !important;
-  color: #000 !important;
-  border: 1px solid #666 !important;
-  padding: 6px !important;
-  margin-bottom: 8px !important;
-  border-radius: 0 !important;
-  box-sizing: border-box;
-  width: 100% !important;
-}
-
-/* Remove all border-r<script src="/uv.bundle.js"></script>
-  <script src="/uv.config.js"></script>
-  <script>
-    // Force register the Service Worker immediately
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/uv.sw.js', {
-          scope: '/uv/service/'
-        }).then(() => console.log("HummingProxy: Active"))
-          .catch(err => console.error("HummingProxy Error:", err));
-      });
+    body.modern {
+      background: linear-gradient(135deg, #0a2e0a, #1a5d1a, #0a2e0a, #1a5d1a);
+      background-size: 400% 400%; animation: gradientBG 20s ease infinite;
+      color: #fff; font-family: 'Inter', sans-serif; padding: 180px 20px 40px 20px; margin: 0;
     }
-  </script>adius for classic style */
-body.classic #query {
-  background: #fff;
-  border-top: 2px solid #000;
-  border-left: 2px solid #000;
-  border-right: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-  color: #000;
-  padding: 10px;
-  border-radius: 0;
-}
-body.classic .btn {
-  background: var(--win-grey);
-  color: #000;
-  border-top: 2px solid #fff;
-  border-left: 2px solid #fff;
-  border-right: 2px solid #000;
-  border-bottom: 2px solid #000;
-  font-weight: bold;
-  border-radius: 0;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-}
+    @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    
+    /* Global search items */
+    .result-item { margin-bottom: 25px; max-width: 800px; }
+    body.modern .result-item a { color: var(--emerald); font-size: 1.25rem; text-decoration: none; font-weight: 600; }
+    
+    body.classic { background: var(--win-grey); color: #000; font-family: "Tahoma", sans-serif; padding: 180px 20px 40px 20px; margin: 0; }
+    body.classic .result-item { background: #fff; border: 2px inset #fff; padding: 10px; }
+    
+    #search-container { width: 100%; max-width: 850px; position: relative; }
+    .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+    #query { flex: 1; padding: 15px; border-radius: 12px; border: 2px solid var(--emerald); background: rgba(0,0,0,0.6); color: #fff; }
+    
+    #tabs { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; }
+    .tab { cursor: pointer; opacity: 0.7; font-weight: bold; }
+    .tab.active { opacity: 1; color: var(--emerald); border-bottom: 2px solid var(--emerald); }
 
-body.classic .btn:active {
-  border-top: 2px solid #000;
-  border-left: 2px solid #000;
-  border-right: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-  transform: translateY(2px);
-}
-
-body.classic .tab {
-  border: 2px solid transparent;
-  cursor: pointer;
-  border-radius: 0;
-}
-body.classic .tab.active {
-  background: #000080;
-  color: #fff;
-  border: 2px inset #fff;
-  border-radius: 0;
-}
-
-body.classic #tab-ai {
-  color: #000080 !important;
-  background: transparent !important;
-}
-
-body.classic #context-menu {
-  background: #fff;
-  color: #000;
-  border: 2px solid #000;
-  border-radius: 0;
-  box-shadow: none;
-  font-family: "Tahoma", "MS Sans Serif", sans-serif;
-  font-size: 12px;
-  padding: 4px 0;
-  width: 200px;
-}
-
-body.classic .ctx-item {
-  padding: 6px 12px;
-  color: #000;
-  background: #fff;
-  border: none;
-  border-radius: 0;
-  cursor: pointer;
-  user-select: none;
-}
-body.classic .ctx-item:hover {
-  background: #000080;
-  color: #fff;
-  border: none;
-  border-radius: 0;
-}
-
-body.classic .ai-overview {
-  background: #fff;
-  border: 2px inset #fff;
-  padding: 15px;
-  margin-bottom: 20px;
-  max-width: 800px;
-  border-radius: 0;
-}
-
-/* --- GLOBAL LAYOUT --- */
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 100px; 
-}
-
-header {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: auto;
-  text-align: center;
-  z-index: 10;
-  padding: 15px 0;
-  pointer-events: none;
-}
-.logo-img {
-  max-width: 190px;
-  pointer-events: auto;
-  cursor: pointer;
-}
-
-#top-left-controls {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  z-index: 1000;
-  pointer-events: auto;
-  color: var(--emerald);
-  font-weight: bold;
-  user-select: none;
-}
-body.classic #top-left-controls {
-  background: transparent;
-  color: #000;
-  font-weight: normal;
-}
-
-#top-right-controls {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  z-index: 1000;
-  pointer-events: auto;
-}
-
-#top-right-controls span {
-  font-weight: bold;
-  color: var(--emerald);
-}
-body.classic #top-right-controls span {
-  color: #000;
-  font-weight: normal;
-}
-
-#signin-btn-top, #signout-btn-top {
-  font-weight: bold;
-}
-body.classic #signin-btn-top,
-body.classic #signout-btn-top {
-  background: var(--win-grey);
-  color: #000;
-  border-top: 2px solid #fff;
-  border-left: 2px solid #fff;
-  border-right: 2px solid #000;
-  border-bottom: 2px solid #000;
-  border-radius: 0;
-  padding: 6px 10px;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-}
-body.classic #signin-btn-top:active,
-body.classic #signout-btn-top:active {
-  border-top: 2px solid #000;
-  border-left: 2px solid #000;
-  border-right: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-  transform: translateY(2px);
-}
-
-#ai-check {
-  vertical-align: middle;
-  accent-color: var(--emerald);
-}
-body.classic #ai-check {
-  accent-color: #000;
-}
-
-#mode-text {
-  cursor: pointer;
-}
-
-#search-container {
-  width: 100%;
-  max-width: 850px;
-  z-index: 50;
-  position: relative;
-  margin-top: 30px; 
-}
-.search-box {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-#query {
-  flex: 1;
-  padding: 15px;
-  font-size: 1.1rem;
-  outline: none;
-}
-.btn {
-  cursor: pointer;
-  padding: 8px 15px;
-  font-weight: bold;
-}
-
-#tabs {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 25px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.tab {
-  cursor: pointer;
-  opacity: 0.7;
-  font-weight: bold;
-  padding: 5px 10px;
-  transition: 0.2s;
-}
-.tab.active {
-  opacity: 1;
-  border-bottom: 3px solid var(--emerald);
-  color: var(--emerald);
-}
-
-.ai-img-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-  overflow-x: auto;
-}
-.ai-inline-img {
-  height: 100px;
-  border-radius: 8px;
-  border: 1px solid var(--emerald);
-  object-fit: cover;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 15px;
-  width: 100%;
-}
-.card {
-  cursor: pointer;
-  transition: 0.2s;
-}
-.card:hover {
-  transform: scale(1.02);
-}
-.card img {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid var(--emerald);
-}
-.card a {
-  text-decoration: none;
-  color: inherit;
-}
-
-#ai-chat-window {
-  height: 450px;
-  overflow-y: auto;
-  background: rgba(0,0,0,0.4);
-  border: 2px solid var(--emerald);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-.msg {
-  margin-bottom: 15px;
-  padding: 12px;
-  border-radius: 10px;
-  max-width: 85%;
-  line-height: 1.5;
-}
-.msg.user {
-  background: rgba(255,255,255,0.1);
-  margin-left: auto;
-  border-bottom-right-radius: 0;
-}
-.msg.bot {
-  background: #fff;
-  color: #000;
-  border-bottom-left-radius: 0;
-}
-
-/* --- LIQUID GLASS CONTEXT MENU --- */
-#context-menu {
-  display: none;
-  position: absolute;
-  z-index: 99999;
-  width: 220px;
-  background: rgba(20, 20, 20, 0.4);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  padding: 10px 0;
-  color: white;
-  font-family: 'Inter', sans-serif;
-}
-.ctx-item {
-  padding: 12px 20px;
-  cursor: pointer;
-  transition: background 0.2s;
-  font-size: 0.95rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.ctx-item:hover {
-  background: rgba(255,255,255,0.1);
-  border-left: 3px solid var(--emerald);
-}
-
-/* --- IMAGE MODAL (LIGHTBOX) --- */
-#image-modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.9);
-  z-index: 100000;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-#modal-img {
-  max-width: 80%;
-  max-height: 70vh;
-  border: 2px solid var(--emerald);
-  border-radius: 10px;
-  margin-bottom: 20px;
-  box-shadow: 0 0 30px rgba(144, 228, 193, 0.3);
-}
-.modal-controls {
-  display: flex;
-  gap: 15px;
-}
-.close-btn {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  font-size: 40px;
-  color: white;
-  cursor: pointer;
-}
-.close-btn:hover {
-  color: var(--emerald);
-}
-
-/* --- IN-APP SITE VIEWER --- */
-#site-viewer {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: #fff;
-  z-index: 1000000;
-  flex-direction: column;
-}
-#site-viewer-header {
-  background: #111;
-  padding: 10px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: var(--emerald);
-  font-family: 'Inter', sans-serif;
-  font-weight: bold;
-}
-#site-iframe {
-  flex: 1;
-  width: 100%;
-  border: none;
-  background: #fff;
-}
-  </style>
-</head>
-
-<body id="main-body" class="modern">
-
-  <div id="site-viewer">
-    <div id="site-viewer-header">
-      <span>humming[bird] Proxy Viewer</span>
-      <button class="btn" style="padding: 5px 15px;" onclick="closeSiteViewer()">Close Tab X</button>
-    </div>
-    <iframe id="site-iframe" src=""></iframe>
-  </div>
-
-  <div id="context-menu">
-    <div class="ctx-item" onclick="toggleThemeMenu()">Toggle Modern/Old(HTML4)</div>
-    <div class="ctx-item" onclick="launchInspector()">Inspect Element</div>
-    <div class="ctx-item" onclick="location.reload()">Refresh Search Engine</div>
-  </div>
-
-  <div id="image-modal">
-    <span class="close-btn" onclick="closeModal()">&times;</span>
-    <img id="modal-img" src="">
-    <div class="modal-controls">
-      <a id="modal-link" href="#" target="_self" class="btn" style="text-decoration:none; background:#000; padding:10px 20px;">Visit Source Website</a>
-    </div>
-  </div>
-
-  <header><img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(6).png" class="logo-img"></header>
-
-  <div id="top-left-controls">
-    <div class="mode-switch-container" onclick="toggleThemeMenu()" title="Toggle Modern/Old(HTML4)">
-      <span id="mode-text">Modern Style/HTML4 Style</span>
-    </div>
-    <label style="font-size: 0.8rem; opacity: 0.8; margin-left: 10px;">
-      <input type="checkbox" id="ai-check" checked> AI Summaries
-    </label>
-  </div>
-
-  <div id="top-right-controls">
-    <span id="user-email-top"></span>
-    <button class="btn" onclick="document.getElementById('signin-form').style.display='block'" id="signin-btn-top">Sign In</button>
-    <button class="btn" style="display:none;" id="signout-btn-top" onclick="handleSignOut()">Sign Out</button>
-  </div>
-
-  <div id="signin-form" style="display:none;">
-    <input type="email" id="email" placeholder="Email" autocomplete="username">
-    <input type="password" id="password" placeholder="Password" autocomplete="current-password">
-    <button class="btn" style="width:100%; margin-bottom:10px;" onclick="handleSignIn()">Login</button>
-    <button class="btn" style="width:100%; background:#222;" onclick="handleSignUp()">Sign Up</button>
-  </div>
-
-  <div id="search-container">
-    <div class="search-box">
-      <input type="text" id="query" placeholder="Search the web" onkeypress="if(event.key==='Enter') doSearch()">
-      <button onclick="doSearch()" class="btn">Search</button>
-    </div>
-
-    <div id="tabs">
-      <div class="tab active" id="tab-search" onclick="setTab('search')">All</div>
-      <div class="tab" id="tab-ai" onclick="setTab('ai')">AI mode</div>
-      <div class="tab" id="tab-images" onclick="setTab('images')">Images</div>
-      <div class="tab" id="tab-videos" onclick="setTab('videos')">Videos</div>
-      <div class="tab" id="tab-shorts" onclick="setTab('videos')">Shorts</div>
-      <div class="tab" id="tab-shopping" onclick="setTab('shopping')">Shopping</div>
-      <div class="tab" id="tab-forums" onclick="setTab('search')">Forums</div>
-    </div>
-
-    <div id="ai-chat-window" style="display:none;"><div id="chat-stream"></div></div>
-    <div id="results-area"></div>
-  </div>
-
-</body>
-</html>
+    /* Site Viewer */
+    #site-viewer { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #fff; z-index: 1000000; flex-direction: column; }
+    #site-viewer-header { background: #111; padding: 10px; display: flex; justify-content: space-between; color: var(--emerald); }
+    #site-iframe { flex: 1; border: none; }
