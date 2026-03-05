@@ -298,13 +298,13 @@ const _g3 = "9lmJWDk08F9q5bug27w";
       }
     });
   </script>
-<script src="/uv.bundle.js"></script>
-  <script src="/uv.config.js"></script>
+<script src="/bundle.js"></script>
+  <script src="/config.js"></script>
   <script>
     // Force register the Service Worker immediately
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/uv.sw.js', {
+        navigator.serviceWorker.register('/sw.js', {
           scope: '/uv/service/'
         }).then(() => console.log("HummingProxy: Active"))
           .catch(err => console.error("HummingProxy Error:", err));
