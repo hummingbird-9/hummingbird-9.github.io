@@ -69,27 +69,30 @@ const _g3 = "9lmJWDk08F9q5bug27w";
     };
 
     // --- AUTHENTICATION ---
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        currentUser = user;
-        document.getElementById("user-email-top").textContent = user.email;
-        document.getElementById("signin-btn-top").style.display = "none";
-        document.getElementById("signout-btn-top").style.display = "inline-block";
-        document.getElementById("signin-form").style.display = "none"; // Hide sign-in form after login
-        const docSnap = await getDoc(doc(db, "users", user.uid));
-        if (docSnap.exists() && docSnap.data().chatHistory) {
-          chatHistory = docSnap.data().chatHistory;
-          chatStream.innerHTML = chatHistory.map(m => `<div class="msg ${m.role==='user'?'user':'bot'}">${m.parts[0].text}</div>`).join("");
-        }
-      } else {
-        currentUser = null;
-        document.getElementById("user-email-top").textContent = '';
-        document.getElementById("signin-btn-top").style.display = "inline-block";
-        document.getElementById("signout-btn-top").style.display = "none";
-        chatHistory = [];
-        chatStream.innerHTML = "";
-      }
-    });
+onAuthStateChanged(auth, async (user) => {
+  const emailDisplay = document.getElementById("user-email-top");
+  const signInBtn = document.getElementById("signin-btn-top");
+  const signOutBtn = document.getElementById("signout-btn-top");
+
+  if (user) {
+    currentUser = user;
+    // The "if" checks prevent the "Cannot set properties of null" error
+    if (emailDisplay) emailDisplay.textContent = user.email;
+    if (signInBtn) signInBtn.style.display = "none";
+    if (signOutBtn) signOutBtn.style.display = "inline-block";
+    
+    const docSnap = await getDoc(doc(db, "users", user.uid));
+    if (docSnap.exists() && docSnap.data().chatHistory) {
+      chatHistory = docSnap.data().chatHistory;
+      chatStream.innerHTML = chatHistory.map(m => `<div class="msg ${m.role==='user'?'user':'bot'}">${m.parts[0].text}</div>`).join("");
+    }
+  } else {
+    currentUser = null;
+    if (emailDisplay) emailDisplay.textContent = '';
+    if (signInBtn) signInBtn.style.display = "inline-block";
+    if (signOutBtn) signOutBtn.style.display = "none";
+  }
+});
 
     window.handleSignIn = async () => {
       try {
