@@ -7,6 +7,7 @@
   <title>humming[bird]Tech</title>
 
   <style>
+    /* --- Your Original Styles --- */
     body {
       margin: 0;
       padding: 20px;
@@ -31,14 +32,6 @@
       100% { background-position: 0% 50%; }
     }
 
-    .title {
-      color: #90E4C1;
-      text-shadow: 0 0 15px rgba(0, 255, 157, 0.8), 0 0 30px rgba(0, 255, 157, 0.6), 0 0 45px rgba(0, 255, 157, 0.4);
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      letter-spacing: 1px;
-    }
-
     button {
       background: rgba(255, 255, 255, 0.15);
       border-radius: 16px;
@@ -58,40 +51,67 @@
       user-select: none;
     }
 
-    button:hover,
-    button:focus {
+    button:hover {
       background: rgba(255, 255, 255, 0.1);
       transform: scale(1.05);
       outline: none;
     }
 
-    button:active {
-      transform: scale(1);
-    }
-  </style>
+    /* --- NEW: HOVER WARNING LOGIC --- */
+     #warning-text {
+    font-size: 1.1rem;
+    color: #ff4d4d;
+    opacity: 0; 
+    transition: opacity 0.3s ease;
+    max-width: 600px;
+    
+    /* This part prevents the gap */
+    position: absolute; 
+    top: 50%; /* Adjust this to move it up or down */
+    pointer-events: none; /* Mouse can click through it */
+  }
+
+  /* Shows the warning when the gallery button is hovered */
+  #gallery-btn:hover ~ #warning-text {
+    opacity: 1;
+  }
   
+  /* Adds a tiny bit of space between buttons without the giant gap */
+  button {
+    margin: 10px 0; 
+  }
+
+  </style>
 </head>
 
 <body>
 
-  <h1>ONLY FOR USE OUTSIDE OF CLASS, DO NOT USE IN CLASS AND TEACHERS CAN SEE UR SCREEN FROM THEIR DEVICES WITH LINEWIZE!! THAT MEANS YOU YUSTIN!!</h1>
+  <!-- Logo at the top -->
   <h1><img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png" alt="Logo"></h1>
 
+  <!-- Navigation Buttons -->
   <button id="gallery-btn" onclick="location.href='gallery.html'">Gallery of ports, flash games, and other HTMLs</button>
+  
+  <!-- THE WARNING: Moved here and styled with ID -->
+  <h3 id="warning-text">ONLY FOR USE OUTSIDE OF CLASS</h3>
+
   <button onclick="location.href='hummingweb.html'">Search Engine</button>
   <button onclick="alert('Made by Oliver Boyd (hummingbird_9). humming[bird]Tech Version 1.8.3')">About</button>
   <button onclick="location.href='ww3.html'">WW3 Trailer</button>
 
   <script>
     function checkClassStatus() {
+      // Changed to .com since you mentioned they block that specifically in class
       fetch('https://onecompiler.com', { mode: 'no-cors' })
         .then(() => {
-          console.log("Not in class. Gallery available.");
+          console.log("Not in class.");
           document.getElementById('gallery-btn').style.display = 'inline-block';
         })
         .catch(() => {
           console.log("Active Class detected! Hiding Gallery.");
           document.getElementById('gallery-btn').style.display = 'none';
+          // Hide the warning text too since the button is gone
+          document.getElementById('warning-text').style.display = 'none';
         });
     }
     checkClassStatus();
