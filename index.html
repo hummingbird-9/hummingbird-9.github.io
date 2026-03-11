@@ -40,7 +40,7 @@
       cursor: pointer;
       font-size: 18px;
       font-weight: 600;
-      margin: 10px 8px;
+      margin: 10px 0; /* Keeps buttons tight together */
       padding: 14px 40px;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 32px 0 rgba(0, 255, 45, 0.15);
@@ -57,42 +57,31 @@
       outline: none;
     }
 
-    /* --- NEW: HOVER WARNING LOGIC --- */
-     #warning-text {
-    font-size: 1.1rem;
-    color: #ff4d4d;
-    opacity: 0; 
-    transition: opacity 0.3s ease;
-    max-width: 600px;
-    
-    /* This part prevents the gap */
-    position: absolute; 
-    top: 50%; /* Adjust this to move it up or down */
-    pointer-events: none; /* Mouse can click through it */
-  }
+    /* --- IMPROVED HOVER WARNING --- */
+    #warning-text {
+      font-size: 1.1rem;
+      color: #ff4d4d;
+      opacity: 0; 
+      transition: opacity 0.3s ease;
+      max-width: 600px;
+      position: absolute; 
+      pointer-events: none;
+      /* Positions the warning text slightly below the Gallery button without moving other buttons */
+      transform: translateY(65px); 
+    }
 
-  /* Shows the warning when the gallery button is hovered */
-  #gallery-btn:hover ~ #warning-text {
-    opacity: 1;
-  }
-  
-  /* Adds a tiny bit of space between buttons without the giant gap */
-  button {
-    margin: 10px 0; 
-  }
-
+    #gallery-btn:hover ~ #warning-text {
+      opacity: 1;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- Logo at the top -->
   <h1><img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png" alt="Logo"></h1>
 
-  <!-- Navigation Buttons -->
   <button id="gallery-btn" onclick="location.href='gallery.html'">Gallery of ports, flash games, and other HTMLs</button>
   
-  <!-- THE WARNING: Moved here and styled with ID -->
   <h3 id="warning-text">ONLY FOR USE OUTSIDE OF CLASS</h3>
 
   <button onclick="location.href='hummingweb.html'">Search Engine</button>
@@ -101,20 +90,36 @@
 
   <script>
     function checkClassStatus() {
-      // Changed to .com since you mentioned they block that specifically in class
+//pings onecompiler for science class detection
       fetch('https://onecompiler.com', { mode: 'no-cors' })
         .then(() => {
-          console.log("Not in class.");
+          // If reachable, show the button
           document.getElementById('gallery-btn').style.display = 'inline-block';
+          // Ensure warning text can reappear if class ends
+          document.getElementById('warning-text').style.visibility = 'visible'; 
         })
         .catch(() => {
-          console.log("Active Class detected! Hiding Gallery.");
+          // If blocked (Science class active), hide everything risky
           document.getElementById('gallery-btn').style.display = 'none';
-          // Hide the warning text too since the button is gone
-          document.getElementById('warning-text').style.display = 'none';
+          document.getElementById('warning-text').style.opacity = '0';
+          document.getElementById('warning-text').style.visibility = 'hidden';
+          console.log("Science Class Active: Gallery Hidden.");
         });
     }
+
+    // Run immediately on load
     checkClassStatus();
+
+    // Check every 10 seconds in case the teacher starts/ends class while the tab is open
+    setInterval(checkClassStatus, 10000);
+
+    // EMERGENCY MANUAL HIDE: Press 'Escape' to hide the gallery instantly
+    document.addEventListener('keydown', (e) => {
+      if (e.key === "Escape") {
+        document.getElementById('gallery-btn').style.display = 'none';
+        document.getElementById('warning-text').style.display = 'none';
+      }
+    });
   </script>
 </body>
 
