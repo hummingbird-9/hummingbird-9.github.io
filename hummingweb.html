@@ -167,7 +167,16 @@ async function fetchAiOverview(query) {
       return null;
     }
     console.log("AI Overview response data:", data);
-    return data.candidates[0].content.parts[0].text;
+
+    // Safely get text
+    const candidate = data.candidates && data.candidates[0];
+    const text = candidate?.content?.parts?.[0]?.text || null;
+
+    if (!text) {
+      console.warn("AI Overview response missing text content");
+    }
+
+    return text;
   } catch (e) {
     console.error("AI Overview fetch exception:", e);
     return null;
