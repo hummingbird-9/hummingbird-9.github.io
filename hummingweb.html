@@ -25,8 +25,8 @@
     const db = getFirestore(app);
 
     const SERPER_KEY = "f54edce2f81eba9a0ca1eb215421ace425de05d6";
-const GEMINI_KEY_PART1 = "your_first_part_here";
-const GEMINI_KEY_PART2 = "your_second_part_here";
+const GEMINI_KEY_PART1 = "AIzaSyDJ9XAieppXG4ZX";
+const GEMINI_KEY_PART2 = "9lmJWDk08F9q5bug27w";
 const GEMINI_KEY = GEMINI_KEY_PART1 + GEMINI_KEY_PART2;
     const GEMINI_MODEL = "gemini-2.5-flash";
 
@@ -124,7 +124,7 @@ const GEMINI_KEY = GEMINI_KEY_PART1 + GEMINI_KEY_PART2;
         if(data.error) throw new Error(data.error.message);
 
         const reply = data.candidates[0].content.parts[0].text;
-        chatStream.innerHTML += `<div class="msg bot"><b>humming[bird]:</b> ${reply.replace(/\n/g, '<br>')}</div>`;
+        chatStream.innerHTML += `<div class="msg bot"><b>humming[bird]AI:</b> ${reply.replace(/\n/g, '<br>')}</div>`;
         chatHistory.push({ role: "model", parts: [{ text: reply }] });
         aiChatWindow.scrollTop = aiChatWindow.scrollHeight;
 
@@ -135,25 +135,46 @@ const GEMINI_KEY = GEMINI_KEY_PART1 + GEMINI_KEY_PART2;
       }
     }
 
-    async function fetchAiOverview(query) {
-      try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_KEY}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            prompt: `Provide a brief AI overview for the following query:\n${query}`,
-            temperature: 0.4,
-            maxOutputTokens: 300,
-          }),
-        });
-        const data = await res.json();
-        if(data.error) throw new Error(data.error.message);
-        return data.candidates[0].content.parts[0].text;
-      } catch (e) {
-        console.warn("AI overview failed:", e.message);
-        return null;
-      }
+async function fetchAiOverview(query) {
+  try {
+    console.log("AI Overview: starting fetch for query:", query);
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_KEY}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: `Provide a brief AI overview for the following search:\n${query}`
+              }
+            ]
+          }
+        ],
+        systemInstruction: {
+          parts: [{ text: "You are a helpful assistant providing summaries for a custom search engine." }]
+        }
+      }),
+    });
+    if (!res.ok) {
+      const errTxt = await res.text();
+      console.error("AI Overview fetch HTTP error:", res.status, res.statusText, errTxt);
+      return null;
     }
+    const data = await res.json();
+    if (data.error) {
+      console.error("AI Overview API error:", data.error);
+      return null;
+    }
+    console.log("AI Overview response data:", data);
+    return data.candidates[0].content.parts[0].text;
+  } catch (e) {
+    console.error("AI Overview fetch exception:", e);
+    return null;
+  }
+}
+
+
 
     // --- CORE SEARCH SYSTEM ---
     // Helper to safely encode URLs for JS single-quote attribute usage
@@ -161,65 +182,90 @@ const GEMINI_KEY = GEMINI_KEY_PART1 + GEMINI_KEY_PART2;
       return encodeURIComponent(str).replace(/'/g, "%27").replace(/"/g, "%22");
     }
 
-    async function executeSearch() {
-      const q = queryInput.value.trim();
-      if (!q) return;
-      if (mode === "ai") { await runAiChat(q); return; }
+async function executeSearch() {
+  const q = queryInput.value.trim();
+  if (!q) return;
+  if (mode === "ai") { await runAiChat(q); return; }
 
-      const aiOverviewEnabled = document.getElementById("ai-check").checked;
+  const aiOverviewEnabled = document.getElementById("ai-check").checked;
 
-      resultsArea.innerHTML = "<div class='loading'>Our hummingbird army is looking for relevant sites...</div>";
-      const endpoint = ["images", "videos", "shopping"].includes(mode) ? mode : "search";
+  resultsArea.innerHTML = "<div class='loading'>Our hummingbird army is looking for relevant sites...</div>";
+  const endpoint = ["images", "videos", "shopping"].includes(mode) ? mode : "search";
 
-      let aiHtml = "";
-      if (mode !== "ai" && aiOverviewEnabled) {
-        const aiText = await fetchAiOverview(q);
-        if (aiText) {
-          aiHtml = `<div class="ai-overview"><strong>AI Overview:</strong><br>${aiText.replace(/\n/g, "<br>")}</div>`;
-        }
+  let loadingDiv = null;
+  if (mode !== "ai" && aiOverviewEnabled) {
+    loadingDiv = document.createElement("div");
+    loadingDiv.className = "ai-overview";
+    loadingDiv.innerHTML = "<strong>AI Overview:</strong><br><em>Loading AI Overview...</em>";
+    resultsArea.prepend(loadingDiv);
+
+    fetchAiOverview(q).then(aiText => {
+      if (aiText) {
+        loadingDiv.innerHTML = `<strong>AI Overview:</strong><br>${aiText.replace(/\n/g, "<br>")}`;
+      } else if (loadingDiv) {
+        loadingDiv.remove();
       }
+    }).catch(() => {
+      if (loadingDiv) loadingDiv.remove();
+    });
+  }
 
-      try {
-        const res = await fetch(`https://google.serper.dev/${endpoint}`, {
-          method: "POST",
-          headers: { "X-API-KEY": SERPER_KEY, "Content-Type": "application/json" },
-          body: JSON.stringify({ q, autocompleted: true }),
-        });
-        const data = await res.json();
-        let html = aiHtml; // START WITH AI OVERVIEW IF ANY
+  try {
+    const res = await fetch(`https://google.serper.dev/${endpoint}`, {
+      method: "POST",
+      headers: { "X-API-KEY": SERPER_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ q, autocompleted: true }),
+    });
 
-        if (mode === "images") {
-          html += `<div class="grid-container">` + data.images.map(img => {
-            const safeUrl = jsEscape(img.link);
-            return `<div class="card" onclick="openImageModal('${img.imageUrl}', decodeURIComponent('${safeUrl}'))">
-              <img src="${img.imageUrl}"><p>${img.title}</p>
-            </div>`;
-          }).join("") + `</div>`;
-        } else if (mode === "shopping") {
-          html += `<div class="grid-container">` + data.shopping.map(s => {
-            const safeUrl = jsEscape(s.link);
-            return `<div class="card"><a href="javascript:void(0)" onclick="openUnblocked(decodeURIComponent('${safeUrl}'))"><img src="${s.imageUrl}"><b>${s.price}</b><p>${s.title}</p></a></div>`;
-          }).join("") + `</div>`;
-        } else {
-          const items = data.organic || data.videos || [];
-          html += items.map(i => {
-            const safeUrl = jsEscape(i.link);
-            const thumbUrl = i.imageUrl || i.thumbnailUrl || (i.pagemap && i.pagemap.cse_image ? i.pagemap.cse_image[0].src : null);
-            const thumb = thumbUrl ? `<img src="${thumbUrl}" class="res-thumb" onerror="this.style.display='none'">` : "";
-            return `<div class="result-item">
-              <div class="res-content">
-                <a href="javascript:void(0)" onclick="openUnblocked(decodeURIComponent('${safeUrl}'))">${i.title}</a>
-                <p>${i.snippet || i.description || ""}</p>
-              </div>
-              ${thumb}
-            </div>`;
-          }).join("");
-        }
-        resultsArea.innerHTML = html;
-      } catch (e) {
-        resultsArea.innerHTML = "Error fetching results.";
-      }
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Server error: ${res.status} ${res.statusText} - ${errorText}`);
     }
+
+    const data = await res.json();
+    let html = "";
+
+    if (mode === "images") {
+      html += `<div class="grid-container">` + data.images.map(img => {
+        const safeUrl = jsEscape(img.link);
+        return `<div class="card" onclick="openImageModal('${img.imageUrl}', decodeURIComponent('${safeUrl}'))">
+          <img src="${img.imageUrl}"><p>${img.title}</p>
+        </div>`;
+      }).join("") + `</div>`;
+    } else if (mode === "shopping") {
+      html += `<div class="grid-container">` + data.shopping.map(s => {
+        const safeUrl = jsEscape(s.link);
+        return `<div class="card"><a href="javascript:void(0)" onclick="openUnblocked(decodeURIComponent('${safeUrl}'))"><img src="${s.imageUrl}"><b>${s.price}</b><p>${s.title}</p></a></div>`;
+      }).join("") + `</div>`;
+    } else {
+      const items = data.organic || data.videos || [];
+      html += items.map(i => {
+        const safeUrl = jsEscape(i.link);
+        const thumbUrl = i.imageUrl || i.thumbnailUrl || (i.pagemap && i.pagemap.cse_image ? i.pagemap.cse_image[0].src : null);
+        const thumb = thumbUrl ? `<img src="${thumbUrl}" class="res-thumb" onerror="this.style.display='none'">` : "";
+        return `<div class="result-item">
+          <div class="res-content">
+            <a href="javascript:void(0)" onclick="openUnblocked(decodeURIComponent('${safeUrl}'))">${i.title}</a>
+            <p>${i.snippet || i.description || ""}</p>
+          </div>
+          ${thumb}
+        </div>`;
+      }).join("");
+    }
+
+    if (mode !== "ai" && aiOverviewEnabled && loadingDiv) {
+      resultsArea.innerHTML = ""; // clear placeholder
+      resultsArea.appendChild(loadingDiv);
+      resultsArea.innerHTML += html;
+    } else {
+      resultsArea.innerHTML = html;
+    }
+
+  } catch (e) {
+    console.error("Search fetch error:", e);
+    resultsArea.innerHTML = `<div style="color:red">Error fetching results: ${e.message}</div>`;
+  }
+}
 
     window.doSearch = executeSearch;
 
