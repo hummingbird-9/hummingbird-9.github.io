@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The raging battle against Elmo</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      user-select: none;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+    #gameCanvas {
+      background: #111;
+      border: 3px solid #fff;
+      image-rendering: pixelated;
+      display: block;
+      cursor: default;
+      position: relative;
+    }
+    #audioPlayer {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="640" height="480"></canvas>
+  <audio id="audioPlayer" loop src="https://audio.jukehost.co.uk/GMZgq5MzuHzEuFHo037StrcxHQV6o4Sr"></audio>
+  <script>
+    // ---- Utility ----
+    function randRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    // ---- Constants and State ----
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const audioPlayer = document.getElementById("audioPlayer");
+
+    let keys = {};
+    let gameState = "title";
+    let gameOver = false;
+    let gameWon = false;
+    let lastTimestamp = performance.now();
+    let slowed = 1;
+    let slowMotionFrames = 0;
+    let flashAlpha = 0;
+    let flashColor = "";
+    let actionText = "";
+    let actionTime = 0;
+    const actionDuration = 1500;
+    let cooldowns = { attack: 0, act: 0, defend: 0, slow: 0, heal: 0 };
+    const cooldownMax = { attack: 2.7, act: 3, defend: 1, slow: 12, heal: 2 };
+    let currentPhaseIndex = 0;
+    let phaseStartTime = performance.now();
+
+    const TP_RADIUS = 50;
+    const corridorX = 180, corridorY = 270, corridorWidth = 280, corridorHeight = 180;
+    const mazeLineWidth = 8;
+    const finalPhase2GridCols = 10;
+
+    let mazeLines = [];
+    let mazeScrollX = 0;
+    let mazeSpeed = 0.6;
+
+    // Player
+    const playerInit = {
+      x: 280, y: 400, speed: 4,
+      hp: 6, maxHp: 6,
+      tp: 0, maxTp: 100,
+      boxX: 190, boxY: 290, boxWidth: 260, boxHeight: 180,
+      heartRadius: 5,
+      attacking: false, attackFrame: 0,
+      glowLevel: 0, glowBlue: false,
+      invincibleTime: 0,
+      visible: true,
+      sprite: new Image()
+    };
+    playerInit.sprite.src = "https://uploads.onecompiler.io/43wxex3aq/447dh8dww/bobinvert1.png";
+    let player = {...playerInit};
+
+    // Enemy
+    const enemyInit = {
+      hp: 200, maxHp: 210, x: 256, y: 30,
+      width: 128, height: 128,
+      poisonTicks: 0, poison: 0,
+      targetX: 256, targetY: 30,
+      dodging: false, dodgeSpeed: 4,
+      shakeTimer: 0, shakeIntensity: 0,
+      rotation: 0, spinTimer: 0, spinDuration: 12,
+      sprite: new Image(),
+      visible: true
+    };
+    enemyInit.sprite.src = "https://uploads.onecompiler.io/43wxex3aq/447dh8dww/FUEGO.gif";
+    let enemy = {...enemyInit};
+
+    // Heart and attack images
+    const heartImg = new Image();
+    heartImg.src = "https://uploads.onecompiler.io/43wxex3aq/447dh8dww/bobinvertflip%20(1).png";
+    const playerAttackImg = new Image();
+    playerAttackImg.src = playerInit.sprite.src;
+
+    // Bullets array
+    let bullets = [];
+
+    let dvdBox = { x: 190, y: 290, width: 260, height: 180, vx: 2.5, vy: 1.8, active: false };
+
+    // Final attack state
+    let finalAttackActive = false;
+    let finalSpinTime = 0;
+    let finalShootTimer = 0;
+    let finalPhase = 1;
+    let finalPhase2TimeLeft = 12000;
+    const playerForcedMoveSpeed = 0.5;
+
+    // ---- Create Bullets ----
+    function spawnBullet(x, y, vx, vy, size=10) {
+      let b = {
+        x, y, vx, vy, radius: size, glow: 0, glowPulse: 0, colorG: 0,
+        jitter: false, homing: false, finalRed: false, firework: false,
+        life: 9999, exploded: false, trail: []
+      };
+      bullets.push(b);
+      return b;
+    }
+
+    // ---- Flash and Action Text ----
+    function flashScreen(color) {
+      flashColor = color;
+      flashAlpha = 0.6;
+    }
+    function showAction(text) {
+      actionText = text;
+      actionTime = actionDuration;
+    }
+
+    // ---- Maze Helpers ----
+    function buildMaze() {
+      mazeLines = [];
+      for(let i=0; i<=finalPhase2GridCols; i++) {
+        mazeLines.push({
+          x: corridorX + i * (corridorWidth / finalPhase2GridCols),
+          gapStart: corridorY + Math.random() * (corridorHeight - 60) + 20,
+          gapHeight: 40 + Math.random()*20
+        });
+      }
+    }
+    function checkMazeCollision() {
+      for(let line of mazeLines){
+        let lx = line.x - mazeScrollX;
+        if(lx < player.x + player.heartRadius && lx > player.x - player.heartRadius) {
+          if(player.y - player.heartRadius < line.gapStart || player.y + player.heartRadius > line.gapStart + line.gapHeight){
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    // ---- DVD Box movement chance ----
+    function startBoxMovementChance() {
+      if (Math.random() < 0.2) {
+        dvdBox.active = true;
+        dvdBox.x = player.boxX;
+        dvdBox.y = player.boxY;
+        dvdBox.vx = (Math.random() < 0.5 ? 1 : -1) * (2 + Math.random() * 2);
+        dvdBox.vy = (Math.random() < 0.5 ? 1 : -1) * (1 + Math.random() * 1.5);
+      } else {
+        dvdBox.active = false;
+        player.boxX = 190;
+        player.boxY = 290;
+      }
+    }
+
+    // ---- Final Attack Start ----
+    function startFinalAttack() {
+      finalAttackActive = true;
+      finalSpinTime = 0;
+      finalShootTimer = 0;
+      finalPhase = 1;
+      mazeScrollX = 0;
+      finalPhase2TimeLeft = 12000;
+      buildMaze();
+      enemy.dodging = true;
+      enemy.targetX = canvas.width - enemy.width - 50;
+      enemy.targetY = enemyInit.y;
+      enemy.dodgeSpeed = 7;
+      showAction("Final Attack!");
+      bullets.length = 0;
+      enemy.visible = false; // Hide enemy HP bar
+    }
+
+    // ---- Attack phases ----
+    const attackPhases = [
+      // 1) Random Timed Shots - Updated to fast aimed bullets
+      {
+        name: "Random Timed Shots",
+        duration: 6000,
+        pattern(ts) {
+          if (!this.nextShot) this.nextShot = ts + randRange(1000, 4000);
+          if (ts > this.nextShot) {
+            this.nextShot = ts + randRange(1000, 4000);
+
+            // Aim and fire fast bullet straight at player position at spawn
+            const enemyCenterX = 320;
+            const enemyCenterY = 100;
+            const dx = player.x - enemyCenterX;
+            const dy = player.y - enemyCenterY;
+            const dist = Math.hypot(dx, dy) || 1;
+            const speed = 9; // much faster speed
+
+            const vx = (dx / dist) * speed;
+            const vy = (dy / dist) * speed;
+
+            spawnBullet(enemyCenterX, enemyCenterY, vx, vy, 10);
+          }
+        }
+      },
+      // 2) Firework Shooter
+      {
+        name: "Firework Shooter",
+        duration: 7000,
+        pattern(ts) {
+          if (!this.lastShot || ts - this.lastShot > 300) {
+            this.lastShot = ts;
+            let x = 280 + Math.random() * 80;
+            let b = spawnBullet(x, 420, 0, -4, 10);
+            b.firework = true;
+            b.life = 60 + Math.random()*40;
+          }
+        }
+      },
+      // 3) Homing Storm
+      {
+        name: "Homing Storm",
+        duration: 8000,
+        pattern(ts) {
+          if (!this.lastShot || ts - this.lastShot > 1500) {
+            this.lastShot = ts;
+            const cx = 320, cy = 100;
+            for (let i=0; i<4; i++) {
+              let angle = -0.5 + i*0.3;
+              let b = spawnBullet(cx, cy, Math.cos(angle)*3, Math.sin(angle)*3, 14);
+              b.homing = true;
+            }
+          }
+        }
+      },
+      // 4) Fast Spiral
+      {
+        name: "Fast Spiral",
+        duration: 7000,
+        spinAngle: 0,
+        pattern(ts) {
+          this.spinAngle += 0.15;
+          if (!this.lastShot || ts - this.lastShot > 120) {
+            this.lastShot = ts;
+            const cx=320, cy=120, speed=4, bulletsPerWave=5;
+            for(let i=0; i<bulletsPerWave; i++){
+              let angle = this.spinAngle + i*(2*Math.PI / bulletsPerWave);
+              spawnBullet(cx, cy, Math.cos(angle)*speed, Math.sin(angle)*speed, 10);
+            }
+          }
+        }
+      },
+      // 5) Jitter Storm
+      {
+        name: "Jitter Storm",
+        duration: 7000,
+        pattern(ts) {
+          if (!this.lastShot || ts - this.lastShot > 150) {
+            this.lastShot = ts;
+            const cx=320, cy=100, speed = 3, count=12;
+            for(let i=0; i<count; i++){
+              const angle = (i/count)*2*Math.PI;
+              let b = spawnBullet(cx, cy, Math.cos(angle)*speed, Math.sin(angle)*speed, 11);
+              b.jitter = true;
+              b.jitterSpeed = 0.25;
+              b.jitterMax = 3;
+              b.jitterAxis = i%2===0 ? "x" : "y";
+            }
+          }
+        }
+      },
+      // 6) Big Burst
+      {
+        name: "Big Burst",
+        duration: 6000,
+        pattern(ts) {
+          if (!this.lastShot || ts - this.lastShot > 2000) {
+            this.lastShot = ts;
+            const cx=320, cy=120;
+            const count=20;
+            for(let i=0; i<count; i++){
+              let angle = (i/count)*2*Math.PI;
+              spawnBullet(cx, cy, Math.cos(angle)*3, Math.sin(angle)*3, 12);
+            }
+          }
+        }
+      },
+      // 7) Horizontal Wave
+      {
+        name: "Horizontal Wave",
+        duration: 7000,
+        pattern(ts) {
+          if (!this.lastShot || ts - this.lastShot > 120) {
+            this.lastShot = ts;
+            const startY = 130 + Math.random() * 120;
+            const speed = 4;
+            spawnBullet(0, startY, speed, 0, 10);
+          }
+          bullets.forEach(b => b.y += Math.sin(b.x / 10) * 0.1);
+        }
+      },
+      // 8) Twin Volley
+      {
+        name: "Twin Volley",
+        duration: 6500,
+        pattern(ts) {
+          if (!this.lastShot || ts - this.lastShot > 400) {
+            this.lastShot = ts;
+            const cx1 = 200, cx2 = 440, cy = 100, speed = 5;
+            for(let angleOffset of [0, Math.PI/8, -Math.PI/8]){
+              spawnBullet(cx1, cy, speed*Math.cos(angleOffset), speed*Math.sin(angleOffset), 12);
+              spawnBullet(cx2, cy, -speed*Math.cos(angleOffset), speed*Math.sin(angleOffset), 12);
+            }
+          }
+        }
+      },
+      // 9) Expanding Rings - illusion effect
+      {
+        name: "Expanding Rings",
+        duration: 6500,
+        pattern(ts) {
+          if (!this.lastShot || ts - this.lastShot > 1600) {
+            this.lastShot = ts;
+            const cx=320, cy=120, count=16;
+            for(let i=0; i<count; i++){
+              let angle = (i/count)*2*Math.PI;
+              let speed = 2;
+              let b = spawnBullet(cx, cy, Math.cos(angle)*speed, Math.sin(angle)*speed, 10);
+              b.expandSlow = true;
+              b.expandCenterX = cx;
+              b.expandCenterY = cy;
+              b.expandRadius = 0;
+              b.expandSpeed = 1.5;
+            }
+          }
+          bullets.forEach(b=>{
+            if(b.expandSlow){
+              b.expandRadius += b.expandSpeed * slowed;
+              let dx = b.x - b.expandCenterX;
+              let dy = b.y - b.expandCenterY;
+              let dist = Math.hypot(dx, dy) || 0.001;
+              b.vx = (dx / dist) * b.expandSpeed;
+              b.vy = (dy / dist) * b.expandSpeed;
+            }
+          });
+        }
+      },
+      // 10) Exploding Bullets (burst on death)
+      {
+        name: "Exploding Bullets",
+        duration: 7000,
+        pattern(ts) {
+          if (!this.lastShot || ts - this.lastShot > 700) {
+            this.lastShot = ts;
+            const cx = 320;
+            const cy = 120;
+            let angle = randRange(0, 2*Math.PI);
+            let speed = 3;
+            let b = spawnBullet(cx, cy, Math.cos(angle)*speed, Math.sin(angle)*speed, 14);
+            b.explodeOnLife = 50;
+            b.life = b.explodeOnLife;
+            b.trail = [];
+          }
+        }
+      },
+      // 11) Alternating dual spirals (optical illusion)
+      {
+        name: "Alternating Dual Spirals",
+        duration: 6000,
+        spinAngle1: 0,
+        spinAngle2: 0,
+        pattern(ts) {
+          if (!this.lastShot || ts - this.lastShot > 140) {
+            this.lastShot = ts;
+            this.spinAngle1 += 0.11;
+            this.spinAngle2 -= 0.11;
+            const cx = 320; const cy = 120; const speed = 3;
+            const bulletsPerWave = 8;
+            for(let i=0; i<bulletsPerWave; i++){
+              let angle1 = this.spinAngle1 + i*(2*Math.PI / bulletsPerWave);
+              let angle2 = this.spinAngle2 + i*(2*Math.PI / bulletsPerWave);
+              spawnBullet(cx, cy, Math.cos(angle1)*speed, Math.sin(angle1)*speed, 9);
+              spawnBullet(cx, cy, Math.cos(angle2)*speed, Math.sin(angle2)*speed, 9);
+            }
+          }
+        }
+      },
+      // Additional new creative phases:
+      {
+        name: "Slow Rotating Laser Line",
+        duration: 6000,
+        angle: 0,
+        pattern(ts) {
+          this.angle = (this.angle || 0) + 0.007;
+          if (!this.lastShot || ts - this.lastShot > 500) {
+            this.lastShot = ts;
+            const cx = 320;
+            const cy = 100;
+            const numBullets = 8;
+            const spacing = 18;
+            for (let i = -numBullets/2; i <= numBullets/2; i++) {
+              const offset = i * spacing;
+              const angleToUse = this.angle + Math.PI/2;
+              const x = cx + Math.cos(angleToUse)*offset;
+              const y = cy + Math.sin(angleToUse)*offset;
+              const speed = 2;
+              const vx = Math.cos(this.angle)*speed;
+              const vy = Math.sin(this.angle)*speed;
+              spawnBullet(x, y, vx, vy, 10);
+            }
+          }
+        }
+      },
+      {
+        name: "Expanding Circular Waves",
+        duration: 7000,
+        lastWave: 0,
+        waveCount: 0,
+        pattern(ts) {
+          if (!this.lastWave) this.lastWave = ts;
+          if (ts - this.lastWave > 1800) {
+            this.lastWave = ts;
+            this.waveCount++;
+            const cx = 320;
+            const cy = 120;
+            const count = 20;
+            const baseRadius = 40 * this.waveCount;
+            for(let i=0; i<count; i++){
+              let angle = (i/count)*2*Math.PI;
+              let distOffset = (i % 5) * 10;
+              let x = cx + Math.cos(angle)*baseRadius + Math.cos(angle)*distOffset;
+              let y = cy + Math.sin(angle)*baseRadius + Math.sin(angle)*distOffset;
+              let speed = 0.5 + 0.1*this.waveCount;
+              spawnBullet(x, y, Math.cos(angle)*speed, Math.sin(angle)*speed, 10);
+            }
+          }
+        }
+      },
+      {
+        name: "Bullet Rain With Gaps",
+        duration: 7000,
+        pattern(ts) {
+          if (!this.lastShot || ts - this.lastShot > 400) {
+            this.lastShot = ts;
+            const gapPositions = [80, 200, 360, 480];
+            const y = -20;
+            for(let x=0; x<=canvas.width; x+=30){
+              if(!gapPositions.some(gp => Math.abs(gp-x)<40)){
+                const speedY = 5;
+                spawnBullet(x, y, 0, speedY, 8);
+              }
+            }
+          }
+        }
+      },
+      {
+        name: "Targeted Dodge Pattern",
+        duration: 7000,
+        lastShot: 0,
+        pattern(ts) {
+          if (!this.lastShot || ts - this.lastShot > 1500) {
+            this.lastShot = ts;
+            const enemyCenterX = 320;
+            const enemyCenterY = 100;
+            for(let i=0; i<5; i++){
+              let angle = Math.atan2(player.y - enemyCenterY, player.x - enemyCenterX);
+              angle += (i-2)*0.3;
+              let speed = 4.5;
+              spawnBullet(enemyCenterX, enemyCenterY, Math.cos(angle)*speed, Math.sin(angle)*speed, 11);
+            }
+          }
+        }
+      }
+    ];
+
+    // ---- Final Attack Updates with requested changes ----
+    const finalSpinDuration = 6000; // ms
+
+    let finalPhase1Bullet = null;
+    function updateFinalAttack(ts, dt){
+      if(finalPhase === 1){
+        finalSpinTime += dt * 1000;
+        enemy.rotation += 0.04 + 0.0005 * finalSpinTime;
+
+        // Single slow spinning bullet follows player
+        if(!finalPhase1Bullet || finalPhase1Bullet.exploded) {
+          const cx = canvas.width/2;
+          const cy = canvas.height/2;
+          finalPhase1Bullet = spawnBullet(cx, cy, 0, 0, 18);
+          finalPhase1Bullet.finalRed = true;
+          finalPhase1Bullet.speedBase = 1.5;
+          finalPhase1Bullet.angle = 0;
+          finalPhase1Bullet.trail = [];
+        }
+
+        finalPhase1Bullet.angle += 0.035;
+        let cx = canvas.width/2;
+        let cy = canvas.height/2;
+        // Slow orbit radius 60
+        finalPhase1Bullet.x = cx + Math.cos(finalPhase1Bullet.angle) * 60;
+        finalPhase1Bullet.y = cy + Math.sin(finalPhase1Bullet.angle) * 60;
+        // Slow shift orbit center toward player: smooth follow
+        cx += (player.x - cx) * 0.01;
+        cy += (player.y - cy) * 0.01;
+
+        // Maintain trail
+        finalPhase1Bullet.trail.unshift({x: finalPhase1Bullet.x, y: finalPhase1Bullet.y});
+        if(finalPhase1Bullet.trail.length > 15) finalPhase1Bullet.trail.pop();
+
+        if(finalSpinTime >= finalSpinDuration){
+  finalPhase = 2;
+  finalSpinTime = 0;
+  mazeScrollX = 0;
+  finalPhase2TimeLeft = 12000;
+  buildMaze();
+  // Ensure the player box Y is inside the first gap of the maze to prevent instant collision:
+if(mazeLines.length > 0){
+  let firstGap = mazeLines[0];
+  // Place player boxY somewhere centered inside first gap:
+  player.boxY = firstGap.gapStart + (firstGap.gapHeight - player.boxHeight) / 2;
+}
+
+  player.x = corridorX + player.heartRadius + 10;
+  player.y = corridorY + corridorHeight / 2;
+  slowed = 1;
+  player.invincibleTime = 3;  // <-- invincibility for 3 seconds
+  if(finalPhase1Bullet){
+    const idx = bullets.indexOf(finalPhase1Bullet);
+    if(idx >= 0) bullets.splice(idx, 1);
+    finalPhase1Bullet = null;
+  }
+}
+
+
+      } else if(finalPhase === 2){
+        finalPhase2TimeLeft -= dt * 1000;
+        mazeScrollX += mazeSpeed;
+        if(mazeScrollX > corridorWidth / finalPhase2GridCols){
+          mazeLines.shift();
+          const lastX = mazeLines[mazeLines.length-1].x;
+          mazeLines.push({
+            x: lastX + corridorWidth / finalPhase2GridCols,
+            gapStart: corridorY + Math.random()*(corridorHeight - 60) + 20,
+            gapHeight: 40 + Math.random()*20
+          });
+          mazeScrollX -= corridorWidth / finalPhase2GridCols;
+        }
+        if(finalPhase2TimeLeft <= 0){
+          gameOver = true; gameWon = false; gameState = "gameover";
+          flashScreen("red"); updateMusic();
+        }
+      }
+    }
+
+    // ---- Update bullets and collisions ----
+    function updateBullets(dt) {
+      if (gameState !== "playing") return;
+      let glowing = false, glowSum = 0;
+
+      if(player.invincibleTime > 0){
+        player.invincibleTime -= dt;
+        player.visible = Math.floor(player.invincibleTime * 10) % 2 === 0;
+        if(player.invincibleTime <= 0){
+          player.visible = true;
+          player.invincibleTime = 0;
+        }
+      }
+
+      for(let i=bullets.length - 1; i >= 0; i--) {
+        const b = bullets[i];
+        b.x += b.vx * dt * 60 * slowed;
+        b.y += b.vy * dt * 60 * slowed;
+
+        // handle jitter
+        if(b.jitter){
+          b.jitterDir = b.jitterDir || 1;
+          b.jitterPos = (b.jitterPos || 0) + b.jitterSpeed * dt * 60 * b.jitterDir;
+          if(b.jitterPos > b.jitterMax || b.jitterPos < -b.jitterMax) b.jitterDir *= -1;
+          if(b.jitterAxis==="x") b.x += b.jitterPos;
+          else if(b.jitterAxis==="y") b.y += b.jitterPos;
+        }
+
+        // homing bullets
+        if(b.homing){
+          const dx = player.x - b.x;
+          const dy = player.y - b.y;
+          const dist = Math.hypot(dx, dy) || 1;
+          b.vx += (dx/dist)*0.06;
+          b.vy += (dy/dist)*0.06;
+          const spd = Math.hypot(b.vx, b.vy);
+          const maxSpd = 5 * slowed;
+          if(spd > maxSpd){
+            b.vx = (b.vx/spd)*maxSpd;
+            b.vy = (b.vy/spd)*maxSpd;
+          }
+        }
+
+        // expandSlow bullets (expanding rings)
+        if(b.expandSlow){
+          b.expandRadius += b.expandSpeed * slowed;
+          let dx = b.x - b.expandCenterX;
+          let dy = b.y - b.expandCenterY;
+          let dist = Math.hypot(dx, dy) || 0.001;
+          b.vx = (dx/dist) * b.expandSpeed;
+          b.vy = (dy/dist) * b.expandSpeed;
+        }
+
+        // explodeOnLife bullets
+        if(b.explodeOnLife){
+          b.life--;
+          if(b.life <= 0){
+            for(let j=0; j<12; j++){
+              let angle = Math.random()*2*Math.PI;
+              let speed = 2 + Math.random()*2;
+              let p = spawnBullet(b.x, b.y, Math.cos(angle)*speed, Math.sin(angle)*speed, 5);
+              p.life = 20 + Math.random()*10;
+              p.exploded = true;
+            }
+            bullets.splice(i,1);
+            continue;
+          }
+        }
+
+        // firework bullets lifecycle
+        if(b.firework){
+          b.trail.unshift({x:b.x, y:b.y});
+          if(b.trail.length > 10) b.trail.pop();
+          b.life--;
+          if(b.life <= 0 && !b.exploded){
+            b.exploded = true;
+            for(let j=0; j<16; j++){
+              let angle = Math.random()*2*Math.PI;
+              let speed = 1.5 + Math.random()*1.5;
+              let p = spawnBullet(b.x, b.y, Math.cos(angle)*speed, Math.sin(angle)*speed, 4);
+              p.life = 20 + Math.random()*10;
+              p.exploded = true;
+            }
+          }
+          if(b.exploded){
+            bullets.splice(i,1);
+            continue;
+          }
+        }
+
+        // player glowing TP gain
+        const dist = Math.hypot(player.x - b.x, player.y - b.y);
+        if(dist < TP_RADIUS){
+          glowing = true;
+          b.glow = Math.min(1, 1 - dist / TP_RADIUS);
+          b.glowPulse += dt * 10;
+          if(b.glowPulse > 2*Math.PI) b.glowPulse -= 2*Math.PI;
+          const tpGain = 0.5 * b.glow * (1 + 0.55 * Math.sin(b.glowPulse));
+          player.tp = Math.min(player.maxTp, player.tp + tpGain);
+          glowSum += tpGain;
+        } else {
+          b.glow *= 0.9;
+          b.glowPulse = 0;
+        }
+
+        // collision to player
+        if(dist < b.radius + player.heartRadius){
+          bullets.splice(i,1);
+          if(!player.attacking && player.invincibleTime <= 0){
+            player.hp = Math.max(0, player.hp - 1);
+            player.invincibleTime = 1.2;
+            flashScreen("red");
+          }
+          continue;
+        }
+
+        if(b.x < -40 || b.x > canvas.width+40 || b.y < -40 || b.y > canvas.height+40){
+          bullets.splice(i,1);
+        }
+      }
+      if(glowing) player.glowLevel = Math.min(1, player.glowLevel + glowSum * 10);
+      else player.glowLevel *= 0.88;
+    }
+
+    // Drawing functions
+    function drawBullets(){
+      for(let b of bullets){
+        ctx.save();
+        let angle = Math.atan2(b.vy, b.vx);
+        ctx.translate(b.x, b.y);
+        ctx.rotate(angle);
+        let glowMult = b.glow || 1;
+        // red bullets with glow and trail
+        let trailLength = b.radius * 2 + Math.hypot(b.vx, b.vy)*3;
+        let grad = ctx.createRadialGradient(0,0,b.radius/3, -trailLength,0,b.radius*3);
+        grad.addColorStop(0, `rgba(255,0,0,${0.9 * glowMult})`);
+        grad.addColorStop(0.3, `rgba(255,80,80,${0.5 * glowMult})`);
+        grad.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.ellipse(-trailLength/2, 0, trailLength, b.radius, 0, 0, Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = `rgba(255,60,60,${0.9 * glowMult})`;
+        ctx.beginPath();
+        ctx.arc(0, 0, b.radius, 0, Math.PI*2);
+        ctx.shadowColor = `rgba(255,90,90,${glowMult})`;
+        ctx.shadowBlur = 16 * glowMult;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.restore();
+
+        // Draw trails for fireworks and finalRed
+        if(b.firework || b.finalRed){
+          ctx.beginPath();
+          for(let i = 0; i < b.trail.length; i++){
+            let p = b.trail[i];
+            ctx.lineTo(p.x, p.y);
+          }
+          ctx.strokeStyle = b.firework ? "rgba(255,150,150,0.5)" : "rgba(255,20,20,0.8)";
+          ctx.lineWidth = 3;
+          ctx.stroke();
+        }
+      }
+    }
+
+    function drawPlayer() {
+      if (!player.visible || gameState !== "playing") return;
+      ctx.shadowColor = player.glowBlue ? `rgba(0,100,255,${player.glowLevel*0.7})` : `rgba(0,255,0,${player.glowLevel*1.2})`;
+      ctx.shadowBlur = player.glowLevel>0?22:0;
+      const sprite = player.attacking ? playerAttackImg : player.sprite;
+      if(sprite.complete)
+        ctx.drawImage(sprite, player.x-16, player.y-16, 32, 32);
+      else {
+        ctx.fillStyle = "hotpink";
+        ctx.beginPath();
+        ctx.arc(player.x, player.y, player.heartRadius, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.shadowBlur = 0;
+      if(player.glowLevel > 0){
+        ctx.strokeStyle = `rgba(0,180,255,${player.glowLevel})`;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(player.x, player.y, TP_RADIUS, 0, Math.PI*2);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(player.boxX, player.boxY, player.boxWidth, player.boxHeight);
+    }
+
+    function drawEnemy() {
+      ctx.save();
+      const shakeX = enemy.shakeTimer > 0 ? (Math.random()*2 -1)*enemy.shakeIntensity : 0;
+      const rot = enemy.spinTimer > 0 ? ((enemy.spinDuration - enemy.spinTimer)/enemy.spinDuration)*2*Math.PI : 0;
+      ctx.translate(enemy.x + enemy.width/2 + shakeX, enemy.y + enemy.height/2);
+      ctx.rotate(rot);
+      ctx.translate(-enemy.width/2, -enemy.height/2);
+      if(enemy.sprite.complete)
+        ctx.drawImage(enemy.sprite, 0, 0, enemy.width, enemy.height);
+      else {
+        ctx.fillStyle = "purple";
+        ctx.fillRect(0,0,enemy.width,enemy.height);
+      }
+      ctx.restore();
+
+      if(!enemy.visible) return;
+
+      const barW=200, barH=15, x=canvas.width/2 - barW/2, y=enemy.y + enemy.height + 10;
+      ctx.fillStyle = "#330000";
+      ctx.fillRect(x,y,barW,barH);
+      ctx.fillStyle = "red";
+      ctx.fillRect(x,y,barW*(enemy.hp/enemy.maxHp),barH);
+      ctx.fillStyle = "white";
+      ctx.font = "14px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(`Enemy HP: ${enemy.hp} / ${enemy.maxHp}`, canvas.width/2, y + barH - 2);
+      if(enemy.poison > 0){
+        ctx.fillStyle = "lime";
+        ctx.font = "12px Arial";
+        ctx.fillText("Poison: " + enemy.poison, canvas.width/2, y - 10);
+      }
+    }
+
+    function drawTPBar(){
+      if(gameState !== "playing") return;
+      const x=15,y=canvas.height/2 - 75,w=20,h=150;
+      ctx.fillStyle="#222";
+      ctx.fillRect(x,y,w,h);
+      ctx.fillStyle="cyan";
+      ctx.fillRect(x,y + h - (h*player.tp/player.maxTp),w,h*player.tp/player.maxTp);
+      ctx.strokeStyle="white";
+      ctx.lineWidth=2;
+      ctx.strokeRect(x,y,w,h);
+      ctx.fillStyle="white";
+      ctx.font="14px Arial";
+      ctx.textAlign="center";
+      ctx.fillText("TP",x+w/2,y-10);
+    }
+
+    function drawCooldownBars(){
+      if(gameState !== "playing") return;
+      const startX=canvas.width - 190, baseY=canvas.height-120, barW=150, barH=15, gap=5;
+      const abils = [
+        { key:"attack", label:"ATTACK (Z)", color:"#44ff44" },
+        { key:"act", label:"ACT (X)", color:"#cccc00" },
+        { key:"defend", label:"DEFEND (C)", color:"#4488ff" },
+        { key:"slow", label:"SLOW (1)", color:"#ffaa00" },
+        { key:"heal", label:"HEAL (Shift)", color:"#00ff00" }
+      ];
+      abils.forEach((a,i)=>{
+        let ratio = cooldowns[a.key]/cooldownMax[a.key];
+        let y = baseY - i*(barH+gap);
+        ctx.fillStyle = "#222";
+        ctx.fillRect(startX,y,barW,barH);
+        ctx.fillStyle = a.color;
+        ctx.fillRect(startX,y,barW*ratio,barH);
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(startX,y,barW,barH);
+        ctx.fillStyle = "white";
+        ctx.font = "14px Arial";
+        ctx.textAlign = "right";
+        ctx.fillText(a.label, startX-10, y+barH-3);
+      });
+    }
+
+    function drawHpBar(){
+      if(gameState !== "playing") return;
+      const size = 30, pad = 5;
+      for(let i=0; i<player.maxHp; i++) {
+        ctx.globalAlpha = i < player.hp ? 1 : 0.3;
+        if(heartImg.complete)
+          ctx.drawImage(heartImg, 10+i*(size+pad), canvas.height - size - 10, size, size);
+        else {
+          ctx.fillStyle = i < player.hp ? "red" : "rgba(255,0,0,0.3)";
+          ctx.beginPath();
+          ctx.arc(15 + i*(size+pad), canvas.height - 25, size/2, 0, Math.PI*2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    function drawAttackMeter(){
+      if(gameState !== "playing") return;
+      ctx.fillStyle = "#222";
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = 2;
+      ctx.fillRect(attackMeter.barX, attackMeter.barY, attackMeter.barW, attackMeter.barH);
+      ctx.strokeRect(attackMeter.barX, attackMeter.barY, attackMeter.barW, attackMeter.barH);
+      ctx.fillStyle = "red";
+      ctx.fillRect(attackMeter.barX+attackMeter.barW/2-3, attackMeter.barY, 6, attackMeter.barH);
+      let ix = Math.min(Math.max(attackMeter.indicatorX, attackMeter.barX), attackMeter.barX+attackMeter.barW);
+      ctx.fillStyle = attackMeter.locked ? "lime" : "white";
+      ctx.fillRect(ix-3, attackMeter.barY-4, 6, attackMeter.barH+8);
+    }
+
+    function drawTopLeftText() {
+      if(gameState !== "playing") return;
+      ctx.fillStyle = "white";
+      ctx.font = "16px Arial";
+      ctx.textAlign = "left";
+      ctx.fillText("Press Z/X/C for Actions, Shift to HEAL, 1 to SLOW", 10, 30);
+    }
+
+    function drawActionText() {
+      if(actionTime > 0) {
+        ctx.fillStyle = `rgba(255,255,255,${actionTime / actionDuration})`;
+        ctx.font = "28px Arial bold";
+        ctx.textAlign = "right";
+        ctx.textBaseline = "top";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 4;
+        ctx.strokeText(actionText, canvas.width-20, 20);
+        ctx.fillText(actionText, canvas.width-20, 20);
+        actionTime -= 16;
+      }
+    }
+
+    function drawButton(x, y, w, h, text){
+      ctx.fillStyle = "#555";
+      ctx.fillRect(x,y,w,h);
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(x,y,w,h);
+      ctx.fillStyle = "white";
+      ctx.font = "24px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(text, x+w/2, y+h/2);
+    }
+
+    function drawTitleScreen(){
+      ctx.fillStyle = "white";
+      ctx.font = "48px Arial bold";
+      ctx.textAlign = "center";
+      ctx.fillText("Elmo Fight (still in beta)", canvas.width/2, 150);
+      drawButton(220, 225, 200, 45, "Start Game");
+    }
+
+    function drawGameOverScreen() {
+      ctx.fillStyle = "white";
+      ctx.font = "48px Arial bold";
+      ctx.textAlign = "center";
+      ctx.fillText(gameWon ? "YOU WIN!" : "elmo always wins", canvas.width/2, 200);
+      drawButton(220, 300, 200, 45, "Retry");
+      drawButton(220, 360, 200, 45, "Quit to Title");
+    }
+
+    // --- Controls ---
+    document.addEventListener("keydown", e => {
+      keys[e.key.toLowerCase()] = true;
+      if(gameState !== "playing" || gameOver) return;
+
+      if(!finalAttackActive) {
+        if(e.key === "Shift" && cooldowns.heal <= 0 && player.tp >= player.maxTp){
+          player.hp = player.maxHp; player.tp = 0;
+          cooldowns.heal = cooldownMax.heal;
+          flashScreen("green"); showAction("Healed!");
+        }
+        else if(e.key === "1" && cooldowns.slow <= 0 && player.tp >= 10 && slowed >= 1){
+          player.tp -= 10;
+          cooldowns.slow = cooldownMax.slow;
+          flashScreen("yellow");
+          slowed = 0.3; slowMotionFrames = 150;
+          showAction("Time Slow!");
+        }
+        else if(e.key.toLowerCase() === "c"){
+          if(cooldowns.defend <= 0){
+            player.tp = Math.min(player.maxTp, player.tp + 7);
+            cooldowns.defend = cooldownMax.defend;
+            flashScreen("cyan");
+            slowed = 0.65; slowMotionFrames = 40;
+            player.glowBlue = true;
+            showAction("Defend");
+            setTimeout(() => player.glowBlue = false, slowMotionFrames * 1000 / 60);
+          }
+        }
+        else if(e.key.toLowerCase() === "z"){
+          if(attackMeter.active && !attackMeter.locked) stopAttackMeter();
+          else if(!attackMeter.active) startAttackMeter();
+        }
+        else if(e.key.toLowerCase() === "x") playerAct();
+      }
+    });
+
+    document.addEventListener("keyup", e => {
+      keys[e.key.toLowerCase()] = false;
+    });
+
+    // --- Attack Meter ---
+    let attackMeter = {
+      active: false,
+      locked: false,
+      barX: 40, barY: 425, barW: 150, barH: 20,
+      indicatorX: 40,
+      speed: 320,
+      direction: 1,
+      fadeAlpha: 1,
+      fading: false,
+      minDamage: 1,
+      maxDamage: 7
+    };
+
+    function startAttackMeter() {
+      if(attackMeter.active || player.attacking || gameOver || cooldowns.attack > 0 || finalAttackActive) return;
+      attackMeter.active = true;
+      attackMeter.locked = false;
+      attackMeter.indicatorX = attackMeter.barX;
+      attackMeter.direction = 1;
+      attackMeter.fadeAlpha = 1;
+      attackMeter.fading = false;
+    }
+    function updateAttackMeter(dt){
+      if(!attackMeter.active) return;
+      if(!attackMeter.locked){
+        attackMeter.indicatorX += attackMeter.direction * attackMeter.speed * dt;
+        if(attackMeter.indicatorX > attackMeter.barX + attackMeter.barW) attackMeter.direction = -1;
+        else if(attackMeter.indicatorX < attackMeter.barX) attackMeter.direction = 1;
+      } else {
+        if(!attackMeter.fading){
+          attackMeter.fading = true;
+          cooldowns.attack = cooldownMax.attack;
+          player.attacking = true;
+          player.attackFrame = 30;
+        }
+        attackMeter.fadeAlpha -= dt * 2.8;
+        if(attackMeter.fadeAlpha <= 0){
+          attackMeter.active = false;
+          attackMeter.locked = false;
+          attackMeter.fading = false;
+          player.attacking = false;
+          attackMeter.fadeAlpha = 1;
+        }
+      }
+    }
+    function stopAttackMeter(){
+      if(!attackMeter.active || attackMeter.locked) return;
+      attackMeter.locked = true;
+      const center = attackMeter.barX + attackMeter.barW/2;
+      let dist = Math.abs(center - attackMeter.indicatorX);
+      let damageRatio = Math.max(0, 1 - dist/(attackMeter.barW/2));
+      const damage = Math.round(attackMeter.minDamage + damageRatio*(attackMeter.maxDamage - attackMeter.minDamage));
+      performAttack(damage);
+    }
+    // --- Player Attack ---
+    function performAttack(dmg) {
+  if (player.attacking) return;
+  if (finalAttackActive) return;
+
+  // If enemy hp is already <= 5 OR hp will drop to <= 5, start final attack
+  if (!finalAttackActive && (enemy.hp <= 5 || enemy.hp - dmg <= 5)) {
+    startFinalAttack();
+    return;
+  }
+
+  enemy.hp = Math.max(enemy.hp - dmg, 0);
+  flashScreen("lime");
+  showAction("Attack");
+  enemy.shakeTimer = 12; enemy.shakeIntensity = 5;
+}
+
+
+    function playerAct(){
+      if(player.attacking || attackMeter.active || gameOver || cooldowns.act > 0 || finalAttackActive) return;
+      if(player.tp < 25){ showAction("Not enough TP!"); return; }
+      player.tp -= 25;
+      flashScreen("lime");
+      cooldowns.act = cooldownMax.act;
+      showAction("Act");
+      enemy.spinTimer = enemy.spinDuration;
+      enemy.poison += 1;
+    }
+
+    // --- Movement & Box ---
+    function moveBox(dt){
+      if(dvdBox.active){
+        dvdBox.x += dvdBox.vx * dt * 60;
+        dvdBox.y += dvdBox.vy * dt * 60;
+        if(dvdBox.x <= 0 || dvdBox.x + dvdBox.width >= canvas.width) dvdBox.vx *= -1;
+        if(dvdBox.y <= 0 || dvdBox.y + dvdBox.height >= canvas.height) dvdBox.vy *= -1;
+        dvdBox.x = Math.max(0, Math.min(canvas.width - dvdBox.width, dvdBox.x));
+        dvdBox.y = Math.max(0, Math.min(canvas.height - dvdBox.height, dvdBox.y));
+        player.boxX = dvdBox.x;
+        player.boxY = dvdBox.y;
+      } else {
+        player.boxX = 190;
+        player.boxY = 290;
+      }
+    }
+
+    function checkAndHandleDodge(dt){
+      if(!dvdBox.active) return;
+      const collide = player.boxX < enemy.x + enemy.width &&
+                      player.boxX + player.boxWidth > enemy.x &&
+                      player.boxY < enemy.y + enemy.height &&
+                      player.boxY + player.boxHeight > enemy.y;
+      if(collide && !enemy.dodging){
+        enemy.dodging = true;
+        enemy.targetX = enemy.x + (enemy.x < canvas.width/2 ? 100 + Math.random()*50 : -100 - Math.random()*50);
+        enemy.targetY = enemy.y + (enemy.y < canvas.height/3 ? 100 + Math.random()*50 : -100 - Math.random()*50);
+        enemy.targetX = Math.min(Math.max(enemy.targetX, 50), canvas.width - enemy.width -50);
+        enemy.targetY = Math.min(Math.max(enemy.targetY, 30), 100);
+      }
+      if(enemy.dodging){
+        let step = enemy.dodgeSpeed * dt * 60;
+        let dx = enemy.targetX - enemy.x;
+        let dy = enemy.targetY - enemy.y;
+        let dist = Math.hypot(dx, dy);
+        if(dist < step){
+          enemy.dodging = false;
+          enemy.targetX = enemyInit.x;
+          enemy.targetY = enemyInit.y;
+        } else {
+          enemy.x += (dx / dist) * step;
+          enemy.y += (dy / dist) * step;
+        }
+      } else {
+        let step = 0.5 * dt * 60;
+        enemy.x += (enemyInit.x - enemy.x) * step;
+        enemy.y += (enemyInit.y - enemy.y) * step;
+      }
+    }
+
+    function movePlayer(dt){
+      if(player.attacking || attackMeter.active || gameState !== "playing") return;
+      if(finalAttackActive && finalPhase === 2){
+        player.x += playerForcedMoveSpeed * dt * 60;
+      }
+      moveBox(dt);
+      const moveDist = player.speed * dt * 60;
+      if(keys["arrowleft"] || keys["a"]) player.x -= moveDist;
+      if(keys["arrowright"] || keys["d"]) player.x += moveDist;
+      if(keys["arrowup"] || keys["w"]) player.y -= moveDist;
+      if(keys["arrowdown"] || keys["s"]) player.y += moveDist;
+      player.x = Math.min(Math.max(player.x, player.boxX + player.heartRadius), player.boxX + player.boxWidth - player.heartRadius);
+      player.y = Math.min(Math.max(player.y, player.boxY + player.heartRadius), player.boxY + player.boxHeight - player.heartRadius);
+      if(finalAttackActive && finalPhase === 2){
+        // Maze walls do nothing - collision tho:
+if(player.x < corridorX + player.heartRadius || player.x > corridorX + corridorWidth - player.heartRadius){
+  // Maybe prevent going out of corridor bounds by clamping position
+  player.x = Math.min(Math.max(player.x, corridorX + player.heartRadius), corridorX + corridorWidth - player.heartRadius);
+}
+
+// Check if player's bounding box collides with maze walls (treat walls as objects)
+// but instead player box collision is instant death:
+function boxHitsMazeWall() {
+  for(let line of mazeLines){
+    let lx = line.x - mazeScrollX;
+    // Check if any part of the player's box is colliding with maze wall (outside gap)
+    if(lx + mazeLineWidth/2 > player.boxX && lx - mazeLineWidth/2 < player.boxX + player.boxWidth){
+      if(player.boxY < line.gapStart || player.boxY + player.boxHeight > line.gapStart + line.gapHeight){
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+if(boxHitsMazeWall()){
+  // damage
+  player.hp = 0;
+  flashScreen("red");
+  gameOver = true; gameWon = false; gameState = "gameover";
+  updateMusic();
+}
+
+      }
+    }
+
+    // ---- Main Update Loop ----
+    function update(ts){
+      const dtRaw = (ts - lastTimestamp) / 1000;
+      lastTimestamp = ts;
+      const dt = Math.min(dtRaw, 0.05);
+
+      if(gameState === "title"){
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        drawTitleScreen();
+        requestAnimationFrame(update);
+        return;
+      }
+      if(gameState === "gameover"){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        drawGameOverScreen();
+        requestAnimationFrame(update);
+        return;
+      }
+
+      // Clear
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (slowMotionFrames > 0) {
+        slowMotionFrames--;
+        if(slowMotionFrames === 0) slowed = 1;
+      } else slowed = 1;
+
+      for (let key in cooldowns) {
+        if (cooldowns[key] > 0) cooldowns[key] = Math.max(0, cooldowns[key] - dt);
+      }
+
+      movePlayer(dt);
+      checkAndHandleDodge(dt);
+
+      // For bullets with trails (finalRed bullets)
+      for(let b of bullets){
+        if(b.finalRed){
+          b.trail.unshift({x: b.x, y: b.y});
+          if(b.trail.length > 15) b.trail.pop();
+        }
+      }
+
+      // Homing bullet velocity update
+      for(let b of bullets){
+        if(b.homing){
+          const dx = player.x - b.x;
+          const dy = player.y - b.y;
+          const dist = Math.hypot(dx, dy) || 1;
+          b.vx += (dx/dist) * 0.06;
+          b.vy += (dy/dist) * 0.06;
+          const spd = Math.hypot(b.vx, b.vy);
+          const maxSpd = 5 * slowed;
+          if(spd > maxSpd){
+            b.vx = (b.vx/spd) * maxSpd;
+            b.vy = (b.vy/spd) * maxSpd;
+          }
+        }
+      }
+
+      if(enemy.poison > 0){
+  enemy.poisonTicks += dt * 60;
+  if(enemy.poisonTicks >= 60){
+    enemy.hp = Math.max(0, enemy.hp-1);
+    enemy.poisonTicks = 0;
+
+    // Trigger final attack automatically if hp <= 5 and not started yet
+    if(enemy.hp <= 5 && !finalAttackActive){
+      startFinalAttack();
+    }
+  }
+}
+
+
+      if(enemy.shakeTimer > 0) enemy.shakeTimer--;
+      if(enemy.spinTimer > 0){
+        enemy.spinTimer--;
+        enemy.rotation += 2*Math.PI / enemy.spinDuration;
+        if(enemy.spinTimer <= 0) enemy.rotation = 0;
+      }
+
+      if(finalAttackActive){
+        updateFinalAttack(ts, dt);
+      } else {
+        const phase = attackPhases[currentPhaseIndex];
+        if(ts - phaseStartTime > phase.duration){
+          currentPhaseIndex = (currentPhaseIndex+1) % attackPhases.length;
+          phaseStartTime = ts;
+          bullets.length = 0;
+          startBoxMovementChance();
+        }
+        attackPhases[currentPhaseIndex].pattern(ts);
+      }
+
+      updateBullets(dt);
+
+      if(player.attacking){
+        player.attackFrame--;
+        if(player.attackFrame <= 0) player.attacking = false;
+      } else updateAttackMeter(dt);
+
+      ctx.save();
+
+      if(finalAttackActive && finalPhase === 1){
+        ctx.translate(canvas.width/2, canvas.height/2);
+        ctx.rotate(enemy.rotation);
+        ctx.translate(-canvas.width/2, -canvas.height/2);
+      }
+
+      drawEnemy();
+      drawTPBar();
+
+      if(finalAttackActive && finalPhase === 2){
+        ctx.lineWidth = mazeLineWidth;
+        ctx.strokeStyle = "white";
+        ctx.fillStyle = "rgba(255,0,0,0.2)";
+        for(let line of mazeLines){
+          let lx = line.x - mazeScrollX;
+          ctx.beginPath();
+          ctx.rect(lx - mazeLineWidth/2, corridorY, mazeLineWidth, line.gapStart - corridorY);
+          ctx.rect(lx - mazeLineWidth/2, line.gapStart + line.gapHeight, mazeLineWidth, corridorY + corridorHeight - (line.gapStart + line.gapHeight));
+          ctx.fill();
+          if(lx > player.x - 40 && lx < player.x + 40){
+            if(checkMazeCollision() || player.x < corridorX + player.heartRadius || player.x > corridorX + corridorWidth - player.heartRadius){
+  player.hp = Math.max(0, player.hp - 2);
+  flashScreen("red");
+  // Maybe add invincibility frames or slowdown here
+  if(player.hp <= 0){
+    gameOver = true; gameWon = false; gameState = "gameover";
+    updateMusic();
+  }
+}
+
+          }
+        }
+        // Timer bar
+        let timerBarWidth = 150;
+        let timerBarHeight = 12;
+        let timerX = canvas.width - timerBarWidth - 20;
+        let timerY = 25;
+        ctx.fillStyle = "#222";
+        ctx.fillRect(timerX, timerY, timerBarWidth, timerBarHeight);
+        ctx.fillStyle = "#f44";
+        ctx.fillRect(timerX, timerY, timerBarWidth * Math.max(0, finalPhase2TimeLeft / 12000), timerBarHeight);
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(timerX, timerY, timerBarWidth, timerBarHeight);
+        ctx.font = "14px Arial";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.fillText("Survive Time", timerX + timerBarWidth/2, timerY + timerBarHeight + 16);
+      }
+
+      drawBullets();
+      drawPlayer();
+      drawHpBar();
+
+      ctx.restore();
+
+      drawTopLeftText();
+
+      ctx.fillStyle = "white";
+      ctx.font = "18px Arial";
+      ctx.textAlign = "center";
+
+      if(!finalAttackActive){
+        const phase = attackPhases[currentPhaseIndex];
+        ctx.fillText(`Attack Pattern: ${phase.name}`, canvas.width / 2, 470);
+      } else {
+        ctx.fillText(`Final Attack! Survive! ${finalPhase === 1?"Spin":"Maze"}`, canvas.width/2, 470);
+      }
+
+      if(flashAlpha > 0){
+        ctx.fillStyle = flashColor;
+        ctx.globalAlpha = flashAlpha;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = 1;
+        flashAlpha *= 0.85;
+      }
+
+      if(attackMeter.active){
+        ctx.globalAlpha = attackMeter.fadeAlpha;
+        drawAttackMeter();
+        ctx.globalAlpha = 1;
+      }
+
+      drawCooldownBars();
+      drawActionText();
+
+      // Check game end states
+      if(player.hp <= 0){
+        gameOver = true;
+        gameWon = false;
+        if(gameState !== "gameover"){
+          gameState = "gameover";
+          updateMusic();
+        }
+      }
+      else if(enemy.hp <= 0 && !finalAttackActive){
+        gameOver = true;
+        gameWon = true;
+        if(gameState !== "gameover"){
+          gameState = "gameover";
+          updateMusic();
+        }
+      }
+      else if(enemy.hp <= 0 && finalAttackActive && finalPhase === 2 && finalPhase2TimeLeft <= 0){
+        gameOver = true;
+        gameWon = true;
+        if(gameState !== "gameover"){
+          gameState = "gameover";
+          updateMusic();
+        }
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    function updateMusic() {
+      if(gameState === "playing" && !gameOver){
+        if(audioPlayer.paused){
+          audioPlayer.volume = 0.3;
+          audioPlayer.play().catch(() => {});
+        }
+      } else {
+        audioPlayer.pause();
+      }
+    }
+
+    function startGame() {
+      player = {...playerInit, glowLevel: 0, glowBlue: false, visible: true, invincibleTime: 0};
+      enemy = {...enemyInit, shakeTimer: 0, shakeIntensity: 0, rotation: 0, spinTimer: 0, visible: true};
+      bullets.length = 0;
+      currentPhaseIndex = 0;
+      phaseStartTime = performance.now();
+      gameOver = false; gameWon = false;
+      cooldowns = { attack: 0, act: 0, defend: 0, slow: 0, heal: 0 };
+      dvdBox.active = false;
+      player.boxX = 190; player.boxY = 290;
+      slowed = 1; slowMotionFrames = 0;
+      finalAttackActive = false;
+      enemy.hp = enemy.maxHp;
+      startBoxMovementChance();
+      gameState = "playing";
+      updateMusic();
+      audioPlayer.currentTime = 0;
+      audioPlayer.play().catch(() => {});
+    }
+
+    function goToTitle() {
+      gameState = "title";
+      updateMusic();
+    }
+
+    // Load images, start animation loop
+    const imagesToLoad = [playerInit.sprite, enemyInit.sprite, heartImg, playerAttackImg];
+    let loadedCount = 0;
+    imagesToLoad.forEach(img=>{
+      if(img.complete) loadedCount++;
+      else img.onload = () => {
+        loadedCount++;
+        if(loadedCount === imagesToLoad.length) onAllLoaded();
+      }
+    });
+    if(imagesToLoad.every(i => i.complete)) onAllLoaded();
+
+    function onAllLoaded(){
+      lastTimestamp = performance.now();
+      if(window.location.search.includes("play=1")){
+        startGame();
+      }
+      requestAnimationFrame(update);
+    }
+
+    canvas.addEventListener('click', (e) => {
+      if (gameState === "title") {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        // Button position and size
+        const btnX = 220;
+        const btnY = 225;
+        const btnW = 200;
+        const btnH = 45;
+
+        if (mouseX >= btnX && mouseX <= btnX + btnW &&
+            mouseY >= btnY && mouseY <= btnY + btnH) {
+          window.open(window.location.href + "?play=1", "_blank");
+        }
+
+      } else if (gameState === "gameover") {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        if (mouseX >= 220 && mouseX <= 420 && mouseY >= 300 && mouseY <= 345) {
+          startGame();
+        }
+        if (mouseX >= 220 && mouseX <= 420 && mouseY >= 360 && mouseY <= 405) {
+          goToTitle();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
