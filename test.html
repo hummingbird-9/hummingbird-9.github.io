@@ -335,6 +335,62 @@
         #optimize-choice button:hover {
             background: #444;
         }
+
+        /* Resolution Menu */
+        #resolution-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #222;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 100002;
+            display: none;
+            font-family: sans-serif;
+            min-width: 320px;
+            user-select: none;
+        }
+
+        #resolution-menu h2 {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        #resolution-menu button, #resolution-menu #resolution-menu-close {
+            background: #333;
+            border: 1px solid #555;
+            color: #fff;
+            font-size: 16px;
+            padding: 10px 18px;
+            margin: 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            min-width: 100px;
+            transition: background 0.3s;
+        }
+
+        #resolution-menu button:hover, #resolution-menu #resolution-menu-close:hover {
+            background: #555;
+        }
+
+        #resolution-slider-container {
+            margin-top: 15px;
+            text-align: center;
+            color: #ddd;
+        }
+
+        #resolution-slider {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        #slider-value {
+            font-weight: bold;
+            margin-top: 5px;
+            display: block;
+        }
     </style>
 </head>
 
@@ -382,7 +438,16 @@
         <button id="close-settings-btn">Close</button>
     </div>
 
-    <div id="instruction-text">Press '1' to toggle console, Press '2' to toggle FPS</div>
+    <div id="instruction-text">Press '1' to toggle console, Press '2' to toggle FPS, Press '3' for resolution menu</div>
+
+    <div id="resolution-menu">
+        <h2>Select Resolution</h2>
+        <div id="resolution-slider-container">
+            <input type="range" id="resolution-slider" min="180" max="7680" step="1" value="720">
+            <span id="slider-value">720p (1280 x 720)</span>
+        </div>
+        <button id="resolution-menu-close">Close</button>
+    </div>
 
     <script>
         const optimizeChoice = document.getElementById('optimize-choice');
@@ -411,6 +476,12 @@
         const consoleSettingsIcon = document.getElementById('console-settings-icon');
         const closeSettingsBtn = document.getElementById('close-settings-btn');
         const instructionText = document.getElementById("instruction-text");
+
+        // Resolution menu elements
+        const resolutionMenu = document.getElementById('resolution-menu');
+        const resolutionSlider = document.getElementById('resolution-slider');
+        const sliderValue = document.getElementById('slider-value');
+        const resolutionMenuClose = document.getElementById('resolution-menu-close');
 
         fpsCanvas.width = 180;
         fpsCanvas.height = 50;
@@ -801,6 +872,14 @@
         document.addEventListener('keydown', e => {
             if (e.key === '1') toggleConsole();
             else if (e.key === '2') toggleFpsViewer();
+            else if (e.key === '3') {
+                if (resolutionMenu.style.display === 'block') {
+                    resolutionMenu.style.display = 'none';
+                } else {
+                    resolutionMenu.style.display = 'block';
+                    updateSliderLabel();
+                }
+            }
         });
 
         consoleSettingsIcon.addEventListener('click', toggleConsoleSettingsUI);
@@ -850,10 +929,6 @@
 
         // Fetch and stream unity parts progressively without double buffering - optimized
         async function fetchStreamParts(partsUrls) {
-            // Stream fetch without extra blobs to lower memory usage
-            // But we have no way to patch Unity loader for streams easily here,
-            // so we use blob concatenation but reduce size of arrays and revoke URLs after use.
-
             const chunkArrays = [];
             let loadedBytes = 0;
             for (const url of partsUrls) {
@@ -874,7 +949,6 @@
                     loadedBytes += value.byteLength;
                     chunkArrays.push(value);
                     loadingText.textContent = `${(loadedBytes / 1048576).toFixed(2)} MB / ${totalSizeMB} MB`;
-                    // yield to event loop for UI update if you want:
                     await new Promise(r => setTimeout(r, 0));
                 }
             }
@@ -887,51 +961,47 @@
             return Array.from({ length: (end - start + 1) }, (_, i) => `${baseFilename}.part${start + i}`);
         }
 
+        // Store Unity instance to allow resizing calls if needed later
+        let unityInstance = null;
+
         // Load Unity instance helper
         async function loadUnity(optimized) {
             loadingText.style.display = "block";
 
             try {
-                // Set max FPS points for FPS graph here:
                 maxFpsPoints = optimized ? 30 : 90;
 
-                // For optimized: load smaller chunks (same parts but process streamed progressively)
-                // For simplicity, use same parts list. Full version uses bigger fps graph, dev console etc enabled by default
-                // Optimized disables FPS graph at start and uses smaller FPS history size
-
-                // Disable FPS graph display initially for optimized
                 if (optimized) {
                     fpsGraph.style.display = 'none';
                 } else {
                     fpsGraph.style.display = 'block';
                 }
 
-                // Fetch data and wasm parts
                 const dataParts = generatePartList("Build/hktruffled.data", 1, 45);
                 const wasmParts = generatePartList("Build/hktruffled.wasm", 1, 2);
 
-                // Fetch and create blob URLs for data and wasm
                 const dataBlob = await fetchStreamParts(dataParts);
                 const wasmBlob = await fetchStreamParts(wasmParts);
 
                 const dataUrl = URL.createObjectURL(dataBlob);
                 const wasmUrl = URL.createObjectURL(wasmBlob);
 
-                // Load loader.js script and wait for onload
-                function loadScript(src) {
-                    return new Promise((res, rej) => {
-                        const script = document.createElement('script');
-                        script.src = src;
-                        script.onload = () => res();
-                        script.onerror = () => rej(new Error(`Failed to load ${src}`));
-                        document.body.appendChild(script);
-                    });
-                }
-
                 await loadScript("Build/hktruffled.loader.js");
 
-                canvasUnity.width = 1280;
-                canvasUnity.height = 720;
+                // Set canvas internal resolution here to current slider-based resolution
+                let resVertical = parseInt(resolutionSlider.value, 10);
+                // Calculate width as width = 16/9 * height
+                let resWidth = Math.round(resVertical * 16 / 9);
+
+                canvasUnity.width = resWidth;
+                canvasUnity.height = resVertical;
+
+                if (unityInstance) {
+                    try {
+                        unityInstance.Quit();
+                    } catch { }
+                    unityInstance = null;
+                }
 
                 window.createUnityInstance(canvasUnity, {
                     dataUrl,
@@ -941,35 +1011,43 @@
                     companyName: "Team Cherry",
                     productName: "Hollow Knight",
                     productVersion: "1.0"
-                }).then(() => {
+                }).then(instance => {
+                    unityInstance = instance;
                     loadingText.remove();
                     optimizeChoice.style.display = 'none';
 
-                    // Release blobs after load
                     URL.revokeObjectURL(dataUrl);
                     URL.revokeObjectURL(wasmUrl);
 
-                    // Show UI elements depending on mode
                     if (!optimized) {
                         fpsGraph.style.display = 'block';
                         saveBtn.style.display = 'block';
                     } else {
-                        saveBtn.style.display = 'block';  // Save always available for optimized too
+                        saveBtn.style.display = 'block';
                     }
 
                     instructionText.style.display = 'block';
                     setTimeout(() => instructionText.style.display = 'none', 5000);
 
-                    // Start FPS graph and numeric counters
                     fpsGraphRunning = true;
                     requestAnimationFrame(updateFpsGraph);
                     requestAnimationFrame(calculateFpsNumeric);
-
                 }).catch(err => alert(err));
 
             } catch (err) {
                 alert('Load failed: ' + err.message);
             }
+        }
+
+        // Helper to load script by URL
+        function loadScript(src) {
+            return new Promise((res, rej) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => res();
+                script.onerror = () => rej(new Error(`Failed to load ${src}`));
+                document.body.appendChild(script);
+            });
         }
 
         // Mobile check
@@ -981,61 +1059,49 @@
             mobileWarning.style.display = "block";
             setTimeout(() => mobileWarning.style.display = "none", 5000);
         }
-        const resolutionMenu = document.getElementById('resolution-menu');
-const resolutionButtons = resolutionMenu.querySelectorAll('button[data-width]');
 
-document.addEventListener('keydown', e => {
-    if (e.key === '1') toggleConsole();
-    else if (e.key === '2') toggleFpsViewer();
-    else if (e.key === '3') {
-        // Toggle resolution menu visibility
-        if (resolutionMenu.style.display === 'block') {
-            resolutionMenu.style.display = 'none';
-        } else {
-            resolutionMenu.style.display = 'block';
+        // Resolution menu slider event handling
+        function updateSliderLabel() {
+            const vertical = parseInt(resolutionSlider.value, 10);
+            const width = Math.round(vertical * 16 / 9);
+            sliderValue.textContent = `${vertical}p (${width} x ${vertical})`;
         }
-    }
-});
 
-resolutionButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const width = parseInt(btn.dataset.width, 10);
-        const height = parseInt(btn.dataset.height, 10);
-        canvasUnity.width = width;
-        canvasUnity.height = height;
-        resolutionMenu.style.display = 'none';
-    });
-});
+        resolutionSlider.addEventListener('input', () => {
+            updateSliderLabel();
+        });
 
-document.getElementById('resolution-menu-close').addEventListener('click', () => {
-    resolutionMenu.style.display = 'none';
-});
+        resolutionSlider.addEventListener('change', () => {
+            const vertical = parseInt(resolutionSlider.value, 10);
+            const width = Math.round(vertical * 16 / 9);
+            canvasUnity.width = width;
+            canvasUnity.height = vertical;
 
-        // Buttons event handlers
-        btnOptimized.onclick = () => {
-            // Hide overlay, load optimized version
+            if (unityInstance && typeof unityInstance.SendMessage === "function") {
+                // Optionally notify Unity about resize if needed here:
+                // unityInstance.SendMessage('GameObjectName', 'MethodName', `${width},${vertical}`);
+            }
+
+            updateSliderLabel();
+        });
+
+        resolutionMenuClose.addEventListener('click', () => {
+            resolutionMenu.style.display = 'none';
+        });
+
+        // Load Unity when choose buttons are clicked
+        btnOptimized.addEventListener('click', () => {
             optimizeChoice.style.display = 'none';
             fpsGraph.style.display = 'none';
             loadUnity(true);
-        };
+        });
 
-        btnFull.onclick = () => {
-            // Load full version
+        btnFull.addEventListener('click', () => {
             optimizeChoice.style.display = 'none';
             fpsGraph.style.display = 'block';
             loadUnity(false);
-        };
+        });
     </script>
-  <div id="resolution-menu" 
-     style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: #222; color: white; padding: 20px; border-radius: 8px; z-index: 100002; display: none; font-family: sans-serif;">
-    <h2>Select Resolution</h2>
-    <button data-width="1280" data-height="720">1280 x 720 (720p)</button>
-    <button data-width="1920" data-height="1080">1920 x 1080 (1080p)</button>
-    <button data-width="640" data-height="360">640 x 360 (360p)</button>
-    <button id="resolution-menu-close" style="margin-top: 15px;">Close</button>
-</div>
-
 </body>
 
 </html>
