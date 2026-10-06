@@ -7,7 +7,6 @@
   <title>humming[bird]Tech</title>
 
   <style>
-    /* --- Your Original Styles --- */
     body {
       margin: 0;
       padding: 20px;
@@ -57,7 +56,6 @@
       outline: none;
     }
 
-    /* --- IMPROVED HOVER WARNING --- */
     #warning-text {
       font-size: 1.1rem;
       color: #ff4d4d;
@@ -78,19 +76,19 @@
 <body>
 
 <h1>
-  <!-- Your exact original layout restored to fix broken placeholder icons -->
+  <!-- Clean version of your original logo link layout -->
   <a href="index.html?bypass=true">
-    <img src="https://onecompiler.io" alt="Logo" style="cursor: pointer; border: none;">
+    <img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png" alt="Logo" style="cursor: pointer; border: none;">
   </a>
 </h1>
 
-  <!-- Game elements routed through the popup check handler -->
+  <!-- Navigation items protected by the active class warning check -->
   <button id="gallery-btn" onclick="tryAccessGame('gallery.html')">Gallery of ports, flash games, and other HTMLs</button>
   
   <h3 id="warning-text">ONLY FOR USE OUTSIDE OF CLASS</h3>
 
   <button onclick="location.href='hummingweb.html'">Search Engine</button>
-  <button onclick="alert('Made by Oliver Boyd (hummingbird_9). humming[bird]Tech Version 2.0.0')">About</button>
+  <button onclick="alert('Made by Oliver Boyd (hummingbird_9). humming[bird]Tech Version 2.0.5')">About</button>
   <button onclick="tryAccessGame('kodub.html')">kodub's stuff (poly track and such)</button>
   <button onclick="tryAccessGame('test.html')">Current Beta Test HTML Thingy</button>
   <button onclick="tryAccessGame('elmofight.html')">Elmo Fight</button>
@@ -100,50 +98,35 @@
     let isClassActive = false;
 
     function checkClassStatus() {
-      // 1. Check for the manual logo bypass link parameter
+      // 1. Instant check for manual logo parameter bypass url
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('bypass') === 'true') {
         isClassActive = false;
-        console.log("Bypass mode verified via logo interaction.");
         return; 
       }
 
-      // 2. Hard Platform Override (Ensures Mac systems immediately drop out of detection rules)
+      // 2. Hardware Environment Check (Instantly disables engine blocks on Apple/Mac computers)
       const userAgent = navigator.userAgent.toUpperCase();
       const platform = navigator.platform.toUpperCase();
       if (platform.indexOf('MAC') !== -1 || userAgent.indexOf('MAC') !== -1) {
         isClassActive = false;
-        console.log("Mac detected: Class block disabled completely.");
         return;
       }
 
-      // 3. Fallback Filter Checking Engine (Only executes if not a Mac and not in bypass mode)
+      // 3. True Linewize Network Sniffer Probe
+      // Performs a rapid network verification handshake request to look for active tracking proxies
       fetch('https://linewize.net', { mode: 'no-cors', cache: 'no-store' })
         .then(() => {
+          // If the network resolves directly to a Linewize login gateway page, a class filter is active
           isClassActive = true;
-          console.log("Linewize operational filter matrix detected.");
         })
         .catch(() => {
-          // Time-based layout validation fallback rules
-          const now = new Date();
-          const day = now.getDay();
-          const hours = now.getHours();
-          const minutes = now.getMinutes();
-          const totalMinutes = (hours * 60) + minutes;
-
-          const isWeekday = (day >= 1 && day <= 5);
-          const startMinutes = (8 * 60) + 0;   // 08:00 AM
-          const endMinutes = (15 * 60) + 30;  // 03:30 PM
-
-          if (isWeekday && (totalMinutes >= startMinutes && totalMinutes <= endMinutes)) {
-            isClassActive = true;
-          } else {
-            isClassActive = false;
-          }
+          // If it fails or times out (like on your personal home network or a Mac), class is NOT active
+          isClassActive = false;
         });
     }
 
-    // Intercept function for buttons
+    // Intercept function handling restricted game navigation buttons
     function tryAccessGame(destinationUrl) {
       if (isClassActive) {
         alert("NO GAMES IN CLASS (THAT MEANS YOU JASPER)");
@@ -152,11 +135,9 @@
       }
     }
 
-    // Run parameters immediately on screen layout initialization
+    // Initialize detection loops immediately on runtime load
     checkClassStatus();
-
-    // Verification interval loop
-    setInterval(checkClassStatus, 5000);
+    setInterval(checkClassStatus, 4000);
   </script>
 </body>
 </html>
