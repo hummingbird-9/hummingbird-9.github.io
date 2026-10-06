@@ -7,9 +7,8 @@
   <title>humming[bird]Tech</title>
 
   <style>
-    /* --- Your Original Styles --- */
     body {
-      margin: 0;http://ghp.humming.rf.gd/hummingweb/
+      margin: 0;
       padding: 20px;
       min-height: 100vh;
       display: flex;
@@ -40,10 +39,10 @@
       cursor: pointer;
       font-size: 18px;
       font-weight: 600;
-      margin: 10px 0; /* Keeps buttons tight together */
+      margin: 10px 0; 
       padding: 14px 40px;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 32px 0 rghttp://ghp.humming.rf.gd/hummingweb/ba(0, 255, 45, 0.15);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 32px 0 rgba(0, 255, 45, 0.15);
       backdrop-filter: saturate(180%) blur(10px);
       -webkit-backdrop-filter: saturate(180%) blur(10px);
       transition: transform 0.3s ease, background 0.3s ease;
@@ -57,7 +56,6 @@
       outline: none;
     }
 
-    /* --- IMPROVED HOVER WARNING --- */
     #warning-text {
       font-size: 1.1rem;
       color: #ff4d4d;
@@ -66,20 +64,20 @@
       max-width: 600px;
       position: absolute; 
       pointer-events: none;
-      /* Positions the warning text slightly below the Gallery button without moving other buttons */
       transform: translateY(65px); 
     }
 
     #gallery-btn:hover ~ #warning-text {
       opacity: 1;
-    }http://ghp.humming.rf.gd/hummingweb/
+    }
   </style>
 </head>
 
 <body>
 
 <h1>
-  <a href="noacd.html">
+  <!-- URL tracking parameter to stop logo bypass tricks -->
+  <a href="index.html?bypass=true">
     <img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png" alt="Logo" style="cursor: pointer; border: none;">
   </a>
 </h1>
@@ -89,40 +87,60 @@
   <h3 id="warning-text">ONLY FOR USE OUTSIDE OF CLASS</h3>
 
   <button onclick="location.href='hummingweb.html'">Search Engine</button>
-  <button onclick="alert('Made by Oliver Boyd (hummingbird_9). humming[bird]Tech Version 1.8.3')">About</button>
+  <button onclick="alert('Made by Oliver Boyd (hummingbird_9). humming[bird]Tech Version 1.8.4')">About</button>
+  <button onclick="location.href='kodub.html'">kodub's stuff (poly track and such)</button>
   <button onclick="location.href='test.html'">Current Beta Test HTML Thingy</button>
   <button onclick="location.href='elmofight.html'">Elmo Fight</button>
   <button onclick="location.href='freeeducation.html'">Freeeducation portal (in case this doesn't satisfy you)</button>
 
   <script>
     function checkClassStatus() {
-//pings onecompiler for science class detection
-      fetch('https://onecompiler.com', { mode: 'no-cors' })
-        .then(() => {http://ghp.humming.rf.gd/hummingweb/
+      const now = new Date();
+      const day = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      
+      // Convert current time to total minutes past midnight
+      const totalMinutes = (hours * 60) + minutes;
+      
+      // Define your school day schedule parameters (Example: Mon-Fri, 8:00 AM to 3:30 PM)
+      const isWeekday = (day >= 1 && day <= 5);
+      const startMinutes = (8 * 60) + 0;   // 08:00 AM
+      const endMinutes = (15 * 60) + 30;  // 03:30 PM
+      
+      const isSchoolHours = isWeekday && (totalMinutes >= startMinutes && totalMinutes <= endMinutes);
+      
+      // Catch sneaky logo link clicks using the URL search parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const triedToBypass = urlParams.get('bypass');
 
-          // If reachable, show the button
-          document.getElementById('gallery-btn').style.display = 'inline-block';
-          // Ensure warning text can reappear if class ends
-          document.getElementById('warning-text').style.visibility = 'visible'; 
-        })
-        .catch(() => {
-          // If blocked (Science class active), hide everything risky
-          document.getElementById('gallery-btn').style.display = 'none';
-          document.getElementById('warning-text').style.opacity = '0';http://ghp.humming.rf.gd/hummingweb/
-          document.getElementById('warning-text').style.visibility = 'hidden';
-          console.log("Science Class Active: Gallery Hidden.");
-        });
+      if (isSchoolHours || triedToBypass === 'true') {
+        // Hide elements during school time or if bypass trick is detected
+        document.getElementById('gallery-btn').style.display = 'none';
+        document.getElementById('warning-text').style.opacity = '0';
+        document.getElementById('warning-text').style.visibility = 'hidden';
+        console.log("Class Time Block Active: Gallery Hidden.");
+        
+        // Clear out the cheat parameter quietly so they can't bookmark it to break things
+        if (triedToBypass === 'true') {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      } else {
+        // Safely show buttons outside of school hours
+        document.getElementById('gallery-btn').style.display = 'inline-block';
+        document.getElementById('warning-text').style.visibility = 'visible'; 
+      }
     }
 
-    // Run immediately on load
+    // Run calculations immediately
     checkClassStatus();
 
-    // Check every 10 seconds in case the teacher starts/ends class while the tab is open
+    // Re-verify the current time parameters every 10 seconds
     setInterval(checkClassStatus, 10000);
 
-    // EMERGENCY MANUAL HIDE: Press 'Escape' to hide the gallery instantly
+    // EMERGENCY MANUAL HIDE: Escape button safety override
     document.addEventListener('keydown', (e) => {
-      if (e.key === "Escape") {http://ghp.humming.rf.gd/hummingweb/
+      if (e.key === "Escape") {
         document.getElementById('gallery-btn').style.display = 'none';
         document.getElementById('warning-text').style.display = 'none';
       }
