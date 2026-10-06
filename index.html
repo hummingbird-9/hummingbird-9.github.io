@@ -7,6 +7,7 @@
   <title>humming[bird]Tech</title>
 
   <style>
+    /* --- Your Original Styles --- */
     body {
       margin: 0;
       padding: 20px;
@@ -56,6 +57,7 @@
       outline: none;
     }
 
+    /* --- IMPROVED HOVER WARNING --- */
     #warning-text {
       font-size: 1.1rem;
       color: #ff4d4d;
@@ -76,19 +78,19 @@
 <body>
 
 <h1>
-  <!-- Clicking the logo adds the ?bypass=true parameter to strip out the filter entirely -->
+  <!-- Your exact original image layout, updated to link to the bypass parameter -->
   <a href="index.html?bypass=true">
     <img src="https://onecompiler.io" alt="Logo" style="cursor: pointer; border: none;">
   </a>
 </h1>
 
-  <!-- Navigation items routed through the tryAccessGame handler -->
+  <!-- Navigation elements mapped to the safety handler -->
   <button id="gallery-btn" onclick="tryAccessGame('gallery.html')">Gallery of ports, flash games, and other HTMLs</button>
   
   <h3 id="warning-text">ONLY FOR USE OUTSIDE OF CLASS</h3>
 
   <button onclick="location.href='hummingweb.html'">Search Engine</button>
-  <button onclick="alert('Made by Oliver Boyd (hummingbird_9). humming[bird]Tech Version 1.9.5')">About</button>
+  <button onclick="alert('Made by Oliver Boyd (hummingbird_9). humming[bird]Tech Version 1.9.9')">About</button>
   <button onclick="tryAccessGame('kodub.html')">kodub's stuff (poly track and such)</button>
   <button onclick="tryAccessGame('test.html')">Current Beta Test HTML Thingy</button>
   <button onclick="tryAccessGame('elmofight.html')">Elmo Fight</button>
@@ -98,41 +100,44 @@
     let isClassActive = false;
 
     function checkClassStatus() {
-      // Step 1: Immediately read URL parameters to see if the user loaded the bypass link via the logo
+      // 1. Instant check for manual logo bypass link
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('bypass') === 'true') {
         isClassActive = false;
-        console.log("Bypass mode activated via title image link.");
         return; 
       }
 
-      // Step 2: Run dynamic filter check if no bypass parameter is explicitly set
+      // 2. Mac Platform Safety Override 
+      if (navigator.platform.toUpperCase().indexOf('MAC') !== -1 || navigator.userAgent.toUpperCase().indexOf('MAC') !== -1) {
+        isClassActive = false;
+        console.log("Mac detected: Class blocking features disabled completely.");
+        return;
+      }
+
+      // 3. Evening & Weekend Failsafe Window
+      const now = new Date();
+      const day = now.getDay();
+      const hours = now.getHours();
+      
+      if (day === 0 || day === 6 || hours >= 16 || hours < 7) {
+        isClassActive = false;
+        console.log("Outside school day tracking hours.");
+        return;
+      }
+
+      // 4. Run active filter probing during school hours
       fetch('https://linewize.net', { mode: 'no-cors', cache: 'no-store' })
         .then(() => {
           isClassActive = true;
-          console.log("Active Class Session Detected.");
+          console.log("Linewize network routing engine detected.");
         })
         .catch(() => {
-          // Fallback calendar logic if network response errors out completely
-          const now = new Date();
-          const day = now.getDay();
-          const hours = now.getHours();
-          const minutes = now.getMinutes();
-          const totalMinutes = (hours * 60) + minutes;
-
-          const isWeekday = (day >= 1 && day <= 5);
-          const startMinutes = (8 * 60) + 0;   // 08:00 AM
-          const endMinutes = (15 * 60) + 30;  // 03:30 PM
-
-          if (isWeekday && (totalMinutes >= startMinutes && totalMinutes <= endMinutes)) {
-            isClassActive = true;
-          } else {
-            isClassActive = false;
-          }
+          // If a school device is actively running inside school hours, fallback to secure state
+          isClassActive = true; 
         });
     }
 
-    // Intercepts navigation requests to check for restriction parameters
+    // Intercepts clicking the restricted items
     function tryAccessGame(destinationUrl) {
       if (isClassActive) {
         alert("NO GAMES IN CLASS (THAT MEANS YOU JASPER)");
@@ -141,10 +146,10 @@
       }
     }
 
-    // Initialize detection systems immediately on layout rendering
+    // Run parameters immediately on screen layout load
     checkClassStatus();
 
-    // Sample the environment tracking data loop every 5 seconds
+    // Re-verify network signatures every 5 seconds
     setInterval(checkClassStatus, 5000);
   </script>
 </body>
