@@ -76,75 +76,76 @@
 <body>
 
 <h1>
-  <!-- URL tracking parameter to stop logo bypass tricks -->
+  <!-- Clicking the logo adds the ?bypass=true parameter to strip out the filter entirely -->
   <a href="index.html?bypass=true">
-    <img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png" alt="Logo" style="cursor: pointer; border: none;">
+    <img src="https://onecompiler.io" alt="Logo" style="cursor: pointer; border: none;">
   </a>
 </h1>
 
-  <button id="gallery-btn" onclick="location.href='gallery.html'">Gallery of ports, flash games, and other HTMLs</button>
+  <!-- Navigation items routed through the tryAccessGame handler -->
+  <button id="gallery-btn" onclick="tryAccessGame('gallery.html')">Gallery of ports, flash games, and other HTMLs</button>
   
   <h3 id="warning-text">ONLY FOR USE OUTSIDE OF CLASS</h3>
 
   <button onclick="location.href='hummingweb.html'">Search Engine</button>
-  <button onclick="alert('Made by Oliver Boyd (hummingbird_9). humming[bird]Tech Version 1.8.4')">About</button>
-  <button onclick="location.href='kodub.html'">kodub's stuff (poly track and such)</button>
-  <button onclick="location.href='test.html'">Current Beta Test HTML Thingy</button>
-  <button onclick="location.href='elmofight.html'">Elmo Fight</button>
+  <button onclick="alert('Made by Oliver Boyd (hummingbird_9). humming[bird]Tech Version 1.9.5')">About</button>
+  <button onclick="tryAccessGame('kodub.html')">kodub's stuff (poly track and such)</button>
+  <button onclick="tryAccessGame('test.html')">Current Beta Test HTML Thingy</button>
+  <button onclick="tryAccessGame('elmofight.html')">Elmo Fight</button>
   <button onclick="location.href='freeeducation.html'">Freeeducation portal (in case this doesn't satisfy you)</button>
 
   <script>
-    function checkClassStatus() {
-      const now = new Date();
-      const day = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      
-      // Convert current time to total minutes past midnight
-      const totalMinutes = (hours * 60) + minutes;
-      
-      // Define your school day schedule parameters (Example: Mon-Fri, 8:00 AM to 3:30 PM)
-      const isWeekday = (day >= 1 && day <= 5);
-      const startMinutes = (8 * 60) + 0;   // 08:00 AM
-      const endMinutes = (15 * 60) + 30;  // 03:30 PM
-      
-      const isSchoolHours = isWeekday && (totalMinutes >= startMinutes && totalMinutes <= endMinutes);
-      
-      // Catch sneaky logo link clicks using the URL search parameter
-      const urlParams = new URLSearchParams(window.location.search);
-      const triedToBypass = urlParams.get('bypass');
+    let isClassActive = false;
 
-      if (isSchoolHours || triedToBypass === 'true') {
-        // Hide elements during school time or if bypass trick is detected
-        document.getElementById('gallery-btn').style.display = 'none';
-        document.getElementById('warning-text').style.opacity = '0';
-        document.getElementById('warning-text').style.visibility = 'hidden';
-        console.log("Class Time Block Active: Gallery Hidden.");
-        
-        // Clear out the cheat parameter quietly so they can't bookmark it to break things
-        if (triedToBypass === 'true') {
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
+    function checkClassStatus() {
+      // Step 1: Immediately read URL parameters to see if the user loaded the bypass link via the logo
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('bypass') === 'true') {
+        isClassActive = false;
+        console.log("Bypass mode activated via title image link.");
+        return; 
+      }
+
+      // Step 2: Run dynamic filter check if no bypass parameter is explicitly set
+      fetch('https://linewize.net', { mode: 'no-cors', cache: 'no-store' })
+        .then(() => {
+          isClassActive = true;
+          console.log("Active Class Session Detected.");
+        })
+        .catch(() => {
+          // Fallback calendar logic if network response errors out completely
+          const now = new Date();
+          const day = now.getDay();
+          const hours = now.getHours();
+          const minutes = now.getMinutes();
+          const totalMinutes = (hours * 60) + minutes;
+
+          const isWeekday = (day >= 1 && day <= 5);
+          const startMinutes = (8 * 60) + 0;   // 08:00 AM
+          const endMinutes = (15 * 60) + 30;  // 03:30 PM
+
+          if (isWeekday && (totalMinutes >= startMinutes && totalMinutes <= endMinutes)) {
+            isClassActive = true;
+          } else {
+            isClassActive = false;
+          }
+        });
+    }
+
+    // Intercepts navigation requests to check for restriction parameters
+    function tryAccessGame(destinationUrl) {
+      if (isClassActive) {
+        alert("NO GAMES IN CLASS (THAT MEANS YOU JASPER)");
       } else {
-        // Safely show buttons outside of school hours
-        document.getElementById('gallery-btn').style.display = 'inline-block';
-        document.getElementById('warning-text').style.visibility = 'visible'; 
+        window.location.href = destinationUrl;
       }
     }
 
-    // Run calculations immediately
+    // Initialize detection systems immediately on layout rendering
     checkClassStatus();
 
-    // Re-verify the current time parameters every 10 seconds
-    setInterval(checkClassStatus, 10000);
-
-    // EMERGENCY MANUAL HIDE: Escape button safety override
-    document.addEventListener('keydown', (e) => {
-      if (e.key === "Escape") {
-        document.getElementById('gallery-btn').style.display = 'none';
-        document.getElementById('warning-text').style.display = 'none';
-      }
-    });
+    // Sample the environment tracking data loop every 5 seconds
+    setInterval(checkClassStatus, 5000);
   </script>
 </body>
 </html>
