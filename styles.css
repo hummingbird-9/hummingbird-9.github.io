@@ -1,0 +1,40 @@
+/* --- Core Layout Animations --- */
+.animate-fade-in {
+  opacity: 0;
+  transform: translateY(15px);
+  animation: smoothFadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Staggered Delay Configurations for Smooth Flow Layout Presentation */
+.delay-1 { animation-delay: 0.15s; }
+.delay-2 { animation-delay: 0.3s; }
+.delay-3 { animation-delay: 0.45s; }
+
+@keyframes smoothFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Brand Logo Positioning Layouts --- */
+.logo-container {
+  max-width: 500px;
+  width: 100%;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gallery-logo-container {
+  margin-top: 20px;
+}
+
+.brand-logo {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(144, 228, 193, 0.6)) 
+          drop-shadow(0 0 20px rgba(0, 255, 157, 0.3));
+}
