@@ -6,8 +6,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   initChronographTheme();
   injectCustomContextMenuShell();
+  injectHardwareProfilerHUD();
   
-  // Standard Performance Level auto-initializes Eruda core files
   if (localStorage.getItem("extreme_lightweight") !== "true") {
     loadErudaDevToolsEngine(false); 
   } else {
@@ -107,7 +107,6 @@ function injectCustomContextMenuShell() {
   });
 }
 
-// --- Extended Browser Context Utilities ---
 function triggerPageSaveAsOperation() {
   const blob = new Blob([document.documentElement.outerHTML], { type: "text/html" });
   const a = document.createElement("a");
@@ -119,4 +118,93 @@ function triggerPageSaveAsOperation() {
 function triggerGoogleSearchQuery() {
   const text = window.getSelection().toString() || "HummingbirdTech";
   window.open(`https://google.com{encodeURIComponent(text)}`, "_blank");
+}
+
+// --- Hardware Profiler Diagnostics System ---
+let fpsTicks = 0, lastFpsUpdate = performance.now(), currentComputedFps = 60;
+let observedErrorsCount = 0, lastErrorMessage = "None";
+
+window.addEventListener("error", (e) => {
+  observedErrorsCount++;
+  lastErrorMessage = e.message;
+  updateProfilerDisplayData();
+});
+
+function calculateRunningFps() {
+  fpsTicks++;
+  const now = performance.now();
+  if (now >= lastFpsUpdate + 1000) {
+    currentComputedFps = Math.round((fpsTicks * 1000) / (now - lastFpsUpdate));
+    fpsTicks = 0;
+    lastFpsUpdate = now;
+    updateProfilerDisplayData();
+  }
+  requestAnimationFrame(calculateRunningFps);
+}
+
+function injectHardwareProfilerHUD() {
+  const hudHTML = `
+    <div id="hardwareProfilerHUD" class="hardware-profiler-hud">
+      <div class="profiler-header">
+        <span>Hardware Diagnostics</span>
+        <span style="cursor:pointer;color:#ff5f56;" onclick="toggleHardwareProfilerOverlay()">[X]</span>
+      </div>
+      <div id="metricCpu" class="profiler-metric-row">CPU Cores: Loading...</div>
+      <div id="metricRam" class="profiler-metric-row">Memory Heap: Loading...</div>
+      <div id="metricFps" class="profiler-metric-row">Performance: Loading...</div>
+      <div id="metricDom" class="profiler-metric-row">DOM Elements: Loading...</div>
+      <div id="metricErrors" class="profiler-metric-row" style="color:#ff5f56;">Errors: 0</div>
+      
+      <div class="profiler-selector-box">
+        <span style="font-size:0.75rem;font-weight:bold;display:block;margin-bottom:4px;">Filter HUD Views:</span>
+        <label><input type="checkbox" id="chkCpu" checked onclick="filterHudRows()"> Virtual CPU Cores</label>
+        <label><input type="checkbox" id="chkRam" checked onclick="filterHudRows()"> Memory Allocation</label>
+        <label><input type="checkbox" id="chkFps" checked onclick="filterHudRows()"> Frame Rate (FPS)</label>
+        <label><input type="checkbox" id="chkDom" checked onclick="filterHudRows()"> DOM Structural Load</label>
+        <label><input type="checkbox" id="chkErrors" checked onclick="filterHudRows()"> Error Telemetry</label>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML("beforeend", hudHTML);
+  requestAnimationFrame(calculateRunningFps);
+  setInterval(updateProfilerDisplayData, 2000); // Periodic telemetry synchronization loops
+}
+
+function toggleHardwareProfilerOverlay() {
+  const hud = document.getElementById("hardwareProfilerHUD");
+  hud.style.display = (hud.style.display === "block") ? "none" : "block";
+  updateProfilerDisplayData();
+}
+
+function filterHudRows() {
+  document.getElementById("metricCpu").style.display = document.getElementById("chkCpu").checked ? "block" : "none";
+  document.getElementById("metricRam").style.display = document.getElementById("chkRam").checked ? "block" : "none";
+  document.getElementById("metricFps").style.display = document.getElementById("chkFps").checked ? "block" : "none";
+  document.getElementById("metricDom").style.display = document.getElementById("chkDom").checked ? "block" : "none";
+  document.getElementById("metricErrors").style.display = document.getElementById("chkErrors").checked ? "block" : "none";
+}
+
+function updateProfilerDisplayData() {
+  // CPU Logical Core Estimations
+  const cores = navigator.hardwareConcurrency || "Unsupported Architecture";
+  document.getElementById("metricCpu").innerText = `CPU Cores: ${cores} Logical Nodes`;
+
+  // Memory Allocation Profiling
+  if (performance.memory) {
+    const memoryUsed = Math.round(performance.memory.usedJSHeapSize / (1024 * 1024));
+    const memoryTotal = Math.round(performance.memory.jsHeapSizeLimit / (1024 * 1024));
+    document.getElementById("metricRam").innerText = `Memory Heap: ${memoryUsed}MB / ${memoryTotal}MB`;
+  } else {
+    document.getElementById("metricRam").innerText = `Memory Heap: API Locked (Chrome Exclusive)`;
+  }
+
+  // FPS & DOM Load Metrics
+  document.getElementById("metricFps").innerText = `Performance: ${currentComputedFps} FPS`;
+  const totalElements = document.getElementsByTagName("*").length;
+  document.getElementById("metricDom").innerText = `DOM Elements: ${totalElements} Nodes Loaded`;
+  
+  // Error Telemetry Logs
+  const errRow = document.getElementById("metricErrors");
+  errRow.innerText = `Errors: ${observedErrorsCount} (${lastErrorMessage})`;
+  errRow.style.color = observedErrorsCount > 0 ? "#ff5f56" : "#00ff66";
 }
