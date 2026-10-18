@@ -3,155 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Humming[bird]Tech - Gallery</title>
+  <title>About Humming[bird]Tech</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="shortcut icon" href="https://onecompiler.io">
 </head>
-<body class="gallery-body">
+<body>
 
   <div class="top-button-container">
     <a href="index.html" class="open-page-btn back-btn">Back Home</a>
   </div>
 
   <div class="utility-controls-container">
-    <button id="themeToggleBtn" class="utility-btn" onclick="toggleTheme()">Light Mode</button>
-    <button class="utility-btn" onclick="toggleDevConsole()">Inspect Element</button>
+    <button id="lightweightToggleBtn" class="utility-btn" onclick="toggleLightweightEngine()">Extreme Lightweight</button>
+    <button id="themeToggleBtn" class="utility-btn" onclick="toggleTheme()">Theme Mode</button>
   </div>
 
-  <div class="logo-container gallery-logo-container animate-fade-in">
+  <div class="logo-container">
     <img src="https://onecompiler.io" alt="Humming[bird]Tech Logo" class="brand-logo">
   </div>
   
-  <p class="content animate-fade-in delay-1">Explore our automated archive of web-adapted applications.</p>
-
-  <div class="search-container animate-fade-in delay-2">
-    <input type="text" id="gallerySearch" class="search-bar" placeholder="Search applications...">
-  </div>
-
-  <div class="gallery-container animate-fade-in delay-3" id="galleryContainer">
-    <p id="loadingText">Loading applications from your profile...</p>
-  </div>
-
-  <!-- Dynamic Application Canvas Modal -->
-  <div id="appViewportOverlay" class="app-viewport-overlay">
-    <div class="viewport-navbar">
-      <h3 id="viewportTitle" class="viewport-title">Application Sandbox</h3>
-      <div class="viewport-controls">
-        <button id="viewNewTabBtn" class="utility-btn">Open In New Tab</button>
-        <button id="viewAboutBlankBtn" class="utility-btn">Open In about:blank</button>
-        <button class="utility-btn" style="background:#ff5f56; color:white;" onclick="closeApplicationViewport()">Close App</button>
-      </div>
-    </div>
-    <div class="iframe-sandbox-container">
-      <iframe id="appSandboxIframe" class="app-iframe" src="" loading="lazy"></iframe>
-    </div>
-  </div>
+  <p class="content" style="font-weight: 500; font-size: 1.3rem; margin-top: 40px;">
+    Made by Oliver Boyd
+  </p>
+  
+  <p class="content" style="font-size: 1rem; opacity: 0.7;">
+    Version 9.3.6 <br>
+    Last Update: Oct 18, 2026
+  </p>
 
   <script src="global-utils.js"></script>
-  <script>
-    const container = document.getElementById('galleryContainer');
-    const searchBar = document.getElementById('gallerySearch');
-    let projectsData = [];
-
-    function resolveGitHubUser() {
-      const hostname = window.location.hostname;
-      if (hostname.endsWith('.github.io')) {
-        return hostname.split('.')[0];
-      }
-      return "HummingbirdTech"; 
-    }
-
-    const GITHUB_USERNAME = resolveGitHubUser();
-
-    async function fetchGitHubRepos() {
-      try {
-        const response = await fetch(`https://github.com{GITHUB_USERNAME}/repos?per_page=100&sort=updated`);
-        if (!response.ok) throw new Error('API request fault');
-        const repos = await response.json();
-        projectsData = repos.filter(repo => !repo.fork && repo.name.toLowerCase() !== GITHUB_USERNAME.toLowerCase());
-        renderGallery(projectsData);
-      } catch (error) {
-        console.error(error);
-        container.innerHTML = `<p style="color: #ff6b6b;">Engine failure loading applications. Verify visibility.</p>`;
-      }
-    }
-
-    function renderGallery(projects) {
-      container.innerHTML = "";
-      if (projects.length === 0) {
-        container.innerHTML = `<p>No matching applications matching search indices found.</p>`;
-        return;
-      }
-
-      projects.forEach(repo => {
-        const cleanName = repo.name.replace(/-/g, ' ');
-        const defaultBranch = repo.default_branch || 'main';
-        const coverImageUrl = `https://jsdelivr.net{GITHUB_USERNAME}/${repo.name}@${defaultBranch}/cover.png`;
-        const applicationUrl = repo.has_pages ? `https://${GITHUB_USERNAME}.github.io/${repo.name}/` : repo.html_url;
-
-        const card = document.createElement('div');
-        card.className = 'game-card';
-        
-        // Pass payload attributes safely into frame rendering managers
-        card.onclick = () => launchApplicationViewport(applicationUrl, cleanName);
-
-        card.innerHTML = `
-          <img class="game-thumbnail" src="${coverImageUrl}" alt="${cleanName}" loading="lazy" onerror="this.onerror=null; this.src='https://onecompiler.io';">
-          <h3>${cleanName}</h3>
-          <p>${repo.description || 'No application profile information provided.'}</p>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    // --- Frame Rendering Architecture Managers ---
-    function launchApplicationViewport(url, title) {
-      document.getElementById('viewportTitle').innerText = title;
-      const iframe = document.getElementById('appSandboxIframe');
-      
-      // Mount target location cleanly into frame sandbox bounds
-      iframe.src = url;
-      document.getElementById('appViewportOverlay').style.display = 'flex';
-
-      // Attach button action hooks dynamically
-      document.getElementById('viewNewTabBtn').onclick = () => {
-        window.open(url, '_blank');
-      };
-
-      document.getElementById('viewAboutBlankBtn').onclick = () => {
-        // High Performance Isolated Proxy: Instantiates process via about:blank structure safely
-        const blankWindow = window.open('about:blank', '_blank');
-        if (blankWindow) {
-          blankWindow.document.write(`
-            <html style="margin:0;padding:0;overflow:hidden;">
-              <head><title>${title}</title></head>
-              <body style="margin:0;padding:0;overflow:hidden;background:#000;">
-                <iframe src="${url}" style="width:100vw;height:100vh;border:none;margin:0;padding:0;"></iframe>
-              </body>
-            </html>
-          `);
-          blankWindow.document.close();
-        }
-      };
-    }
-
-    function closeApplicationViewport() {
-      document.getElementById('appViewportOverlay').style.display = 'none';
-      // Kill iframe destination context to instantly reclaim memory profiles
-      document.getElementById('appSandboxIframe').src = "";
-    }
-
-    searchBar.addEventListener('input', (e) => {
-      const searchTerm = e.target.value.toLowerCase();
-      const filtered = projectsData.filter(repo => {
-        const cleanName = repo.name.replace(/-/g, ' ').toLowerCase();
-        const description = (repo.description || '').toLowerCase();
-        return cleanName.includes(searchTerm) || description.includes(searchTerm);
-      });
-      renderGallery(filtered);
-    });
-
-    fetchGitHubRepos();
-  </script>
 </body>
 </html>
