@@ -95,12 +95,14 @@ function injectCustomContextMenuShell() {
   
   const menu = document.getElementById("customContextMenu");
   
-  window.addEventListener("contextmenu", (e) => {
+  // Bound to global target structures to capture and completely block system overrides
+  document.oncontextmenu = function(e) {
     e.preventDefault();
     menu.style.top = `${e.clientY}px`;
     menu.style.left = `${e.clientX}px`;
     menu.style.display = "block";
-  });
+    return false; // Blocks native web engine context menus instantly
+  };
   
   window.addEventListener("click", () => {
     menu.style.display = "none";
@@ -225,7 +227,6 @@ function injectHardwareProfilerHUD() {
   measureNetworkLatency(); 
 }
 
-// Window visibility toggles
 function toggleHardwareProfilerOverlay() {
   const hud = document.getElementById("hardwareProfilerHUD");
   hud.style.display = (hud.style.display === "block") ? "none" : "block";
