@@ -8,35 +8,36 @@ document.addEventListener("DOMContentLoaded", () => {
   injectCustomContextMenuShell();
   injectHardwareProfilerHUD();
   
-  if (localStorage.getItem("extreme_lightweight") !== "true") {
-    loadErudaDevToolsEngine(false); 
-  } else {
+  // Checks persistent storage state configurations cleanly on window launch loops
+  if (localStorage.getItem("extreme_lightweight") === "true") {
     applyLightweightUIAdjustments();
+  } else {
+    loadErudaDevToolsEngine(false);
   }
 });
 
-// --- Fixed Inactive Theme Loop Configurations ---
+// --- Fixed Inactive Theme Loop Buttons Configuration ---
 function initChronographTheme() {
   const btn = document.getElementById("themeToggleBtn");
-  if (btn) btn.innerText = "Theme Mode Locked";
+  if (btn) btn.innerText = "Theme Locked";
 }
 
 function toggleTheme() {
-  console.log("Global style variables default-locked by optimization rules.");
+  console.log("Style attributes locked via infrastructure performance optimization profiles.");
 }
 
 // --- Toggle Performance Engine Matrix Profiles ---
 function toggleLightweightEngine() {
-  const isLight = localStorage.getItem("extreme_lightweight") === "true";
-  localStorage.setItem("extreme_lightweight", !isLight);
-  window.location.reload();
+  const currentSetting = localStorage.getItem("extreme_lightweight") === "true";
+  localStorage.setItem("extreme_lightweight", !currentSetting);
+  window.location.reload(); // Refresh viewport pipeline environment
 }
 
 function applyLightweightUIAdjustments() {
   const b = document.getElementById("lightweightToggleBtn");
   if (b) {
-    b.style.background = "#ff5f56";
-    b.innerText = "Engine: Light Mode Active";
+    b.style.background = "#ff3b30";
+    b.innerText = "Lightweight Active";
   }
 }
 
@@ -101,11 +102,6 @@ function triggerPageSaveAsOperation() {
   a.download = "page_source.html";
   a.click();
 }
-
-document.addEventListener("click", () => {
-  const menu = document.getElementById("customContextMenu");
-  if (menu) menu.style.display = "none";
-});
 
 function triggerGoogleSearchQuery() {
   const text = window.getSelection().toString() || "HummingbirdTech";
