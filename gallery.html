@@ -102,8 +102,10 @@
             }
 
             const parsedTitle = repoName.replace(/-/g, ' ');
-            const computedCover = `https://jsdelivr.net{username}/${repoName}@${branch}/cover.png`;
-            const appUrl = `https://${username}.github.io/${repoName}/`;
+            
+            // Clean dynamic string compiling logic to point explicitly to cover.png
+            const computedCover = 'https://jsdelivr.net' + username + '/' + repoName + '@' + branch + '/cover.png';
+            const appUrl = 'https://' + username + '.github.io/' + repoName + '/';
 
             return {
               name: parsedTitle,
