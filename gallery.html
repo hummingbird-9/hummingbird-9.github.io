@@ -1,186 +1,184 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Humming[bird]Tech - Gallery</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="shortcut icon" href="https://onecompiler.io">
-</head>
-<body class="gallery-body">
+<html>
+  <head>
+    <title>HTML Gallery</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="https://onecompiler.io">
+  </head>
+  <body class="gallery-body">
 
-  <div class="top-button-container">
-    <a href="index.html" class="open-page-btn back-btn">Back Home</a>
-    <a href="https://github.com/hummingbird-9/hummingbird-9.github.io/issues" target="_blank" rel="noopener noreferrer" class="open-page-btn" style="border-color: rgba(255, 95, 86, 0.4);">Report An Issue</a>
-  </div>
+    <div class="top-button-container">
+      <a href="index.html" class="open-page-btn back-btn">← Back Home</a>
+      <a href="https://github.com" target="_blank" class="open-page-btn" style="border-color: rgba(255, 95, 86, 0.4);">Report An Issue</a>
+    </div>
 
-  <div class="utility-controls-container">
-    <button class="utility-btn" onclick="toggleHardwareProfilerOverlay()">Hardware HUD</button>
-    <button id="lightweightToggleBtn" class="utility-btn" onclick="toggleLightweightEngine()">Extreme Lightweight</button>
-    <button id="themeToggleBtn" class="utility-btn" onclick="toggleTheme()">Theme Mode</button>
-  </div>
+    <div class="utility-controls-container">
+      <button class="utility-btn" onclick="toggleHardwareProfilerOverlay()">Hardware HUD</button>
+      <button id="lightweightToggleBtn" class="utility-btn" onclick="toggleLightweightEngine()">Extreme Lightweight</button>
+      <button id="themeToggleBtn" class="utility-btn" onclick="toggleTheme()">Theme Mode</button>
+    </div>
 
-  <div class="logo-container gallery-logo-container">
-    <img src="https://onecompiler.io" alt="Humming[bird]Tech Logo" class="brand-logo">
-  </div>
-  
-  <p class="content">Explore our automated archive of web-adapted applications.</p>
+    <h1 class="title">HTML Gallery</h1>
+    <p class="content"></p>
 
-  <div class="search-container">
-    <input type="text" id="gallerySearch" class="search-bar" placeholder="Search applications...">
-  </div>
+    <div class="gallery-container">
+      <!-- Original Circular Search Input Element -->
+      <input type="text" id="gallerySearch" placeholder="Search" class="search-bar">
+    </div>
 
-  <div class="gallery-container" id="galleryContainer">
-    <p id="loadingText">Processing source indexes...</p>
-  </div>
+    <!-- Live Dynamic Target Container -->
+    <div class="gallery-container" id="galleryContainer">
+      <p id="loadingText">Processing source indexes...</p>
+    </div>
 
-  <div id="appViewportOverlay" class="app-viewport-overlay">
-    <div class="viewport-navbar">
-      <h3 id="viewportTitle" class="viewport-title">Application Sandbox</h3>
-      <div class="viewport-controls">
-        <button id="viewNewTabBtn" class="utility-btn">New Tab</button>
-        <button id="viewAboutBlankBtn" class="utility-btn">about:blank</button>
-        <button class="utility-btn" style="background:#ff5f56; color:white;" onclick="closeApplicationViewport()">Close</button>
+    <!-- Sandboxed Framework Viewport -->
+    <div id="appViewportOverlay" class="app-viewport-overlay">
+      <div class="viewport-navbar">
+        <h3 id="viewportTitle" class="viewport-title">Application Sandbox</h3>
+        <div class="viewport-controls">
+          <button id="viewNewTabBtn" class="utility-btn">New Tab</button>
+          <button id="viewAboutBlankBtn" class="utility-btn">about:blank</button>
+          <button class="utility-btn" style="background:#ff5f56; color:white;" onclick="closeApplicationViewport()">Close</button>
+        </div>
+      </div>
+      <div class="iframe-sandbox-container">
+        <iframe id="appSandboxIframe" class="app-iframe" src=""></iframe>
       </div>
     </div>
-    <div class="iframe-sandbox-container">
-      <iframe id="appSandboxIframe" class="app-iframe" src=""></iframe>
-    </div>
-  </div>
 
-  <script src="global-utils.js"></script>
-  <script>
-    const container = document.getElementById('galleryContainer');
-    const searchBar = document.getElementById('gallerySearch');
-    const isExtremeLightweight = localStorage.getItem("extreme_lightweight") === "true";
-    let projectsData = [];
+    <script src="global-utils.js"></script>
+    <script>
+      const container = document.getElementById('galleryContainer');
+      const searchBar = document.getElementById('gallerySearch');
+      const isExtremeLightweight = localStorage.getItem("extreme_lightweight") === "true";
+      let projectsData = [];
 
-    async function resolveRawLinkRegistryMap() {
-      try {
-        const response = await fetch('/html/repos.json');
-        if (!response.ok) throw new Error('Source file missing');
-        const data = await response.json();
-        
-        projectsData = data.repo_links.map(link => {
-          let cleanLink = link.replace(/\/\$/, ""); 
-          let username = "";
-          let repoName = "";
-          let branch = "main";
+      async function resolveRawLinkRegistryMap() {
+        try {
+          const response = await fetch('/html/repos.json');
+          if (!response.ok) throw new Error('Source configuration map missing');
+          const data = await response.json();
+          
+          projectsData = data.repo_links.map(link => {
+            let cleanLink = link.replace(/\/\$/, ""); 
+            let username = "";
+            let repoName = "";
+            let branch = "main";
 
-          if (cleanLink.includes("github.com")) {
-            const segments = cleanLink.split("github.com/")[1].split("/");
-            username = segments[0];
-            repoName = segments[1];
-          } else if (cleanLink.includes("cdn.jsdelivr.net")) {
-            const segments = cleanLink.split("cdn.jsdelivr.net/gh/")[1].split("/");
-            username = segments[0];
-            const repoAndBranch = segments[1].split("@");
-            repoName = repoAndBranch[0];
-            if (repoAndBranch[1]) branch = repoAndBranch[1];
-          }
-
-          const parsedTitle = repoName.replace(/-/g, ' ');
-          const computedCover = `https://jsdelivr.net{username}/${repoName}@${branch}/cover.png`;
-          const appUrl = `https://${username}.github.io/${repoName}/`;
-
-          return {
-            name: parsedTitle || "Unresolved Application Asset",
-            cover: computedCover,
-            url: appUrl,
-            description: "Automated sandboxed target framework environment profile allocation."
-          };
-        });
-        
-        renderGalleryExecutionBlocks(projectsData);
-      } catch (error) {
-        console.error(error);
-        container.innerHTML = `<p style="color: #ff6b6b;">Error processing individual repository parameter strings.</p>`;
-      }
-    }
-
-    function renderGalleryExecutionBlocks(projects) {
-      const fragment = document.createDocumentFragment();
-      container.innerHTML = "";
-
-      if (projects.length === 0) {
-        container.innerHTML = `<p>No items match current filter criteria.</p>`;
-        return;
-      }
-
-      let imageObserver = null;
-      if (isExtremeLightweight) {
-        imageObserver = new IntersectionObserver((entries, observer) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const img = entry.target;
-              img.src = img.getAttribute('data-src');
-              observer.unobserve(img);
+            if (cleanLink.includes("github.com")) {
+              const segments = cleanLink.split("://github.com")[1].split("/");
+              username = segments[0];
+              repoName = segments[1];
+            } else if (cleanLink.includes("cdn.jsdelivr.net")) {
+              const segments = cleanLink.split("cdn.jsdelivr.net/gh/")[1].split("/");
+              username = segments[0];
+              const repoAndBranch = segments[1].split("@");
+              repoName = repoAndBranch[0];
+              if (repoAndBranch[1]) branch = repoAndBranch[1];
             }
+
+            const parsedTitle = repoName.replace(/-/g, ' ');
+            const computedCover = `https://jsdelivr.net{username}/${repoName}@${branch}/cover.png`;
+            const appUrl = `https://${username}.github.io/${repoName}/`;
+
+            return {
+              name: parsedTitle || "Unresolved Application Asset",
+              cover: computedCover,
+              url: appUrl,
+              description: `Made from project files to web port formats by ${username}.`
+            };
           });
-        });
+          
+          renderGalleryExecutionBlocks(projectsData);
+        } catch (error) {
+          console.error(error);
+          container.innerHTML = `<p style="color: #ff6b6b;">Error processing repository parameters map registry.</p>`;
+        }
       }
 
-      projects.forEach(project => {
-        const card = document.createElement('div');
-        card.className = 'game-card';
-        card.onclick = () => launchApplicationViewport(project.url, project.name);
+      function renderGalleryExecutionBlocks(projects) {
+        const fragment = document.createDocumentFragment();
+        container.innerHTML = "";
 
+        if (projects.length === 0) {
+          container.innerHTML = `<p>No items match current filter criteria.</p>`;
+          return;
+        }
+
+        let imageObserver = null;
         if (isExtremeLightweight) {
-          card.innerHTML = `
-            <img class="game-thumbnail" data-src="${project.cover}" src="data:image/svg+xml,%3Csvg xmlns='http://w3.org' viewBox='0 0 220 130'%3E%3Crect width='100%25' height='100%25' fill='%23222'/%3E%3C/svg%3E" alt="${project.name}">
-            <h3>${project.name}</h3>
-            <p>${project.description}</p>
-          `;
-          imageObserver.observe(card.querySelector('.game-thumbnail'));
-        } else {
-          card.innerHTML = `
-            <img class="game-thumbnail" src="${project.cover}" alt="${project.name}" onerror="this.onerror=null; this.src='https://onecompiler.io';">
-            <h3>${project.name}</h3>
-            <p>${project.description}</p>
-          `;
+          imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.getAttribute('data-src');
+                observer.unobserve(img);
+              }
+            });
+          });
         }
-        fragment.appendChild(card);
+
+        projects.forEach(project => {
+          const card = document.createElement('div');
+          card.className = 'game-card';
+          card.onclick = () => launchApplicationViewport(project.url, project.name);
+
+          if (isExtremeLightweight) {
+            card.innerHTML = `
+              <img class="game-thumbnail" data-src="${project.cover}" src="data:image/svg+xml,%3Csvg xmlns='http://w3.org' viewBox='0 0 220 130'%3E%3Crect width='100%25' height='100%25' fill='%23222'/%3E%3C/svg%3E" alt="${project.name}">
+              <h3>${project.name}</h3>
+              <p>${project.description}</p>
+            `;
+            imageObserver.observe(card.querySelector('.game-thumbnail'));
+          } else {
+            card.innerHTML = `
+              <img class="game-thumbnail" src="${project.cover}" alt="${project.name}" onerror="this.onerror=null; this.src='https://onecompiler.io';">
+              <h3>${project.name}</h3>
+              <p>${project.description}</p>
+            `;
+          }
+          fragment.appendChild(card);
+        });
+        container.appendChild(fragment);
+      }
+
+      function launchApplicationViewport(url, title) {
+        document.getElementById('viewportTitle').innerText = title;
+        const iframe = document.getElementById('appSandboxIframe');
+        iframe.src = url;
+        document.getElementById('appViewportOverlay').style.display = 'flex';
+
+        document.getElementById('viewNewTabBtn').onclick = () => window.open(url, '_blank');
+        document.getElementById('viewAboutBlankBtn').onclick = () => {
+          const blankWindow = window.open('about:blank', '_blank');
+          if (blankWindow) {
+            blankWindow.document.write(`
+              <html style="margin:0;padding:0;overflow:hidden;">
+                <head><title>${title}</title></head>
+                <body style="margin:0;padding:0;overflow:hidden;background:#000;">
+                  <iframe src="${url}" style="width:100vw;height:100vh;border:none;margin:0;padding:0;"></iframe>
+                </body>
+              </html>
+            `);
+            blankWindow.document.close();
+          }
+        };
+      }
+
+      function closeApplicationViewport() {
+        document.getElementById('appViewportOverlay').style.display = 'none';
+        document.getElementById('appSandboxIframe').src = "";
+      }
+
+      searchBar.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filtered = projectsData.filter(project => {
+          return project.name.toLowerCase().includes(searchTerm);
+        });
+        renderGalleryExecutionBlocks(filtered);
       });
-      container.appendChild(fragment);
-    }
 
-    function launchApplicationViewport(url, title) {
-      document.getElementById('viewportTitle').innerText = title;
-      const iframe = document.getElementById('appSandboxIframe');
-      iframe.src = url;
-      document.getElementById('appViewportOverlay').style.display = 'flex';
-
-      document.getElementById('viewNewTabBtn').onclick = () => window.open(url, '_blank');
-      document.getElementById('viewAboutBlankBtn').onclick = () => {
-        const blankWindow = window.open('about:blank', '_blank');
-        if (blankWindow) {
-          blankWindow.document.write(`
-            <html style="margin:0;padding:0;overflow:hidden;">
-              <head><title>${title}</title></head>
-              <body style="margin:0;padding:0;overflow:hidden;background:#000;">
-                <iframe src="${url}" style="width:100vw;height:100vh;border:none;margin:0;padding:0;"></iframe>
-              </body>
-            </html>
-          `);
-          blankWindow.document.close();
-        }
-      };
-    }
-
-    function closeApplicationViewport() {
-      document.getElementById('appViewportOverlay').style.display = 'none';
-      document.getElementById('appSandboxIframe').src = "";
-    }
-
-    searchBar.addEventListener('input', (e) => {
-      const searchTerm = e.target.value.toLowerCase();
-      const filtered = projectsData.filter(project => {
-        return project.name.toLowerCase().includes(searchTerm);
-      });
-      renderGalleryExecutionBlocks(filtered);
-    });
-
-    resolveRawLinkRegistryMap();
-  </script>
-</body>
+      resolveRawLinkRegistryMap();
+    </script>
+  </body>
 </html>
