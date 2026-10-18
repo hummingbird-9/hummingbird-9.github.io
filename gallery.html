@@ -18,14 +18,12 @@
       <button id="themeToggleBtn" class="utility-btn" onclick="toggleTheme()">Theme Mode</button>
     </div>
 
-    <!-- Pinned Brand Logo Presentation Layer -->
     <div class="logo-container gallery-logo-container">
       <img src="https://onecompiler.io" alt="Humming[bird]Tech Logo" class="brand-logo">
     </div>
 
     <p class="content"></p>
 
-    <!-- Maximized Widescreen Search Component Console -->
     <div class="search-container">
       <input type="text" id="gallerySearch" placeholder="Search applications..." class="search-bar">
       <button class="utility-btn" onclick="clearGalleryFilters()" style="padding: 8px 24px;">Clear</button>
@@ -53,11 +51,7 @@
     <script>
       const container = document.getElementById('galleryContainer');
       const searchBar = document.getElementById('gallerySearch');
-      
-      if (localStorage.getItem("extreme_lightweight") === null) {
-        localStorage.setItem("extreme_lightweight", "false");
-      }
-      const isExtremeLightweight = localStorage.getItem("extreme_lightweight") === "true";
+      let projectsData = [];
 
       async function resolveRawLinkRegistryMap() {
         try {
@@ -71,23 +65,23 @@
             let repoName = "unresolved-repo";
             let branch = "main";
 
+            // Safe String Split Processing Engine (Removes RegEx compilation errors)
             if (cleanLink.includes("://github.com")) {
-              const urlChunks = cleanLink.split("://github.com");
-              if (urlChunks.length > 1) {
-                const pathChunks = urlChunks[1].split("/");
-                if (pathChunks.length > 0) username = pathChunks[0];
-                if (pathChunks.length > 1) repoName = pathChunks[1];
+              const urlParts = cleanLink.split("://github.com")[1];
+              if (urlParts) {
+                const pathParts = urlParts.split("/");
+                username = pathParts[0] || username;
+                repoName = pathParts[1] || repoName;
               }
             } else if (cleanLink.includes("cdn.jsdelivr.net/gh/")) {
-              const urlChunks = cleanLink.split("cdn.jsdelivr.net/gh/");
-              if (urlChunks.length > 1) {
-                const pathChunks = urlChunks[1].split("/");
-                if (pathChunks.length > 0) username = pathChunks[0];
-                if (pathChunks.length > 1) {
-                  const repoAndBranch = pathChunks[1].split("@");
-                  repoName = repoAndBranch[0];
-                  if (repoAndBranch.length > 1) branch = repoAndBranch[1];
-                }
+              const urlParts = cleanLink.split("cdn.jsdelivr.net/gh/")[1];
+              if (urlParts) {
+                const pathParts = urlParts.split("/");
+                username = pathParts[0] || username;
+                
+                const repoAndBranch = (pathParts[1] || "").split("@");
+                repoName = repoAndBranch[0] || repoName;
+                branch = repoAndBranch[1] || branch;
               }
             }
 
@@ -99,7 +93,7 @@
               name: parsedTitle,
               cover: computedCover,
               url: appUrl,
-              description: `Automated isolated application target interface deployment framework.`
+              description: "Automated isolated application target interface deployment framework."
             };
           });
           
@@ -113,6 +107,8 @@
       function renderGalleryExecutionBlocks(projects) {
         const fragment = document.createDocumentFragment();
         container.innerHTML = "";
+
+        const isExtremeLightweight = localStorage.getItem("extreme_lightweight") === "true";
 
         if (projects.length === 0) {
           container.innerHTML = `<p>No items match current filter criteria.</p>`;
@@ -137,13 +133,14 @@
           card.className = 'game-card';
           card.onclick = () => launchApplicationViewport(project.url, project.name);
 
+          // Corrected internal string values assembly formatting
           if (isExtremeLightweight) {
             card.innerHTML = `
               <img class="game-thumbnail" data-src="${project.cover}" src="data:image/svg+xml,%3Csvg xmlns='http://w3.org' viewBox='0 0 220 130'%3E%3Crect width='100%25' height='100%25' fill='%23222'/%3E%3C/svg%3E" alt="${project.name}">
               <h3>${project.name}</h3>
               <p>${project.description}</p>
             `;
-            imageObserver.observe(card.querySelector('.game-thumbnail'));
+            if (imageObserver) imageObserver.observe(card.querySelector('.game-thumbnail'));
           } else {
             card.innerHTML = `
               <img class="game-thumbnail" src="${project.cover}" alt="${project.name}" onerror="this.onerror=null; this.src='https://onecompiler.io';">
