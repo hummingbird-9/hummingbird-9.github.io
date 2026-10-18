@@ -1,346 +1,49 @@
-/* --- General & Index Page Styles --- */
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #0a2e0a, #1a5d1a, #0a2e0a, #1a5d1a);
-  background-size: 400% 400%;
-  animation: gradientBG 20s ease infinite;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: white;
-  text-align: center;
-  padding: 20px;
-  position: relative;
-}
-
-.gallery-body {
-    min-height: auto;
-    justify-content: flex-start;
-    padding-top: 50px;
-    background: linear-gradient(135deg, #001f3f, #003366, #001f3f, #003366); 
-    background-size: 400% 400%;
-}
-
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.title {
-  color: #90E4C1;
-  text-shadow: 0 0 15px rgba(0, 255, 157, 0.8),
-              0 0 30px rgba(0, 255, 157, 0.6),
-              0 0 45px rgba(0, 255, 157, 0.4);
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-  letter-spacing: 1px;
-}
-
-.content {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1.2rem;
-  line-height: 1.6;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-  max-width: 600px;
-  margin-bottom: 20px;
-}
-
-.button-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
-}
+/* Update or add these explicit selectors inside your style.css sheet */
 
 .top-button-container {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 15px;
+  left: 15px;
   display: flex;
-  gap: 8px;
+  gap: 10px;
+  z-index: 1000;
 }
 
 .utility-controls-container {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 15px;
+  right: 15px;
   display: flex;
-  gap: 8px;
+  gap: 10px;
+  z-index: 1000;
 }
 
-/* Optimized, Smaller Button Form Factors */
 .open-page-btn, .utility-btn {
-  padding: 8px 16px;
+  padding: 8px 16px !important; /* Forces compact sizing profiles */
+  font-size: 0.85rem !important; /* Low overhead font dimensions tracking */
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  border-radius: 6px;
+  border-radius: 6px !important; /* Sets squarer profiles across controls */
   color: white;
-  font-size: 0.85rem;
-  text-decoration: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: all 0.25s ease;
-  cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  cursor: pointer;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .open-page-btn:hover, .utility-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-  transform: translateY(-2px);
-}
-
-.back-btn {
-    margin-bottom: 0px;
-}
-
-/* --- Squarer Search Bar Setup --- */
-.search-container {
-    width: 100%;
-    max-width: 600px;
-    margin-bottom: 15px;
-    display: flex;
-    gap: 10px;
+  background: rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-2px) !important;
 }
 
 .search-bar {
-    flex: 1;
-    padding: 10px 15px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 6px; /* Completely removed half-circle rounding */
-    color: white;
-    font-size: 0.95rem;
-    box-sizing: border-box; 
-    backdrop-filter: blur(5px);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.search-bar::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.search-bar:focus {
-    outline: none;
-    border-color: #90E4C1;
-    background: rgba(255, 255, 255, 0.15);
-}
-
-/* --- Gallery Specific Styles --- */
-.gallery-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  max-width: 1000px;
   width: 100%;
-  margin-top: 20px;
-}
-
-.game-card {
-  flex-basis: 220px;
+  padding: 10px 15px;
   background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
-  border-radius: 10px;
-  padding: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px !important; /* Locks squarer edges with subtle rounding profiles */
   color: white;
-  text-decoration: none;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, background 0.3s ease;
-  text-align: left;
-}
-
-.game-card:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.game-thumbnail {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    display: block;
-}
-
-.game-card h3 {
-    margin-top: 0;
-    margin-bottom: 5px;
-    color: #90E4C1;
-    text-shadow: 0 0 5px rgba(0, 255, 157, 0.5);
-}
-
-.game-card p {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
-    text-shadow: none;
-    padding: 0;
-    margin: 0;
-}
-
-/* --- Context Menu Overlays --- */
-.custom-context-menu {
-  position: fixed;
-  background: #1c1c1e;
-  border: 1px solid #2c2c2e;
-  color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 0.88rem;
-  min-width: 210px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-  z-index: 2147483647;
-  display: none;
-  border-radius: 8px;
-  padding: 5px 0;
-  text-align: left;
-}
-
-.context-item {
-  padding: 6px 18px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.context-item:hover {
-  background: #0a84ff;
-  color: #ffffff;
-}
-
-.context-accent {
-  color: #30d158;
-  font-weight: 600;
-}
-
-.context-divider {
-  height: 1px;
-  background: #2c2c2e;
-  margin: 5px 0;
-}
-
-/* --- Hardware Profiler HUD --- */
-.hardware-profiler-hud {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  background: rgba(20, 20, 20, 0.95);
-  border: 1px solid #444;
-  color: #00ff66;
-  font-family: monospace;
-  padding: 15px;
-  font-size: 0.8rem;
-  border-radius: 6px;
-  z-index: 99999;
-  text-align: left;
-  min-width: 260px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-  display: none;
-}
-
-.profiler-header {
-  font-weight: bold;
-  border-bottom: 1px solid #444;
-  padding-bottom: 6px;
-  margin-bottom: 8px;
-  color: #90E4C1;
-  display: flex;
-  justify-content: space-between;
-}
-
-.stress-btn-container {
-  margin: 8px 0;
-}
-
-.stress-trigger-btn {
-  width: 100%;
-  background: #2d2d2d;
-  color: #ff3b30;
-  border: 1px solid #ff3b30;
-  padding: 6px;
-  font-family: monospace;
-  font-size: 0.75rem;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 4px;
-  text-transform: uppercase;
-}
-
-.stress-trigger-btn.active {
-  background: #ff3b30;
-  color: #fff;
-  animation: stressPulseAlert 1s infinite alternate;
-}
-
-@keyframes stressPulseAlert {
-  from { box-shadow: 0 0 4px #ff3b30; }
-  to { box-shadow: 0 0 14px #ff3b30; }
-}
-
-.profiler-selector-box {
-  margin-top: 10px;
-  padding-top: 6px;
-  border-top: 1px dashed #444;
-  color: #ccc;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.profiler-selector-box label {
-  display: block;
-  margin: 3px 0;
-  cursor: pointer;
-}
-
-.profiler-metric-row {
-  margin: 4px 0;
-}
-
-/* --- Sandbox Viewport --- */
-.app-viewport-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  display: none;
-  flex-direction: column;
-  z-index: 10000;
-}
-
-.viewport-navbar {
-  background: #111;
-  padding: 12px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #222;
-}
-
-.viewport-title {
-  color: #fff;
-  font-weight: 600;
-  margin: 0;
-}
-
-.viewport-controls {
-  display: flex;
-  gap: 10px;
-}
-
-.iframe-sandbox-container {
-  flex: 1;
-  background: #000;
-}
-
-.app-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
+  font-size: 0.95rem;
+  box-sizing: border-box;
 }
