@@ -1,8 +1,3 @@
-/**
- * Humming[bird]Tech Engineering System Kernel - Part 1
- * Multi-Engine Architecture for Advanced ChromeOS Performance Benchmarking
- */
-
 document.addEventListener("DOMContentLoaded", () => {
   initChronographTheme();
   injectCustomContextMenuShell();
@@ -56,7 +51,7 @@ function loadErudaDevToolsEngine(triggerImmediately) {
   }
   
   const script = document.createElement("script");
-  script.src = "https://jsdelivr.net";
+  script.src = "https://cdn.jsdelivr.net/npm/eruda";
   script.async = true;
   script.onload = () => {
     eruda.init({
@@ -115,7 +110,6 @@ function triggerGoogleSearchQuery() {
   const text = window.getSelection().toString() || "HummingbirdTech";
   window.open(`https://google.com{encodeURIComponent(text)}`, "_blank");
 }
-// --- Humming[bird]Tech Engineering System Kernel - Part 2 ---
 
 let fpsTicks = 0, lastFpsUpdate = performance.now(), currentComputedFps = 60;
 let observedErrorsCount = 0, lastErrorMessage = "None";
@@ -142,7 +136,7 @@ function calculateRunningFps() {
 }
 
 async function measureNetworkLatency() {
-  const targetEndpoint = "https://whatwg.org";
+  const targetEndpoint = "https://html.spec.whatwg.org";
   const startTime = performance.now();
   
   try {
