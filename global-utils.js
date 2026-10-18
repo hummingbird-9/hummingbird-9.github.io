@@ -108,7 +108,7 @@ function triggerPageSaveAsOperation() {
 
 function triggerGoogleSearchQuery() {
   const text = window.getSelection().toString() || "HummingbirdTech";
-  window.open(`https://google.com{encodeURIComponent(text)}`, "_blank");
+  window.open(`https://google.com${encodeURIComponent(text)}`, "_blank");
 }
 
 let fpsTicks = 0, lastFpsUpdate = performance.now(), currentComputedFps = 60;
