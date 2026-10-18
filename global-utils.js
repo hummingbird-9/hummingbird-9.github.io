@@ -120,9 +120,11 @@ function triggerGoogleSearchQuery() {
   window.open(`https://google.com{encodeURIComponent(text)}`, "_blank");
 }
 
-// --- Hardware Profiler Diagnostics System ---
+// --- Hardware Profiler & Stress Test Architecture ---
 let fpsTicks = 0, lastFpsUpdate = performance.now(), currentComputedFps = 60;
 let observedErrorsCount = 0, lastErrorMessage = "None";
+let hardwareStressWorkers = [];
+let isStressTestActive = false;
 
 window.addEventListener("error", (e) => {
   observedErrorsCount++;
@@ -142,6 +144,38 @@ function calculateRunningFps() {
   requestAnimationFrame(calculateRunningFps);
 }
 
+function toggleHardwareStressTest() {
+  const btn = document.getElementById("stressTestBtn");
+  if (!isStressTestActive) {
+    isStressTestActive = true;
+    btn.innerText = "Halt Stress Test";
+    btn.classList.add("active");
+    
+    // Spawns compute loops matching your Lenovo core layout matrix
+    const threads = navigator.hardwareConcurrency || 4;
+    for (let i = 0; i < threads; i++) {
+      // Inline Worker payload generation for clean single-file execution boundaries
+      const workerBlob = new Blob([`
+        onmessage = function() {
+          while(true) { Math.sqrt(Math.random() * Math.random()); }
+        };
+      `], { type: "text/javascript" });
+      
+      const worker = new Worker(URL.createObjectURL(workerBlob));
+      worker.postMessage("start");
+      hardwareStressWorkers.push(worker);
+    }
+  } else {
+    isStressTestActive = false;
+    btn.innerText = "Trigger Stress Test";
+    btn.classList.remove("active");
+    
+    // Terminate computation workers immediately to release the thread blockages
+    hardwareStressWorkers.forEach(w => w.terminate());
+    hardwareStressWorkers = [];
+  }
+}
+
 function injectHardwareProfilerHUD() {
   const hudHTML = `
     <div id="hardwareProfilerHUD" class="hardware-profiler-hud">
@@ -149,6 +183,11 @@ function injectHardwareProfilerHUD() {
         <span>Hardware Diagnostics</span>
         <span style="cursor:pointer;color:#ff5f56;" onclick="toggleHardwareProfilerOverlay()">[X]</span>
       </div>
+      
+      <div class="stress-btn-container">
+        <button id="stressTestBtn" class="stress-trigger-btn" onclick="toggleHardwareStressTest()">Trigger Stress Test</button>
+      </div>
+
       <div id="metricCpu" class="profiler-metric-row">CPU Cores: Loading...</div>
       <div id="metricRam" class="profiler-metric-row">Memory Heap: Loading...</div>
       <div id="metricFps" class="profiler-metric-row">Performance: Loading...</div>
@@ -167,7 +206,7 @@ function injectHardwareProfilerHUD() {
   `;
   document.body.insertAdjacentHTML("beforeend", hudHTML);
   requestAnimationFrame(calculateRunningFps);
-  setInterval(updateProfilerDisplayData, 2000); // Periodic telemetry synchronization loops
+  setInterval(updateProfilerDisplayData, 2000);
 }
 
 function toggleHardwareProfilerOverlay() {
@@ -185,25 +224,21 @@ function filterHudRows() {
 }
 
 function updateProfilerDisplayData() {
-  // CPU Logical Core Estimations
   const cores = navigator.hardwareConcurrency || "Unsupported Architecture";
   document.getElementById("metricCpu").innerText = `CPU Cores: ${cores} Logical Nodes`;
 
-  // Memory Allocation Profiling
   if (performance.memory) {
     const memoryUsed = Math.round(performance.memory.usedJSHeapSize / (1024 * 1024));
     const memoryTotal = Math.round(performance.memory.jsHeapSizeLimit / (1024 * 1024));
     document.getElementById("metricRam").innerText = `Memory Heap: ${memoryUsed}MB / ${memoryTotal}MB`;
   } else {
-    document.getElementById("metricRam").innerText = `Memory Heap: API Locked (Chrome Exclusive)`;
+    document.getElementById("metricRam").innerText = `Memory Heap: API Locked (Chrome/ChromeOS Exclusive)`;
   }
 
-  // FPS & DOM Load Metrics
   document.getElementById("metricFps").innerText = `Performance: ${currentComputedFps} FPS`;
   const totalElements = document.getElementsByTagName("*").length;
   document.getElementById("metricDom").innerText = `DOM Elements: ${totalElements} Nodes Loaded`;
   
-  // Error Telemetry Logs
   const errRow = document.getElementById("metricErrors");
   errRow.innerText = `Errors: ${observedErrorsCount} (${lastErrorMessage})`;
   errRow.style.color = observedErrorsCount > 0 ? "#ff5f56" : "#00ff66";
