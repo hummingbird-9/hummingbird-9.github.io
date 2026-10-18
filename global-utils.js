@@ -49,7 +49,7 @@ function loadErudaDevToolsEngine(triggerImmediately) {
   }
   
   const script = document.createElement("script");
-  script.src = "https://jsdelivr.net";
+  script.src = "https://jsdelivr.net/npm/eruda";
   script.async = true;
   script.onload = () => {
     eruda.init({
@@ -134,7 +134,7 @@ function calculateRunningFps() {
 }
 
 async function measureNetworkLatency() {
-  const targetEndpoint = "https://jsdelivr.net";
+  const targetEndpoint = "https://jsdelivr.net/npm/eruda";
   const startTime = performance.now();
   
   try {
