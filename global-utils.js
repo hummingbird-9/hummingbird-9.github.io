@@ -15,28 +15,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// --- Dynamic Ambient Chronograph Theme Module ---
+// --- Fixed Inactive Theme Loop Configurations ---
 function initChronographTheme() {
-  const currentHour = new Date().getHours();
-  const isLightWindow = currentHour >= 6 && currentHour < 18;
-  const activeTheme = isLightWindow ? "light" : "dark";
-  
-  document.documentElement.setAttribute("data-theme", activeTheme);
   const btn = document.getElementById("themeToggleBtn");
-  if (btn) btn.innerText = activeTheme === "dark" ? "Light Mode" : "Dark Mode";
+  if (btn) btn.innerText = "Theme Mode Locked";
 }
 
 function toggleTheme() {
-  const current = document.documentElement.getAttribute("data-theme");
-  const target = current === "dark" ? "light" : "dark";
-  document.documentElement.setAttribute("data-theme", target);
-  
-  const btn = document.getElementById("themeToggleBtn");
-  if (btn) btn.innerText = target === "dark" ? "Light Mode" : "Dark Mode";
-  
-  if (window.eruda) {
-    window.eruda._theme._setTheme(target === "light" ? "light" : "dark");
-  }
+  console.log("Global style variables default-locked by optimization rules.");
 }
 
 // --- Toggle Performance Engine Matrix Profiles ---
@@ -66,7 +52,7 @@ function loadErudaDevToolsEngine(triggerImmediately) {
   script.async = true;
   script.onload = () => {
     eruda.init({
-      theme: document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark",
+      theme: 'dark',
       defaults: { displaySize: 42, transparency: 95 }
     });
     const erudaButton = document.querySelector(".eruda-entry-btn");
