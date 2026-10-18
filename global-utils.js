@@ -116,6 +116,11 @@ function triggerPageSaveAsOperation() {
   a.click();
 }
 
+document.addEventListener("click", () => {
+  const menu = document.getElementById("customContextMenu");
+  if (menu) menu.style.display = "none";
+});
+
 function triggerGoogleSearchQuery() {
   const text = window.getSelection().toString() || "HummingbirdTech";
   window.open(`https://google.com{encodeURIComponent(text)}`, "_blank");
@@ -210,7 +215,7 @@ function injectHardwareProfilerHUD() {
       <div class="profiler-selector-box">
         <span style="font-size:0.75rem;font-weight:bold;display:block;margin-bottom:4px;">Filter HUD Views:</span>
         <label><input type="checkbox" id="chkCpu" checked onclick="filterHudRows()"> Virtual CPU Cores</label>
-        <label><input type="checkbox" id="chkRam" checked onclick="checked" onclick="filterHudRows()"> Memory Allocation</label>
+        <label><input type="checkbox" id="chkRam" checked onclick="filterHudRows()"> Memory Allocation</label>
         <label><input type="checkbox" id="chkFps" checked onclick="filterHudRows()"> Frame Rate (FPS)</label>
         <label><input type="checkbox" id="chkDom" checked onclick="filterHudRows()"> DOM Structural Load</label>
         <label><input type="checkbox" id="chkPing" checked onclick="filterHudRows()"> Network Latency</label>
