@@ -1,28 +1,28 @@
-/* --- Core Variables & Themes --- */
+/* --- Core System Variables --- */
 :root {
-  --bg-gradient-index: linear-gradient(135deg, #0a2e0a, #1a5d1a, #0a2e0a, #1a5d1a);
-  --bg-gradient-gallery: linear-gradient(135deg, #001f3f, #003366, #001f3f, #003366);
-  --text-main: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.8);
-  --accent: #90E4C1;
-  --card-bg: rgba(255, 255, 255, 0.1);
-  --card-border: rgba(255, 255, 255, 0.2);
-  --input-bg: rgba(255, 255, 255, 0.1);
-  --btn-bg: rgba(255, 255, 255, 0.15);
-  --shadow-glow: drop-shadow(0 0 10px rgba(144, 228, 193, 0.6)) drop-shadow(0 0 20px rgba(0, 255, 157, 0.3));
+  --bg-gradient-index: linear-gradient(135deg, #e2f0e2, #a8dba8, #b0cce8, #e6f0fa);
+  --bg-gradient-gallery: linear-gradient(135deg, #e6f0fa, #b0cce8, #a8dba8, #e2f0e2);
+  --text-main: #112211;
+  --text-muted: rgba(17, 34, 17, 0.85);
+  --accent: #1b7a54;
+  --card-bg: rgba(0, 0, 0, 0.04);
+  --card-border: rgba(0, 0, 0, 0.12);
+  --input-bg: rgba(0, 0, 0, 0.04);
+  --btn-bg: rgba(0, 0, 0, 0.06);
+  --shadow-glow: drop-shadow(0 0 6px rgba(27, 122, 84, 0.3));
 }
 
-[data-theme="light"] {
-  --bg-gradient-index: linear-gradient(135deg, #e2f0e2, #a8dba8, #e2f0e2, #a8dba8);
-  --bg-gradient-gallery: linear-gradient(135deg, #e6f0fa, #b0cce8, #e6f0fa, #b0cce8);
-  --text-main: #112211;
-  --text-muted: rgba(17, 34, 17, 0.8);
-  --accent: #1b7a54;
-  --card-bg: rgba(0, 0, 0, 0.05);
-  --card-border: rgba(0, 0, 0, 0.15);
-  --input-bg: rgba(0, 0, 0, 0.05);
-  --btn-bg: rgba(0, 0, 0, 0.08);
-  --shadow-glow: drop-shadow(0 0 8px rgba(27, 122, 84, 0.4));
+[data-theme="dark"] {
+  --bg-gradient-index: linear-gradient(135deg, #0a2e0a, #1a5d1a, #003366, #001f3f);
+  --bg-gradient-gallery: linear-gradient(135deg, #001f3f, #003366, #1a5d1a, #0a2e0a);
+  --text-main: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.85);
+  --accent: #90E4C1;
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --card-border: rgba(255, 255, 255, 0.15);
+  --input-bg: rgba(255, 255, 255, 0.08);
+  --btn-bg: rgba(255, 255, 255, 0.12);
+  --shadow-glow: drop-shadow(0 0 12px rgba(144, 228, 193, 0.5));
 }
 
 /* --- Base Layout --- */
@@ -36,13 +36,12 @@ body {
   align-items: center;
   background: var(--bg-gradient-index);
   background-size: 400% 400%;
-  animation: gradientBG 20s ease infinite;
+  animation: bgGradientEngine 22s ease infinite;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text-main);
   text-align: center;
   position: relative;
   box-sizing: border-box;
-  transition: color 0.3s ease, background 0.3s ease;
 }
 
 .gallery-body {
@@ -53,13 +52,13 @@ body {
   background-size: 400% 400%;
 }
 
-@keyframes gradientBG {
+@keyframes bgGradientEngine {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
-/* --- Controls Layout --- */
+/* --- Toolbar System Configuration --- */
 .top-button-container {
   position: absolute;
   top: 20px;
@@ -79,29 +78,25 @@ body {
 }
 
 .open-page-btn, .utility-btn {
-  padding: 10px 20px;
+  padding: 10px 22px;
   background: var(--btn-bg);
   border: 1px solid var(--card-border);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 12px;
+  border-radius: 6px;
   color: var(--text-main);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   text-decoration: none;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   cursor: pointer;
-  transition: all 0.25s ease;
 }
 
 .open-page-btn:hover, .utility-btn:hover {
   background: var(--accent);
   color: #000000;
-  transform: translateY(-2px);
 }
 
-/* --- Branding Graphics --- */
+/* --- Branding --- */
 .logo-container {
   max-width: 480px;
   width: 100%;
@@ -119,6 +114,14 @@ body {
   filter: var(--shadow-glow);
 }
 
+.title {
+  color: var(--accent);
+  text-shadow: 0 0 15px rgba(0, 255, 157, 0.8), 0 0 30px rgba(0, 255, 157, 0.6);
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
 .content {
   color: var(--text-muted);
   font-size: 1.1rem;
@@ -133,7 +136,7 @@ body {
   margin-top: 20px;
 }
 
-/* --- Interactive Search Modules --- */
+/* --- Squarer Profile Search Design --- */
 .search-container {
   width: 100%;
   max-width: 600px;
@@ -142,16 +145,13 @@ body {
 
 .search-bar {
   width: 100%;
-  padding: 12px 20px;
+  padding: 12px 18px;
   background: var(--input-bg);
   border: 1px solid var(--card-border);
-  border-radius: 25px;
+  border-radius: 6px; 
   color: var(--text-main);
   font-size: 1rem;
   box-sizing: border-box;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  transition: all 0.3s;
 }
 
 .search-bar:focus {
@@ -159,7 +159,7 @@ body {
   border-color: var(--accent);
 }
 
-/* --- Structural Port Cards Layout --- */
+/* --- Gallery Layout Matrix --- */
 .gallery-container {
   display: flex;
   flex-wrap: wrap;
@@ -174,19 +174,17 @@ body {
   flex-basis: 220px;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 15px;
   color: var(--text-main);
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
   text-align: left;
+  will-change: transform;
 }
 
 .game-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
   border-color: var(--accent);
 }
 
@@ -194,8 +192,9 @@ body {
   width: 100%;
   height: 130px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 4px;
   margin-bottom: 12px;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .game-card h3 {
@@ -209,30 +208,53 @@ body {
   margin: 0;
 }
 
-/* --- Entry Motion Controls --- */
-.animate-fade-in {
-  opacity: 0;
-  transform: translateY(10px);
-  animation: cleanFadeIn 0.6s ease-out forwards;
+/* --- Simulated OS Context Dropdown Shell --- */
+.custom-context-menu {
+  position: fixed;
+  background: #252526;
+  border: 1px solid #454545;
+  color: #cccccc;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.85rem;
+  min-width: 180px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  z-index: 100000;
+  display: none;
+  border-radius: 4px;
+  padding: 4px 0;
+  text-align: left;
 }
-.delay-1 { animation-delay: 0.1s; }
-.delay-2 { animation-delay: 0.2s; }
-.delay-3 { animation-delay: 0.3s; }
 
-@keyframes cleanFadeIn {
-  to { opacity: 1; transform: translateY(0); }
+.context-item {
+  padding: 6px 16px;
+  cursor: pointer;
+  user-select: none;
 }
 
-/* --- Dynamic Sandbox Iframe Canvas Overlay Overlay System --- */
+.context-item:hover {
+  background: #007acc;
+  color: #ffffff;
+}
+
+.context-accent {
+  color: #90E4C1;
+  font-weight: 600;
+}
+
+.context-divider {
+  height: 1px;
+  background: #454545;
+  margin: 4px 0;
+}
+
+/* --- Sandboxed Canvas Overlay --- */
 .app-viewport-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: rgba(0, 0, 0, 0.9);
   display: none;
   flex-direction: column;
   z-index: 10000;
@@ -261,7 +283,6 @@ body {
 .iframe-sandbox-container {
   flex: 1;
   background: #000;
-  position: relative;
 }
 
 .app-iframe {
