@@ -1,40 +1,309 @@
-/* --- Core Layout Animations --- */
-.animate-fade-in {
-  opacity: 0;
-  transform: translateY(15px);
-  animation: smoothFadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+/* --- Core Variables & Themes --- */
+:root {
+  --bg-gradient-index: linear-gradient(135deg, #0a2e0a, #1a5d1a, #0a2e0a, #1a5d1a);
+  --bg-gradient-gallery: linear-gradient(135deg, #001f3f, #003366, #001f3f, #003366);
+  --text-main: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.8);
+  --accent: #90E4C1;
+  --card-bg: rgba(255, 255, 255, 0.1);
+  --card-border: rgba(255, 255, 255, 0.2);
+  --input-bg: rgba(255, 255, 255, 0.1);
+  --btn-bg: rgba(255, 255, 255, 0.15);
+  --shadow-glow: drop-shadow(0 0 10px rgba(144, 228, 193, 0.6)) drop-shadow(0 0 20px rgba(0, 255, 157, 0.3));
 }
 
-/* Staggered Delay Configurations for Smooth Flow Layout Presentation */
-.delay-1 { animation-delay: 0.15s; }
-.delay-2 { animation-delay: 0.3s; }
-.delay-3 { animation-delay: 0.45s; }
-
-@keyframes smoothFadeIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+[data-theme="light"] {
+  --bg-gradient-index: linear-gradient(135deg, #e2f0e2, #a8dba8, #e2f0e2, #a8dba8);
+  --bg-gradient-gallery: linear-gradient(135deg, #e6f0fa, #b0cce8, #e6f0fa, #b0cce8);
+  --text-main: #112211;
+  --text-muted: rgba(17, 34, 17, 0.8);
+  --accent: #1b7a54;
+  --card-bg: rgba(0, 0, 0, 0.05);
+  --card-border: rgba(0, 0, 0, 0.15);
+  --input-bg: rgba(0, 0, 0, 0.05);
+  --btn-bg: rgba(0, 0, 0, 0.08);
+  --shadow-glow: drop-shadow(0 0 8px rgba(27, 122, 84, 0.4));
 }
 
-/* --- Brand Logo Positioning Layouts --- */
+/* --- Base Layout --- */
+body {
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-gradient-index);
+  background-size: 400% 400%;
+  animation: gradientBG 20s ease infinite;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-main);
+  text-align: center;
+  position: relative;
+  box-sizing: border-box;
+  transition: color 0.3s ease, background 0.3s ease;
+}
+
+.gallery-body {
+  min-height: 100vh;
+  justify-content: flex-start !important;
+  padding-top: 80px;
+  background: var(--bg-gradient-gallery);
+  background-size: 400% 400%;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* --- Navigation Controls & Utility Bars --- */
+.top-button-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 100;
+}
+
+.utility-controls-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 100;
+}
+
+.open-page-btn, .utility-btn {
+  padding: 10px 20px;
+  background: var(--btn-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  color: var(--text-main);
+  font-size: 0.9rem;
+  text-decoration: none;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.open-page-btn:hover, .utility-btn:hover {
+  background: var(--accent);
+  color: #000000;
+  transform: translateY(-2px);
+}
+
+/* --- Typography & Branding --- */
 .logo-container {
-  max-width: 500px;
+  max-width: 480px;
   width: 100%;
   margin-bottom: 10px;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
-.gallery-logo-container {
-  margin-top: 20px;
-}
+.gallery-logo-container { margin-top: 20px; }
 
 .brand-logo {
   max-width: 100%;
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 0 10px rgba(144, 228, 193, 0.6)) 
-          drop-shadow(0 0 20px rgba(0, 255, 157, 0.3));
+  filter: var(--shadow-glow);
+}
+
+.content {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 600px;
+  margin-bottom: 20px;
+}
+
+.button-container {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* --- Search Bar --- */
+.search-container {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 25px;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 12px 20px;
+  background: var(--input-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 25px;
+  color: var(--text-main);
+  font-size: 1rem;
+  box-sizing: border-box;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  transition: all 0.3s;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* --- Gallery & Cards --- */
+.gallery-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  max-width: 1000px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.game-card {
+  flex-basis: 220px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 12px;
+  padding: 15px;
+  color: var(--text-main);
+  text-decoration: none;
+  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  text-align: left;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+}
+
+.game-thumbnail {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.game-card h3 {
+  margin: 0 0 6px 0;
+  color: var(--accent);
+}
+
+.game-card p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* --- Animations --- */
+.animate-fade-in {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: cleanFadeIn 0.6s ease-out forwards;
+}
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+
+@keyframes cleanFadeIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Integrated Development Tools Console Overlay --- */
+.dev-console-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 400px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: 'Consolas', 'Courier New', monospace;
+  box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+  display: none;
+  flex-direction: column;
+  z-index: 99999;
+  border-top: 3px solid #333;
+  text-align: left;
+}
+
+.dev-console-header {
+  background: #252526;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #3c3c3c;
+  user-select: none;
+}
+
+.dev-console-tabs {
+  display: flex;
+  gap: 5px;
+}
+
+.dev-tab {
+  padding: 4px 12px;
+  background: #2d2d2d;
+  border: 1px solid #3c3c3c;
+  border-bottom: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: #969696;
+}
+
+.dev-tab.active {
+  background: #1e1e1e;
+  color: #fff;
+  border-color: #333;
+}
+
+.close-console-btn {
+  background: transparent;
+  border: none;
+  color: #ff5f56;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.dev-console-body {
+  flex: 1;
+  overflow: auto;
+  padding: 12px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* Code highlight syntax elements */
+.code-tag { color: #569cd6; }
+.code-attr { color: #9cdcfe; }
+.code-val { color: #ce9178; }
+.code-comm { color: #6a9955; }
+
+/* Virtual Inspector Node Rules */
+.inspect-node {
+  padding: 2px 4px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+.inspect-node:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.inspect-children {
+  padding-left: 20px;
+  border-left: 1px dashed #333;
 }
