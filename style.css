@@ -18,12 +18,12 @@ body {
   box-sizing: border-box;
 }
 
-/* FIXED GALLERY OVERRIDE: Swapped dark blue for your classic smooth green canvas matrix */
+/* FIXED GALLERY OVERRIDE: Restored your signature green background animation loop */
 .gallery-body {
     min-height: 100vh;
     justify-content: flex-start;
     padding-top: 50px;
-    background: linear-gradient(135deg, #0a2e0a, #144414, #0a2e0a, #144414); 
+    background: linear-gradient(135deg, #0a2e0a, #1a5d1a, #0a2e0a, #1a5d1a);
     background-size: 400% 400%;
 }
 
@@ -87,28 +87,36 @@ body {
   z-index: 1000;
 }
 
-.open-page-btn, .utility-btn {
-  padding: 8px 16px !important; 
-  font-size: 0.85rem !important; 
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 16px !important; /* FIXED: Matches your old glassmorphic rounded parameters */
-  color: #e0f7e0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+/* FIXED BUTTON ENGINE STYLE MATRIX: Restored exact font weights, text shadows, and 16px glassy curves */
+button, .open-page-btn, .utility-btn {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-radius: 16px !important; /* Fixed: Removed half-circle layouts */
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  color: #e0f7e0 !important;
   cursor: pointer;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-weight: 600;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 4px 15px rgba(0, 255, 45, 0.1);
-  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  font-size: 18px !important; /* Fixed: Restored full-size font text layout */
+  font-weight: 600 !important;
+  margin: 10px 0; 
+  padding: 14px 40px !important; /* Fixed: Restored exact padding sizes */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 32px 0 rgba(0, 255, 45, 0.15);
+  backdrop-filter: saturate(180%) blur(10px) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(10px) !important;
+  transition: transform 0.3s ease, background 0.3s ease;
+  min-width: 180px;
+  user-select: none;
+  text-decoration: none;
+  display: inline-block;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+  text-transform: none !important; /* Matches classic clean lettering layout */
+  letter-spacing: normal !important;
 }
 
-.open-page-btn:hover, .utility-btn:hover {
+button:hover, .open-page-btn:hover, .utility-btn:hover {
   background: rgba(255, 255, 255, 0.1) !important;
-  transform: scale(1.05) translateY(-2px) !important;
-  border-color: rgba(0, 255, 45, 0.6);
+  transform: scale(1.05) !important;
+  outline: none;
 }
 
 /* --- Maximized Search Bar Controls --- */
@@ -127,11 +135,11 @@ body {
     padding: 14px 22px; 
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px !important; 
+    border-radius: 16px !important; /* Unified curves */
     color: white;
     font-size: 1.1rem; 
     box-sizing: border-box; 
-    backdrop-filter: blur(10px);
+    backdrop-filter: saturate(180%) blur(10px);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     transition: all 0.3s ease;
 }
@@ -142,7 +150,7 @@ body {
 
 .search-bar:focus {
     outline: none;
-    border-color: #00ff66;
+    border-color: rgba(0, 255, 45, 0.6);
     background: rgba(255, 255, 255, 0.15);
     box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
 }
@@ -163,16 +171,16 @@ body {
 .game-card {
   flex-basis: 260px;
   max-width: 280px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: saturate(180%) blur(10px);
+  -webkit-backdrop-filter: saturate(180%) blur(10px);
   border-radius: 16px;
   padding: 18px;
   color: white;
   text-decoration: none;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease;
   text-align: left;
   cursor: pointer;
   display: flex;
@@ -181,16 +189,14 @@ body {
 
 .game-card:hover {
   transform: translateY(-8px) scale(1.02);
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(0, 255, 102, 0.5);
-  box-shadow: 0 12px 40px rgba(0, 255, 102, 0.15);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(0, 255, 45, 0.4);
 }
 
-/* FIXED THUMBNAIL 404 ASPECT SAFEGUARDS */
 .game-thumbnail {
     width: 100%;
     height: 140px;
-    object-fit: cover; /* Prevents avatar fallbacks or wide shots from stretching out of boundary boxes */
+    object-fit: cover;
     border-radius: 10px;
     margin-bottom: 15px;
     display: block;
@@ -202,18 +208,20 @@ body {
     margin-top: 0;
     margin-bottom: 8px;
     font-size: 1.25rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #90E4C1;
     text-shadow: 0 0 5px rgba(0, 255, 157, 0.4);
 }
 
 .game-card p {
     font-size: 0.92rem;
-    color: rgba(224, 247, 224, 0.75);
+    color: rgba(255, 255, 255, 0.8);
     text-shadow: none;
     padding: 0;
     margin: 0;
     line-height: 1.4;
-    flex-grow: 1; /* Pushes card properties evenly regardless of text height strings */
+    flex-grow: 1;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* --- OS Context Dropdown overlay --- */
