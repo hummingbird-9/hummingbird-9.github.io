@@ -1,59 +1,122 @@
 /**
- * Humming[bird]Tech Infrastructure Utility Suite
- * Safe, Optimized Dynamic Workspace Handling
+ * Humming[bird]Tech Engineering System Kernel
+ * Multi-Engine Architecture for Advanced ChromeOS Performance Benchmarking
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-  initThemeEngine();
-  injectErudaConsole();
+  initChronographTheme();
+  injectCustomContextMenuShell();
+  
+  // Standard Performance Level auto-initializes Eruda core files
+  if (localStorage.getItem("extreme_lightweight") !== "true") {
+    loadErudaDevToolsEngine(false); 
+  } else {
+    applyLightweightUIAdjustments();
+  }
 });
 
-// --- Theme Management System ---
-function initThemeEngine() {
-  const currentTheme = localStorage.getItem("theme") || "dark";
-  document.documentElement.setAttribute("data-theme", currentTheme);
-  updateThemeButtonText(currentTheme);
+// --- Dynamic Ambient Chronograph Theme Module ---
+function initChronographTheme() {
+  const currentHour = new Date().getHours();
+  const isLightWindow = currentHour >= 6 && currentHour < 18;
+  const activeTheme = isLightWindow ? "light" : "dark";
+  
+  document.documentElement.setAttribute("data-theme", activeTheme);
+  const btn = document.getElementById("themeToggleBtn");
+  if (btn) btn.innerText = activeTheme === "dark" ? "Light Mode" : "Dark Mode";
 }
 
 function toggleTheme() {
-  const targetTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-  document.documentElement.setAttribute("data-theme", targetTheme);
-  localStorage.setItem("theme", targetTheme);
-  updateThemeButtonText(targetTheme);
-}
-
-function updateThemeButtonText(theme) {
+  const current = document.documentElement.getAttribute("data-theme");
+  const target = current === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", target);
+  
   const btn = document.getElementById("themeToggleBtn");
-  if (btn) {
-    btn.innerText = theme === "dark" ? "Light Mode" : "Dark Mode";
+  if (btn) btn.innerText = target === "dark" ? "Light Mode" : "Dark Mode";
+  
+  if (window.eruda) {
+    window.eruda._theme._setTheme(target === "light" ? "light" : "dark");
   }
 }
 
-// --- Production Eruda Engine Integration ---
-function injectErudaConsole() {
-  // Pulls standard development tool emulation environment
-  const script = document.createElement('script');
-  script.src = 'https://cdn.jsdelivr.net/npm/eruda@3.4.3/eruda.min.js';
-  script.onload = function () {
+// --- Toggle Performance Engine Matrix Profiles ---
+function toggleLightweightEngine() {
+  const isLight = localStorage.getItem("extreme_lightweight") === "true";
+  localStorage.setItem("extreme_lightweight", !isLight);
+  window.location.reload();
+}
+
+function applyLightweightUIAdjustments() {
+  const b = document.getElementById("lightweightToggleBtn");
+  if (b) {
+    b.style.background = "#ff5f56";
+    b.innerText = "Engine: Light Mode Active";
+  }
+}
+
+// --- Eruda Development Tools Core Injection Pipeline ---
+function loadErudaDevToolsEngine(triggerImmediately) {
+  if (window.eruda) {
+    if (triggerImmediately) window.eruda.show();
+    return;
+  }
+  
+  const script = document.createElement("script");
+  script.src = "https://jsdelivr.net";
+  script.async = true;
+  script.onload = () => {
     eruda.init({
       theme: document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark",
-      defaults: {
-        displaySize: 45,
-        transparency: 95,
-        theme: 'Monokai'
-      }
+      defaults: { displaySize: 42, transparency: 95 }
     });
-    // Remove the default floating cog button to keep your custom navigation clean
-    const erudaEntry = document.querySelector('.eruda-entry-btn');
-    if (erudaEntry) erudaEntry.style.display = 'none';
+    const erudaButton = document.querySelector(".eruda-entry-btn");
+    if (erudaButton) erudaButton.style.display = "none";
+    if (triggerImmediately) eruda.show();
   };
   document.head.appendChild(script);
 }
 
-function toggleDevConsole() {
-  if (typeof eruda !== 'undefined') {
-    eruda.show();
-  } else {
-    console.warn("DevTools engine still preparing runtime modules.");
-  }
+// --- Custom Right-Click Context Menu Shell ---
+function injectCustomContextMenuShell() {
+  const menuHTML = `
+    <div id="customContextMenu" class="custom-context-menu">
+      <div class="context-item" onclick="window.history.back()">Back</div>
+      <div class="context-item" onclick="window.history.forward()">Forward</div>
+      <div class="context-item" onclick="window.location.reload()">Reload</div>
+      <div class="context-divider"></div>
+      <div class="context-item" onclick="window.print()">Print...</div>
+      <div class="context-item" onclick="triggerPageSaveAsOperation()">Save As...</div>
+      <div class="context-item" onclick="triggerGoogleSearchQuery()">Search with Google</div>
+      <div class="context-divider"></div>
+      <div class="context-item context-accent" onclick="loadErudaDevToolsEngine(true)">Inspect Element (Eruda)</div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML("beforeend", menuHTML);
+  
+  const menu = document.getElementById("customContextMenu");
+  
+  window.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    menu.style.top = `${e.clientY}px`;
+    menu.style.left = `${e.clientX}px`;
+    menu.style.display = "block";
+  });
+  
+  window.addEventListener("click", () => {
+    menu.style.display = "none";
+  });
+}
+
+// --- Extended Browser Context Utilities ---
+function triggerPageSaveAsOperation() {
+  const blob = new Blob([document.documentElement.outerHTML], { type: "text/html" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "page_source.html";
+  a.click();
+}
+
+function triggerGoogleSearchQuery() {
+  const text = window.getSelection().toString() || "HummingbirdTech";
+  window.open(`https://google.com{encodeURIComponent(text)}`, "_blank");
 }
