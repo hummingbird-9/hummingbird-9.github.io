@@ -1,5 +1,5 @@
 /**
- * Humming[bird]Tech Engineering System Kernel
+ * Humming[bird]Tech Engineering System Kernel - Part 1
  * Multi-Engine Architecture for Advanced ChromeOS Performance Benchmarking
  */
 
@@ -119,8 +119,8 @@ function triggerGoogleSearchQuery() {
   const text = window.getSelection().toString() || "HummingbirdTech";
   window.open(`https://google.com{encodeURIComponent(text)}`, "_blank");
 }
+// --- Humming[bird]Tech Engineering System Kernel - Part 2 ---
 
-// --- Hardware Profiler & Stress Test Architecture ---
 let fpsTicks = 0, lastFpsUpdate = performance.now(), currentComputedFps = 60;
 let observedErrorsCount = 0, lastErrorMessage = "None";
 let hardwareStressWorkers = [];
@@ -145,13 +145,11 @@ function calculateRunningFps() {
   requestAnimationFrame(calculateRunningFps);
 }
 
-// Highly Optimized Non-Blocking Network Latency Engine
 async function measureNetworkLatency() {
   const targetEndpoint = "https://jsdelivr.net";
   const startTime = performance.now();
   
   try {
-    // Uses a lightweight HEAD request to prevent downloading redundant byte overhead
     await fetch(`${targetEndpoint}?cache_buster=${startTime}`, { method: 'HEAD', cache: 'no-store' });
     currentNetworkPing = `${Math.round(performance.now() - startTime)} ms`;
   } catch (error) {
@@ -167,10 +165,8 @@ function toggleHardwareStressTest() {
     btn.innerText = "Halt Stress Test";
     btn.classList.add("active");
     
-    // Spawns compute loops matching your Lenovo core layout matrix
     const threads = navigator.hardwareConcurrency || 4;
     for (let i = 0; i < threads; i++) {
-      // Inline Worker payload generation for clean single-file execution boundaries
       const workerBlob = new Blob([`
         onmessage = function() {
           while(true) { Math.sqrt(Math.random() * Math.random()); }
@@ -186,7 +182,6 @@ function toggleHardwareStressTest() {
     btn.innerText = "Trigger Stress Test";
     btn.classList.remove("active");
     
-    // Terminate computation workers immediately to release the thread blockages
     hardwareStressWorkers.forEach(w => w.terminate());
     hardwareStressWorkers = [];
   }
@@ -225,12 +220,12 @@ function injectHardwareProfilerHUD() {
   document.body.insertAdjacentHTML("beforeend", hudHTML);
   requestAnimationFrame(calculateRunningFps);
   
-  // Schedules diagnostic metrics sync and a separate 5-second check interval for network ping to minimize CPU context-switching leaks
   setInterval(updateProfilerDisplayData, 2000);
   setInterval(measureNetworkLatency, 5000);
-  measureNetworkLatency(); // Initial execution run
+  measureNetworkLatency(); 
 }
 
+// Window visibility toggles
 function toggleHardwareProfilerOverlay() {
   const hud = document.getElementById("hardwareProfilerHUD");
   hud.style.display = (hud.style.display === "block") ? "none" : "block";
@@ -245,21 +240,25 @@ function filterHudRows() {
   document.getElementById("metricPing").style.display = document.getElementById("chkPing").checked ? "block" : "none";
   document.getElementById("metricErrors").style.display = document.getElementById("chkErrors").checked ? "block" : "none";
 }
+
 function updateProfilerDisplayData() {
-const cores = navigator.hardwareConcurrency || "Unsupported Architecture";
-document.getElementById("metricCpu").innerText = CPU Cores: ${cores} Logical Nodes;
-if (performance.memory) {
-const memoryUsed = Math.round(performance.memory.usedJSHeapSize / (1024 * 1024));
-const memoryTotal = Math.round(performance.memory.jsHeapSizeLimit / (1024 * 1024));
-document.getElementById("metricRam").innerText = Memory Heap: ${memoryUsed}MB / ${memoryTotal}MB;
-} else {
-document.getElementById("metricRam").innerText = Memory Heap: API Locked (Chrome/ChromeOS Exclusive);
-}
-document.getElementById("metricFps").innerText = Performance: ${currentComputedFps} FPS;
-const totalElements = document.getElementsByTagName("*").length;
-document.getElementById("metricDom").innerText = DOM Elements: ${totalElements} Nodes Loaded;
-document.getElementById("metricPing").innerText = Network Ping: ${currentNetworkPing};
-const errRow = document.getElementById("metricErrors");
-errRow.innerText = Errors: ${observedErrorsCount} (${lastErrorMessage});
-errRow.style.color = observedErrorsCount > 0 ? "#ff5f56" : "#00ff66";
+  const cores = navigator.hardwareConcurrency || "Unsupported Architecture";
+  document.getElementById("metricCpu").innerText = `CPU Cores: ${cores} Logical Nodes`;
+
+  if (performance.memory) {
+    const memoryUsed = Math.round(performance.memory.usedJSHeapSize / (1024 * 1024));
+    const memoryTotal = Math.round(performance.memory.jsHeapSizeLimit / (1024 * 1024));
+    document.getElementById("metricRam").innerText = `Memory Heap: ${memoryUsed}MB / ${memoryTotal}MB`;
+  } else {
+    document.getElementById("metricRam").innerText = `Memory Heap: API Locked (Chrome/ChromeOS Exclusive)`;
+  }
+
+  document.getElementById("metricFps").innerText = `Performance: ${currentComputedFps} FPS`;
+  const totalElements = document.getElementsByTagName("*").length;
+  document.getElementById("metricDom").innerText = `DOM Elements: ${totalElements} Nodes Loaded`;
+  document.getElementById("metricPing").innerText = `Network Ping: ${currentNetworkPing}`;
+  
+  const errRow = document.getElementById("metricErrors");
+  errRow.innerText = `Errors: ${observedErrorsCount} (${lastErrorMessage})`;
+  errRow.style.color = observedErrorsCount > 0 ? "#ff5f56" : "#00ff66";
 }
