@@ -11,6 +11,7 @@
 
   <div class="top-button-container">
     <a href="index.html" class="open-page-btn back-btn">Back Home</a>
+    <a href="https://github.com/hummingbird-9/hummingbird-9.github.io/issues" target="_blank" rel="noopener noreferrer" class="open-page-btn" style="border-color: rgba(255, 95, 86, 0.4);">Report An Issue</a>
   </div>
 
   <div class="utility-controls-container">
@@ -67,7 +68,7 @@
           let branch = "main";
 
           if (cleanLink.includes("github.com")) {
-            const segments = cleanLink.split("://github.com")[1].split("/");
+            const segments = cleanLink.split("github.com/")[1].split("/");
             username = segments[0];
             repoName = segments[1];
           } else if (cleanLink.includes("cdn.jsdelivr.net")) {
