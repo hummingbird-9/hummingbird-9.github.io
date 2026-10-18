@@ -94,7 +94,7 @@ button, .open-page-btn, .utility-btn {
   color: #e0f7e0 !important;
   cursor: pointer;
   font-size: 18px !important; 
-  font-weight: 500 !important; /* FIXED: Font thickness reduced globally from 600 to 500 */
+  font-weight: 500 !important; /* SLEEK WEIGHT CONFIGURATION */
   margin: 10px 0; 
   padding: 14px 40px !important; 
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -118,7 +118,7 @@ button:hover, .open-page-btn:hover, .utility-btn:hover {
   outline: none;
 }
 
-/* FIXED SCALING RULE: Overrides and forces all top navbar dashboard buttons down beautifully */
+/* --- Dynamic Top Dashboard Resizer --- */
 .top-button-container button, 
 .top-button-container .open-page-btn, 
 .utility-controls-container button,
@@ -167,28 +167,25 @@ button:hover, .open-page-btn:hover, .utility-btn:hover {
     box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
 }
 
-/* --- Gallery Platform Cards Grid --- */
+/* --- Gallery Grid Layout Settings --- */
 .gallery-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 25px;
-  max-width: 1200px;
+  justify-content: flex-start;
+  gap: 20px;
+  max-width: 1100px;
   width: 100%;
   margin-top: 40px;
-  padding: 0 20px;
+  padding: 0 10px;
   box-sizing: border-box;
 }
 
 .game-card {
-  flex-basis: 260px;
-  max-width: 280px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: saturate(180%) blur(10px);
   -webkit-backdrop-filter: saturate(180%) blur(10px);
   border-radius: 16px;
-  padding: 18px;
   color: white;
   text-decoration: none;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
@@ -200,17 +197,15 @@ button:hover, .open-page-btn:hover, .utility-btn:hover {
 }
 
 .game-card:hover {
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(-6px) scale(1.02);
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(0, 255, 45, 0.4);
 }
 
 .game-thumbnail {
     width: 100%;
-    height: 140px;
     object-fit: cover;
     border-radius: 10px;
-    margin-bottom: 15px;
     display: block;
     background-color: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -218,8 +213,6 @@ button:hover, .open-page-btn:hover, .utility-btn:hover {
 
 .game-card h3 {
     margin-top: 0;
-    margin-bottom: 8px;
-    font-size: 1.25rem;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #90E4C1;
     text-shadow: 0 0 5px rgba(0, 255, 157, 0.4);
@@ -227,7 +220,6 @@ button:hover, .open-page-btn:hover, .utility-btn:hover {
 }
 
 .game-card p {
-    font-size: 0.92rem;
     color: rgba(255, 255, 255, 0.8);
     text-shadow: none;
     padding: 0;
@@ -394,4 +386,34 @@ button:hover, .open-page-btn:hover, .utility-btn:hover {
   width: 100%;
   height: 100%;
   border: none;
+}
+
+/* --- Live System Theme Engine Profiles --- */
+body.light-theme-profile {
+  background: linear-gradient(135deg, #e0f2e0, #a1dba1, #e0f2e0, #a1dba1);
+  color: #051a05;
+}
+body.light-theme-profile button,
+body.light-theme-profile .open-page-btn,
+body.light-theme-profile .utility-btn {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  color: #0a3d0a !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+body.light-theme-profile .game-card {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #111;
+}
+body.light-theme-profile .game-card h3 {
+  color: #1a5d1a;
+}
+body.light-theme-profile .search-bar {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #000;
+}
+body.light-theme-profile .search-bar::placeholder {
+  color: rgba(0, 0, 0, 0.5);
 }
