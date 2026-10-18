@@ -18,7 +18,6 @@ body {
   box-sizing: border-box;
 }
 
-/* FIXED GALLERY OVERRIDE: Restored your signature green background animation loop */
 .gallery-body {
     min-height: 100vh;
     justify-content: flex-start;
@@ -87,17 +86,17 @@ body {
   z-index: 1000;
 }
 
-/* FIXED BUTTON ENGINE STYLE MATRIX: Restored exact font weights, text shadows, and 16px glassy curves */
+/* --- Core Buttons General Parameters --- */
 button, .open-page-btn, .utility-btn {
   background: rgba(255, 255, 255, 0.15) !important;
-  border-radius: 16px !important; /* Fixed: Removed half-circle layouts */
+  border-radius: 16px !important; 
   border: 1px solid rgba(255, 255, 255, 0.4) !important;
   color: #e0f7e0 !important;
   cursor: pointer;
-  font-size: 18px !important; /* Fixed: Restored full-size font text layout */
-  font-weight: 600 !important;
+  font-size: 18px !important; 
+  font-weight: 500 !important; /* FIXED: Font thickness reduced globally from 600 to 500 */
   margin: 10px 0; 
-  padding: 14px 40px !important; /* Fixed: Restored exact padding sizes */
+  padding: 14px 40px !important; 
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 32px 0 rgba(0, 255, 45, 0.15);
   backdrop-filter: saturate(180%) blur(10px) !important;
@@ -109,7 +108,7 @@ button, .open-page-btn, .utility-btn {
   display: inline-block;
   box-sizing: border-box;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-  text-transform: none !important; /* Matches classic clean lettering layout */
+  text-transform: none !important;
   letter-spacing: normal !important;
 }
 
@@ -117,6 +116,19 @@ button:hover, .open-page-btn:hover, .utility-btn:hover {
   background: rgba(255, 255, 255, 0.1) !important;
   transform: scale(1.05) !important;
   outline: none;
+}
+
+/* FIXED SCALING RULE: Overrides and forces all top navbar dashboard buttons down beautifully */
+.top-button-container button, 
+.top-button-container .open-page-btn, 
+.utility-controls-container button,
+.utility-controls-container .utility-btn {
+  font-size: 14px !important; 
+  padding: 8px 20px !important; 
+  margin: 0 !important;
+  min-width: auto !important; 
+  border-radius: 12px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 4px 15px rgba(0, 255, 45, 0.1);
 }
 
 /* --- Maximized Search Bar Controls --- */
@@ -135,7 +147,7 @@ button:hover, .open-page-btn:hover, .utility-btn:hover {
     padding: 14px 22px; 
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 16px !important; /* Unified curves */
+    border-radius: 16px !important; 
     color: white;
     font-size: 1.1rem; 
     box-sizing: border-box; 
@@ -211,6 +223,7 @@ button:hover, .open-page-btn:hover, .utility-btn:hover {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #90E4C1;
     text-shadow: 0 0 5px rgba(0, 255, 157, 0.4);
+    font-weight: 500;
 }
 
 .game-card p {
