@@ -71,42 +71,34 @@
 
           projectsData = data.repo_links.map(link => {
             let cleanLink = link.trim();
-            if (!cleanLink.startsWith('http://') && !cleanLink.startsWith('https://')) {
-              cleanLink = 'https://' + cleanLink;
-            }
-
+            
+            // Defensively fallback to username if things fail to map
             let username = "hummingbird-9";
             let repoName = "unresolved-repo";
             let branch = "main";
 
-            try {
-              const urlObj = new URL(cleanLink);
-              // Clean out the 'gh' keyword and empty paths cleanly using structural filters
-              const paths = urlObj.pathname.split('/').filter(p => p.trim() && p !== 'gh');
-              
-              if (urlObj.hostname.includes("github.com")) {
-                if (paths.length >= 1) username = paths[0];
-                if (paths.length >= 2) repoName = paths[1];
-              } 
-              else if (urlObj.hostname.includes("jsdelivr.net")) {
-                if (paths.length >= 1) username = paths[0];
-                if (paths.length >= 2) {
-                  const repoBranchSplit = paths[1].split('@');
-                  repoName = repoBranchSplit[0];
-                  if (repoBranchSplit.length > 1) {
-                    branch = repoBranchSplit[1];
-                  }
-                }
+            // Clean extraction regardless of array ordering, trailing slashes, or prefixes
+            if (cleanLink.includes("github.com")) {
+              const matches = cleanLink.match(/github\.com\/([^\/]+)\/([^\/\s?#]+)/);
+              if (matches && matches.length >= 3) {
+                username = matches[1];
+                repoName = matches[2].replace(/\.git\$/, ""); // strip .git if present
               }
-            } catch (urlError) {
-              console.error("Skipped malformed repository URL layout entry:", cleanLink);
+            } else if (cleanLink.includes("jsdelivr.net")) {
+              const matches = cleanLink.match(/cdn\.jsdelivr\.net\/gh\/([^\/]+)\/([^\/\s@?#]+)(?:@([^\s?#]+))?/);
+              if (matches && matches.length >= 3) {
+                username = matches[1];
+                const repoBranchSplit = matches[2].split('@');
+                repoName = repoBranchSplit[0];
+                branch = matches[3] || repoBranchSplit[1] || "main";
+              }
             }
 
             const parsedTitle = repoName.replace(/-/g, ' ');
             
-            // Build direct CDN target locations using pure, error-free variable mapping
-            const computedCover = 'https://jsdelivr.net' + username + '/' + repoName + '@' + branch + '/cover.png';
-            const appUrl = 'https://' + username + '.github.io/' + repoName + '/';
+            // Compile accurate, direct endpoints without complex logic arrays
+            const computedCover = `https://jsdelivr.net{username}/${repoName}@${branch}/cover.png`;
+            const appUrl = `https://${username}.github.io/${repoName}/`;
 
             return {
               name: parsedTitle,
