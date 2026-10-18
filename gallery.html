@@ -57,32 +57,48 @@
         try {
           const response = await fetch('/html/repos.json');
           if (!response.ok) throw new Error('Data map configuration file missing');
-          const data = await response.json();
           
+          let data;
+          try {
+            data = await response.json();
+          } catch(jsonErr) {
+            throw new Error('JSON format error in repos.json! Make sure commas are correct.');
+          }
+          
+          if (!data || !data.repo_links) {
+            throw new Error('JSON map lacks the "repo_links" entry list.');
+          }
+
           projectsData = data.repo_links.map(link => {
-            let cleanLink = link.trim().replace(/\/\$/, ""); 
+            let cleanLink = link.trim();
+            if (!cleanLink.startsWith('http://') && !cleanLink.startsWith('https://')) {
+              cleanLink = 'https://' + cleanLink;
+            }
+
             let username = "hummingbird-9";
             let repoName = "unresolved-repo";
             let branch = "main";
 
-            // Safe String Split Processing Engine (Removes RegEx compilation errors)
-            if (cleanLink.includes("://github.com")) {
-              const urlParts = cleanLink.split("://github.com")[1];
-              if (urlParts) {
-                const pathParts = urlParts.split("/");
-                username = pathParts[0] || username;
-                repoName = pathParts[1] || repoName;
+            try {
+              const urlObj = new URL(cleanLink);
+              const paths = urlObj.pathname.split('/').filter(p => p.trim());
+              
+              if (urlObj.hostname.includes("github.com")) {
+                if (paths.length >= 1) username = paths[0];
+                if (paths.length >= 2) repoName = paths[1];
+              } 
+              else if (urlObj.hostname.includes("jsdelivr.net")) {
+                if (paths.length >= 3 && paths[0] === "gh") {
+                  username = paths[1];
+                  const repoBranchSplit = paths[2].split('@');
+                  repoName = repoBranchSplit[0];
+                  if (repoBranchSplit.length > 1) {
+                    branch = repoBranchSplit[1];
+                  }
+                }
               }
-            } else if (cleanLink.includes("cdn.jsdelivr.net/gh/")) {
-              const urlParts = cleanLink.split("cdn.jsdelivr.net/gh/")[1];
-              if (urlParts) {
-                const pathParts = urlParts.split("/");
-                username = pathParts[0] || username;
-                
-                const repoAndBranch = (pathParts[1] || "").split("@");
-                repoName = repoAndBranch[0] || repoName;
-                branch = repoAndBranch[1] || branch;
-              }
+            } catch (urlError) {
+              console.error("Skipped malformed repository URL layout entry:", cleanLink);
             }
 
             const parsedTitle = repoName.replace(/-/g, ' ');
@@ -100,7 +116,7 @@
           renderGalleryExecutionBlocks(projectsData);
         } catch (error) {
           console.error(error);
-          container.innerHTML = `<p style="color: #ff6b6b;">Error processing repository parameters map registry.</p>`;
+          container.innerHTML = `<p style="color: #ff6b6b; font-weight: bold; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 6px;">${error.message}</p>`;
         }
       }
 
@@ -133,7 +149,6 @@
           card.className = 'game-card';
           card.onclick = () => launchApplicationViewport(project.url, project.name);
 
-          // Corrected internal string values assembly formatting
           if (isExtremeLightweight) {
             card.innerHTML = `
               <img class="game-thumbnail" data-src="${project.cover}" src="data:image/svg+xml,%3Csvg xmlns='http://w3.org' viewBox='0 0 220 130'%3E%3Crect width='100%25' height='100%25' fill='%23222'/%3E%3C/svg%3E" alt="${project.name}">
