@@ -95,13 +95,12 @@ function injectCustomContextMenuShell() {
   
   const menu = document.getElementById("customContextMenu");
   
-  // Bound to global target structures to capture and completely block system overrides
   document.oncontextmenu = function(e) {
     e.preventDefault();
     menu.style.top = `${e.clientY}px`;
     menu.style.left = `${e.clientX}px`;
     menu.style.display = "block";
-    return false; // Blocks native web engine context menus instantly
+    return false; 
   };
   
   window.addEventListener("click", () => {
@@ -211,7 +210,7 @@ function injectHardwareProfilerHUD() {
       <div class="profiler-selector-box">
         <span style="font-size:0.75rem;font-weight:bold;display:block;margin-bottom:4px;">Filter HUD Views:</span>
         <label><input type="checkbox" id="chkCpu" checked onclick="filterHudRows()"> Virtual CPU Cores</label>
-        <label><input type="checkbox" id="chkRam" checked onclick="filterHudRows()"> Memory Allocation</label>
+        <label><input type="checkbox" id="chkRam" checked onclick="checked" onclick="filterHudRows()"> Memory Allocation</label>
         <label><input type="checkbox" id="chkFps" checked onclick="filterHudRows()"> Frame Rate (FPS)</label>
         <label><input type="checkbox" id="chkDom" checked onclick="filterHudRows()"> DOM Structural Load</label>
         <label><input type="checkbox" id="chkPing" checked onclick="filterHudRows()"> Network Latency</label>
