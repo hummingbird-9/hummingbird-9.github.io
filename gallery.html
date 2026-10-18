@@ -76,25 +76,19 @@
             }
 
             let username = "hummingbird-9";
-            let repoName = "unresolved-repo";
+            let rawRepoName = "unresolved-repo";
             let branch = "main";
 
             try {
               const urlObj = new URL(cleanLink);
-              // Clean out whitespace or blank indices to get clean, sequential keys
-              const paths = urlObj.pathname.split('/').filter(p => p.trim());
+              // Filters out 'gh' dynamically if it's there to ensure arrays line up perfectly
+              const paths = urlObj.pathname.split('/').filter(p => p.trim() && p !== 'gh');
               
-              if (urlObj.hostname.includes("github.com")) {
-                // Fixed: Pinned straight to correct base array parameters maps
+              if (urlObj.hostname.includes("github.com") || urlObj.hostname.includes("jsdelivr.net")) {
                 if (paths.length >= 1) username = paths[0];
-                if (paths.length >= 2) repoName = paths[1];
-              } 
-              else if (urlObj.hostname.includes("jsdelivr.net")) {
-                // Paths layout index map: ['gh', 'username', 'repo@branch']
-                if (paths.length >= 3 && paths[0] === "gh") {
-                  username = paths[1];
-                  const repoBranchSplit = paths[2].split('@');
-                  repoName = repoBranchSplit[0];
+                if (paths.length >= 2) {
+                  const repoBranchSplit = paths[1].split('@');
+                  rawRepoName = repoBranchSplit[0];
                   if (repoBranchSplit.length > 1) {
                     branch = repoBranchSplit[1];
                   }
@@ -104,11 +98,15 @@
               console.error("Skipped malformed repository URL layout entry:", cleanLink);
             }
 
-            const parsedTitle = repoName.replace(/-/g, ' ');
+            // Title presentation replacement uses spacing formatting
+            const parsedTitle = rawRepoName.replace(/-/g, ' ');
             
-            // Clean absolute parameter strings compile system to pull cover graphics directly
-            const computedCover = 'https://jsdelivr.net' + username + '/' + repoName + '@' + branch + '/cover.png';
-            const appUrl = 'https://' + username + '.github.io/' + repoName + '/';
+            // CRITICAL FIX: Forces lowercase strings on paths to bypass case-sensitivity file matching 404 faults
+            const safeUser = username.toLowerCase();
+            const safeRepo = rawRepoName.trim(); // Keeps exact repo casing matching your repo names
+            
+            const computedCover = 'https://jsdelivr.net' + safeUser + '/' + safeRepo + '@' + branch + '/cover.png';
+            const appUrl = 'https://' + safeUser + '.github.io/' + safeRepo + '/';
 
             return {
               name: parsedTitle,
