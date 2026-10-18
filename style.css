@@ -25,7 +25,7 @@
   --shadow-glow: drop-shadow(0 0 12px rgba(144, 228, 193, 0.5));
 }
 
-/* --- Base Layout --- */
+/* --- Base Performance Layout Engine --- */
 body {
   margin: 0;
   padding: 20px;
@@ -37,7 +37,10 @@ body {
   background: var(--bg-gradient-index);
   background-size: 400% 400%;
   animation: bgGradientEngine 22s ease infinite;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
   color: var(--text-main);
   text-align: center;
   position: relative;
@@ -85,10 +88,11 @@ body {
   color: var(--text-main);
   font-size: 0.85rem;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   cursor: pointer;
+  transition: background 0.2s, color 0.2s;
 }
 
 .open-page-btn:hover, .utility-btn:hover {
@@ -96,7 +100,7 @@ body {
   color: #000000;
 }
 
-/* --- Branding --- */
+/* --- Branding Graphics --- */
 .logo-container {
   max-width: 480px;
   width: 100%;
@@ -116,16 +120,17 @@ body {
 
 .title {
   color: var(--accent);
-  text-shadow: 0 0 15px rgba(0, 255, 157, 0.8), 0 0 30px rgba(0, 255, 157, 0.6);
-  font-size: 2.5rem;
+  text-shadow: 0 0 15px rgba(0, 255, 157, 0.4);
+  font-size: 2.3rem;
+  font-weight: 600;
   margin-bottom: 20px;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .content {
   color: var(--text-muted);
-  font-size: 1.1rem;
-  line-height: 1.6;
+  font-size: 1.05rem;
+  line-height: 1.5;
   max-width: 600px;
   margin-bottom: 20px;
 }
@@ -136,7 +141,7 @@ body {
   margin-top: 20px;
 }
 
-/* --- Squarer Profile Search Design --- */
+/* --- Squarer Search Bar --- */
 .search-container {
   width: 100%;
   max-width: 600px;
@@ -199,6 +204,8 @@ body {
 
 .game-card h3 {
   margin: 0 0 6px 0;
+  font-size: 1.15rem;
+  font-weight: 600;
   color: var(--accent);
 }
 
@@ -206,15 +213,16 @@ body {
   font-size: 0.85rem;
   color: var(--text-muted);
   margin: 0;
+  font-weight: 400;
 }
 
-/* --- Simulated OS Context Dropdown Shell --- */
+/* --- Custom Right-Click Context Menu Shell --- */
 .custom-context-menu {
   position: fixed;
   background: #252526;
   border: 1px solid #454545;
   color: #cccccc;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
   font-size: 0.85rem;
   min-width: 180px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
@@ -244,6 +252,52 @@ body {
 .context-divider {
   height: 1px;
   background: #454545;
+  margin: 4px 0;
+}
+
+/* --- Hardware Profiler HUD Dashboard Layout --- */
+.hardware-profiler-hud {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid #444;
+  color: #00ff66;
+  font-family: monospace;
+  padding: 15px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  z-index: 99999;
+  text-align: left;
+  min-width: 250px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  display: none;
+}
+
+.profiler-header {
+  font-weight: bold;
+  border-bottom: 1px solid #444;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+  color: #90E4C1;
+  display: flex;
+  justify-content: space-between;
+}
+
+.profiler-selector-box {
+  margin-top: 10px;
+  padding-top: 6px;
+  border-top: 1px dashed #444;
+  color: #ccc;
+}
+
+.profiler-selector-box label {
+  display: block;
+  margin: 3px 0;
+  cursor: pointer;
+}
+
+.profiler-metric-row {
   margin: 4px 0;
 }
 
