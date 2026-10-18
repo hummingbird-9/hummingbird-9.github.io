@@ -37,10 +37,13 @@ body {
   background: var(--bg-gradient-index);
   background-size: 400% 400%;
   animation: bgGradientEngine 22s ease infinite;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
+  /* RESTORED EXACT ORIGINAL TYPOGRAPHY & WEIGHT FIELDS */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-weight: 400;
+  font-weight: normal;
+  
   color: var(--text-main);
   text-align: center;
   position: relative;
@@ -61,7 +64,7 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-/* --- Navigation Controls Configuration --- */
+/* --- Toolbar System Configuration --- */
 .top-button-container {
   position: absolute;
   top: 20px;
@@ -88,11 +91,14 @@ body {
   color: var(--text-main);
   font-size: 0.85rem;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
+  
+  /* Lock typography structure inside inputs */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .open-page-btn:hover, .utility-btn:hover {
@@ -120,17 +126,17 @@ body {
 
 .title {
   color: var(--accent);
-  text-shadow: 0 0 15px rgba(0, 255, 157, 0.4);
-  font-size: 2.3rem;
-  font-weight: 600;
+  text-shadow: 0 0 15px rgba(0, 255, 157, 0.8),
+              0 0 30px rgba(0, 255, 157, 0.6);
+  font-size: 2.5rem;
   margin-bottom: 20px;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
 .content {
   color: var(--text-muted);
-  font-size: 1.05rem;
-  line-height: 1.5;
+  font-size: 1.2rem;
+  line-height: 1.6;
   max-width: 600px;
   margin-bottom: 20px;
 }
@@ -157,6 +163,7 @@ body {
   color: var(--text-main);
   font-size: 1rem;
   box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .search-bar:focus {
@@ -204,25 +211,24 @@ body {
 
 .game-card h3 {
   margin: 0 0 6px 0;
-  font-size: 1.15rem;
-  font-weight: 600;
+  font-size: 1.25rem;
   color: var(--accent);
+  text-shadow: 0 0 5px rgba(0, 255, 157, 0.5);
 }
 
 .game-card p {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
   margin: 0;
-  font-weight: 400;
 }
 
-/* --- Simulated OS Context Dropdown Shell --- */
+/* --- Simulated OS Context Menu --- */
 .custom-context-menu {
   position: fixed;
   background: #252526;
   border: 1px solid #454545;
   color: #cccccc;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 0.85rem;
   min-width: 180px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
@@ -318,6 +324,7 @@ body {
   padding-top: 6px;
   border-top: 1px dashed #444;
   color: #ccc;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .profiler-selector-box label {
