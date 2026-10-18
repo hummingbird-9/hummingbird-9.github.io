@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
   injectCustomContextMenuShell();
   injectHardwareProfilerHUD();
   
-  // Checks persistent storage state configurations cleanly on window launch loops
   if (localStorage.getItem("extreme_lightweight") === "true") {
     applyLightweightUIAdjustments();
   } else {
@@ -16,21 +15,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// --- Fixed Inactive Theme Loop Buttons Configuration ---
 function initChronographTheme() {
   const btn = document.getElementById("themeToggleBtn");
-  if (btn) btn.innerText = "Theme Locked";
+  const activeTheme = localStorage.getItem("system_theme_mode") || "dark";
+  
+  if (activeTheme === "light") {
+    document.body.classList.add("light-theme-profile");
+    if (btn) btn.innerText = "Light Mode";
+  } else {
+    document.body.classList.remove("light-theme-profile");
+    if (btn) btn.innerText = "Dark Mode";
+  }
 }
 
 function toggleTheme() {
-  console.log("Style attributes locked via infrastructure performance optimization profiles.");
+  const currentTheme = localStorage.getItem("system_theme_mode") || "dark";
+  const nextTheme = currentTheme === "dark" ? "light" : "dark";
+  localStorage.setItem("system_theme_mode", nextTheme);
+  initChronographTheme();
 }
 
-// --- Toggle Performance Engine Matrix Profiles ---
 function toggleLightweightEngine() {
   const currentSetting = localStorage.getItem("extreme_lightweight") === "true";
   localStorage.setItem("extreme_lightweight", !currentSetting);
-  window.location.reload(); // Refresh viewport pipeline environment
+  window.location.reload();
 }
 
 function applyLightweightUIAdjustments() {
@@ -41,7 +49,6 @@ function applyLightweightUIAdjustments() {
   }
 }
 
-// --- Eruda Development Tools Core Injection Pipeline ---
 function loadErudaDevToolsEngine(triggerImmediately) {
   if (window.eruda) {
     if (triggerImmediately) window.eruda.show();
@@ -49,7 +56,7 @@ function loadErudaDevToolsEngine(triggerImmediately) {
   }
   
   const script = document.createElement("script");
-  script.src = "https://jsdelivr.net/npm/eruda";
+  script.src = "https://jsdelivr.net";
   script.async = true;
   script.onload = () => {
     eruda.init({
@@ -60,10 +67,12 @@ function loadErudaDevToolsEngine(triggerImmediately) {
     if (erudaButton) erudaButton.style.display = "none";
     if (triggerImmediately) eruda.show();
   };
+  script.onerror = () => {
+    console.log("Eruda network path blocked.");
+  };
   document.head.appendChild(script);
 }
 
-// --- Custom Right-Click Context Menu Shell ---
 function injectCustomContextMenuShell() {
   const menuHTML = `
     <div id="customContextMenu" class="custom-context-menu">
@@ -79,7 +88,6 @@ function injectCustomContextMenuShell() {
     </div>
   `;
   document.body.insertAdjacentHTML("beforeend", menuHTML);
-  
   const menu = document.getElementById("customContextMenu");
   
   document.oncontextmenu = function(e) {
@@ -134,14 +142,14 @@ function calculateRunningFps() {
 }
 
 async function measureNetworkLatency() {
-  const targetEndpoint = "https://jsdelivr.net/npm/eruda";
+  const targetEndpoint = "https://whatwg.org";
   const startTime = performance.now();
   
   try {
-    await fetch(`${targetEndpoint}?cache_buster=${startTime}`, { method: 'HEAD', cache: 'no-store' });
+    await fetch(`${targetEndpoint}?ping_probe=${startTime}`, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' });
     currentNetworkPing = `${Math.round(performance.now() - startTime)} ms`;
   } catch (error) {
-    currentNetworkPing = "Offline / Blocked";
+    currentNetworkPing = "Offline / Proxied Gateway";
   }
   updateProfilerDisplayData();
 }
