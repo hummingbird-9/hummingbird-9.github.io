@@ -18,11 +18,15 @@
       <button id="themeToggleBtn" class="utility-btn" onclick="toggleTheme()">Theme Mode</button>
     </div>
 
-    <h1 class="title" style="margin-top: 60px;">HTML Gallery</h1>
+    <!-- Pinned Brand Logo Presentation Layer -->
+    <div class="logo-container gallery-logo-container">
+      <img src="https://onecompiler.io" alt="Humming[bird]Tech Logo" class="brand-logo">
+    </div>
+
     <p class="content"></p>
 
-    <!-- Corrected Squarer Filter Control Console Wrapper Layout -->
-    <div style="width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+    <!-- Maximized Widescreen Search Component Console -->
+    <div class="search-container">
       <input type="text" id="gallerySearch" placeholder="Search applications..." class="search-bar">
       <button class="utility-btn" onclick="clearGalleryFilters()" style="padding: 8px 24px;">Clear</button>
     </div>
@@ -50,7 +54,6 @@
       const container = document.getElementById('galleryContainer');
       const searchBar = document.getElementById('gallerySearch');
       
-      // Auto-Locks Default Environment To Standard Full Rendering Execution Engine Mode
       if (localStorage.getItem("extreme_lightweight") === null) {
         localStorage.setItem("extreme_lightweight", "false");
       }
@@ -68,7 +71,6 @@
             let repoName = "unresolved-repo";
             let branch = "main";
 
-            // Fixed Robust Fallback Parameter Extractor Engine Loops
             if (cleanLink.includes("://github.com")) {
               const urlChunks = cleanLink.split("://github.com");
               if (urlChunks.length > 1) {
