@@ -125,6 +125,7 @@ let fpsTicks = 0, lastFpsUpdate = performance.now(), currentComputedFps = 60;
 let observedErrorsCount = 0, lastErrorMessage = "None";
 let hardwareStressWorkers = [];
 let isStressTestActive = false;
+let currentNetworkPing = "Calculating...";
 
 window.addEventListener("error", (e) => {
   observedErrorsCount++;
@@ -142,6 +143,21 @@ function calculateRunningFps() {
     updateProfilerDisplayData();
   }
   requestAnimationFrame(calculateRunningFps);
+}
+
+// Highly Optimized Non-Blocking Network Latency Engine
+async function measureNetworkLatency() {
+  const targetEndpoint = "https://jsdelivr.net";
+  const startTime = performance.now();
+  
+  try {
+    // Uses a lightweight HEAD request to prevent downloading redundant byte overhead
+    await fetch(`${targetEndpoint}?cache_buster=${startTime}`, { method: 'HEAD', cache: 'no-store' });
+    currentNetworkPing = `${Math.round(performance.now() - startTime)} ms`;
+  } catch (error) {
+    currentNetworkPing = "Offline / Blocked";
+  }
+  updateProfilerDisplayData();
 }
 
 function toggleHardwareStressTest() {
@@ -192,6 +208,7 @@ function injectHardwareProfilerHUD() {
       <div id="metricRam" class="profiler-metric-row">Memory Heap: Loading...</div>
       <div id="metricFps" class="profiler-metric-row">Performance: Loading...</div>
       <div id="metricDom" class="profiler-metric-row">DOM Elements: Loading...</div>
+      <div id="metricPing" class="profiler-metric-row">Network Ping: Loading...</div>
       <div id="metricErrors" class="profiler-metric-row" style="color:#ff5f56;">Errors: 0</div>
       
       <div class="profiler-selector-box">
@@ -200,13 +217,18 @@ function injectHardwareProfilerHUD() {
         <label><input type="checkbox" id="chkRam" checked onclick="filterHudRows()"> Memory Allocation</label>
         <label><input type="checkbox" id="chkFps" checked onclick="filterHudRows()"> Frame Rate (FPS)</label>
         <label><input type="checkbox" id="chkDom" checked onclick="filterHudRows()"> DOM Structural Load</label>
+        <label><input type="checkbox" id="chkPing" checked onclick="filterHudRows()"> Network Latency</label>
         <label><input type="checkbox" id="chkErrors" checked onclick="filterHudRows()"> Error Telemetry</label>
       </div>
     </div>
   `;
   document.body.insertAdjacentHTML("beforeend", hudHTML);
   requestAnimationFrame(calculateRunningFps);
+  
+  // Schedules diagnostic metrics sync and a separate 5-second check interval for network ping to minimize CPU context-switching leaks
   setInterval(updateProfilerDisplayData, 2000);
+  setInterval(measureNetworkLatency, 5000);
+  measureNetworkLatency(); // Initial execution run
 }
 
 function toggleHardwareProfilerOverlay() {
@@ -220,26 +242,24 @@ function filterHudRows() {
   document.getElementById("metricRam").style.display = document.getElementById("chkRam").checked ? "block" : "none";
   document.getElementById("metricFps").style.display = document.getElementById("chkFps").checked ? "block" : "none";
   document.getElementById("metricDom").style.display = document.getElementById("chkDom").checked ? "block" : "none";
+  document.getElementById("metricPing").style.display = document.getElementById("chkPing").checked ? "block" : "none";
   document.getElementById("metricErrors").style.display = document.getElementById("chkErrors").checked ? "block" : "none";
 }
-
 function updateProfilerDisplayData() {
-  const cores = navigator.hardwareConcurrency || "Unsupported Architecture";
-  document.getElementById("metricCpu").innerText = `CPU Cores: ${cores} Logical Nodes`;
-
-  if (performance.memory) {
-    const memoryUsed = Math.round(performance.memory.usedJSHeapSize / (1024 * 1024));
-    const memoryTotal = Math.round(performance.memory.jsHeapSizeLimit / (1024 * 1024));
-    document.getElementById("metricRam").innerText = `Memory Heap: ${memoryUsed}MB / ${memoryTotal}MB`;
-  } else {
-    document.getElementById("metricRam").innerText = `Memory Heap: API Locked (Chrome/ChromeOS Exclusive)`;
-  }
-
-  document.getElementById("metricFps").innerText = `Performance: ${currentComputedFps} FPS`;
-  const totalElements = document.getElementsByTagName("*").length;
-  document.getElementById("metricDom").innerText = `DOM Elements: ${totalElements} Nodes Loaded`;
-  
-  const errRow = document.getElementById("metricErrors");
-  errRow.innerText = `Errors: ${observedErrorsCount} (${lastErrorMessage})`;
-  errRow.style.color = observedErrorsCount > 0 ? "#ff5f56" : "#00ff66";
+const cores = navigator.hardwareConcurrency || "Unsupported Architecture";
+document.getElementById("metricCpu").innerText = CPU Cores: ${cores} Logical Nodes;
+if (performance.memory) {
+const memoryUsed = Math.round(performance.memory.usedJSHeapSize / (1024 * 1024));
+const memoryTotal = Math.round(performance.memory.jsHeapSizeLimit / (1024 * 1024));
+document.getElementById("metricRam").innerText = Memory Heap: ${memoryUsed}MB / ${memoryTotal}MB;
+} else {
+document.getElementById("metricRam").innerText = Memory Heap: API Locked (Chrome/ChromeOS Exclusive);
+}
+document.getElementById("metricFps").innerText = Performance: ${currentComputedFps} FPS;
+const totalElements = document.getElementsByTagName("*").length;
+document.getElementById("metricDom").innerText = DOM Elements: ${totalElements} Nodes Loaded;
+document.getElementById("metricPing").innerText = Network Ping: ${currentNetworkPing};
+const errRow = document.getElementById("metricErrors");
+errRow.innerText = Errors: ${observedErrorsCount} (${lastErrorMessage});
+errRow.style.color = observedErrorsCount > 0 ? "#ff5f56" : "#00ff66";
 }
