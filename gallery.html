@@ -72,33 +72,36 @@
           projectsData = data.repo_links.map(link => {
             let cleanLink = link.trim();
             
-            // Defensively fallback to username if things fail to map
+            // Clean paths by stripping trailing URL slashes safely
+            if (cleanLink.endsWith('/')) {
+              cleanLink = cleanLink.slice(0, -1);
+            }
+
             let username = "hummingbird-9";
             let repoName = "unresolved-repo";
             let branch = "main";
 
-            // Clean extraction regardless of array ordering, trailing slashes, or prefixes
+            // Universal String Segments Splitter Engine
             if (cleanLink.includes("github.com")) {
-              const matches = cleanLink.match(/github\.com\/([^\/]+)\/([^\/\s?#]+)/);
-              if (matches && matches.length >= 3) {
-                username = matches[1];
-                repoName = matches[2].replace(/\.git\$/, ""); // strip .git if present
-              }
+              const parts = cleanLink.split("://github.com")[1].split("/");
+              username = parts[0];
+              repoName = parts[1];
             } else if (cleanLink.includes("jsdelivr.net")) {
-              const matches = cleanLink.match(/cdn\.jsdelivr\.net\/gh\/([^\/]+)\/([^\/\s@?#]+)(?:@([^\s?#]+))?/);
-              if (matches && matches.length >= 3) {
-                username = matches[1];
-                const repoBranchSplit = matches[2].split('@');
-                repoName = repoBranchSplit[0];
-                branch = matches[3] || repoBranchSplit[1] || "main";
+              const parts = cleanLink.split("cdn.jsdelivr.net/gh/")[1].split("/");
+              username = parts[0];
+              
+              const repoBranchSplit = parts[1].split("@");
+              repoName = repoBranchSplit[0];
+              if (repoBranchSplit[1]) {
+                branch = repoBranchSplit[1];
               }
             }
 
             const parsedTitle = repoName.replace(/-/g, ' ');
             
-            // Compile accurate, direct endpoints without complex logic arrays
-            const computedCover = `https://jsdelivr.net{username}/${repoName}@${branch}/cover.png`;
-            const appUrl = `https://${username}.github.io/${repoName}/`;
+            // Build accurate target locations to bypass tracking limitations
+            const computedCover = 'https://jsdelivr.net' + username + '/' + repoName + '@' + branch + '/cover.png';
+            const appUrl = 'https://' + username + '.github.io/' + repoName + '/';
 
             return {
               name: parsedTitle,
