@@ -18,11 +18,12 @@ body {
   box-sizing: border-box;
 }
 
+/* FIXED GALLERY OVERRIDE: Swapped dark blue for your classic smooth green canvas matrix */
 .gallery-body {
-    min-height: auto;
+    min-height: 100vh;
     justify-content: flex-start;
     padding-top: 50px;
-    background: linear-gradient(135deg, #001f3f, #003366, #001f3f, #003366); 
+    background: linear-gradient(135deg, #0a2e0a, #144414, #0a2e0a, #144414); 
     background-size: 400% 400%;
 }
 
@@ -90,19 +91,24 @@ body {
   padding: 8px 16px !important; 
   font-size: 0.85rem !important; 
   background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 6px !important; 
-  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 16px !important; /* FIXED: Matches your old glassmorphic rounded parameters */
+  color: #e0f7e0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   cursor: pointer;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  transition: background 0.2s ease, transform 0.2s ease;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 4px 15px rgba(0, 255, 45, 0.1);
+  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
 }
 
 .open-page-btn:hover, .utility-btn:hover {
-  background: rgba(255, 255, 255, 0.25) !important;
-  transform: translateY(-2px) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: scale(1.05) translateY(-2px) !important;
+  border-color: rgba(0, 255, 45, 0.6);
 }
 
 /* --- Maximized Search Bar Controls --- */
@@ -121,11 +127,11 @@ body {
     padding: 14px 22px; 
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 6px !important; 
+    border-radius: 12px !important; 
     color: white;
     font-size: 1.1rem; 
     box-sizing: border-box; 
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     transition: all 0.3s ease;
 }
@@ -136,8 +142,9 @@ body {
 
 .search-bar:focus {
     outline: none;
-    border-color: #90E4C1;
+    border-color: #00ff66;
     background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
 }
 
 /* --- Gallery Platform Cards Grid --- */
@@ -145,52 +152,68 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
-  max-width: 1000px;
+  gap: 25px;
+  max-width: 1200px;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 40px;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .game-card {
-  flex-basis: 220px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
-  border-radius: 10px;
-  padding: 15px;
+  flex-basis: 260px;
+  max-width: 280px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 18px;
   color: white;
   text-decoration: none;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, background 0.3s ease;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease, border-color 0.3s ease;
   text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
 }
 
 .game-card:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-8px) scale(1.02);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(0, 255, 102, 0.5);
+  box-shadow: 0 12px 40px rgba(0, 255, 102, 0.15);
 }
 
+/* FIXED THUMBNAIL 404 ASPECT SAFEGUARDS */
 .game-thumbnail {
     width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 10px;
+    height: 140px;
+    object-fit: cover; /* Prevents avatar fallbacks or wide shots from stretching out of boundary boxes */
+    border-radius: 10px;
+    margin-bottom: 15px;
     display: block;
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .game-card h3 {
     margin-top: 0;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    font-size: 1.25rem;
     color: #90E4C1;
-    text-shadow: 0 0 5px rgba(0, 255, 157, 0.5);
+    text-shadow: 0 0 5px rgba(0, 255, 157, 0.4);
 }
 
 .game-card p {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.92rem;
+    color: rgba(224, 247, 224, 0.75);
     text-shadow: none;
     padding: 0;
     margin: 0;
+    line-height: 1.4;
+    flex-grow: 1; /* Pushes card properties evenly regardless of text height strings */
 }
 
 /* --- OS Context Dropdown overlay --- */
