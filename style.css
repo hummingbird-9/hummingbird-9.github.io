@@ -61,7 +61,7 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-/* --- Toolbar System Configuration --- */
+/* --- Navigation Controls Configuration --- */
 .top-button-container {
   position: absolute;
   top: 20px;
@@ -141,7 +141,7 @@ body {
   margin-top: 20px;
 }
 
-/* --- Squarer Search Bar --- */
+/* --- Squarer Search Design --- */
 .search-container {
   width: 100%;
   max-width: 600px;
@@ -216,7 +216,7 @@ body {
   font-weight: 400;
 }
 
-/* --- Custom Right-Click Context Menu Shell --- */
+/* --- Simulated OS Context Dropdown Shell --- */
 .custom-context-menu {
   position: fixed;
   background: #252526;
@@ -269,7 +269,7 @@ body {
   border-radius: 6px;
   z-index: 99999;
   text-align: left;
-  min-width: 250px;
+  min-width: 260px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.6);
   display: none;
 }
@@ -282,6 +282,35 @@ body {
   color: #90E4C1;
   display: flex;
   justify-content: space-between;
+}
+
+.stress-btn-container {
+  margin: 8px 0;
+}
+
+.stress-trigger-btn {
+  width: 100%;
+  background: #2d2d2d;
+  color: #ff3b30;
+  border: 1px solid #ff3b30;
+  padding: 6px;
+  font-family: monospace;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.stress-trigger-btn.active {
+  background: #ff3b30;
+  color: #fff;
+  animation: stressPulseAlert 1s infinite alternate;
+}
+
+@keyframes stressPulseAlert {
+  from { box-shadow: 0 0 4px #ff3b30; }
+  to { box-shadow: 0 0 14px #ff3b30; }
 }
 
 .profiler-selector-box {
