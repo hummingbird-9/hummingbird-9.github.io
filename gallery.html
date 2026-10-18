@@ -18,13 +18,13 @@
       <button id="themeToggleBtn" class="utility-btn" onclick="toggleTheme()">Theme Mode</button>
     </div>
 
-    <h1 class="title">HTML Gallery</h1>
+    <h1 class="title" style="margin-top: 60px;">HTML Gallery</h1>
     <p class="content"></p>
 
-    <!-- Squarer Search Container Bar Element with Action Buttons Layout -->
-    <div class="search-container">
+    <!-- Corrected Squarer Filter Control Console Wrapper Layout -->
+    <div style="width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
       <input type="text" id="gallerySearch" placeholder="Search applications..." class="search-bar">
-      <button class="utility-btn" onclick="clearGalleryFilters()" style="padding: 10px 20px; font-size: 0.9rem;">Clear</button>
+      <button class="utility-btn" onclick="clearGalleryFilters()" style="padding: 8px 24px;">Clear</button>
     </div>
 
     <div class="gallery-container" id="galleryContainer">
@@ -49,39 +49,42 @@
     <script>
       const container = document.getElementById('galleryContainer');
       const searchBar = document.getElementById('gallerySearch');
+      
+      // Auto-Locks Default Environment To Standard Full Rendering Execution Engine Mode
+      if (localStorage.getItem("extreme_lightweight") === null) {
+        localStorage.setItem("extreme_lightweight", "false");
+      }
       const isExtremeLightweight = localStorage.getItem("extreme_lightweight") === "true";
-      let projectsData = [];
 
-      // Re-engineered Error-Free String Processing Architecture
       async function resolveRawLinkRegistryMap() {
         try {
           const response = await fetch('/html/repos.json');
-          if (!response.ok) throw new Error('Network error pulling map layout configuration targets');
+          if (!response.ok) throw new Error('Data map configuration file missing');
           const data = await response.json();
           
           projectsData = data.repo_links.map(link => {
-            let cleanLink = link.replace(/\/\$/, ""); 
-            let username = "Unknown";
-            let repoName = "Unknown-Repo";
+            let cleanLink = link.trim().replace(/\/\$/, ""); 
+            let username = "hummingbird-9";
+            let repoName = "unresolved-repo";
             let branch = "main";
 
+            // Fixed Robust Fallback Parameter Extractor Engine Loops
             if (cleanLink.includes("://github.com")) {
               const urlChunks = cleanLink.split("://github.com");
-              if(urlChunks.length > 1) {
+              if (urlChunks.length > 1) {
                 const pathChunks = urlChunks[1].split("/");
-                username = pathChunks[0] || username;
-                repoName = pathChunks[1] || repoName;
+                if (pathChunks.length > 0) username = pathChunks[0];
+                if (pathChunks.length > 1) repoName = pathChunks[1];
               }
             } else if (cleanLink.includes("cdn.jsdelivr.net/gh/")) {
               const urlChunks = cleanLink.split("cdn.jsdelivr.net/gh/");
-              if(urlChunks.length > 1) {
+              if (urlChunks.length > 1) {
                 const pathChunks = urlChunks[1].split("/");
-                username = pathChunks[0] || username;
-                
-                const repoAndBranch = (pathChunks[1] || "").split("@");
-                repoName = repoAndBranch[0] || repoName;
-                if (repoAndBranch.length > 1) {
-                  branch = repoAndBranch[1];
+                if (pathChunks.length > 0) username = pathChunks[0];
+                if (pathChunks.length > 1) {
+                  const repoAndBranch = pathChunks[1].split("@");
+                  repoName = repoAndBranch[0];
+                  if (repoAndBranch.length > 1) branch = repoAndBranch[1];
                 }
               }
             }
@@ -94,7 +97,7 @@
               name: parsedTitle,
               cover: computedCover,
               url: appUrl,
-              description: `Made from project files to web port formats by ${username}.`
+              description: `Automated isolated application target interface deployment framework.`
             };
           });
           
