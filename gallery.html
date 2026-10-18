@@ -116,7 +116,7 @@
 
           let liveMetaMap = {};
           try {
-            const apiRes = await fetch(`https://github.com`);
+            const apiRes = await fetch(`https://api.github.com/users/hummingbird-9/repos?per_page=100`);
             if (apiRes.ok) {
               const apiData = await apiRes.json();
               apiData.forEach(r => {
