@@ -21,17 +21,16 @@
     <h1 class="title">HTML Gallery</h1>
     <p class="content"></p>
 
-    <div class="gallery-container">
-      <!-- Original Circular Search Input Element -->
-      <input type="text" id="gallerySearch" placeholder="Search" class="search-bar">
+    <!-- Squarer Search Container Bar Element with Action Buttons Layout -->
+    <div class="search-container">
+      <input type="text" id="gallerySearch" placeholder="Search applications..." class="search-bar">
+      <button class="utility-btn" onclick="clearGalleryFilters()" style="padding: 10px 20px; font-size: 0.9rem;">Clear</button>
     </div>
 
-    <!-- Live Dynamic Target Container -->
     <div class="gallery-container" id="galleryContainer">
       <p id="loadingText">Processing source indexes...</p>
     </div>
 
-    <!-- Sandboxed Framework Viewport -->
     <div id="appViewportOverlay" class="app-viewport-overlay">
       <div class="viewport-navbar">
         <h3 id="viewportTitle" class="viewport-title">Application Sandbox</h3>
@@ -53,28 +52,38 @@
       const isExtremeLightweight = localStorage.getItem("extreme_lightweight") === "true";
       let projectsData = [];
 
+      // Re-engineered Error-Free String Processing Architecture
       async function resolveRawLinkRegistryMap() {
         try {
           const response = await fetch('/html/repos.json');
-          if (!response.ok) throw new Error('Source configuration map missing');
+          if (!response.ok) throw new Error('Network error pulling map layout configuration targets');
           const data = await response.json();
           
           projectsData = data.repo_links.map(link => {
             let cleanLink = link.replace(/\/\$/, ""); 
-            let username = "";
-            let repoName = "";
+            let username = "Unknown";
+            let repoName = "Unknown-Repo";
             let branch = "main";
 
-            if (cleanLink.includes("github.com")) {
-              const segments = cleanLink.split("://github.com")[1].split("/");
-              username = segments[0];
-              repoName = segments[1];
-            } else if (cleanLink.includes("cdn.jsdelivr.net")) {
-              const segments = cleanLink.split("cdn.jsdelivr.net/gh/")[1].split("/");
-              username = segments[0];
-              const repoAndBranch = segments[1].split("@");
-              repoName = repoAndBranch[0];
-              if (repoAndBranch[1]) branch = repoAndBranch[1];
+            if (cleanLink.includes("://github.com")) {
+              const urlChunks = cleanLink.split("://github.com");
+              if(urlChunks.length > 1) {
+                const pathChunks = urlChunks[1].split("/");
+                username = pathChunks[0] || username;
+                repoName = pathChunks[1] || repoName;
+              }
+            } else if (cleanLink.includes("cdn.jsdelivr.net/gh/")) {
+              const urlChunks = cleanLink.split("cdn.jsdelivr.net/gh/");
+              if(urlChunks.length > 1) {
+                const pathChunks = urlChunks[1].split("/");
+                username = pathChunks[0] || username;
+                
+                const repoAndBranch = (pathChunks[1] || "").split("@");
+                repoName = repoAndBranch[0] || repoName;
+                if (repoAndBranch.length > 1) {
+                  branch = repoAndBranch[1];
+                }
+              }
             }
 
             const parsedTitle = repoName.replace(/-/g, ' ');
@@ -82,7 +91,7 @@
             const appUrl = `https://${username}.github.io/${repoName}/`;
 
             return {
-              name: parsedTitle || "Unresolved Application Asset",
+              name: parsedTitle,
               cover: computedCover,
               url: appUrl,
               description: `Made from project files to web port formats by ${username}.`
@@ -140,6 +149,11 @@
           fragment.appendChild(card);
         });
         container.appendChild(fragment);
+      }
+
+      function clearGalleryFilters() {
+        searchBar.value = "";
+        renderGalleryExecutionBlocks(projectsData);
       }
 
       function launchApplicationViewport(url, title) {
