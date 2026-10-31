@@ -59,8 +59,8 @@
       <div class="viewport-navbar">
         <h3 id="viewportTitle" class="viewport-title">Application Sandbox</h3>
         <div class="viewport-controls">
-          <button id="viewNewTabBtn" class="utility-btn">New Tab</button>
-          <button id="viewAboutBlankBtn" class="utility-btn">GitHub Repo</button>
+          <button id="viewAboutBlankBtn" class="utility-btn">about:blank</button>
+          <button id="viewNewTabBtn" class="utility-btn" hidden>Open in New Tab</button>
           <button class="utility-btn" style="background:#ff5f56; color:white;" onclick="closeApplicationViewport()">Close</button>
         </div>
       </div>
@@ -205,12 +205,42 @@
       }
 
       function htmlForIframe(html, baseUrl) {
-        // Relative CSS, scripts, images, and fetches resolve against repo CDN.
-        // NOTE: root-absolute paths and service workers need a real hosting origin.
+        // A <base> handles relative paths, but not Vite's root-absolute
+        // /assets/... or /_framework/... paths. Rewrite those HTML URLs
+        // to the actual repository CDN root instead of this gallery's origin.
+        // Dynamic requests made by JavaScript may still need real hosting.
         const baseTag = `<base href="${baseUrl.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}">`;
-        if (/<head(?:\s[^>]*)?>/i.test(html)) return html.replace(/<head(?:\s[^>]*)?>/i, m => m + baseTag);
-        if (/<html(?:\s[^>]*)?>/i.test(html)) return html.replace(/<html(?:\s[^>]*)?>/i, m => m + '<head>' + baseTag + '</head>');
-        return '<!doctype html><head>' + baseTag + '</head>' + html;
+        const absoluteUrl = (path) => baseUrl + path.replace(/^\/+/, '');
+        const rewritten = html.replace(
+          /(\b(?:src|href|poster|data-src)\s*=\s*)(["'])(\/(?!\/)[^"']*)\2/gi,
+          (match, prefix, quote, path) =>
+            `${prefix}${quote}${absoluteUrl(path).replace(/&/g, '&amp;')}${quote}`
+        );
+        if (/<head(?:\s[^>]*)?>/i.test(rewritten)) return rewritten.replace(/<head(?:\s[^>]*)?>/i, m => m + baseTag);
+        if (/<html(?:\s[^>]*)?>/i.test(rewritten)) return rewritten.replace(/<html(?:\s[^>]*)?>/i, m => m + '<head>' + baseTag + '</head>');
+        return '<!doctype html><head>' + baseTag + '</head>' + rewritten;
+      }
+
+      // Only display the direct-hosted link if the GitHub Pages API confirms
+      // the repository has a Pages site. An opaque no-CORS fetch cannot tell
+      // a successful page apart from a 404, so don't use it as verification.
+      async function findPagesUrl(project) {
+        try {
+          const endpoint = `https://api.github.com/repos/${encodeURIComponent(project.username)}/${encodeURIComponent(project.repoName)}/pages`;
+          const response = await fetch(endpoint, { headers: { Accept: 'application/vnd.github+json' } });
+          if (!response.ok) return null;
+          const info = await response.json();
+          if (!info.html_url || info.status === 'errored') return null;
+          const url = new URL(info.html_url);
+          if (url.protocol !== 'https:') return null;
+          // If Pages is configured to publish a different branch than the
+          // compiled entry, this is still a site URL, not a guarantee the
+          // newly built game is present on that site.
+          return url.href.endsWith('/') ? url.href : url.href + '/';
+        } catch (err) {
+          console.warn('Could not verify GitHub Pages:', project.repoName, err);
+          return null;
+        }
       }
 
       let activeProject = null;
@@ -218,31 +248,48 @@
       async function launchApplicationViewport(project) {
         activeProject = project;
         const launchId = ++activeLaunch;
+        const tabButton = document.getElementById('viewNewTabBtn');
+        const blankButton = document.getElementById('viewAboutBlankBtn');
+        tabButton.hidden = true;
+        tabButton.onclick = null;
+        blankButton.disabled = true;
         document.getElementById('viewportTitle').textContent = project.name + ' — Loading files…';
         const iframe = document.getElementById('appSandboxIframe');
         iframe.removeAttribute('src');
         iframe.srcdoc = '<!doctype html><title>Loading</title><body style="background:#111;color:white;font:16px sans-serif;padding:22px">Loading repository files…</body>';
         document.getElementById('appViewportOverlay').style.display = 'flex';
-        document.getElementById('viewNewTabBtn').onclick = () => {
-          const win = window.open('about:blank', '_blank');
-          if (win && iframe.srcdoc) {
-            win.document.open();
-            win.document.write(iframe.srcdoc);
-            win.document.close();
-          }
-        };
-        document.getElementById('viewAboutBlankBtn').onclick = () => {
-          window.open(`https://github.com/${repoPath(project)}`, '_blank', 'noopener');
-        };
+
+        // Check independently; if no Pages site is configured, keep the
+        // direct-tab button hidden. No guessed 404 link is shown.
+        void findPagesUrl(project).then(pagesUrl => {
+          if (launchId !== activeLaunch || !pagesUrl) return;
+          tabButton.hidden = false;
+          tabButton.onclick = () => window.open(pagesUrl, '_blank', 'noopener,noreferrer');
+        });
+
         try {
           const entry = await loadRepositoryHtml(project);
           if (launchId !== activeLaunch) return;
-          iframe.srcdoc = htmlForIframe(entry.html, entry.root);
+          const documentHtml = htmlForIframe(entry.html, entry.root);
+          iframe.srcdoc = documentHtml;
+          blankButton.disabled = false;
+          blankButton.onclick = () => {
+            // Open a real about:blank tab and copy the repository HTML into
+            // it. This is not the same as opening a GitHub Pages URL.
+            const win = window.open('about:blank', '_blank');
+            if (!win) return;
+            try {
+              win.document.open();
+              win.document.write(documentHtml);
+              win.document.close();
+            } catch (err) { console.warn('Cannot write about:blank tab:', err); }
+          };
           document.getElementById('viewportTitle').textContent = project.name + ' — Repository files';
         } catch (error) {
           if (launchId !== activeLaunch) return;
           console.warn('Repository launch failed:', error);
           iframe.srcdoc = `<!doctype html><body style="background:#111;color:#eee;font:16px sans-serif;padding:24px"><h2>Could not launch this game from repository files</h2><p>This repository might need a build, a server, or a different entry filename.</p><p>Check the browser console for details.</p></body>`;
+          blankButton.disabled = true;
           document.getElementById('viewportTitle').textContent = project.name + ' — Cannot load';
         }
       }
@@ -253,7 +300,9 @@
         overlay.style.display = 'none';
         ++activeLaunch;
         iframe.srcdoc = '';
-        iframe.src = 'about:blank'; 
+        iframe.src = 'about:blank';
+        document.getElementById('viewNewTabBtn').hidden = true;
+        document.getElementById('viewAboutBlankBtn').disabled = true; 
         try {
           if(iframe.contentWindow && iframe.contentWindow.document) {
             iframe.contentWindow.document.write('');
