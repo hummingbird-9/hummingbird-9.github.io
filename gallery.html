@@ -60,7 +60,7 @@
         <h3 id="viewportTitle" class="viewport-title">Application Sandbox</h3>
         <div class="viewport-controls">
           <button id="viewNewTabBtn" class="utility-btn">New Tab</button>
-          <button id="viewAboutBlankBtn" class="utility-btn">about:blank</button>
+          <button id="viewAboutBlankBtn" class="utility-btn">GitHub Repo</button>
           <button class="utility-btn" style="background:#ff5f56; color:white;" onclick="closeApplicationViewport()">Close</button>
         </div>
       </div>
@@ -75,141 +75,185 @@
       const searchBar = document.getElementById('gallerySearch');
       let projectsData = [];
 
+      // CDN files are fetched as data. HTML is placed in srcdoc because jsDelivr
+      // deliberately serves .html files as text/plain rather than web pages.
+      const htmlEntryNames = ['index.html', 'Index.html', 'index.htm', 'game.html'];
+      const htmlCache = new Map();
+      const repoPath = (project) => `${project.username}/${project.repoName}`;
+      const cdnRoot = (project) => `https://cdn.jsdelivr.net/gh/${repoPath(project)}@${encodeURIComponent(project.branch)}/`;
+
       async function resolveRawLinkRegistryMap() {
         try {
-          const response = await fetch('/html/repos.json');
-          if (!response.ok) throw new Error('Data map configuration file missing');
-          
-          let data;
-          try { data = await response.json(); } catch(jsonErr) {
-            throw new Error('JSON format error in repos.json! Make sure commas are correct.');
-          }
-          
-          if (!data || !data.repo_links) {
-            throw new Error('JSON map lacks the "repo_links" entry list.');
-          }
+          // Relative URL supports subdirectories, local HTTP servers and GitHub Pages.
+          const response = await fetch('html/repos.json');
+          if (!response.ok) throw new Error('Cannot load html/repos.json; use a local HTTP server instead of file://.');
+          const data = await response.json();
+          if (!Array.isArray(data.repo_links)) throw new Error('repos.json must contain a repo_links array.');
 
-          const parsedRepos = data.repo_links.map(link => {
-            let cleanLink = link.trim();
-            if (!cleanLink.startsWith('http://') && !cleanLink.startsWith('https://')) {
-              cleanLink = 'https://' + cleanLink;
-            }
-
-            let username = "hummingbird-9";
-            let repoName = "unresolved-repo";
-            let branch = "main";
-
+          const seen = new Set();
+          const repos = data.repo_links.flatMap(raw => {
             try {
-              const urlObj = new URL(cleanLink);
-              const paths = urlObj.pathname.split('/').filter(p => p.trim());
-              
-              if (paths.length >= 2) {
-                username = paths[0];
-                repoName = paths[1];
-              }
-            } catch (urlError) {
-              console.error("Skipped malformed repository URL layout entry:", cleanLink);
-            }
-
-            return { username, repoName, branch };
+              const url = new URL(raw.trim());
+              if (url.hostname.toLowerCase() !== 'github.com') return [];
+              const [username, rawRepo] = url.pathname.split('/').filter(Boolean);
+              if (!username || !rawRepo) return [];
+              const repoName = rawRepo.replace(/\.git$/, '');
+              const key = `${username}/${repoName}`.toLowerCase();
+              if (seen.has(key)) return [];
+              seen.add(key);
+              return [{ username, repoName, branch: 'main',
+                name: repoName.replace(/-/g, ' '),
+                description: 'Launch this application directly from its repository files.',
+                githubPagesUrl: `https://${username}.github.io/${repoName}/` }];
+            } catch (err) { console.warn('Invalid repository URL:', raw, err); return []; }
           });
-
-          let liveMetaMap = {};
-          try {
-            const apiRes = await fetch(`https://api.github.com/users/hummingbird-9/repos?per_page=100`);
-            if (apiRes.ok) {
-              const apiData = await apiRes.json();
-              apiData.forEach(r => {
-                liveMetaMap[r.name.toLowerCase()] = r.description;
-              });
-            }
-          } catch (apiErr) {
-            console.warn("GitHub API meta sync fallback active.");
-          }
-
-          projectsData = parsedRepos.map(info => {
-            const parsedTitle = info.repoName.replace(/-/g, ' ');
-            const lookKey = info.repoName.toLowerCase();
-            
-            const computedCover = `https://jsdelivr.net{info.username}/${info.repoName}@${info.branch}/cover.png`;
-            const appUrl = `https://${info.username}.github.io/${info.repoName}/`;
-            
-            const dynamicDesc = liveMetaMap[lookKey] ? liveMetaMap[lookKey] : "Automated isolated application target interface deployment framework.";
-
-            return {
-              name: parsedTitle,
-              cover: computedCover,
-              backupAvatar: `https://github.com{info.username}.png`, 
-              url: appUrl,
-              description: dynamicDesc
-            };
-          });
-          
+          projectsData = repos;
           renderGalleryExecutionBlocks(projectsData);
+
+          // Metadata is optional: gallery displays immediately even when GitHub API
+          // rate limits are reached. Default branches aren't always called main.
+          try {
+            const apiRes = await fetch('https://api.github.com/users/hummingbird-9/repos?per_page=100');
+            if (apiRes.ok) {
+              const metadata = await apiRes.json();
+              const lookup = new Map(metadata.map(r => [r.name.toLowerCase(), r]));
+              repos.forEach(project => {
+                const info = lookup.get(project.repoName.toLowerCase());
+                if (info) {
+                  project.branch = info.default_branch || 'main';
+                  project.description = info.description || project.description;
+                }
+              });
+              renderGalleryExecutionBlocks(projectsData);
+            }
+          } catch (err) { console.warn('Optional GitHub metadata unavailable:', err); }
         } catch (error) {
           console.error(error);
-          container.innerHTML = `<p style="color: #ff6b6b; font-weight: bold; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 6px;">${error.message}</p>`;
+          container.textContent = 'Gallery error: ' + error.message;
         }
+      }
+
+      function applyThumbnail(img, project) {
+        // Prefer actual repository cover art. Missing covers become the GitHub
+        // profile image, which is a valid URL (rather than an invalid hostname).
+        const root = cdnRoot(project);
+        const paths = ['cover.png', 'Cover.png', 'thumbnail.png', 'icon.png', 'assets/cover.png'];
+        let next = 0;
+        img.onerror = () => {
+          if (next < paths.length) {
+            img.src = root + paths[next++];
+          } else {
+            img.onerror = null;
+            img.src = `https://github.com/${encodeURIComponent(project.username)}.png?size=256`;
+          }
+        };
+        img.onerror();
       }
 
       function renderGalleryExecutionBlocks(projects) {
         const fragment = document.createDocumentFragment();
-        container.innerHTML = "";
-        const isExtremeLightweight = localStorage.getItem("extreme_lightweight") === "true";
-
-        if (projects.length === 0) {
-          container.innerHTML = `<p>No items match current filter criteria.</p>`;
+        container.replaceChildren();
+        if (!projects.length) {
+          container.textContent = 'No items match current filter criteria.';
           return;
         }
-
-        projects.forEach(project => {
+        for (const project of projects) {
           const card = document.createElement('div');
           card.className = 'game-card';
-          card.onclick = () => launchApplicationViewport(project.url, project.name);
-
-          card.innerHTML = `
-            <img class="game-thumbnail" src="${project.cover}" alt="${project.name}" onerror="this.onerror=null; this.src='${project.backupAvatar}';">
-            <h3>${project.name}</h3>
-            <p>${project.description}</p>
-          `;
+          card.tabIndex = 0;
+          card.setAttribute('role', 'button');
+          const img = document.createElement('img');
+          img.className = 'game-thumbnail';
+          img.alt = `${project.name} cover`;
+          img.loading = 'lazy';
+          applyThumbnail(img, project);
+          const title = document.createElement('h3');
+          title.textContent = project.name;
+          const desc = document.createElement('p');
+          desc.textContent = project.description;
+          card.append(img, title, desc);
+          card.onclick = () => launchApplicationViewport(project);
+          card.onkeydown = (event) => {
+            if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); card.click(); }
+          };
           fragment.appendChild(card);
-        });
+        }
         container.appendChild(fragment);
       }
 
       function clearGalleryFilters() {
-        searchBar.value = "";
+        searchBar.value = '';
         renderGalleryExecutionBlocks(projectsData);
       }
 
-      function launchApplicationViewport(url, title) {
-        document.getElementById('viewportTitle').innerText = title;
-        const iframe = document.getElementById('appSandboxIframe');
-        iframe.src = url;
-        document.getElementById('appViewportOverlay').style.display = 'flex';
+      async function loadRepositoryHtml(project) {
+        const key = `${repoPath(project)}@${project.branch}`;
+        if (htmlCache.has(key)) return htmlCache.get(key);
+        const root = cdnRoot(project);
+        for (const filename of htmlEntryNames) {
+          try {
+            const res = await fetch(root + filename);
+            if (!res.ok) continue;
+            const html = await res.text();
+            if (!/<(?:!doctype\s+html|html|head|body)\b/i.test(html)) continue;
+            const result = { root, html, filename };
+            htmlCache.set(key, result);
+            return result;
+          } catch (error) { console.warn('Could not read entry:', filename, error); }
+        }
+        throw new Error('No accessible index.html (or other supported HTML entry) in this repository.');
+      }
 
-        document.getElementById('viewNewTabBtn').onclick = () => window.open(url, '_blank');
-        document.getElementById('viewAboutBlankBtn').onclick = () => {
-          const blankWindow = window.open('about:blank', '_blank');
-          if (blankWindow) {
-            blankWindow.document.write(`
-              <html style="margin:0;padding:0;overflow:hidden;">
-                <head><title>${title}</title></head>
-                <body style="margin:0;padding:0;overflow:hidden;background:#000;">
-                  <iframe src="${url}" style="width:100vw;height:100vh;border:none;margin:0;padding:0;"></iframe>
-                </body>
-              </html>
-            `);
-            blankWindow.document.close();
+      function htmlForIframe(html, baseUrl) {
+        // Relative CSS, scripts, images, and fetches resolve against repo CDN.
+        // NOTE: root-absolute paths and service workers need a real hosting origin.
+        const baseTag = `<base href="${baseUrl.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}">`;
+        if (/<head(?:\s[^>]*)?>/i.test(html)) return html.replace(/<head(?:\s[^>]*)?>/i, m => m + baseTag);
+        if (/<html(?:\s[^>]*)?>/i.test(html)) return html.replace(/<html(?:\s[^>]*)?>/i, m => m + '<head>' + baseTag + '</head>');
+        return '<!doctype html><head>' + baseTag + '</head>' + html;
+      }
+
+      let activeProject = null;
+      let activeLaunch = 0;
+      async function launchApplicationViewport(project) {
+        activeProject = project;
+        const launchId = ++activeLaunch;
+        document.getElementById('viewportTitle').textContent = project.name + ' — Loading files…';
+        const iframe = document.getElementById('appSandboxIframe');
+        iframe.removeAttribute('src');
+        iframe.srcdoc = '<!doctype html><title>Loading</title><body style="background:#111;color:white;font:16px sans-serif;padding:22px">Loading repository files…</body>';
+        document.getElementById('appViewportOverlay').style.display = 'flex';
+        document.getElementById('viewNewTabBtn').onclick = () => {
+          const win = window.open('about:blank', '_blank');
+          if (win && iframe.srcdoc) {
+            win.document.open();
+            win.document.write(iframe.srcdoc);
+            win.document.close();
           }
         };
+        document.getElementById('viewAboutBlankBtn').onclick = () => {
+          window.open(`https://github.com/${repoPath(project)}`, '_blank', 'noopener');
+        };
+        try {
+          const entry = await loadRepositoryHtml(project);
+          if (launchId !== activeLaunch) return;
+          iframe.srcdoc = htmlForIframe(entry.html, entry.root);
+          document.getElementById('viewportTitle').textContent = project.name + ' — Repository files';
+        } catch (error) {
+          if (launchId !== activeLaunch) return;
+          console.warn('Repository launch failed:', error);
+          iframe.srcdoc = `<!doctype html><body style="background:#111;color:#eee;font:16px sans-serif;padding:24px"><h2>Could not launch this game from repository files</h2><p>This repository might need a build, a server, or a different entry filename.</p><p>Check the browser console for details.</p></body>`;
+          document.getElementById('viewportTitle').textContent = project.name + ' — Cannot load';
+        }
       }
 
       function closeApplicationViewport() {
         const overlay = document.getElementById('appViewportOverlay');
         const iframe = document.getElementById('appSandboxIframe');
         overlay.style.display = 'none';
-        iframe.src = "about:blank"; 
+        ++activeLaunch;
+        iframe.srcdoc = '';
+        iframe.src = 'about:blank'; 
         try {
           if(iframe.contentWindow && iframe.contentWindow.document) {
             iframe.contentWindow.document.write('');
