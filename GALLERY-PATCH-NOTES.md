@@ -1,12 +1,29 @@
-# Gallery fix — Celeste assets and two new-tab buttons
+# Gallery GitHub Pages launcher fix
 
-- Fixed HTML root-absolute `src`, `href`, `poster`, and `data-src` paths such as `/assets/index-...js` and `/assets/index-...css` in srcdoc games. Paths now use the repository's jsDelivr base rather than `https://cdn.jsdelivr.net/assets/...` or the gallery website root.
-- Renamed the former `New Tab` button to `about:blank`: it opens a blank tab and writes the fetched HTML into it.
-- Replaced the former `GitHub Repo` button with `Open in New Tab`: this opens the actual GitHub Pages URL reported by GitHub's Pages API, and remains hidden unless Pages is configured and the API check succeeds. A Pages site's existence does **not** verify that a specific game URL responds with HTTP 200; cross-origin pages cannot be status-checked reliably from normal browser JavaScript.
-- Keeps the existing in-gallery iframe and other gallery features intact.
+This patch preserves the existing gallery layout, card naming, card descriptions, and repository list. It does not fetch repository HTML files, inject game pages into `srcdoc`, or rewrite game asset paths.
 
-## What this cannot fix automatically
+## Changes
 
-Celeste/Webleste's dynamic fetches of root-relative `/_framework` files, workers, threads, WebAssembly cross-origin isolation requirements, and jsDelivr HTML MIME type limitations may still stop it from starting. Rewriting entry-HTML asset paths is necessary but not sufficient for a large WebAssembly app; successful standalone hosting needs a server that serves the build with correct paths and security headers. `about:blank` alone does not provide those headers.
+- Restores the original GitHub Pages launch model: each card opens the repository's configured Pages site.
+- Uses GitHub's public Pages API to discover the real Pages URL, including custom domains, and confirm the site is configured and the latest reported state is not errored.
+- Hides **Open in New Tab** when GitHub does not confirm a usable Pages site.
+- Keeps the `about:blank` button; it opens a blank tab containing an iframe to the same Pages URL.
+- Adds `hummingbird-9/one-piece-character-spinner` to `html/repos.json` without renaming or removing existing entries.
+- For that One Piece entry only, uses the supplied working URL: `https://ghp.hummingbird.rf.gd/One-Piece-Character-Spinner-/`.
+- Fixes the original malformed cover image CDN and GitHub avatar URLs.
 
-If `hummingbird-9/Celeste` is on `threads-v2`, make sure that is the default branch used by the gallery (or add explicit branch override). A default-branch mismatch can also cause CDN 404s.
+## Important iframe limitation
+
+A site can work when opened directly but still refuse to load inside another site's iframe if its response sends `X-Frame-Options` or a restrictive Content-Security-Policy `frame-ancestors` header. The gallery cannot override those server headers. In that case **Open in New Tab** is the correct fallback.
+
+## Apply
+
+Extract the ZIP into the root of `hummingbird-9.github.io`, then run:
+
+```bash
+git add gallery.html html/repos.json GALLERY-PATCH-NOTES.md
+git commit -m "Restore GitHub Pages game launching"
+git push origin main
+```
+
+After deploying, refresh `https://hummingbird-9.github.io/gallery.html` with Ctrl+Shift+R.
