@@ -59,8 +59,8 @@
       <div class="viewport-navbar">
         <h3 id="viewportTitle" class="viewport-title">Application Sandbox</h3>
         <div class="viewport-controls">
-          <button id="viewAboutBlankBtn" class="utility-btn" disabled>about:blank</button>
-          <button id="viewNewTabBtn" class="utility-btn" hidden>Open in New Tab</button>
+          <button id="viewNewTabBtn" class="utility-btn">New Tab</button>
+          <button id="viewAboutBlankBtn" class="utility-btn">about:blank</button>
           <button class="utility-btn" style="background:#ff5f56; color:white;" onclick="closeApplicationViewport()">Close</button>
         </div>
       </div>
@@ -73,231 +73,190 @@
     <script>
       const container = document.getElementById('galleryContainer');
       const searchBar = document.getElementById('gallerySearch');
-      const newTabButton = document.getElementById('viewNewTabBtn');
-      const aboutBlankButton = document.getElementById('viewAboutBlankBtn');
-      const appIframe = document.getElementById('appSandboxIframe');
       let projectsData = [];
-      let activeProject = null;
-      let launchSequence = 0;
-      const pagesUrlCache = new Map();
-
-      // This repo has a separately hosted, working public page supplied by the site owner.
-      // Every other repository uses its configured GitHub Pages URL.
-      const hostedPageOverrides = {
-        'one-piece-character-spinner': 'https://ghp.hummingbird.rf.gd/One-Piece-Character-Spinner-/'
-      };
 
       async function resolveRawLinkRegistryMap() {
         try {
-          const response = await fetch('html/repos.json');
-          if (!response.ok) throw new Error('Could not load html/repos.json.');
-
+          const response = await fetch('/html/repos.json');
+          if (!response.ok) throw new Error('Data map configuration file missing');
+          
           let data;
-          try { data = await response.json(); }
-          catch (_) { throw new Error('Invalid JSON in html/repos.json.'); }
-
-          if (!data || !Array.isArray(data.repo_links)) {
-            throw new Error('repos.json must contain a repo_links array.');
+          try { data = await response.json(); } catch(jsonErr) {
+            throw new Error('JSON format error in repos.json! Make sure commas are correct.');
+          }
+          
+          if (!data || !data.repo_links) {
+            throw new Error('JSON map lacks the "repo_links" entry list.');
           }
 
           const parsedRepos = data.repo_links.map(link => {
-            const cleanLink = String(link).trim();
-            const urlObj = new URL(cleanLink.startsWith('http') ? cleanLink : 'https://' + cleanLink);
-            if (urlObj.hostname.toLowerCase() !== 'github.com') {
-              throw new Error('Unsupported repository URL: ' + cleanLink);
+            let cleanLink = link.trim();
+            if (!cleanLink.startsWith('http://') && !cleanLink.startsWith('https://')) {
+              cleanLink = 'https://' + cleanLink;
             }
-            const paths = urlObj.pathname.split('/').filter(Boolean);
-            if (paths.length < 2) throw new Error('Invalid repository URL: ' + cleanLink);
-            return { username: paths[0], repoName: paths[1].replace(/\.git$/i, ''), branch: 'main' };
+
+            let username = "hummingbird-9";
+            let repoName = "unresolved-repo";
+            let branch = null;
+
+            try {
+              const urlObj = new URL(cleanLink);
+              const paths = urlObj.pathname.split('/').filter(p => p.trim());
+              
+              if (paths.length >= 2) {
+                username = paths[0];
+                repoName = paths[1];
+                // Honor an explicitly supplied GitHub branch URL such as /tree/main.
+                if (paths[2] === 'tree' && paths[3]) {
+                  branch = decodeURIComponent(paths[3]);
+                }
+              }
+            } catch (urlError) {
+              console.error("Skipped malformed repository URL layout entry:", cleanLink);
+            }
+
+            return { username, repoName, branch };
           });
 
           let liveMetaMap = {};
           try {
-            const apiRes = await fetch('https://api.github.com/users/hummingbird-9/repos?per_page=100');
+            const apiRes = await fetch(`https://api.github.com/users/hummingbird-9/repos?per_page=100`);
             if (apiRes.ok) {
               const apiData = await apiRes.json();
-              apiData.forEach(repo => { liveMetaMap[repo.name.toLowerCase()] = repo; });
-            } else {
-              console.warn('GitHub repository metadata unavailable; using fallback descriptions.');
+              apiData.forEach(r => {
+                liveMetaMap[r.name.toLowerCase()] = {
+                  description: r.description || '',
+                  defaultBranch: r.default_branch || 'main'
+                };
+              });
             }
           } catch (apiErr) {
-            console.warn('GitHub metadata lookup failed; using fallback descriptions.', apiErr);
+            console.warn("GitHub API meta sync fallback active.");
           }
 
           projectsData = parsedRepos.map(info => {
             const parsedTitle = info.repoName.replace(/-/g, ' ');
-            const liveRepo = liveMetaMap[info.repoName.toLowerCase()];
-            if (liveRepo && liveRepo.default_branch) info.branch = liveRepo.default_branch;
-
-            // Keep the original card names and description behavior. Fix malformed URLs.
-            const computedCover = `https://cdn.jsdelivr.net/gh/${info.username}/${info.repoName}@${encodeURIComponent(info.branch)}/cover.png`;
-            const dynamicDesc = liveRepo && liveRepo.description
-              ? liveRepo.description
-              : 'Automated isolated application target interface deployment framework.';
-            const pageOverride = hostedPageOverrides[info.repoName.toLowerCase()] || null;
+            const lookKey = info.repoName.toLowerCase();
+            const repoMeta = liveMetaMap[lookKey] || {};
+            // Use an explicit /tree/branch from repos.json when present; otherwise
+            // use the repository's actual default branch from the GitHub API.
+            const branch = info.branch || repoMeta.defaultBranch || 'main';
+            const cdnRoot = `https://cdn.jsdelivr.net/gh/${info.username}/${info.repoName}@${encodeURIComponent(branch)}/`;
+            const computedCover = `${cdnRoot}cover.png`;
+            // Keep the original GitHub Pages launch method. Do not load repository
+            // source files into srcdoc; repositories must have Pages deployed.
+            const appUrl = `https://${info.username}.github.io/${info.repoName}/`;
+            const dynamicDesc = repoMeta.description || "Automated isolated application target interface deployment framework.";
 
             return {
-              username: info.username,
-              repoName: info.repoName,
-              branch: info.branch,
               name: parsedTitle,
               cover: computedCover,
+              thumbnailRoot: cdnRoot,
               backupAvatar: `https://github.com/${encodeURIComponent(info.username)}.png?size=256`,
-              description: dynamicDesc,
-              hostedPageOverride: pageOverride,
-              url: null
+              url: appUrl,
+              description: dynamicDesc
             };
           });
-
+          
           renderGalleryExecutionBlocks(projectsData);
         } catch (error) {
           console.error(error);
-          container.textContent = 'Gallery error: ' + error.message;
+          container.innerHTML = `<p style="color: #ff6b6b; font-weight: bold; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 6px;">${error.message}</p>`;
         }
       }
 
       function renderGalleryExecutionBlocks(projects) {
         const fragment = document.createDocumentFragment();
-        container.innerHTML = '';
-        if (!projects.length) {
-          container.textContent = 'No items match current filter criteria.';
+        container.innerHTML = "";
+        const isExtremeLightweight = localStorage.getItem("extreme_lightweight") === "true";
+
+        if (projects.length === 0) {
+          container.innerHTML = `<p>No items match current filter criteria.</p>`;
           return;
         }
 
         projects.forEach(project => {
           const card = document.createElement('div');
           card.className = 'game-card';
-          card.onclick = () => launchApplicationViewport(project);
+          card.onclick = () => launchApplicationViewport(project.url, project.name);
 
+          // Try common thumbnail names on the correct jsDelivr GitHub CDN path.
+          // If a repository has no image, show the owner's GitHub avatar.
           const img = document.createElement('img');
           img.className = 'game-thumbnail';
-          img.alt = project.name;
+          img.alt = `${project.name} thumbnail`;
           img.loading = 'lazy';
-          img.src = project.cover;
+          const thumbnailNames = ['cover.png', 'Cover.png', 'thumbnail.png', 'icon.png', 'assets/cover.png'];
+          let thumbnailIndex = 0;
           img.onerror = () => {
-            img.onerror = null;
-            img.src = project.backupAvatar;
+            thumbnailIndex++;
+            if (thumbnailIndex < thumbnailNames.length) {
+              img.src = project.thumbnailRoot + thumbnailNames[thumbnailIndex];
+            } else {
+              img.onerror = null;
+              img.src = project.backupAvatar;
+            }
           };
+          img.src = project.cover;
 
-          const title = document.createElement('h3');
-          title.textContent = project.name;
+          const heading = document.createElement('h3');
+          heading.textContent = project.name;
           const description = document.createElement('p');
           description.textContent = project.description;
-          card.append(img, title, description);
+          card.appendChild(img);
+          card.appendChild(heading);
+          card.appendChild(description);
           fragment.appendChild(card);
         });
         container.appendChild(fragment);
       }
 
       function clearGalleryFilters() {
-        searchBar.value = '';
+        searchBar.value = "";
         renderGalleryExecutionBlocks(projectsData);
       }
 
-      async function getGitHubPagesUrl(project) {
-        if (project.hostedPageOverride) return project.hostedPageOverride;
-        const key = `${project.username}/${project.repoName}`.toLowerCase();
-        if (pagesUrlCache.has(key)) return pagesUrlCache.get(key);
-
-        const endpoint = `https://api.github.com/repos/${encodeURIComponent(project.username)}/${encodeURIComponent(project.repoName)}/pages`;
-        try {
-          const response = await fetch(endpoint, {
-            headers: { 'Accept': 'application/vnd.github+json' }
-          });
-          if (!response.ok) {
-            pagesUrlCache.set(key, null);
-            return null;
-          }
-          const pages = await response.json();
-          // GitHub returns 200 only when a Pages site is configured. Require a
-          // successful build state when supplied, and use html_url (custom domains included).
-          if (!pages.html_url || (pages.status && pages.status !== 'built')) {
-            pagesUrlCache.set(key, null);
-            return null;
-          }
-          const pageUrl = new URL(pages.html_url);
-          if (pageUrl.protocol !== 'https:') {
-            pagesUrlCache.set(key, null);
-            return null;
-          }
-          const result = pageUrl.href.endsWith('/') ? pageUrl.href : pageUrl.href + '/';
-          pagesUrlCache.set(key, result);
-          return result;
-        } catch (error) {
-          console.warn('Could not check GitHub Pages for ' + project.repoName, error);
-          pagesUrlCache.set(key, null);
-          return null;
-        }
-      }
-
-      function setTabActions(url, title) {
-        newTabButton.hidden = false;
-        newTabButton.disabled = false;
-        newTabButton.onclick = () => {
-          // Called directly from the user's button click to avoid popup blocking.
-          window.open(url, '_blank', 'noopener');
-        };
-
-        aboutBlankButton.disabled = false;
-        aboutBlankButton.onclick = () => {
-          const blankWindow = window.open('about:blank', '_blank');
-          if (!blankWindow) return;
-          const safeTitle = String(title || 'Application').replace(/[&<>"']/g, '');
-          const safeUrl = String(url).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-          blankWindow.document.open();
-          blankWindow.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${safeTitle}</title></head><body style="margin:0;padding:0;overflow:hidden"><iframe src="${safeUrl}" title="${safeTitle}" style="width:100vw;height:100vh;border:0;display:block"></iframe></body></html>`);
-          blankWindow.document.close();
-        };
-      }
-
-      async function launchApplicationViewport(project) {
-        activeProject = project;
-        const thisLaunch = ++launchSequence;
-        document.getElementById('viewportTitle').innerText = project.name + ' — Checking GitHub Pages…';
+      function launchApplicationViewport(url, title) {
+        document.getElementById('viewportTitle').innerText = title;
+        const iframe = document.getElementById('appSandboxIframe');
+        iframe.src = url;
         document.getElementById('appViewportOverlay').style.display = 'flex';
-        newTabButton.hidden = true;
-        newTabButton.disabled = true;
-        newTabButton.onclick = null;
-        aboutBlankButton.disabled = true;
-        aboutBlankButton.onclick = null;
-        appIframe.removeAttribute('src');
-        appIframe.srcdoc = '<!doctype html><html><body style="background:#111;color:#eee;font:16px Arial;padding:24px">Checking this repository\'s GitHub Pages site…</body></html>';
 
-        const url = await getGitHubPagesUrl(project);
-        if (thisLaunch !== launchSequence || activeProject !== project) return;
-        if (!url) {
-          document.getElementById('viewportTitle').innerText = project.name + ' — GitHub Pages unavailable';
-          appIframe.srcdoc = '<!doctype html><html><body style="background:#111;color:#eee;font:16px Arial;padding:24px"><h2>GitHub Pages is not available for this repository.</h2><p>This game is opened from its GitHub Pages site, not from raw repository files. The Open in New Tab button is hidden because GitHub did not confirm an active Pages site or successful build.</p><p>Check the repository Settings → Pages and its latest Pages deployment.</p></body></html>';
-          return;
-        }
-
-        project.url = url;
-        appIframe.srcdoc = '';
-        appIframe.src = url;
-        document.getElementById('viewportTitle').innerText = project.name;
-        setTabActions(url, project.name);
+        document.getElementById('viewNewTabBtn').onclick = () => window.open(url, '_blank');
+        document.getElementById('viewAboutBlankBtn').onclick = () => {
+          const blankWindow = window.open('about:blank', '_blank');
+          if (blankWindow) {
+            blankWindow.document.write(`
+              <html style="margin:0;padding:0;overflow:hidden;">
+                <head><title>${title}</title></head>
+                <body style="margin:0;padding:0;overflow:hidden;background:#000;">
+                  <iframe src="${url}" style="width:100vw;height:100vh;border:none;margin:0;padding:0;"></iframe>
+                </body>
+              </html>
+            `);
+            blankWindow.document.close();
+          }
+        };
       }
 
       function closeApplicationViewport() {
         const overlay = document.getElementById('appViewportOverlay');
+        const iframe = document.getElementById('appSandboxIframe');
         overlay.style.display = 'none';
-        ++launchSequence;
-        activeProject = null;
-        appIframe.srcdoc = '';
-        appIframe.src = 'about:blank';
-        newTabButton.hidden = true;
-        newTabButton.disabled = true;
-        newTabButton.onclick = null;
-        aboutBlankButton.disabled = true;
-        aboutBlankButton.onclick = null;
+        iframe.src = "about:blank"; 
+        try {
+          if(iframe.contentWindow && iframe.contentWindow.document) {
+            iframe.contentWindow.document.write('');
+            iframe.contentWindow.close();
+          }
+        } catch(e) { console.log("Memory cleared."); }
       }
 
       searchBar.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
-        const filtered = projectsData.filter(project =>
-          project.name.toLowerCase().includes(searchTerm) ||
-          project.description.toLowerCase().includes(searchTerm)
-        );
+        const filtered = projectsData.filter(project => {
+          return project.name.toLowerCase().includes(searchTerm) || project.description.toLowerCase().includes(searchTerm);
+        });
         renderGalleryExecutionBlocks(filtered);
       });
 
