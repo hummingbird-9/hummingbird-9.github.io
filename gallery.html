@@ -143,9 +143,10 @@
             const branch = info.branch || repoMeta.defaultBranch || 'main';
             const cdnRoot = `https://cdn.jsdelivr.net/gh/${info.username}/${info.repoName}@${encodeURIComponent(branch)}/`;
             const computedCover = `${cdnRoot}cover.png`;
-            // Keep the original GitHub Pages launch method. Do not load repository
-            // source files into srcdoc; repositories must have Pages deployed.
-            const appUrl = `https://${info.username}.github.io/${info.repoName}/`;
+            // Use the HTTPS origin that is serving this gallery for each project's
+            // GitHub Pages path. This keeps custom GitHub Pages domains (such as
+            // ghp.hummingbird.rf.gd) on HTTPS instead of following old HTTP links.
+            const appUrl = new URL(`/${encodeURIComponent(info.repoName)}/`, window.location.origin).href;
             const dynamicDesc = repoMeta.description || "Automated isolated application target interface deployment framework.";
 
             return {
@@ -216,21 +217,51 @@
         renderGalleryExecutionBlocks(projectsData);
       }
 
-      function launchApplicationViewport(url, title) {
+      function getGameIframe() {
+        let iframe = document.getElementById('appSandboxIframe');
+        if (!iframe) {
+          const frameContainer = document.querySelector('.iframe-sandbox-container');
+          iframe = document.createElement('iframe');
+          iframe.id = 'appSandboxIframe';
+          iframe.className = 'app-iframe';
+          iframe.title = 'Application Sandbox';
+          iframe.src = 'about:blank';
+          frameContainer.appendChild(iframe);
+        }
+        return iframe;
+      }
+
+      function getSecureGameUrl(rawUrl) {
+        const target = new URL(rawUrl, window.location.href);
+        // Never assign an HTTP iframe URL from an HTTPS gallery.
+        if (window.location.protocol === 'https:' && target.protocol === 'http:') {
+          target.protocol = 'https:';
+        }
+        return target.href;
+      }
+
+      function launchApplicationViewport(rawUrl, title) {
+        const url = getSecureGameUrl(rawUrl);
         document.getElementById('viewportTitle').innerText = title;
-        const iframe = document.getElementById('appSandboxIframe');
+        const iframe = getGameIframe();
         iframe.src = url;
         document.getElementById('appViewportOverlay').style.display = 'flex';
 
-        document.getElementById('viewNewTabBtn').onclick = () => window.open(url, '_blank');
+        document.getElementById('viewNewTabBtn').onclick = () => {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        };
         document.getElementById('viewAboutBlankBtn').onclick = () => {
           const blankWindow = window.open('about:blank', '_blank');
           if (blankWindow) {
+            const safeTitle = String(title).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+            const safeUrl = url.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+            blankWindow.document.open();
             blankWindow.document.write(`
+              <!doctype html>
               <html style="margin:0;padding:0;overflow:hidden;">
-                <head><title>${title}</title></head>
+                <head><meta name="viewport" content="width=device-width,initial-scale=1"><title>${safeTitle}</title></head>
                 <body style="margin:0;padding:0;overflow:hidden;background:#000;">
-                  <iframe src="${url}" style="width:100vw;height:100vh;border:none;margin:0;padding:0;"></iframe>
+                  <iframe src="${safeUrl}" style="width:100vw;height:100vh;border:none;margin:0;padding:0;"></iframe>
                 </body>
               </html>
             `);
@@ -242,14 +273,14 @@
       function closeApplicationViewport() {
         const overlay = document.getElementById('appViewportOverlay');
         const iframe = document.getElementById('appSandboxIframe');
+        // Removing the iframe destroys its browsing context. This stops the game's
+        // JavaScript, WebAssembly instance, audio, timers, and page-owned workers.
+        // Navigating to about:blank first also initiates cancellation of in-flight loads.
+        if (iframe) {
+          try { iframe.src = 'about:blank'; } catch (e) { /* removal below is the important cleanup */ }
+          iframe.remove();
+        }
         overlay.style.display = 'none';
-        iframe.src = "about:blank"; 
-        try {
-          if(iframe.contentWindow && iframe.contentWindow.document) {
-            iframe.contentWindow.document.write('');
-            iframe.contentWindow.close();
-          }
-        } catch(e) { console.log("Memory cleared."); }
       }
 
       searchBar.addEventListener('input', (e) => {
