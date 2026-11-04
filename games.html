@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>humming[bird]Tech — View Games</title>
+  <title>humming[bird]Tech — View HTMLs</title>
   <link rel="stylesheet" href="style.css">
   <style>
     .games-page-head { width: min(100% - 24px, 1100px); margin: 20px auto 10px; text-align: center; }
@@ -32,14 +32,15 @@
 </head>
 <body class="dark-mode">
   <div class="games-page-head">
-    <h1>humming[bird]Tech Games</h1>
+    <h1>humming[bird]Tech HTMLs</h1>
     <div class="games-nav">
       <a href="index.html">Home</a>
-      <a href="gallery.html">View Ports and Projects</a>
-      <button id="refreshGames" type="button">Refresh Game List</button>
+      <a href="gallery.html">View Web Ports and Projects</a>
+      <a href="hummingweb.html">Search Hummingweb</a>
+      <button id="refreshGames" type="button">Refresh HTML List</button>
     </div>
   </div>
-  <input type="text" id="searchBar" placeholder="Search games by name or filename..." autocomplete="off">
+  <input type="text" id="searchBar" placeholder="Search HTML games by title or filename..." autocomplete="off">
   <div id="topControls">
     <div id="dataButtons"><span id="gamesTotal">Finding games...</span></div>
     <select id="sortOptions" aria-label="Sort games">
@@ -199,7 +200,7 @@
       }
       renderedCount = 0;
       container.replaceChildren();
-      totalEl.textContent = filteredGames.length + ' games found';
+      totalEl.textContent = filteredGames.length + ' HTMLs found';
       renderNextPage();
     }
 
@@ -246,8 +247,8 @@
       container.appendChild(fragment);
       renderedCount += batch.length;
       loadMoreBtn.hidden = renderedCount >= filteredGames.length;
-      loadMoreBtn.textContent = 'Load More (' + (filteredGames.length - renderedCount) + ' remaining)';
-      if (!filteredGames.length && games.length) statusEl.textContent = 'No games match that search.';
+      loadMoreBtn.textContent = 'Load More (' + (filteredGames.length - renderedCount) + ' HTMLs remaining)';
+      if (!filteredGames.length && games.length) statusEl.textContent = 'No HTMLs match that search.';
     }
 
     function gameBaseUrl(game) {
