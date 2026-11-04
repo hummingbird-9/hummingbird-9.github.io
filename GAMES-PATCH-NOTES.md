@@ -1,23 +1,19 @@
-# View Games + Home Page Update
-
-## Changes
-- Renamed the existing home-page gallery button to **View Ports and Projects**; it still opens `gallery.html`.
-- Added a **View Games** home-page button that opens `games.html`.
-- Left the existing `gallery.html`, `script.js`, and `zones.json` files unchanged.
-- `games.html` discovers actual root-level `.html` files from `hummingbird-9/html` through GitHub's public Contents API. It does not fetch or require `zones.json`.
-- It preserves existing game names through a small embedded title lookup generated from the original site data. New HTML files are still discovered automatically; unknown names fall back to the filename suffix or `Game <id>`.
-- Covers are loaded from `hummingbird-9/covers` as `<id>.png`.
-- It checks the root of `hummingbird-9/assets` for a numbered directory matching each game ID and uses that folder as the relative-asset base when present.
-- The game list is cached in the browser for six hours. Use **Refresh Game List** to fetch the latest repository contents immediately.
-- Search, numeric repository ordering, name sorting, pagination, iframe launch, fullscreen, new-tab launch, and a close action that removes the iframe are included.
+# Gallery-matched HTML browser correction
 
 ## Files
-- `index.html` (updated)
-- `games.html` (new)
+- `index.html`: keeps the original humming[bird]Tech home page visual style and the three requested links, stacked one per row. Search Hummingweb points to `web.html`.
+- `games.html`: rebuilt to use the same `style.css`, page structure, card markup, controls, theme toggle, and game viewer conventions as `gallery.html`. It does not read `zones.json`.
 
-`zones.json` is not included or changed by this patch.
+## Duplicate listing fix
+The previous implementation requested the same GitHub Contents API directory endpoint repeatedly with `page=1..20`. The Contents API directory listing isn't page-based for a single directory, so the same files were appended repeatedly. This version requests each repository root once, deduplicates by filename, and also deduplicates cached data. The cache key is bumped so an old duplicated 13,840-entry cache cannot be reused.
 
-## Notes
-- The list reads the actual filenames instead of assuming every ID has a `<number>.html` file, so names such as `8-wow.html`, `1-a.html`, and `20a.html` are supported.
-- The GitHub Contents API is public but rate-limited. The six-hour local cache reduces requests. If the API is temporarily unavailable, retry with **Refresh Game List** later.
-- Game pages are fetched from jsDelivr and loaded into the viewer with a `<base>` pointing to the corresponding numbered assets folder when one exists. Games with nonstandard asset layouts may still need individual adjustments.
+The GitHub Contents API listing is sufficient for the current repository size (the repository was described as roughly 700 root HTML files). If the repository grows beyond GitHub's 1,000-entry directory listing limit, the implementation should be migrated to the Git Trees API.
+
+## Filesystem assumptions
+- Root HTML files: `hummingbird-9/html` on branch `main`.
+- Numbered non-single-file game assets: root numeric directories in `hummingbird-9/assets` on branch `main`.
+- Numbered covers: `hummingbird-9/covers` on branch `main`, named `<numeric-id>.png`.
+- The `web.html` page is linked but not included or modified by this patch.
+
+## Test notes
+JavaScript syntax, embedded title-map JSON, and ZIP integrity were checked locally. Live GitHub API and CDN requests could not be made from the build environment, so browser-side live loading still needs verification after deployment.

@@ -60,10 +60,19 @@
     /* --- IMPROVED HOVER WARNING --- */
     .home-gallery-buttons {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 0;
+      width: 100%;
       max-width: 760px;
+    }
+
+    .home-gallery-buttons button {
+      display: block;
+      width: auto;
+      max-width: calc(100vw - 40px);
     }
 
     #warning-text {
@@ -99,7 +108,7 @@
   
   <h3 id="warning-text">ONLY FOR USE OUTSIDE OF CLASS</h3>
 
-  <button id="hummingweb-btn" onclick="location.href='hummingweb.html'">Search Hummingweb</button>
+  <button id="hummingweb-btn" onclick="location.href='web.html'">Search Hummingweb</button>
 
   <script>
     function checkClassStatus() {
