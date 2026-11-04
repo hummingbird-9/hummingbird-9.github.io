@@ -1,44 +1,145 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>HummingStudios</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="shortcut icon" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png">
-  </head>
-  <body>
-    
-    <div class="top-button-container">
-      <a href="about.html" class="open-page-btn">About HummingStudios</a>
-      <a href="https://github.com/hummingbird-9/hummingbird-9.github.io/issues/" target="_blank" class="open-page-btn" style="border-color: rgba(255, 95, 86, 0.4);">Report An Issue</a>
-    </div>
+<html lang="en">
 
-    <div class="utility-controls-container">
-      <button class="utility-btn" onclick="toggleHardwareProfilerOverlay()">Hardware HUD</button>
-      <button id="lightweightToggleBtn" class="utility-btn" onclick="toggleLightweightEngine()">Extreme Lightweight</button>
-      <button id="themeToggleBtn" class="utility-btn" onclick="toggleTheme()">Theme Mode</button>
-    </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>humming[bird]Tech</title>
 
-    <div class="logo-container">
-      <img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png" alt="Humming[bird]Tech Logo" class="brand-logo">
-    </div>
-    
-    <p class="content">Making non-web applications and softwares run as an HTML since 2025</p>
-    
-    <div class="button-container">
-      <a href="gallery.html" class="open-page-btn">See HTML Gallery</a>
-      <a href="web.html" class="open-page-btn">Search the HummingWeb (ONLY DO THIS OUTSIDE OF SCHOOL)</a>
+  <style>
+    /* --- Your Original Styles --- */
+    body {
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(135deg, #0a2e0a, #1a5d1a, #0a2e0a, #1a5d1a);
+      background-size: 400% 400%;
+      animation: gradientBG 20s ease infinite;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+      text-align: center;
+      justify-content: flex-start;
+      padding-top: 40px;
+      position: relative;
+    }
 
-    </div>
-    
-    <script src="global-utils.js"></script>
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
+    button {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #e0f7e0;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 10px 0; /* Keeps buttons tight together */
+      padding: 14px 40px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 32px 0 rgba(0, 255, 45, 0.15);
+      backdrop-filter: saturate(180%) blur(10px);
+      -webkit-backdrop-filter: saturate(180%) blur(10px);
+      transition: transform 0.3s ease, background 0.3s ease;
+      min-width: 180px;
+      user-select: none;
+    }
 
+    button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+      outline: none;
+    }
 
+    /* --- IMPROVED HOVER WARNING --- */
+    .home-gallery-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      max-width: 760px;
+    }
 
+    #warning-text {
+      font-size: 1.1rem;
+      color: #ff4d4d;
+      opacity: 0; 
+      transition: opacity 0.3s ease;
+      max-width: 600px;
+      position: absolute; 
+      pointer-events: none;
+      /* Positions the warning text slightly below the Gallery button without moving other buttons */
+      transform: translateY(65px); 
+    }
 
+    .home-gallery-buttons:hover ~ #warning-text {
+      opacity: 1;
+    }
+  </style>
+</head>
 
+<body>
 
+<h1>
+  <a href="noacd.html">
+    <img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png" alt="Logo" style="cursor: pointer; border: none;">
+  </a>
+</h1>
 
+  <div class="home-gallery-buttons">
+  <button id="gallery-btn" onclick="location.href='gallery.html'">View Ports and Projects</button>
+  <button id="games-btn" onclick="location.href='games.html'">View Games</button>
+</div>
+  
+  <h3 id="warning-text">ONLY FOR USE OUTSIDE OF CLASS</h3>
 
-  </body>
+  <button onclick="location.href='hummingweb.html'">Search Engine</button>
+  <button onclick="alert('Made by Oliver Boyd (hummingbird_9). humming[bird]Tech Version 1.8.3')">About</button>
+  <button onclick="location.href='ww3.html'">WW3 Trailer</button>
+  <button onclick="location.href='elmofight.html'">Elmo Fight</button>
+
+  <script>
+    function checkClassStatus() {
+//pings onecompiler for science class detection
+      fetch('https://onecompiler.com', { mode: 'no-cors' })
+        .then(() => {
+          // If reachable, show the button
+          document.getElementById('gallery-btn').style.display = 'inline-block';
+          document.getElementById('games-btn').style.display = 'inline-block';
+          // Ensure warning text can reappear if class ends
+          document.getElementById('warning-text').style.visibility = 'visible'; 
+        })
+        .catch(() => {
+          // If blocked (Science class active), hide everything risky
+          document.getElementById('gallery-btn').style.display = 'none';
+          document.getElementById('games-btn').style.display = 'none';
+          document.getElementById('warning-text').style.opacity = '0';
+          document.getElementById('warning-text').style.visibility = 'hidden';
+          console.log("Science Class Active: Gallery Hidden.");
+        });
+    }
+
+    // Run immediately on load
+    checkClassStatus();
+
+    // Check every 10 seconds in case the teacher starts/ends class while the tab is open
+    setInterval(checkClassStatus, 10000);
+
+    // EMERGENCY MANUAL HIDE: Press 'Escape' to hide the gallery instantly
+    document.addEventListener('keydown', (e) => {
+      if (e.key === "Escape") {
+        document.getElementById('gallery-btn').style.display = 'none';
+          document.getElementById('games-btn').style.display = 'none';
+        document.getElementById('warning-text').style.display = 'none';
+      }
+    });
+  </script>
+</body>
+
 </html>
