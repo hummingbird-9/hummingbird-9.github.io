@@ -1,424 +1,372 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>HummingbirdTech HTMLs</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>humming[bird]Tech — View HTMLs</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .games-page-head { width: min(100% - 24px, 1100px); margin: 20px auto 10px; text-align: center; }
+    .games-page-head h1 { margin-bottom: 8px; }
+    .games-nav { display:flex; justify-content:center; flex-wrap:wrap; gap:10px; margin: 12px auto 18px; }
+    .games-nav a, .games-nav button { display:inline-block; text-decoration:none; padding:10px 16px; border:1px solid rgba(160,220,190,.4); border-radius:12px; background:rgba(10,60,40,.4); color:#aad9c3; font-weight:600; cursor:pointer; }
+    body:not(.dark-mode) .games-nav a, body:not(.dark-mode) .games-nav button { background:rgba(182,240,212,.4); color:#0f3c29; border-color:rgba(15,60,41,.3); }
+    #searchBar { box-sizing:border-box; }
+    #gamesStatus { width:min(90%,1000px); margin:10px auto; text-align:center; min-height:24px; }
+    #container { width:min(95%,1100px); }
+    .game-card { min-width:0; }
+    .game-card img { display:block; width:100%; height:118px !important; object-fit:cover; background:rgba(0,0,0,.18); }
+    body.dark-mode .game-card button { display:block; width:100%; min-height:48px; white-space:normal; line-height:1.25; }
+    .game-card button { min-height:48px; white-space:normal; line-height:1.25; }
+    .game-filename { display:block; padding:0 8px 8px; opacity:.7; font-size:11px; overflow-wrap:anywhere; }
+    #gamesLoadMore { display:block; margin:20px auto; padding:10px 22px; }
+    #zoneViewer { display:none; }
+    #zoneFrame { display:block; width:100%; height:calc(100% - 48px); border:0; background:white; }
+    @media (max-width:650px) {
+      #zoneViewer { width:96vw !important; height:88vh !important; }
+      #zoneInfo { flex-wrap:wrap; gap:8px; }
+      #controls { display:flex; flex-wrap:wrap; gap:5px; }
+    }
+    .loading-note { opacity:.8; font-size:13px; }
+  </style>
 </head>
 <body class="dark-mode">
-    <h1>humming[bird]Tech</h1>
-    <input type="text" id="searchBar" placeholder="Search..." autocomplete="off" />
-    <div id="topControls">
-        <div id="dataButtons">
-            <button onclick="saveData()">Save Data</button>
-            <button onclick="document.getElementById('file').click()">Load Data</button>
-            <input type="file" id="file" style="display:none" onchange="loadData(event)" />
-        </div>
-        <select id="sortOptions">
-            <option value="name">sort by Nameㅤ</option>
-            <option value="id">sort by Idㅤ</option>
-            <option value="popular">--NOT WORKING--</option>
-        </select>
+  <div class="games-page-head">
+    <h1>humming[bird]Tech HTMLs</h1>
+    <div class="games-nav">
+      <a href="index.html">Home</a>
+      <a href="gallery.html">View Web Ports and Projects</a>
+      <a href="hummingweb.html">Search Hummingweb</a>
+      <button id="refreshGames" type="button">Refresh HTML List</button>
     </div>
-    <div class="zone-wrapper">
-        <div id="zoneCount" class="zone-count">Loading HTMLs...</div>
-        <div id="container">Loading...</div>
+  </div>
+  <input type="text" id="searchBar" placeholder="Search HTML games by title or filename..." autocomplete="off">
+  <div id="topControls">
+    <div id="dataButtons"><span id="gamesTotal">Finding games...</span></div>
+    <select id="sortOptions" aria-label="Sort games">
+      <option value="id">Repository order</option>
+      <option value="name">Name A–Z</option>
+    </select>
+  </div>
+  <div class="zone-wrapper">
+    <div id="gamesStatus" role="status" aria-live="polite">Loading the HTML repository file list...</div>
+    <div id="container"></div>
+    <button id="gamesLoadMore" type="button" hidden>Load More</button>
+  </div>
+  <div id="zoneViewer" role="dialog" aria-modal="true" aria-label="Game viewer">
+    <div id="zoneInfo">
+      <div id="zoneTitle"><span id="zoneName"></span> <span id="zoneId"></span></div>
+      <div id="controls">
+        <button id="closeGame" type="button">Close</button>
+        <button id="fullscreenGame" type="button">Fullscreen</button>
+        <button id="newTabGame" type="button">Open in New Tab</button>
+      </div>
     </div>
-    <div id="zoneViewer">
-        <div id="zoneInfo">
-            <div id="zoneTitle">
-                <span id="zoneName"></span> <span id="zoneId"></span>
-            </div>
-            <div id="controls">
-                <button onclick="closeZone()">Close</button>
-                <button onclick="fullscreenZone()">Fullscreen</button>
-                <button onclick="aboutBlank()">about:blank (opens fullscreen in a new tab)</button>
-            </div>
-        </div>
-        <iframe id="zoneFrame" title="Selected HTML game" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen></iframe>
-    </div>
-    <button id="darkModeToggle">Toggle Dark Mode</button>
+    <iframe id="zoneFrame" title="Selected game" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen></iframe>
+  </div>
+  <button id="darkModeToggle" type="button">Toggle Dark Mode</button>
 
-    <script id="knownGameNames" type="application/json">{"0.html":"Bowmasters","1-a.html":"OvO","2e.html":"OvO 2","3.html":"OvO 3 Dimensions","4.html":"Gladihoppers","5.html":"Ice Dodo","6.html":"Block Blast","7.html":"Jetpack Joyride","8-wow.html":"Friday Night Funkin","9.html":"Sprunki","10.html":"Temple Run 2","11.html":"Stickman Hook","13.html":"Attack Hole","14.html":"Bridge Race","15.html":"Color Water Sort 3D","16.html":"Hide N Seek","17.html":"Magic Tiles 3","18.html":"Stacky Dash","19.html":"Supreme Duelist","20a.html":"Tall Man Run","21.html":"Turbo Stars","22.html":"Mob Control HTML5","23.html":"Pou","24.html":"Crossy Road","25.html":"Basket Battle","26.html":"Amaze","27.html":"Geometry Dash Lite (REMAKE)","28.html":"Basketball Frvr","29.html":"Bazooka Boy","30.html":"Bottle Jump 3D","31.html":"Color Match","32.html":"Dig Deep","33.html":"Retro Bowl","34-fixed.html":"Retro Bowl College","36.html":"Monster Tracks","37.html":"Gobble","38.html":"Five Nights at Freddy's","39.html":"Five Nights at Freddy's 2","40.html":"Five Nights at Freddy's 3","41.html":"Five Nights at Freddy's 4","42.html":"Road of Fury","43.html":"Driven Wild","44.html":"Ragdoll Hit","45.html":"Vex 1","46.html":"Vex 2","47.html":"Vex 3","48.html":"Vex 3 XMAS","49.html":"Vex 4","50.html":"Vex 5","51.html":"Vex 6","52.html":"Vex 7","53.html":"Vex 8","54.html":"Vex Challenges","55.html":"Vex X3M","56.html":"Vex X3M 2","58.html":"1v1.LoL","59.html":"A Dance of Fire and Ice","60.html":"Achievement Unlocked","61.html":"Achievement Unlocked 2","62.html":"Achievement Unlocked 3","63.html":"Angry Birds","64.html":"Backrooms","65.html":"Baldi's Basics","66.html":"Basket Random","67.html":"Big Tower Tiny Square","68.html":"Big NEON Tower Tiny Square","69.html":"Big ICE Tower Tiny Square","70.html":"BitLife","71.html":"Bloons TD","72.html":"Bloons TD 2","73.html":"Bloons TD 3","74.html":"Bloons TD 4","75.html":"Bloons TD 5","76.html":"Bob The Robber 2","77.html":"Boxing Random","78.html":"Burrito Bison","79.html":"Cannon Basketball","80.html":"Cannon Basketball 2","81.html":"Cluster Rush","82-aa.html":"Cookie Clicker","83.html":"Coreball","84.html":"Cubefield","85.html":"Cut the Rope","86.html":"Draw Climber","87.html":"Emulator.JS","88.html":"Fireboy and Watergirl 2","89.html":"Fireboy and Watergirl 3","90.html":"Granny","91.html":"Gunspin","92.html":"Highway Racer 2","93.html":"Johnny Trigger","94.html":"Journey Downhill","95.html":"Line Rider","96.html":"Moto X3M","97.html":"Moto X3M 2","98.html":"Moto X3M 3","99.html":"Moto X3M Spooky","100-f.html":"Moto X3M Winter","101.html":"Ninja vs EvilCorp","102.html":"Paper.io 2","103.html":"The World's Hardest Game","104.html":"The World's Hardest Game 3","105.html":"The World's Hardest Game 4","106.html":"This Is The Only Level","107.html":"This Is The Only Level 2","108.html":"Tiny Fishing","109.html":"Tomb Of The Mask","110-f.html":"Toss The Turtle","111.html":"Tube Jumpers","112.html":"Wordle","113.html":"Ruffle","114-f.html":"2048","115.html":"8 Ball Pool","116.html":"Offroad Mountain Bike","117-fix.html":"Space Waves","118.html":"Solar Smash","119.html":"Snow Rider 3D","120.html":"Fortzone Battle Royale","121.html":"Brawl Guys.io","122.html":"Survival Race","123-win.html":"Poly Track","124.html":"Moto X3M Pool Party","125.html":"Granny 2","126.html":"Granny 3","127.html":"Fashion Battle","128.html":"Slice it All","129.html":"Flappy Bird","130.html":"osu!","146.html":"8 Ball Classic","147.html":"Angry Birds Showdown","148.html":"Archery World Tour","149.html":"Ball Blast","150.html":"Cannon Balls 3D","151.html":"Chess Classic","152.html":"Draw the Line","153.html":"Flappy Dunk","154.html":"Fork n Sausage","155.html":"Guess Their Answer","156.html":"Harvest.io","157.html":"Hill Climb Racing Lite","158.html":"Pac-Man Superfast","159.html":"Parking Rush","160.html":"Race Master 3D","161.html":"State.io","162.html":"Tower Crash 3D","163.html":"Trivia Crack","164-temp2.html":"Crazy Cattle 3D","165.html":"Cheese Chompers 3D","166.html":"Bad Parenting 1","167.html":"Blade Ball","168.html":"Blocky Snakes","169.html":"Bloxorz","170.html":"Big Tower Tiny Square 2","171.html":"Candy Crush","172.html":"Melon Playground","173.html":"Drift Hunters","174.html":"World Box","175.html":"Run 1","176.html":"Run 2","177.html":"Run 3","178.html":"Swords and Souls","179.html":"Soundboard","180.html":"n-gon","181.html":"Minecraft 1.8.8","182.html":"Minecraft 1.12.2","183.html":"Minecraft 1.21.4","185.html":"Five Nights at Freddy's: Sister Location","186.html":"Ragdoll Archers","187.html":"Papers, Please","188e.html":"Scrap Metal 3","190.html":"Five Nights at Freddy's: World","191.html":"Five Nights at Freddy's: Pizza Simulator","192.html":"Five Nights at Freddy's: Ultimate Custom Night","193.html":"Do NOT Take This Cat Home","194-a.html":"People Playground","195.html":"R.E.P.O","196-fixed.html":"ULTRAKILL","197.html":"Elastic Man","198.html":"Slope","199.html":"Time Shooter 1","200.html":"Time Shooter 2","201.html":"Time Shooter 3: SWAT","202.html":"Carrom Clash","203-a.html":"DOOM","204-a.html":"Five Nights at Winston's","205-f.html":"Buckshot Roulette","206.html":"Tunnel Rush","207.html":"Snowbattle.io","208.html":"Rolly Vortex","209.html":"Draw the Hill","210.html":"Dragon vs Bricks","211.html":"Death Run 3D","212.html":"Cut the Rope","213.html":"Cut the Rope: Time Travel","214.html":"Cut the Rope: Holiday Gift","215.html":"Bendy and the Ink Machine","216.html":"That's Not My Neighbor","217-c.html":"Hotline Miami","218.html":"Papa's Bakeria","219.html":"Papa's Burgeria","220.html":"Papa's Cheeseria","221.html":"Papa's Cupcakeria","222.html":"Papa's Donuteria","223.html":"Papa's Freezeria","224.html":"Papa's Hot Doggeria","225.html":"Papa's Pancakeria","226.html":"Papa's Pastaria","227.html":"Papa's Pizeria","228.html":"Papa's Scooperia","229.html":"Papa's Sushiria","230.html":"Papa's Taco Mia","231.html":"Papa's Wingeria","232.html":"Plants vs Zombies","233.html":"Superhot","234.html":"Duck Life","235.html":"Duck Life 2","236.html":"Duck Life 3","237.html":"Duck Life 4","238.html":"Duck Life 5","239.html":"Red Ball","240.html":"Red Ball 2","241.html":"Red Ball 3","242.html":"Red Ball 4","243.html":"Red Ball 4 Vol. 2","244.html":"Red Ball 4 Vol. 3","245.html":"Wheely","246.html":"Wheely 2","247.html":"Wheely 3","248.html":"Wheely 4","249.html":"Wheely 5","250.html":"Wheely 6","251.html":"Wheely 7","252.html":"Wheely 8","253.html":"Chat Bot (A.|.I)","255.html":"Crazy Chicken 3D","256.html":"Crazy Kitty 3D","257.html":"Google Baseball","258.html":"A Bite at Freddy's","259.html":"Class of '09","260.html":"RE:RUN","261.html":"Fruit Ninja","262.html":"Half Life","263.html":"Quake III Arena","264.html":"Escape Road","265.html":"Escape Road 2","266-a.html":"Speed Stars","267.html":"Pizza Tower","268.html":"Bacon May Die","269.html":"Bad Ice Cream","270.html":"Bad Ice Cream 2","271.html":"Bad Ice Cream 3","272.html":"Basketball Stars","273.html":"BlockPost","274.html":"CircloO","275.html":"CircloO 2","276.html":"Drift Boss","277.html":"Evil Glitch","278.html":"Madalin Stunt Cars 2","279.html":"Madalin Stunt Cars 3","280.html":"Papery Planes","281.html":"Pixel Gun Survival","282.html":"Protektor","283.html":"Rooftop Snipers","284.html":"War The Knights","285.html":"Basket Bros","286.html":"Endoparasitic","287.html":"Riddle School","288.html":"Riddle School 2","289.html":"Riddle School 3","290.html":"Riddle School 4","291.html":"Riddle School 5","292.html":"Riddle Transfer","293.html":"Riddle Transfer 2","294.html":"Idle Dice","295.html":"12 Mini Battles","296.html":"Play!.js","297.html":"Minecraft 1.5.2","298.html":"Minecraft Alpha 1.2.6","299.html":"Minecraft Beta 1.3","300.html":"Minecraft Beta 1.7.3","301.html":"Minecraft Indev","302.html":"Little Runmo","303.html":"Territorial.io","304.html":"Alien Hominid","305.html":"Tanuki Sunset","306.html":"Shipo.io","307.html":"Rainbow Obby","308.html":"NaziZombies: Portable","309.html":"Sandboxels","310.html":"Dreadhead Parkour","311.html":"Sandtris","312.html":"BlackJack","313.html":"Minesweeper Mania","314.html":"Super Mario 63","315.html":"Jelly Mario","316.html":"Angry Birds Chrome","317.html":"sandspiel","318.html":"Side Effects","319.html":"Build a Queen","320.html":"3D Bowling","321.html":"Room Sort","322.html":"Sushi Roll","323.html":"Find the Alien","324.html":"Maze Speedrun","325.html":"Kitchen Bazar","326.html":"Pokey Ball","327.html":"Slime.io","328.html":"Om Nom Run","329a.html":"TileTopia","330.html":"BitPlanes","331.html":"Crazy Cars","333.html":"Fancy Pants Adventure","334.html":"Fancy Pants Adventure 2","335.html":"Fancy Pants Adventure 3","336.html":"Fancy Pants Adventure 4 Part 1","337.html":"Fancy Pants Adventure 4 Part 2","338.html":"Getaway Shootout","339.html":"House of Hazards","340.html":"Learn to Fly","341.html":"Learn to Fly 2","342.html":"Learn to Fly 3","343.html":"Learn to Fly Idle","344.html":"Raft Wars","345.html":"Raft Wars 2","346.html":"Sort the Court","347.html":"SpiderDoll","348.html":"They Are Coming","349.html":"Spiral Roll","350.html":"Binding of Issac: Wrath of the Lamb","351.html":"Happy Sheepies","352.html":"DON'T YOU LECTURE ME","353.html":"Blumgi Rocket","354-a.html":"Adventure Capatalist","355.html":"Dadish 2","356.html":"Dadish 3","357.html":"Dadish","358.html":"Dadish 3D","359.html":"Daily Dadish","360.html":"EvoWars.io","361.html":"Google Feud","362.html":"Idle Breakout","363.html":"Idle Lumber Inc","364.html":"Idle Mining Empire","365.html":"JustFall.lol","366.html":"Merge Harvest","367.html":"Parking Fury 3D","368.html":"Slope 2","369.html":"Slowroads","370-f.html":"Smash Karts","371e.html":"Stickman Fight Ragdoll","372.html":"Stickman Boost","373.html":"Stickman Climb","374e.html":"Stickman Golf","375.html":"2048 Merge Run","376.html":"Build a Big Army","377.html":"Build a Plane","378.html":"Camouflage and Sniper","379.html":"Car Survival 3D","380.html":"City Defense","381.html":"Clothing Shop 3D","382.html":"Cool Cars Run 3D","383.html":"Crush Cars 3D","384.html":"Destiny Run 3D","385.html":"Destroy The Car 3D","386.html":"Diamond Seeker","387.html":"Draw Joust","388.html":"Evolving Bombs 3D","389.html":"Fire and Frost Master","390.html":"Fitness Empire","391.html":"Flick Goal","392.html":"Flip Master","393.html":"Giant Wanted","394.html":"Gun Clone","395.html":"Gun Runner","396.html":"Kaji Run","397.html":"Make a SuperBoat","398.html":"Makeover Run","399.html":"Mega Car Jumps","400.html":"Money Rush","401.html":"Monster Box 3D","402.html":"Office Fight","403.html":"Robot Invasion","404.html":"Seat Jam 3D","405.html":"Shooting Master","406.html":"Supermarket 3D","407.html":"Survive to Victory","408.html":"Telekinesis Attack","409.html":"Telekinesis Car","410.html":"Telekinesis Drive","411.html":"Telekinesis","413.html":"Tug of War with Cars","414.html":"Twerk Race 3D","415.html":"Twisted Rope 3D","416.html":"Wall Crawler","417.html":"War Regions","418.html":"Weapon Craft Run","419.html":"Weapon Upgrade Rush","420.html":"Weapon Scale","421.html":"Rich Run 3D","422.html":"High Heels","423.html":"WebFishing","426.html":"Andy's Apple Farm","427-z.html":"OMORI","428.html":"Five Nights at Freddy's 4: Halloween","429.html":"Code Editor","430.html":"10 Minutes Till Dawn","431.html":"99 Balls","432.html":"Abandoned","433.html":"Yume Nikki","434.html":"God's Flesh","435.html":"A Small World Cup","436.html":"Awesome Tanks","437.html":"Bouncemasters","438.html":"Awesome Tanks 2","439.html":"Bank Robbery 2","440.html":"Celeste PICO","441.html":"Kitty Toy","442.html":"Infinimoes","443.html":"Adventure Drivers","444.html":"Ages of Conflict","445.html":"Kindergarten","446.html":"Kindergarten 2","447-e.html":"Nijika's Ahoge","448.html":"Aquapark.io","449.html":"City Smash","450.html":"Amanda the Adventurer","451.html":"Slender: The 8 Pages","452.html":"Station 141","453.html":"Station Saturn","454.html":"BLOODMONEY!","455.html":"BERGENTRUCK 201x","456.html":"Undertale Yellow","457.html":"Raft","458.html":"The Deadseat","459.html":"The Man In The Window","460.html":"Fears to Fathom: Home Alone","461.html":"Slither.io","462.html":"DEAD PLATE","463.html":"Lacey's Flash Games","464.html":"Choppy Orc","465.html":"Cuphead","466.html":"Baldi's Basics Classic Remastered","467-updatee.html":"Baldi's Basics Plus","468-f.html":"Hollow Knight","469.html":"sandstone","470.html":"Doodle Jump","471.html":"Madness Combat: Project Nexus (classic)","472.html":"Bad Time Simulator","473.html":"Spacebar Clicker","474.html":"Friday Night Funkin': V.S. Whitty","475.html":"Friday Night Funkin': B-Sides","476.html":"Friday Night Funkin': Vs. Hex","477.html":"Friday Night Funkin': Vs. Hatsune Miku","478.html":"Friday Night Funkin': Neo","479.html":"Steal A Brainrot","480.html":"Friday Night Funkin': Sarvente's Mid-Fight Masses","481.html":"Friday Night Funkin': vs. Tricky","482-2.html":"Human Expenditure Program","483.html":"Friday Night Funkin': Hit Single Real","484.html":"Friday Night Funkin': Creepypasta JP","485.html":"Friday Night Funkin': vs. Garcello","486.html":"Friday Night Funkin': Sonic Legacy","487.html":"Friday Night Funkin': vs. QT","488.html":"Friday Night Funkin': Mistful Crimson Morning Reboot","489.html":"Friday Night Funkin': Indie Cross","490.html":"Rooftop Snipers 2","491.html":"I woke up next to you again.","492.html":"UNDERWHEELS","493.html":"RigBMX","494.html":"RigBMX 2","495.html":"groon groon, babey!","496.html":"Friday Night Funkin': Jeffy's Endless Aethos","497.html":"Friday Night Funkin': vs. BOPCITY","498.html":"Friday Night Funkin': 17 Bucks: Floor 1","499.html":"Friday Night Funkin': FIRE IN THE HOLE: Lobotomy Dash Funkin'","500.html":"Friday Night Funkin': TWIDDLEFINGER","501.html":"Kindergarten 3","502-fixed.html":"Stick With It","503.html":"Five Nights at Candy's","504.html":"Five Nights at Candy's 2","505.html":"Pokemon Red","506.html":"Pokemon Emerald","507.html":"The Impossible Quiz","508.html":"Super Mario Bros","509.html":"Friday Night Funkin’ Soft","510.html":"Tomodachi Collection","511.html":"Doge Miner","512.html":"Final Earth 2","513.html":"Swordfight!!","514.html":"PortaBoy+","515.html":"PacMan (Horror)","516.html":"Oshi Oshi Punch!","517.html":"Nubby's Number Factory","518.html":"Touhou: Luminous Strike","519.html":"Generic Fighter Maybe","520-fix.html":"Dan The Man","521.html":"Bust a Loop","522.html":"Bad Monday Simulator","523-f.html":"Touhou Mother","524.html":"Parappa The Rapper","525.html":"Friday Night Funkin': Darkness Takeover","526.html":"SpongeBob SquarePants: Land Ho!","527.html":"SpongeBob SquarePants: SpongeBob Run","528.html":"SpongeBob SquarePants: Squidward's Sizzlin' Scare","529.html":"SpongeBob SquarePants: Sandy's Sponge Stacker","530.html":"SpongeBob SquarePants: Tasty Pastry Party","531.html":"SpongeBob SquarePants: The Kah-Ray-Tay Squid","532.html":"SpongeBob SquarePants: WereSquirrel","533.html":"SpongeBob SquarePants: Krabby Katch","534.html":"Teen Titans GO!: Jump Jousts","535.html":"Teen Titans GO!: Jump Jousts 2","536.html":"Cat Connection","537.html":"Cat Gunner: Super Zombie Shoot","538.html":"Love Letters","539.html":"Chiikawa Puzzle","540.html":"myTeardrop","541.html":"Friday Night Funkin': Pibby: Apocalypse","542-a.html":"Karlson","543-a.html":"Jelly Drift","544.html":"Plinko","545.html":"Clash Of Vikings","546.html":"Recoil","547.html":"Baseball Bros","548.html":"Football Bros","549.html":"Sonic the Hedgehog 2: Community's Cut","550.html":"Sonic the Hedgehog 3: Angel Island Remastered","551.html":"Hypper Sandbox","552.html":"Aviamasters","553.html":"Rolling Sky","554.html":"Yandere Simulator","555.html":"Friday Night Funkin VS. KAPI","556.html":"Friday Night Funkin VS. Sky","557.html":"Getting Over It with Bennett Foddy","558.html":"Friday Night Funkin Vs. Cyber Sensation","559.html":"Friday Night Funkin vs Shaggy","560.html":"Deltatraveler","561.html":"BitGun.io","562.html":"Boom Slingers: Reboom","563.html":"CG FC 25","564.html":"Count Masters: Stickman Games","565.html":"Dalgona Candy Honeycomb Cookie","567.html":"Highway Racer","568.html":"Highway Racer 2 REMASTERED","569.html":"Hula Hoop Race","570.html":"Jelly Restaurant","571.html":"Layers Roll","572.html":"Lazy Jumper","573.html":"Man Runner 2048","574.html":"Pottery Master","575.html":"Shovel 3D","576.html":"Sky Riders","577.html":"Steal Brainrot Online","578.html":"Stickman and Guns","579.html":"Super Star Car","580.html":"Traffic Rider","581.html":"BuildNow.gg","582.html":"Friday Night Funkin': Mario's Madness","583.html":"Friday Night Funkin' vs Hypno Lullaby","584.html":"Stone Grass Mowing Simulator","585.html":"Fallout","586.html":"The Oregon Trail","587.html":"Newgrounds Rumble","588.html":"Super Mario 64","589.html":"Sonic CD","590.html":"Sonic Mania","591-a.html":"Slime Rancher","592.html":"Pac Man World","593.html":"Pac Man World 2","594.html":"Waterworks!","595.html":"Shapez.io","597-a.html":"Plants vs. Zombies 2 Gardenless","598.html":"Sonic.EXE","599.html":"Metal Gear Solid","600.html":"FNF Vs. Hypno's Lullaby v2","601.html":"FNF Vs. Sonic.EXE 3.0/4.0","602.html":"Doom 2","603-aa.html":"Growden.io","604-a.html":"Minesweeper Plus","605-e.html":"Schoolboy Runaway","606-e.html":"Sonic.EXE (ORIGINAL)","607-e.html":"Tattletail","608.html":"Friday Night Funkin VS Impostor v4","609-a.html":"Friday Night Funkin vs Sunday Remastered HD","610.html":"Friday Night Funkin vs Carol V2","611.html":"The Legend of Zelda Ocarina of Time","612.html":"The Legend of Zelda Majora's Mask","613.html":"Friday Night Funkin' Drop and Roll, but Playable","614.html":"Toy Rider","616.html":"Friday Night Funkin’ Wednesday's Infidelity","617-a.html":"Postal","618.html":"FNF vs Bob v2.0 (Bob’s Onslaught)","619.html":"Friday Night Funkin': Rev-Mixed","620.html":"Three Goblets","621.html":"Friday Night Funkin': Gumballs","622.html":"Oneshot (LEGACY)","623-work.html":"Celeste","624.html":"Happy Wheels","625.html":"Get Yoked","626-f.html":"Doom 3","627.html":"Tag","628-f.html":"Pizza Tower: Scoutdigo","629.html":"Off","630.html":"Space Funeral","631-a.html":"Endroll","632-a.html":"Cave Story","633.html":"Friday Night Funkin': VS. Impostor: Alternated","634.html":"Friday Night Funkin': Chaos Nightmare - Sonic Vs. Fleetway","635.html":"Spelunky Classic HD","636.html":"Friday Night Funkin' D-Sides","637-f.html":"BFDIA 5b","638-f.html":"BFDIA 5b: 5*30","639.html":"Friday Night Funkin' VS Impostor B-Sides","640.html":"Mutilate a Doll 2","641.html":"Godzilla Daikaiju Battle Royale","642.html":"Friday Night Funkin' Sunday Night Suicide: Rookies Edition","643.html":"Rio Rex","644.html":"Friday Night Funkin vs Nonsense","645-e.html":"Arthur's Nightmare","646-fixed.html":"Buster Jam","647.html":"Super Smash Flash","648-el.html":"Mindwave","649.html":"Look Outside","650-f.html":"Milk Inside a Bag of Milk Inside a Bag of Milk","651.html":"Milk Outside A Bag Of Milk Outside A Bag Of Milk","653-f.html":"One Date Danger","654.html":"Final Fantasy VII","655.html":"Goblin Goopmaxxing","656.html":"Rogue Sergeant The Final Operation","657.html":"Friday Night Funkin vs Undertale","658.html":"Midnight Shift","659.html":"Orange Roulette","660.html":"Please Dont Touch Anything","661.html":"Royal Towers: Medieval TD","662.html":"Going Balls","663.html":"3D Bolt Master","664.html":"Tall.io","665.html":"Match Triple 3D","666.html":"Stick War: Legacy","667-fix.html":"In Stars and Time","668-fix2.html":"Gorilla Tag","669.html":"Terraria","670.html":"Raldi's Crackhouse","671.html":"We Become What We Behold","672-2.html":"A Difficult Game About Climbing","673.html":"Hobo 1","674.html":"Hobo 2","675.html":"Hobo 3","676.html":"Hobo 4","677.html":"Hobo 5","678.html":"Hobo 6","679.html":"Hobo 7","680.html":"Kirby Super Star Ultra","681.html":"Cooking Mama","682.html":"Cooking Mama 2","683.html":"Cooking Mama 3","684.html":"Kirby Squeak Squad","685.html":"FIFA 11","686.html":"FIFA 10","687.html":"Pico's School (1999)","688.html":"Peggle","689.html":"Meatboy","690.html":"Friday Night Funkin': AKAGE","691.html":"Friday Night Funkin': Heartbreak Havoc [Vs. Sky: REDUX]","692.html":"Kirby ~ Soft & Wet","693.html":"Half Life: Opposing Force","694.html":"Pokemon Firered","695.html":"Duck Life 8","696.html":"Pokemon HeartGold","697.html":"Bank Robbery","698.html":"Bank Robbery 3","699.html":"Stickman Destruction","700.html":"FNF vs Pibby Corrupted","701.html":"Real Flight Simulator","702.html":"JavascriptPS1","703.html":"VS Rewrite: ROUND 2","704.html":"Eaglercraft 1.12.2 WASM-GC","705.html":"Five Nights at Epstein's","706.html":"Deltarune","707.html":"Undertale","708.html":"Hollow Knight Debug","709.html":"32-bit Virtual Machine","710.html":"Last Breath, Undertale","711.html":"Outertale"}</script>
-    <script>
-    (() => {
-        'use strict';
+  <script id="knownGameNames" type="application/json">{"0.html":"Bowmasters","1-a.html":"OvO","2e.html":"OvO 2","3.html":"OvO 3 Dimensions","4.html":"Gladihoppers","5.html":"Ice Dodo","6.html":"Block Blast","7.html":"Jetpack Joyride","8-wow.html":"Friday Night Funkin","9.html":"Sprunki","10.html":"Temple Run 2","11.html":"Stickman Hook","13.html":"Attack Hole","14.html":"Bridge Race","15.html":"Color Water Sort 3D","16.html":"Hide N Seek","17.html":"Magic Tiles 3","18.html":"Stacky Dash","19.html":"Supreme Duelist","20a.html":"Tall Man Run","21.html":"Turbo Stars","22.html":"Mob Control HTML5","23.html":"Pou","24.html":"Crossy Road","25.html":"Basket Battle","26.html":"Amaze","27.html":"Geometry Dash Lite (REMAKE)","28.html":"Basketball Frvr","29.html":"Bazooka Boy","30.html":"Bottle Jump 3D","31.html":"Color Match","32.html":"Dig Deep","33.html":"Retro Bowl","34-fixed.html":"Retro Bowl College","36.html":"Monster Tracks","37.html":"Gobble","38.html":"Five Nights at Freddy's","39.html":"Five Nights at Freddy's 2","40.html":"Five Nights at Freddy's 3","41.html":"Five Nights at Freddy's 4","42.html":"Road of Fury","43.html":"Driven Wild","44.html":"Ragdoll Hit","45.html":"Vex 1","46.html":"Vex 2","47.html":"Vex 3","48.html":"Vex 3 XMAS","49.html":"Vex 4","50.html":"Vex 5","51.html":"Vex 6","52.html":"Vex 7","53.html":"Vex 8","54.html":"Vex Challenges","55.html":"Vex X3M","56.html":"Vex X3M 2","58.html":"1v1.LoL","59.html":"A Dance of Fire and Ice","60.html":"Achievement Unlocked","61.html":"Achievement Unlocked 2","62.html":"Achievement Unlocked 3","63.html":"Angry Birds","64.html":"Backrooms","65.html":"Baldi's Basics","66.html":"Basket Random","67.html":"Big Tower Tiny Square","68.html":"Big NEON Tower Tiny Square","69.html":"Big ICE Tower Tiny Square","70.html":"BitLife","71.html":"Bloons TD","72.html":"Bloons TD 2","73.html":"Bloons TD 3","74.html":"Bloons TD 4","75.html":"Bloons TD 5","76.html":"Bob The Robber 2","77.html":"Boxing Random","78.html":"Burrito Bison","79.html":"Cannon Basketball","80.html":"Cannon Basketball 2","81.html":"Cluster Rush","82-aa.html":"Cookie Clicker","83.html":"Coreball","84.html":"Cubefield","85.html":"Cut the Rope","86.html":"Draw Climber","87.html":"Emulator.JS","88.html":"Fireboy and Watergirl 2","89.html":"Fireboy and Watergirl 3","90.html":"Granny","91.html":"Gunspin","92.html":"Highway Racer 2","93.html":"Johnny Trigger","94.html":"Journey Downhill","95.html":"Line Rider","96.html":"Moto X3M","97.html":"Moto X3M 2","98.html":"Moto X3M 3","99.html":"Moto X3M Spooky","100-f.html":"Moto X3M Winter","101.html":"Ninja vs EvilCorp","102.html":"Paper.io 2","103.html":"The World's Hardest Game","104.html":"The World's Hardest Game 3","105.html":"The World's Hardest Game 4","106.html":"This Is The Only Level","107.html":"This Is The Only Level 2","108.html":"Tiny Fishing","109.html":"Tomb Of The Mask","110-f.html":"Toss The Turtle","111.html":"Tube Jumpers","112.html":"Wordle","113.html":"Ruffle","114-f.html":"2048","115.html":"8 Ball Pool","116.html":"Offroad Mountain Bike","117-fix.html":"Space Waves","118.html":"Solar Smash","119.html":"Snow Rider 3D","120.html":"Fortzone Battle Royale","121.html":"Brawl Guys.io","122.html":"Survival Race","123-win.html":"Poly Track","124.html":"Moto X3M Pool Party","125.html":"Granny 2","126.html":"Granny 3","127.html":"Fashion Battle","128.html":"Slice it All","129.html":"Flappy Bird","130.html":"osu!","146.html":"8 Ball Classic","147.html":"Angry Birds Showdown","148.html":"Archery World Tour","149.html":"Ball Blast","150.html":"Cannon Balls 3D","151.html":"Chess Classic","152.html":"Draw the Line","153.html":"Flappy Dunk","154.html":"Fork n Sausage","155.html":"Guess Their Answer","156.html":"Harvest.io","157.html":"Hill Climb Racing Lite","158.html":"Pac-Man Superfast","159.html":"Parking Rush","160.html":"Race Master 3D","161.html":"State.io","162.html":"Tower Crash 3D","163.html":"Trivia Crack","164-temp2.html":"Crazy Cattle 3D","165.html":"Cheese Chompers 3D","166.html":"Bad Parenting 1","167.html":"Blade Ball","168.html":"Blocky Snakes","169.html":"Bloxorz","170.html":"Big Tower Tiny Square 2","171.html":"Candy Crush","172.html":"Melon Playground","173.html":"Drift Hunters","174.html":"World Box","175.html":"Run 1","176.html":"Run 2","177.html":"Run 3","178.html":"Swords and Souls","179.html":"Soundboard","180.html":"n-gon","181.html":"Minecraft 1.8.8","182.html":"Minecraft 1.12.2","183.html":"Minecraft 1.21.4","185.html":"Five Nights at Freddy's: Sister Location","186.html":"Ragdoll Archers","187.html":"Papers, Please","188e.html":"Scrap Metal 3","190.html":"Five Nights at Freddy's: World","191.html":"Five Nights at Freddy's: Pizza Simulator","192.html":"Five Nights at Freddy's: Ultimate Custom Night","193.html":"Do NOT Take This Cat Home","194-a.html":"People Playground","195.html":"R.E.P.O","196-fixed.html":"ULTRAKILL","197.html":"Elastic Man","198.html":"Slope","199.html":"Time Shooter 1","200.html":"Time Shooter 2","201.html":"Time Shooter 3: SWAT","202.html":"Carrom Clash","203-a.html":"DOOM","204-a.html":"Five Nights at Winston's","205-f.html":"Buckshot Roulette","206.html":"Tunnel Rush","207.html":"Snowbattle.io","208.html":"Rolly Vortex","209.html":"Draw the Hill","210.html":"Dragon vs Bricks","211.html":"Death Run 3D","212.html":"Cut the Rope","213.html":"Cut the Rope: Time Travel","214.html":"Cut the Rope: Holiday Gift","215.html":"Bendy and the Ink Machine","216.html":"That's Not My Neighbor","217-c.html":"Hotline Miami","218.html":"Papa's Bakeria","219.html":"Papa's Burgeria","220.html":"Papa's Cheeseria","221.html":"Papa's Cupcakeria","222.html":"Papa's Donuteria","223.html":"Papa's Freezeria","224.html":"Papa's Hot Doggeria","225.html":"Papa's Pancakeria","226.html":"Papa's Pastaria","227.html":"Papa's Pizeria","228.html":"Papa's Scooperia","229.html":"Papa's Sushiria","230.html":"Papa's Taco Mia","231.html":"Papa's Wingeria","232.html":"Plants vs Zombies","233.html":"Superhot","234.html":"Duck Life","235.html":"Duck Life 2","236.html":"Duck Life 3","237.html":"Duck Life 4","238.html":"Duck Life 5","239.html":"Red Ball","240.html":"Red Ball 2","241.html":"Red Ball 3","242.html":"Red Ball 4","243.html":"Red Ball 4 Vol. 2","244.html":"Red Ball 4 Vol. 3","245.html":"Wheely","246.html":"Wheely 2","247.html":"Wheely 3","248.html":"Wheely 4","249.html":"Wheely 5","250.html":"Wheely 6","251.html":"Wheely 7","252.html":"Wheely 8","253.html":"Chat Bot (A.|.I)","255.html":"Crazy Chicken 3D","256.html":"Crazy Kitty 3D","257.html":"Google Baseball","258.html":"A Bite at Freddy's","259.html":"Class of '09","260.html":"RE:RUN","261.html":"Fruit Ninja","262.html":"Half Life","263.html":"Quake III Arena","264.html":"Escape Road","265.html":"Escape Road 2","266-a.html":"Speed Stars","267.html":"Pizza Tower","268.html":"Bacon May Die","269.html":"Bad Ice Cream","270.html":"Bad Ice Cream 2","271.html":"Bad Ice Cream 3","272.html":"Basketball Stars","273.html":"BlockPost","274.html":"CircloO","275.html":"CircloO 2","276.html":"Drift Boss","277.html":"Evil Glitch","278.html":"Madalin Stunt Cars 2","279.html":"Madalin Stunt Cars 3","280.html":"Papery Planes","281.html":"Pixel Gun Survival","282.html":"Protektor","283.html":"Rooftop Snipers","284.html":"War The Knights","285.html":"Basket Bros","286.html":"Endoparasitic","287.html":"Riddle School","288.html":"Riddle School 2","289.html":"Riddle School 3","290.html":"Riddle School 4","291.html":"Riddle School 5","292.html":"Riddle Transfer","293.html":"Riddle Transfer 2","294.html":"Idle Dice","295.html":"12 Mini Battles","296.html":"Play!.js","297.html":"Minecraft 1.5.2","298.html":"Minecraft Alpha 1.2.6","299.html":"Minecraft Beta 1.3","300.html":"Minecraft Beta 1.7.3","301.html":"Minecraft Indev","302.html":"Little Runmo","303.html":"Territorial.io","304.html":"Alien Hominid","305.html":"Tanuki Sunset","306.html":"Shipo.io","307.html":"Rainbow Obby","308.html":"NaziZombies: Portable","309.html":"Sandboxels","310.html":"Dreadhead Parkour","311.html":"Sandtris","312.html":"BlackJack","313.html":"Minesweeper Mania","314.html":"Super Mario 63","315.html":"Jelly Mario","316.html":"Angry Birds Chrome","317.html":"sandspiel","318.html":"Side Effects","319.html":"Build a Queen","320.html":"3D Bowling","321.html":"Room Sort","322.html":"Sushi Roll","323.html":"Find the Alien","324.html":"Maze Speedrun","325.html":"Kitchen Bazar","326.html":"Pokey Ball","327.html":"Slime.io","328.html":"Om Nom Run","329a.html":"TileTopia","330.html":"BitPlanes","331.html":"Crazy Cars","333.html":"Fancy Pants Adventure","334.html":"Fancy Pants Adventure 2","335.html":"Fancy Pants Adventure 3","336.html":"Fancy Pants Adventure 4 Part 1","337.html":"Fancy Pants Adventure 4 Part 2","338.html":"Getaway Shootout","339.html":"House of Hazards","340.html":"Learn to Fly","341.html":"Learn to Fly 2","342.html":"Learn to Fly 3","343.html":"Learn to Fly Idle","344.html":"Raft Wars","345.html":"Raft Wars 2","346.html":"Sort the Court","347.html":"SpiderDoll","348.html":"They Are Coming","349.html":"Spiral Roll","350.html":"Binding of Issac: Wrath of the Lamb","351.html":"Happy Sheepies","352.html":"DON'T YOU LECTURE ME","353.html":"Blumgi Rocket","354-a.html":"Adventure Capatalist","355.html":"Dadish 2","356.html":"Dadish 3","357.html":"Dadish","358.html":"Dadish 3D","359.html":"Daily Dadish","360.html":"EvoWars.io","361.html":"Google Feud","362.html":"Idle Breakout","363.html":"Idle Lumber Inc","364.html":"Idle Mining Empire","365.html":"JustFall.lol","366.html":"Merge Harvest","367.html":"Parking Fury 3D","368.html":"Slope 2","369.html":"Slowroads","370-f.html":"Smash Karts","371e.html":"Stickman Fight Ragdoll","372.html":"Stickman Boost","373.html":"Stickman Climb","374e.html":"Stickman Golf","375.html":"2048 Merge Run","376.html":"Build a Big Army","377.html":"Build a Plane","378.html":"Camouflage and Sniper","379.html":"Car Survival 3D","380.html":"City Defense","381.html":"Clothing Shop 3D","382.html":"Cool Cars Run 3D","383.html":"Crush Cars 3D","384.html":"Destiny Run 3D","385.html":"Destroy The Car 3D","386.html":"Diamond Seeker","387.html":"Draw Joust","388.html":"Evolving Bombs 3D","389.html":"Fire and Frost Master","390.html":"Fitness Empire","391.html":"Flick Goal","392.html":"Flip Master","393.html":"Giant Wanted","394.html":"Gun Clone","395.html":"Gun Runner","396.html":"Kaji Run","397.html":"Make a SuperBoat","398.html":"Makeover Run","399.html":"Mega Car Jumps","400.html":"Money Rush","401.html":"Monster Box 3D","402.html":"Office Fight","403.html":"Robot Invasion","404.html":"Seat Jam 3D","405.html":"Shooting Master","406.html":"Supermarket 3D","407.html":"Survive to Victory","408.html":"Telekinesis Attack","409.html":"Telekinesis Car","410.html":"Telekinesis Drive","411.html":"Telekinesis","413.html":"Tug of War with Cars","414.html":"Twerk Race 3D","415.html":"Twisted Rope 3D","416.html":"Wall Crawler","417.html":"War Regions","418.html":"Weapon Craft Run","419.html":"Weapon Upgrade Rush","420.html":"Weapon Scale","421.html":"Rich Run 3D","422.html":"High Heels","423.html":"WebFishing","426.html":"Andy's Apple Farm","427-z.html":"OMORI","428.html":"Five Nights at Freddy's 4: Halloween","429.html":"Code Editor","430.html":"10 Minutes Till Dawn","431.html":"99 Balls","432.html":"Abandoned","433.html":"Yume Nikki","434.html":"God's Flesh","435.html":"A Small World Cup","436.html":"Awesome Tanks","437.html":"Bouncemasters","438.html":"Awesome Tanks 2","439.html":"Bank Robbery 2","440.html":"Celeste PICO","441.html":"Kitty Toy","442.html":"Infinimoes","443.html":"Adventure Drivers","444.html":"Ages of Conflict","445.html":"Kindergarten","446.html":"Kindergarten 2","447-e.html":"Nijika's Ahoge","448.html":"Aquapark.io","449.html":"City Smash","450.html":"Amanda the Adventurer","451.html":"Slender: The 8 Pages","452.html":"Station 141","453.html":"Station Saturn","454.html":"BLOODMONEY!","455.html":"BERGENTRUCK 201x","456.html":"Undertale Yellow","457.html":"Raft","458.html":"The Deadseat","459.html":"The Man In The Window","460.html":"Fears to Fathom: Home Alone","461.html":"Slither.io","462.html":"DEAD PLATE","463.html":"Lacey's Flash Games","464.html":"Choppy Orc","465.html":"Cuphead","466.html":"Baldi's Basics Classic Remastered","467-updatee.html":"Baldi's Basics Plus","468-f.html":"Hollow Knight","469.html":"sandstone","470.html":"Doodle Jump","471.html":"Madness Combat: Project Nexus (classic)","472.html":"Bad Time Simulator","473.html":"Spacebar Clicker","474.html":"Friday Night Funkin': V.S. Whitty","475.html":"Friday Night Funkin': B-Sides","476.html":"Friday Night Funkin': Vs. Hex","477.html":"Friday Night Funkin': Vs. Hatsune Miku","478.html":"Friday Night Funkin': Neo","479.html":"Steal A Brainrot","480.html":"Friday Night Funkin': Sarvente's Mid-Fight Masses","481.html":"Friday Night Funkin': vs. Tricky","482-2.html":"Human Expenditure Program","483.html":"Friday Night Funkin': Hit Single Real","484.html":"Friday Night Funkin': Creepypasta JP","485.html":"Friday Night Funkin': vs. Garcello","486.html":"Friday Night Funkin': Sonic Legacy","487.html":"Friday Night Funkin': vs. QT","488.html":"Friday Night Funkin': Mistful Crimson Morning Reboot","489.html":"Friday Night Funkin': Indie Cross","490.html":"Rooftop Snipers 2","491.html":"I woke up next to you again.","492.html":"UNDERWHEELS","493.html":"RigBMX","494.html":"RigBMX 2","495.html":"groon groon, babey!","496.html":"Friday Night Funkin': Jeffy's Endless Aethos","497.html":"Friday Night Funkin': vs. BOPCITY","498.html":"Friday Night Funkin': 17 Bucks: Floor 1","499.html":"Friday Night Funkin': FIRE IN THE HOLE: Lobotomy Dash Funkin'","500.html":"Friday Night Funkin': TWIDDLEFINGER","501.html":"Kindergarten 3","502-fixed.html":"Stick With It","503.html":"Five Nights at Candy's","504.html":"Five Nights at Candy's 2","505.html":"Pokemon Red","506.html":"Pokemon Emerald","507.html":"The Impossible Quiz","508.html":"Super Mario Bros","509.html":"Friday Night Funkin’ Soft","510.html":"Tomodachi Collection","511.html":"Doge Miner","512.html":"Final Earth 2","513.html":"Swordfight!!","514.html":"PortaBoy+","515.html":"PacMan (Horror)","516.html":"Oshi Oshi Punch!","517.html":"Nubby's Number Factory","518.html":"Touhou: Luminous Strike","519.html":"Generic Fighter Maybe","520-fix.html":"Dan The Man","521.html":"Bust a Loop","522.html":"Bad Monday Simulator","523-f.html":"Touhou Mother","524.html":"Parappa The Rapper","525.html":"Friday Night Funkin': Darkness Takeover","526.html":"SpongeBob SquarePants: Land Ho!","527.html":"SpongeBob SquarePants: SpongeBob Run","528.html":"SpongeBob SquarePants: Squidward's Sizzlin' Scare","529.html":"SpongeBob SquarePants: Sandy's Sponge Stacker","530.html":"SpongeBob SquarePants: Tasty Pastry Party","531.html":"SpongeBob SquarePants: The Kah-Ray-Tay Squid","532.html":"SpongeBob SquarePants: WereSquirrel","533.html":"SpongeBob SquarePants: Krabby Katch","534.html":"Teen Titans GO!: Jump Jousts","535.html":"Teen Titans GO!: Jump Jousts 2","536.html":"Cat Connection","537.html":"Cat Gunner: Super Zombie Shoot","538.html":"Love Letters","539.html":"Chiikawa Puzzle","540.html":"myTeardrop","541.html":"Friday Night Funkin': Pibby: Apocalypse","542-a.html":"Karlson","543-a.html":"Jelly Drift","544.html":"Plinko","545.html":"Clash Of Vikings","546.html":"Recoil","547.html":"Baseball Bros","548.html":"Football Bros","549.html":"Sonic the Hedgehog 2: Community's Cut","550.html":"Sonic the Hedgehog 3: Angel Island Remastered","551.html":"Hypper Sandbox","552.html":"Aviamasters","553.html":"Rolling Sky","554.html":"Yandere Simulator","555.html":"Friday Night Funkin VS. KAPI","556.html":"Friday Night Funkin VS. Sky","557.html":"Getting Over It with Bennett Foddy","558.html":"Friday Night Funkin Vs. Cyber Sensation","559.html":"Friday Night Funkin vs Shaggy","560.html":"Deltatraveler","561.html":"BitGun.io","562.html":"Boom Slingers: Reboom","563.html":"CG FC 25","564.html":"Count Masters: Stickman Games","565.html":"Dalgona Candy Honeycomb Cookie","567.html":"Highway Racer","568.html":"Highway Racer 2 REMASTERED","569.html":"Hula Hoop Race","570.html":"Jelly Restaurant","571.html":"Layers Roll","572.html":"Lazy Jumper","573.html":"Man Runner 2048","574.html":"Pottery Master","575.html":"Shovel 3D","576.html":"Sky Riders","577.html":"Steal Brainrot Online","578.html":"Stickman and Guns","579.html":"Super Star Car","580.html":"Traffic Rider","581.html":"BuildNow.gg","582.html":"Friday Night Funkin': Mario's Madness","583.html":"Friday Night Funkin' vs Hypno Lullaby","584.html":"Stone Grass Mowing Simulator","585.html":"Fallout","586.html":"The Oregon Trail","587.html":"Newgrounds Rumble","588.html":"Super Mario 64","589.html":"Sonic CD","590.html":"Sonic Mania","591-a.html":"Slime Rancher","592.html":"Pac Man World","593.html":"Pac Man World 2","594.html":"Waterworks!","595.html":"Shapez.io","597-a.html":"Plants vs. Zombies 2 Gardenless","598.html":"Sonic.EXE","599.html":"Metal Gear Solid","600.html":"FNF Vs. Hypno's Lullaby v2","601.html":"FNF Vs. Sonic.EXE 3.0/4.0","602.html":"Doom 2","603-aa.html":"Growden.io","604-a.html":"Minesweeper Plus","605-e.html":"Schoolboy Runaway","606-e.html":"Sonic.EXE (ORIGINAL)","607-e.html":"Tattletail","608.html":"Friday Night Funkin VS Impostor v4","609-a.html":"Friday Night Funkin vs Sunday Remastered HD","610.html":"Friday Night Funkin vs Carol V2","611.html":"The Legend of Zelda Ocarina of Time","612.html":"The Legend of Zelda Majora's Mask","613.html":"Friday Night Funkin' Drop and Roll, but Playable","614.html":"Toy Rider","616.html":"Friday Night Funkin’ Wednesday's Infidelity","617-a.html":"Postal","618.html":"FNF vs Bob v2.0 (Bob’s Onslaught)","619.html":"Friday Night Funkin': Rev-Mixed","620.html":"Three Goblets","621.html":"Friday Night Funkin': Gumballs","622.html":"Oneshot (LEGACY)","623-work.html":"Celeste","624.html":"Happy Wheels","625.html":"Get Yoked","626-f.html":"Doom 3","627.html":"Tag","628-f.html":"Pizza Tower: Scoutdigo","629.html":"Off","630.html":"Space Funeral","631-a.html":"Endroll","632-a.html":"Cave Story","633.html":"Friday Night Funkin': VS. Impostor: Alternated","634.html":"Friday Night Funkin': Chaos Nightmare - Sonic Vs. Fleetway","635.html":"Spelunky Classic HD","636.html":"Friday Night Funkin' D-Sides","637-f.html":"BFDIA 5b","638-f.html":"BFDIA 5b: 5*30","639.html":"Friday Night Funkin' VS Impostor B-Sides","640.html":"Mutilate a Doll 2","641.html":"Godzilla Daikaiju Battle Royale","642.html":"Friday Night Funkin' Sunday Night Suicide: Rookies Edition","643.html":"Rio Rex","644.html":"Friday Night Funkin vs Nonsense","645-e.html":"Arthur's Nightmare","646-fixed.html":"Buster Jam","647.html":"Super Smash Flash","648-el.html":"Mindwave","649.html":"Look Outside","650-f.html":"Milk Inside a Bag of Milk Inside a Bag of Milk","651.html":"Milk Outside A Bag Of Milk Outside A Bag Of Milk","653-f.html":"One Date Danger","654.html":"Final Fantasy VII","655.html":"Goblin Goopmaxxing","656.html":"Rogue Sergeant The Final Operation","657.html":"Friday Night Funkin vs Undertale","658.html":"Midnight Shift","659.html":"Orange Roulette","660.html":"Please Dont Touch Anything","661.html":"Royal Towers: Medieval TD","662.html":"Going Balls","663.html":"3D Bolt Master","664.html":"Tall.io","665.html":"Match Triple 3D","666.html":"Stick War: Legacy","667-fix.html":"In Stars and Time","668-fix2.html":"Gorilla Tag","669.html":"Terraria","670.html":"Raldi's Crackhouse","671.html":"We Become What We Behold","672-2.html":"A Difficult Game About Climbing","673.html":"Hobo 1","674.html":"Hobo 2","675.html":"Hobo 3","676.html":"Hobo 4","677.html":"Hobo 5","678.html":"Hobo 6","679.html":"Hobo 7","680.html":"Kirby Super Star Ultra","681.html":"Cooking Mama","682.html":"Cooking Mama 2","683.html":"Cooking Mama 3","684.html":"Kirby Squeak Squad","685.html":"FIFA 11","686.html":"FIFA 10","687.html":"Pico's School (1999)","688.html":"Peggle","689.html":"Meatboy","690.html":"Friday Night Funkin': AKAGE","691.html":"Friday Night Funkin': Heartbreak Havoc [Vs. Sky: REDUX]","692.html":"Kirby ~ Soft & Wet","693.html":"Half Life: Opposing Force","694.html":"Pokemon Firered","695.html":"Duck Life 8","696.html":"Pokemon HeartGold","697.html":"Bank Robbery","698.html":"Bank Robbery 3","699.html":"Stickman Destruction","700.html":"FNF vs Pibby Corrupted","701.html":"Real Flight Simulator","702.html":"JavascriptPS1","703.html":"VS Rewrite: ROUND 2","704.html":"Eaglercraft 1.12.2 WASM-GC","705.html":"Five Nights at Epstein's","706.html":"Deltarune","707.html":"Undertale","708.html":"Hollow Knight Debug","709.html":"32-bit Virtual Machine","710.html":"Last Breath, Undertale","711.html":"Outertale"}</script>
+  <script>
+  (() => {
+    'use strict';
 
-        const OWNER = 'hummingbird-9';
-        const HTML_REPO = 'html';
-        const ASSETS_REPO = 'assets';
-        const COVERS_CDN = 'https://cdn.jsdelivr.net/gh/hummingbird-9/covers@main';
-        const HTML_CDN = 'https://cdn.jsdelivr.net/gh/hummingbird-9/html@main';
-        const ASSETS_CDN = 'https://cdn.jsdelivr.net/gh/hummingbird-9/assets@main';
-        const API_ROOT = 'https://api.github.com/repos/' + OWNER + '/';
-        const PAGE_SIZE = 20;
-        // New key intentionally invalidates the old cache, which contained the same API result repeated many times.
-        const CACHE_KEY = 'hummingbird-html-games-unique-v3';
-        const CACHE_TTL = 5 * 60 * 1000;
-        const knownNames = JSON.parse(document.getElementById('knownGameNames').textContent);
+    const OWNER = 'hummingbird-9';
+    const HTML_REPO = 'html';
+    const ASSETS_REPO = 'assets';
+    const COVERS_CDN = 'https://cdn.jsdelivr.net/gh/hummingbird-9/covers@main';
+    const HTML_CDN = 'https://cdn.jsdelivr.net/gh/hummingbird-9/html@main';
+    const ASSETS_CDN = 'https://cdn.jsdelivr.net/gh/hummingbird-9/assets@main';
+    const API = 'https://api.github.com/repos/' + OWNER + '/';
+    const PAGE_SIZE = 36;
+    const CACHE_KEY = 'hummingbird-view-games-v2-unique';
+    const CACHE_TTL = 6 * 60 * 60 * 1000;
+    const knownNames = JSON.parse(document.getElementById('knownGameNames').textContent);
 
-        const container = document.getElementById('container');
-        const searchBar = document.getElementById('searchBar');
-        const sortOptions = document.getElementById('sortOptions');
-        const zoneCount = document.getElementById('zoneCount');
-        const zoneViewer = document.getElementById('zoneViewer');
-        const zoneNameText = document.getElementById('zoneName');
-        const zoneIdText = document.getElementById('zoneId');
-        const darkModeToggle = document.getElementById('darkModeToggle');
+    const container = document.getElementById('container');
+    const searchBar = document.getElementById('searchBar');
+    const sortOptions = document.getElementById('sortOptions');
+    const statusEl = document.getElementById('gamesStatus');
+    const totalEl = document.getElementById('gamesTotal');
+    const loadMoreBtn = document.getElementById('gamesLoadMore');
+    const viewer = document.getElementById('zoneViewer');
+    const nameEl = document.getElementById('zoneName');
+    const idEl = document.getElementById('zoneId');
 
-        let games = [];
-        let filteredGames = [];
-        let currentPage = 0;
-        let activeGame = null;
-        let activeGameHtml = '';
-        let assetFolders = new Set();
-        let loading = false;
-        const gamesPerPage = PAGE_SIZE;
+    let games = [];
+    let filteredGames = [];
+    let renderedCount = 0;
+    let activeGame = null;
+    let activeHtml = '';
+    let isLoading = false;
 
-        function numericId(filename) {
-            const match = String(filename).match(/^(\d+)/);
-            return match ? Number(match[1]) : null;
-        }
+    function parseId(filename) {
+      const match = filename.match(/^(\d+)/);
+      return match ? Number(match[1]) : null;
+    }
 
-        function fallbackTitle(filename, id) {
-            const stem = filename.replace(/\.html?$/i, '');
-            const remainder = stem.replace(/^\d+/, '').replace(/^[-_.\s]+/, '');
-            if (!remainder) return 'Game ' + id;
-            return remainder.replace(/[-_.]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-        }
+    function fallbackTitle(filename, id) {
+      const stem = filename.replace(/\.html?$/i, '');
+      const suffix = stem.replace(/^\d+/, '').replace(/^[-_.\s]+/, '');
+      if (!suffix) return 'Game ' + id;
+      return suffix.replace(/[-_.]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    }
 
-        function titleFor(filename, id) {
-            return knownNames[filename] || fallbackTitle(filename, id);
-        }
+    function friendlyTitle(filename, id) {
+      return knownNames[filename] || fallbackTitle(filename, id);
+    }
 
-        function uniqueByFilename(items) {
-            const unique = new Map();
-            for (const item of items) {
-                if (!item || typeof item.filename !== 'string') continue;
-                const key = item.filename.toLowerCase();
-                if (!unique.has(key)) unique.set(key, item);
+    async function fetchRootEntries(repo) {
+      // GitHub's Contents API returns a single directory listing. It does not
+      // paginate a directory using page=1, page=2, etc. Request up to 1,000
+      // directory once (GitHub returns up to 1,000 entries); the old loop repeated
+      // the same response up to 20 times.
+      const url = API + encodeURIComponent(repo) + '/contents/?ref=main';
+      const response = await fetch(url, { headers: { Accept: 'application/vnd.github+json' } });
+      if (!response.ok) {
+        if (response.status === 404) throw new Error('Could not find the public ' + repo + ' repository or its main branch.');
+        if (response.status === 403) throw new Error('GitHub API rate limit reached. Try Refresh HTML List in a little while.');
+        throw new Error('GitHub returned HTTP ' + response.status + ' while reading ' + repo + '.');
+      }
+      const entries = await response.json();
+      if (!Array.isArray(entries)) throw new Error('Unexpected GitHub response for ' + repo + '.');
+      return entries;
+    }
+
+    function uniqueByFilename(entries) {
+      const seen = new Set();
+      return entries.filter(entry => {
+        if (!entry) return false;
+        const filename = typeof entry.name === 'string' ? entry.name : entry.filename;
+        if (typeof filename !== 'string') return false;
+        const key = String(entry.path || filename).toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+
+    async function loadRepositoryData(force = false) {
+      if (isLoading) return;
+      isLoading = true;
+      statusEl.textContent = 'Checking the game and asset repositories...';
+      totalEl.textContent = 'Loading...';
+      try {
+        if (!force) {
+          const cached = localStorage.getItem(CACHE_KEY);
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Date.now() - parsed.savedAt < CACHE_TTL && Array.isArray(parsed.games) && Array.isArray(parsed.assetIds)) {
+              games = uniqueByFilename(parsed.games).filter(game =>
+                game && typeof game.filename === 'string' && Number.isFinite(Number(game.id))
+              );
+              assetFolders = new Set([...new Set(parsed.assetIds.map(String))]);
+              applyFilterAndRender();
+              statusEl.textContent = 'Loaded the saved unique game list. Use Refresh HTML List to check for new uploads.';
+              isLoading = false;
+              return;
             }
-            return Array.from(unique.values());
+          }
         }
 
-        // GitHub's Contents API returns a directory listing in one response (up to 1,000 entries).
-        // It does not provide page-based pagination for a single directory. Re-requesting it with
-        // ?page=1, ?page=2, etc. repeats the same files and created the 13,840-entry duplicate list.
-        async function fetchRootEntries(repo) {
-            const url = API_ROOT + encodeURIComponent(repo) + '/contents/?ref=main';
-            const response = await fetch(url, { headers: { Accept: 'application/vnd.github+json' } });
-            if (!response.ok) {
-                if (response.status === 404) throw new Error('Could not find the public ' + repo + ' repository or its main branch.');
-                if (response.status === 403) throw new Error('GitHub API rate limit reached. Wait a little while, then reload this page.');
-                throw new Error('GitHub returned HTTP ' + response.status + ' while reading ' + repo + '.');
-            }
-            const entries = await response.json();
-            if (!Array.isArray(entries)) throw new Error('Unexpected GitHub response for ' + repo + '.');
-            return entries;
-        }
+        const [htmlEntries, assetEntries] = await Promise.all([
+          fetchRootEntries(HTML_REPO),
+          fetchRootEntries(ASSETS_REPO)
+        ]);
 
-        function getCachedGames() {
-            try {
-                const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
-                if (!cached || Date.now() - cached.savedAt >= CACHE_TTL || !Array.isArray(cached.games) || !Array.isArray(cached.assetIds)) return null;
-                return {
-                    games: uniqueByFilename(cached.games),
-                    assetIds: [...new Set(cached.assetIds.map(String))]
-                };
-            } catch (_) {
-                return null;
-            }
-        }
+        const fileEntries = uniqueByFilename(htmlEntries.filter(entry =>
+          entry && entry.type === 'file' &&
+          typeof entry.name === 'string' &&
+          !String(entry.path || entry.name).includes('/') &&
+          /^\d+.*\.html?$/i.test(entry.name)
+        ));
+        const assetIds = [...new Set(assetEntries
+          .filter(entry => entry && entry.type === 'dir' && /^\d+$/.test(entry.name))
+          .map(entry => String(entry.name)))];
+        assetFolders = new Set(assetIds);
 
-        async function loadGames(force = false) {
-            if (loading) return;
-            loading = true;
-            zoneCount.textContent = 'Loading HTML list...';
-            container.textContent = 'Loading...';
+        games = uniqueByFilename(fileEntries.map(entry => {
+          const id = parseId(entry.name);
+          return {
+            id,
+            filename: entry.name,
+            title: friendlyTitle(entry.name, id),
+            hasAssets: assetFolders.has(String(id)),
+            path: entry.path || entry.name
+          };
+        }).filter(game => Number.isFinite(game.id)));
 
-            try {
-                if (!force) {
-                    const cached = getCachedGames();
-                    if (cached) {
-                        games = cached.games;
-                        assetFolders = new Set(cached.assetIds);
-                        filterGames();
-                        loading = false;
-                        return;
-                    }
-                }
+        games.sort((a, b) => a.id - b.id || a.filename.localeCompare(b.filename, undefined, { numeric: true, sensitivity: 'base' }));
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), games, assetIds }));
+        applyFilterAndRender();
+        statusEl.textContent = 'Unique HTML files discovered from the repository. Refresh to check for new uploads.';
+      } catch (error) {
+        console.error(error);
+        statusEl.textContent = error.message + ' Check your connection and try Refresh Game List.';
+        totalEl.textContent = 'Game list unavailable';
+      } finally {
+        isLoading = false;
+      }
+    }
 
-                const [htmlEntries, assetEntries] = await Promise.all([
-                    fetchRootEntries(HTML_REPO),
-                    fetchRootEntries(ASSETS_REPO)
-                ]);
+    let assetFolders = new Set();
 
-                const rootHtmlEntries = htmlEntries.filter(entry =>
-                    entry && entry.type === 'file' &&
-                    typeof entry.name === 'string' &&
-                    !String(entry.path || entry.name).includes('/') &&
-                    /^\d+.*\.html?$/i.test(entry.name)
-                );
+    function applyFilterAndRender() {
+      const query = searchBar.value.trim().toLowerCase();
+      filteredGames = games.filter(game => game.title.toLowerCase().includes(query) || game.filename.toLowerCase().includes(query));
+      if (sortOptions.value === 'name') {
+        filteredGames.sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }) || a.id - b.id);
+      } else {
+        filteredGames.sort((a, b) => a.id - b.id || a.filename.localeCompare(b.filename, undefined, { numeric: true, sensitivity: 'base' }));
+      }
+      renderedCount = 0;
+      container.replaceChildren();
+      totalEl.textContent = filteredGames.length + ' HTMLs found';
+      renderNextPage();
+    }
 
-                // Extra de-duplication protects against duplicate names in an unexpected API/cache response.
-                const uniqueEntries = new Map();
-                for (const entry of rootHtmlEntries) {
-                    const key = entry.name.toLowerCase();
-                    if (!uniqueEntries.has(key)) uniqueEntries.set(key, entry);
-                }
+    function makeCard(game) {
+      const card = document.createElement('article');
+      card.className = 'zone-item game-card';
+      card.tabIndex = 0;
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-label', 'Open ' + game.title);
 
-                const assetIds = [...new Set(assetEntries
-                    .filter(entry => entry && entry.type === 'dir' && /^\d+$/.test(entry.name))
-                    .map(entry => String(entry.name)))];
-                assetFolders = new Set(assetIds);
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.alt = game.title + ' cover';
+      img.src = COVERS_CDN + '/' + game.id + '.png';
+      img.onerror = () => {
+        img.onerror = null;
+        img.src = 'https://github.com/' + OWNER + '.png?size=320';
+        img.alt = 'No cover available for ' + game.title;
+      };
+      card.appendChild(img);
 
-                games = Array.from(uniqueEntries.values()).map(entry => {
-                    const id = numericId(entry.name);
-                    return {
-                        id,
-                        filename: entry.name,
-                        title: titleFor(entry.name, id),
-                        hasAssets: assetFolders.has(String(id))
-                    };
-                }).filter(game => Number.isFinite(game.id));
+      const titleButton = document.createElement('button');
+      titleButton.type = 'button';
+      titleButton.textContent = game.title;
+      titleButton.addEventListener('click', event => { event.stopPropagation(); openGame(game); });
+      card.appendChild(titleButton);
 
-                localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), games, assetIds }));
-                filterGames();
-            } catch (error) {
-                console.error(error);
-                zoneCount.textContent = 'Could not load HTMLs';
-                container.textContent = error.message + ' Reload the page to try again.';
-            } finally {
-                loading = false;
-            }
-        }
+      const filename = document.createElement('span');
+      filename.className = 'game-filename';
+      filename.textContent = game.filename;
+      card.appendChild(filename);
 
-        function filterGames() {
-            const query = searchBar.value.trim().toLowerCase();
-            filteredGames = games.filter(game => game.title.toLowerCase().includes(query) || game.filename.toLowerCase().includes(query));
+      card.addEventListener('click', () => openGame(game));
+      card.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openGame(game); }
+      });
+      return card;
+    }
 
-            if (sortOptions.value === 'name') {
-                filteredGames.sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }) || a.id - b.id || a.filename.localeCompare(b.filename));
-            } else if (sortOptions.value === 'id') {
-                filteredGames.sort((a, b) => a.id - b.id || a.filename.localeCompare(b.filename, undefined, { numeric: true, sensitivity: 'base' }));
-            }
+    function renderNextPage() {
+      const batch = filteredGames.slice(renderedCount, renderedCount + PAGE_SIZE);
+      const fragment = document.createDocumentFragment();
+      batch.forEach(game => fragment.appendChild(makeCard(game)));
+      container.appendChild(fragment);
+      renderedCount += batch.length;
+      loadMoreBtn.hidden = renderedCount >= filteredGames.length;
+      loadMoreBtn.textContent = 'Load More (' + (filteredGames.length - renderedCount) + ' HTMLs remaining)';
+      if (!filteredGames.length && games.length) statusEl.textContent = 'No HTMLs match that search.';
+    }
 
-            currentPage = 0;
-            container.replaceChildren();
-            displayGamesPaginated();
-        }
+    function gameBaseUrl(game) {
+      return game.hasAssets ? ASSETS_CDN + '/' + game.id + '/' : HTML_CDN + '/';
+    }
 
-        function displayGamesPaginated() {
-            const start = currentPage * gamesPerPage;
-            const end = Math.min(start + gamesPerPage, filteredGames.length);
-            const fragment = document.createDocumentFragment();
+    function addGameBase(html, game) {
+      const baseTag = '<base href="' + gameBaseUrl(game) + '">';
+      const withoutOldBase = html.replace(/<base\b[^>]*>/ig, '');
+      if (/<head\b[^>]*>/i.test(withoutOldBase)) return withoutOldBase.replace(/<head\b[^>]*>/i, match => match + baseTag);
+      return '<!doctype html><html><head><meta charset="utf-8">' + baseTag + '</head><body>' + withoutOldBase + '</body></html>';
+    }
 
-            filteredGames.slice(start, end).forEach(game => {
-                const item = document.createElement('div');
-                item.className = 'zone-item';
-                item.addEventListener('click', () => openGame(game));
+    async function fetchGameHtml(game) {
+      const url = HTML_CDN + '/' + encodeURIComponent(game.filename);
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Could not load ' + game.filename + ' (HTTP ' + response.status + ').');
+      return addGameBase(await response.text(), game);
+    }
 
-                const img = document.createElement('img');
-                img.loading = 'lazy';
-                img.alt = game.title + ' cover';
-                img.src = COVERS_CDN + '/' + game.id + '.png';
-                img.onerror = () => {
-                    img.onerror = null;
-                    img.src = 'https://github.com/' + OWNER + '.png?size=320';
-                };
-                item.appendChild(img);
+    function createFrame() {
+      const frame = document.createElement('iframe');
+      frame.id = 'zoneFrame';
+      frame.title = 'Selected game';
+      frame.allow = 'autoplay; fullscreen; gamepad; clipboard-read; clipboard-write';
+      frame.allowFullscreen = true;
+      const previous = document.getElementById('zoneFrame');
+      if (previous) previous.replaceWith(frame);
+      else viewer.appendChild(frame);
+      return frame;
+    }
 
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.textContent = game.title;
-                button.addEventListener('click', event => {
-                    event.stopPropagation();
-                    openGame(game);
-                });
-                item.appendChild(button);
-                fragment.appendChild(item);
-            });
+    async function openGame(game) {
+      activeGame = game;
+      activeHtml = '';
+      nameEl.textContent = game.title;
+      idEl.textContent = '#' + game.id;
+      viewer.style.display = 'block';
+      const frame = createFrame();
+      frame.srcdoc = '<!doctype html><html><body style="font:16px sans-serif;background:#111;color:#fff;display:grid;place-items:center;height:90vh"><p>Loading ' + game.title.replace(/[&<>"']/g, '') + '...</p></body></html>';
+      try {
+        activeHtml = await fetchGameHtml(game);
+        if (activeGame === game && frame.isConnected) frame.srcdoc = activeHtml;
+      } catch (error) {
+        console.error(error);
+        if (activeGame === game && frame.isConnected) frame.srcdoc = '<!doctype html><title>Load failed</title><body style="font:16px sans-serif;padding:2em"><h2>Could not load this game</h2><p>' + error.message.replace(/[&<>"']/g, '') + '</p><p>Try Open in New Tab or check the repository file.</p></body>';
+      }
+    }
 
-            container.appendChild(fragment);
-            zoneCount.textContent = 'HTMLs Loaded: ' + end + ' of ' + filteredGames.length;
-            updateLoadMore(end < filteredGames.length);
+    function closeGame() {
+      viewer.style.display = 'none';
+      activeGame = null;
+      activeHtml = '';
+      const frame = document.getElementById('zoneFrame');
+      if (frame) {
+        frame.src = 'about:blank';
+        frame.remove();
+      }
+      const fresh = document.createElement('iframe');
+      fresh.id = 'zoneFrame';
+      fresh.title = 'Selected game';
+      fresh.allow = 'autoplay; fullscreen; gamepad; clipboard-read; clipboard-write';
+      fresh.allowFullscreen = true;
+      document.getElementById('zoneViewer').appendChild(fresh);
+    }
 
-            if (filteredGames.length === 0) {
-                container.textContent = games.length ? 'No HTMLs match your search.' : 'No HTML files were found.';
-            }
-        }
+    async function openGameInNewTab() {
+      if (!activeGame) return;
+      const popup = window.open('about:blank', '_blank');
+      if (!popup) { alert('Your browser blocked the new tab. Allow pop-ups for this site and try again.'); return; }
+      popup.document.write('<!doctype html><title>Loading game...</title><body style="font:16px sans-serif;padding:2em">Loading game...</body>');
+      popup.document.close();
+      try {
+        const html = activeHtml || await fetchGameHtml(activeGame);
+        popup.document.open();
+        popup.document.write(html);
+        popup.document.close();
+      } catch (error) {
+        popup.document.body.textContent = 'Could not load this game: ' + error.message;
+      }
+    }
 
-        function updateLoadMore(show) {
-            let button = document.getElementById('loadMoreBtn');
-            if (show) {
-                if (!button) {
-                    button = document.createElement('button');
-                    button.id = 'loadMoreBtn';
-                    button.textContent = 'Load More';
-                    button.style.display = 'block';
-                    button.style.margin = '20px auto';
-                    button.style.padding = '10px 20px';
-                    button.style.fontSize = '16px';
-                    button.addEventListener('click', () => {
-                        currentPage++;
-                        displayGamesPaginated();
-                    });
-                    container.parentElement.appendChild(button);
-                }
-            } else if (button) {
-                button.remove();
-            }
-        }
+    document.getElementById('closeGame').addEventListener('click', closeGame);
+    document.getElementById('fullscreenGame').addEventListener('click', () => {
+      const frame = document.getElementById('zoneFrame');
+      if (frame && frame.requestFullscreen) frame.requestFullscreen();
+    });
+    document.getElementById('newTabGame').addEventListener('click', openGameInNewTab);
+    document.getElementById('refreshGames').addEventListener('click', () => loadRepositoryData(true));
+    loadMoreBtn.addEventListener('click', renderNextPage);
+    searchBar.addEventListener('input', applyFilterAndRender);
+    sortOptions.addEventListener('change', applyFilterAndRender);
+    document.getElementById('darkModeToggle').addEventListener('click', () => document.body.classList.toggle('dark-mode'));
+    document.addEventListener('keydown', event => { if (event.key === 'Escape' && viewer.style.display === 'block') closeGame(); });
 
-        function baseUrlFor(game) {
-            return game.hasAssets ? ASSETS_CDN + '/' + game.id + '/' : HTML_CDN + '/';
-        }
-
-        function withGameBase(html, game) {
-            const baseTag = '<base href="' + baseUrlFor(game) + '">';
-            const withoutBase = html.replace(/<base\b[^>]*>/ig, '');
-            if (/<head\b[^>]*>/i.test(withoutBase)) {
-                return withoutBase.replace(/<head\b[^>]*>/i, head => head + baseTag);
-            }
-            return '<!doctype html><html><head><meta charset="utf-8">' + baseTag + '</head><body>' + withoutBase + '</body></html>';
-        }
-
-        async function fetchGameHtml(game) {
-            const url = HTML_CDN + '/' + encodeURIComponent(game.filename);
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Could not load ' + game.filename + ' (HTTP ' + response.status + ').');
-            return withGameBase(await response.text(), game);
-        }
-
-        function currentFrame() {
-            return document.getElementById('zoneFrame');
-        }
-
-        async function openGame(game) {
-            activeGame = game;
-            activeGameHtml = '';
-            zoneNameText.textContent = game.title;
-            zoneIdText.textContent = game.filename;
-            zoneViewer.style.display = 'block';
-
-            const frame = currentFrame();
-            if (!frame) return;
-            const loadingDoc = '<!doctype html><html><body style="font:16px sans-serif;background:#111;color:#fff;display:grid;place-items:center;height:90vh"><p>Loading...</p></body></html>';
-            frame.srcdoc = loadingDoc;
-
-            try {
-                const html = await fetchGameHtml(game);
-                if (activeGame !== game || !frame.isConnected) return;
-                activeGameHtml = html;
-                const doc = frame.contentDocument;
-                doc.open();
-                doc.write(html);
-                doc.close();
-            } catch (error) {
-                console.error(error);
-                if (activeGame === game && frame.isConnected) {
-                    const doc = frame.contentDocument;
-                    doc.open();
-                    doc.write('<!doctype html><html><body style="font:16px sans-serif;padding:2em"><h2>Could not load this game</h2></body></html>');
-                    doc.close();
-                    alert(error.message);
-                }
-            }
-        }
-
-        function closeGame() {
-            zoneViewer.style.display = 'none';
-            activeGame = null;
-            activeGameHtml = '';
-            const oldFrame = currentFrame();
-            if (oldFrame) {
-                oldFrame.src = 'about:blank';
-                oldFrame.remove();
-            }
-            const freshFrame = document.createElement('iframe');
-            freshFrame.id = 'zoneFrame';
-            freshFrame.title = 'Selected HTML game';
-            freshFrame.allow = 'autoplay; fullscreen; gamepad; clipboard-read; clipboard-write';
-            freshFrame.allowFullscreen = true;
-            zoneViewer.appendChild(freshFrame);
-        }
-
-        function fullscreenGame() {
-            const frame = currentFrame();
-            if (frame && frame.requestFullscreen) frame.requestFullscreen();
-            else if (frame && frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
-        }
-
-        function openAboutBlank() {
-            if (!activeGame) return;
-            const game = activeGame;
-            const popup = window.open('about:blank', '_blank');
-            if (!popup) {
-                alert('Your browser blocked the new tab. Allow pop-ups for this site and try again.');
-                return;
-            }
-            popup.document.open();
-            popup.document.write('<!doctype html><title>Loading game...</title><body style="font:16px sans-serif;padding:2em">Loading game...</body>');
-            popup.document.close();
-
-            const htmlPromise = activeGameHtml ? Promise.resolve(activeGameHtml) : fetchGameHtml(game);
-            htmlPromise.then(html => {
-                if (popup.closed) return;
-                popup.document.open();
-                popup.document.write(html);
-                popup.document.close();
-            }).catch(error => {
-                if (!popup.closed) popup.document.body.textContent = 'Could not load this game: ' + error.message;
-            });
-        }
-
-        function saveData() {
-            const data = JSON.stringify(localStorage) + '\n\n|\n\n' + document.cookie;
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(new Blob([data], { type: 'text/plain' }));
-            link.download = Date.now() + '.data';
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            URL.revokeObjectURL(link.href);
-        }
-
-        function loadData(event) {
-            const file = event.target.files && event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                const parts = String(e.target.result).split('\n\n|\n\n');
-                try {
-                    const stored = JSON.parse(parts[0]);
-                    for (const key in stored) localStorage.setItem(key, stored[key]);
-                } catch (_) {
-                    alert('Failed to parse local storage data');
-                    return;
-                }
-                if (parts[1]) parts[1].split('; ').forEach(cookie => { document.cookie = cookie; });
-                alert('Data loaded successfully');
-            };
-            reader.readAsText(file);
-        }
-
-        window.saveData = saveData;
-        window.loadData = loadData;
-        window.closeZone = closeGame;
-        window.fullscreenZone = fullscreenGame;
-        window.aboutBlank = openAboutBlank;
-
-        searchBar.addEventListener('input', filterGames);
-        sortOptions.addEventListener('change', filterGames);
-        darkModeToggle.addEventListener('click', () => document.body.classList.toggle('dark-mode'));
-        document.addEventListener('keydown', event => {
-            if (event.key === 'Escape' && zoneViewer.style.display === 'block') closeGame();
-        });
-
-        // Load the one-time root directory listing, then render each filename only once.
-        loadGames(false);
-    })();
-    </script>
+    loadRepositoryData(false);
+  })();
+  </script>
 </body>
 </html>
