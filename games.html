@@ -84,9 +84,9 @@
       z-index:1;
       display:flex;
       flex-direction:column;
-      width:min(1040px,96vw);
-      height:min(760px,92vh);
-      min-height:320px;
+      width:min(820px,88vw);
+      height:min(590px,78vh);
+      min-height:280px;
       overflow:hidden;
       border:1px solid rgba(144,228,193,.42);
       border-radius:18px;
@@ -143,7 +143,7 @@
     .loading-note { opacity:.8; font-size:13px; }
     @media (max-width:650px) {
       #zoneViewer { padding:8px; }
-      .game-dialog-card { width:100%; height:94vh; border-radius:12px; }
+      .game-dialog-card { width:96vw; height:78vh; min-height:260px; border-radius:12px; }
       #zoneInfo { align-items:flex-start; }
       #controls { justify-content:flex-start; }
       .game-overview { grid-template-columns:1fr; gap:14px; padding:14px; }
@@ -157,8 +157,8 @@
     <h1>humming[bird]Tech HTMLs</h1>
     <div class="games-nav">
       <a href="index.html">Home</a>
-      <a href="gallery.html">View Web Ports and Projects</a>
       <a href="hummingweb.html">Search Hummingweb</a>
+      <a href="gallery.html">View Web Ports and Projects</a>
       <button id="refreshGames" type="button">Refresh HTML List</button>
     </div>
   </div>
@@ -180,21 +180,12 @@
       <div id="zoneInfo">
         <div id="zoneTitle"><span id="zoneName"></span><span id="zoneId"></span></div>
         <div id="controls">
-          <button id="playGameBtn" type="button">Play Game</button>
+          <button id="aboutBlankGame" type="button">Open in about:blank</button>
           <button id="newTabGame" type="button">Open in New Tab</button>
-          <button id="fullscreenGame" type="button" hidden>Fullscreen</button>
           <button id="closeGame" type="button">Close</button>
         </div>
       </div>
-      <div id="gameOverview" class="game-overview">
-        <img id="zoneOverviewCover" src="" alt="Game cover">
-        <div class="overview-copy">
-          <h2>Game overview</h2>
-          <p id="zoneFilename"></p>
-          <p>Review the game details, then select <strong>Play Game</strong> to launch it here. You can also open it in a separate tab.</p>
-        </div>
-      </div>
-      <div id="gamePlayer" hidden>
+      <div id="gamePlayer">
         <iframe id="zoneFrame" title="Selected game" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen></iframe>
       </div>
     </section>
@@ -227,11 +218,7 @@
     const viewer = document.getElementById('zoneViewer');
     const nameEl = document.getElementById('zoneName');
     const idEl = document.getElementById('zoneId');
-    const overview = document.getElementById('gameOverview');
-    const overviewCover = document.getElementById('zoneOverviewCover');
-    const filenameEl = document.getElementById('zoneFilename');
     const player = document.getElementById('gamePlayer');
-    const playGameBtn = document.getElementById('playGameBtn');
 
     let games = [];
     let filteredGames = [];
@@ -442,59 +429,35 @@
       return frame;
     }
 
+    async function loadGameIntoFrame(game) {
+      const frame = document.getElementById('zoneFrame');
+      frame.srcdoc = '<!doctype html><html><body style="font:16px sans-serif;background:#111;color:#fff;display:grid;place-items:center;height:90vh"><p>Loading game...</p></body></html>';
+      try {
+        const html = await fetchGameHtml(game);
+        if (activeGame === game && frame.isConnected) {
+          activeHtml = html;
+          frame.srcdoc = html;
+        }
+      } catch (error) {
+        console.error(error);
+        if (activeGame === game && frame.isConnected) {
+          frame.srcdoc = '<!doctype html><title>Load failed</title><body style="font:16px sans-serif;padding:2em"><h2>Could not load this game</h2><p>' + error.message.replace(/[&<>"']/g, '') + '</p></body>';
+        }
+      }
+    }
+
     function openGame(game) {
       activeGame = game;
       activeHtml = '';
       nameEl.textContent = game.title;
       idEl.textContent = '#' + game.id;
-      filenameEl.textContent = game.filename;
-      overviewCover.onerror = () => {
-        overviewCover.onerror = null;
-        overviewCover.src = 'https://github.com/' + OWNER + '.png?size=640';
-        overviewCover.alt = 'No cover available for ' + game.title;
-      };
-      overviewCover.src = COVERS_CDN + '/' + game.id + '.png';
-      overviewCover.alt = game.title + ' cover';
-
       const oldFrame = document.getElementById('zoneFrame');
-      if (oldFrame) {
-        oldFrame.src = 'about:blank';
-        oldFrame.remove();
-      }
-      player.hidden = true;
-      overview.hidden = false;
-      playGameBtn.hidden = false;
-      document.getElementById('fullscreenGame').hidden = true;
+      if (oldFrame) oldFrame.src = 'about:blank';
       viewer.style.display = 'flex';
       viewer.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-      playGameBtn.focus();
-    }
-
-    async function playSelectedGame() {
-      if (!activeGame) return;
-      const game = activeGame;
-      playGameBtn.disabled = true;
-      playGameBtn.textContent = 'Loading...';
-      overview.hidden = true;
-      player.hidden = false;
-      playGameBtn.hidden = true;
-      document.getElementById('fullscreenGame').hidden = false;
-
-      const frame = createFrame();
-      frame.srcdoc = '<!doctype html><html><body style="font:16px sans-serif;background:#111;color:#fff;display:grid;place-items:center;height:90vh"><p>Loading ' + game.title.replace(/[&<>"']/g, '') + '...</p></body></html>';
-      try {
-        activeHtml = await fetchGameHtml(game);
-        if (activeGame === game && frame.isConnected) frame.srcdoc = activeHtml;
-      } catch (error) {
-        console.error(error);
-        if (activeGame === game && frame.isConnected) {
-          frame.srcdoc = '<!doctype html><title>Load failed</title><body style="font:16px sans-serif;padding:2em"><h2>Could not load this game</h2><p>' + error.message.replace(/[&<>"']/g, '') + '</p><p>Try Open in New Tab or check the repository file.</p></body>';
-        }
-      } finally {
-        playGameBtn.disabled = false;
-        playGameBtn.textContent = 'Play Game';
-      }
+      loadGameIntoFrame(game);
+      document.getElementById('closeGame').focus();
     }
 
     function closeGame() {
@@ -504,26 +467,18 @@
       activeGame = null;
       activeHtml = '';
       const frame = document.getElementById('zoneFrame');
-      if (frame) {
-        frame.src = 'about:blank';
-        frame.remove();
-      }
-      player.hidden = true;
-      overview.hidden = false;
-      playGameBtn.hidden = false;
-      playGameBtn.disabled = false;
-      playGameBtn.textContent = 'Play Game';
-      document.getElementById('fullscreenGame').hidden = true;
+      if (frame) frame.src = 'about:blank';
     }
 
-    async function openGameInNewTab() {
+    async function openGameInAboutBlank() {
       if (!activeGame) return;
+      const game = activeGame;
       const popup = window.open('about:blank', '_blank');
       if (!popup) { alert('Your browser blocked the new tab. Allow pop-ups for this site and try again.'); return; }
       popup.document.write('<!doctype html><title>Loading game...</title><body style="font:16px sans-serif;padding:2em">Loading game...</body>');
       popup.document.close();
       try {
-        const html = activeHtml || await fetchGameHtml(activeGame);
+        const html = activeHtml || await fetchGameHtml(game);
         popup.document.open();
         popup.document.write(html);
         popup.document.close();
@@ -532,12 +487,14 @@
       }
     }
 
+    function openGameInNewTab() {
+      if (!activeGame) return;
+      const url = HTML_CDN + '/' + encodeURIComponent(activeGame.filename);
+      window.open(url, '_blank', 'noopener');
+    }
+
     document.getElementById('closeGame').addEventListener('click', closeGame);
-    playGameBtn.addEventListener('click', playSelectedGame);
-    document.getElementById('fullscreenGame').addEventListener('click', () => {
-      const frame = document.getElementById('zoneFrame');
-      if (frame && frame.requestFullscreen) frame.requestFullscreen();
-    });
+    document.getElementById('aboutBlankGame').addEventListener('click', openGameInAboutBlank);
     document.getElementById('newTabGame').addEventListener('click', openGameInNewTab);
     document.getElementById('refreshGames').addEventListener('click', () => loadRepositoryData(true));
     loadMoreBtn.addEventListener('click', renderNextPage);
