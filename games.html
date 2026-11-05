@@ -78,6 +78,52 @@
       overflow-wrap:anywhere;
     }
     #gamesEmpty { width:100%; text-align:center; opacity:.8; }
+    #bookmarksShelf { width:100%; }
+    .bookmarks-shelf-title { width:min(1100px,calc(100% - 24px)); margin:14px auto 4px; font-size:1.15rem; }
+    #bookmarksContainer { padding-top:4px; padding-bottom:8px; }
+    #gamesFilters {
+      width:min(1100px, calc(100% - 24px));
+      margin:4px auto 0;
+      display:flex;
+      justify-content:flex-end;
+    }
+    #bookmarkFilter[aria-pressed="true"] {
+      background:rgba(255,210,90,.95) !important;
+      color:#172018 !important;
+      border-color:rgba(255,230,150,.9) !important;
+    }
+    #container .game-card { position:relative; }
+    .game-bookmark-btn {
+      position:absolute;
+      top:18px;
+      right:18px;
+      z-index:3;
+      display:grid;
+      place-items:center;
+      width:38px;
+      height:38px;
+      margin:0 !important;
+      padding:0 !important;
+      border:1px solid rgba(255,255,255,.28) !important;
+      border-radius:11px !important;
+      background:rgba(10,16,20,.82) !important;
+      color:#fff !important;
+      font-size:24px !important;
+      line-height:1;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      cursor:pointer;
+    }
+    .game-bookmark-btn:hover { transform:scale(1.07); }
+    .game-bookmark-btn.is-bookmarked {
+      background:rgba(255,210,90,.96) !important;
+      color:#172018 !important;
+      border-color:rgba(255,230,150,.95) !important;
+    }
+    .game-bookmark-btn:focus-visible, #bookmarkFilter:focus-visible {
+      outline:2px solid #ffe08a;
+      outline-offset:3px;
+    }
 
     /* Game player overlay mirrors the gallery's centered application viewport. */
     #gameViewer {
@@ -108,7 +154,6 @@
       font-size:13px !important;
       border-radius:10px !important;
     }
-    #closeGame { background:rgba(255,95,86,.75) !important; color:white !important; }
     .game-frame-wrap { flex:1; min-height:0; background:#000; }
     #gameFrame { display:block; width:100%; height:100%; border:0; background:#fff; }
     @media (max-width:720px) {
@@ -147,6 +192,13 @@
   </div>
 
   <div id="gamesStatus" role="status" aria-live="polite">Loading games from GitHub...</div>
+  <div id="gamesFilters">
+    <button id="bookmarkFilter" class="utility-btn" type="button" aria-pressed="false">☆ Bookmarks</button>
+  </div>
+  <section id="bookmarksShelf" aria-label="Bookmarked games" hidden>
+    <h2 class="bookmarks-shelf-title">★ Bookmarked games</h2>
+    <div id="bookmarksContainer" class="gallery-container"></div>
+  </section>
   <div id="gamesTotal"></div>
   <div id="container" class="gallery-container"></div>
 
@@ -155,7 +207,6 @@
       <h2 id="gameViewerTitle">Game</h2>
       <div class="game-viewer-controls">
         <button id="aboutBlankGame" class="utility-btn" type="button">about:blank</button>
-        <button id="newTabGame" class="utility-btn" type="button">New Tab</button>
         <button id="closeGame" class="utility-btn" type="button">Close</button>
       </div>
     </div>
@@ -172,9 +223,12 @@
     const TREE_API = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${BRANCH}?recursive=1`;
     const CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@${BRANCH}/`;
     const CACHE_KEY = 'hummingbird-games-folder-catalog-v1';
+    const BOOKMARKS_KEY = 'hummingbird-games-bookmarks-v1';
     const CACHE_TTL = 60 * 60 * 1000;
 
     const container = document.getElementById('container');
+    const bookmarksShelf = document.getElementById('bookmarksShelf');
+    const bookmarksContainer = document.getElementById('bookmarksContainer');
     const searchBar = document.getElementById('searchBar');
     const statusEl = document.getElementById('gamesStatus');
     const totalEl = document.getElementById('gamesTotal');
@@ -182,11 +236,15 @@
     const viewer = document.getElementById('gameViewer');
     const viewerTitle = document.getElementById('gameViewerTitle');
     const frameWrap = document.getElementById('gameFrameWrap');
+    const bookmarkFilter = document.getElementById('bookmarkFilter');
 
     let games = [];
     let visibleGames = [];
+    let bookmarks = loadBookmarks();
+    let showBookmarkedOnly = false;
     let activeGame = null;
     let activeHtml = 'index.html';
+    let activeLoadToken = 0;
     let isLoading = false;
 
     function encodePath(path) {
@@ -199,6 +257,32 @@
 
     function folderUrl(game) {
       return CDN_ROOT + encodePath(game.folder) + '/';
+    }
+
+    // The CDN can return HTML files with a plain-text MIME type. Fetch the
+    // source and assign it to srcdoc so the browser parses and runs it as HTML.
+    // The base URL keeps CSS, JS, images, and other relative game assets working.
+    function addGameBase(html, game) {
+      const baseTag = '<base href="' + folderUrl(game) + '">';
+      const withoutOldBase = html.replace(/<base\b[^>]*>/ig, '');
+      if (/<head\b[^>]*>/i.test(withoutOldBase)) {
+        return withoutOldBase.replace(/<head\b[^>]*>/i, match => match + baseTag);
+      }
+      return '<!doctype html><html><head><meta charset="utf-8">' + baseTag +
+        '</head><body>' + withoutOldBase + '</body></html>';
+    }
+
+    async function fetchGameHtml(game, htmlFile) {
+      const url = gameUrl(game, htmlFile);
+      const response = await fetch(url, { headers: { Accept: 'text/html,application/xhtml+xml' } });
+      if (!response.ok) throw new Error('Could not load ' + (htmlFile || 'index.html') + ' (HTTP ' + response.status + ').');
+      return addGameBase(await response.text(), game);
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[character]);
     }
 
     function humanizeFolder(folder) {
@@ -269,9 +353,67 @@
       window.history.replaceState({}, '', url.pathname + url.search + url.hash);
     }
 
+    function loadBookmarks() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(BOOKMARKS_KEY) || '[]');
+        return new Set(Array.isArray(saved) ? saved.filter(item => typeof item === 'string') : []);
+      } catch (_) {
+        return new Set();
+      }
+    }
+
+    function saveBookmarks() {
+      try {
+        localStorage.setItem(BOOKMARKS_KEY, JSON.stringify([...bookmarks]));
+      } catch (error) {
+        console.warn('Could not save game bookmarks:', error);
+        setStatus('Bookmarks could not be saved. Check your browser storage settings.');
+      }
+    }
+
+    function updateBookmarkButton(button, game) {
+      const saved = bookmarks.has(game.folder);
+      button.classList.toggle('is-bookmarked', saved);
+      button.setAttribute('aria-pressed', saved ? 'true' : 'false');
+      button.setAttribute('aria-label', (saved ? 'Remove bookmark for ' : 'Bookmark ') + game.title);
+      button.title = saved ? 'Remove bookmark' : 'Bookmark game';
+      button.textContent = saved ? '★' : '☆';
+    }
+
+    function toggleBookmark(game, button) {
+      if (bookmarks.has(game.folder)) bookmarks.delete(game.folder);
+      else bookmarks.add(game.folder);
+      saveBookmarks();
+      updateBookmarkButton(button, game);
+      renderBookmarksShelf();
+      if (showBookmarkedOnly) applySearch();
+      else updateTotals();
+    }
+
+    function renderBookmarksShelf() {
+      const savedGames = games.filter(game => bookmarks.has(game.folder));
+      bookmarksContainer.replaceChildren();
+      bookmarksShelf.hidden = savedGames.length === 0;
+      const fragment = document.createDocumentFragment();
+      savedGames.forEach(game => fragment.appendChild(makeCard(game)));
+      bookmarksContainer.appendChild(fragment);
+    }
+
+    function updateTotals() {
+      const countText = `${visibleGames.length} of ${games.length} games`;
+      totalEl.textContent = showBookmarkedOnly
+        ? `${visibleGames.length} bookmarked · ${countText}`
+        : countText;
+      bookmarkFilter.setAttribute('aria-pressed', showBookmarkedOnly ? 'true' : 'false');
+      bookmarkFilter.textContent = showBookmarkedOnly ? '★ Showing bookmarks' : '☆ Bookmarks';
+    }
+
     function applySearch() {
       const query = searchBar.value.trim().toLowerCase();
-      visibleGames = games.filter(game => !query || game.searchText.includes(query));
+      visibleGames = games.filter(game =>
+        (!query || game.searchText.includes(query)) &&
+        (!showBookmarkedOnly || bookmarks.has(game.folder))
+      );
       renderGames();
       updateSearchUrl();
     }
@@ -282,6 +424,17 @@
       card.tabIndex = 0;
       card.setAttribute('role', 'button');
       card.setAttribute('aria-label', 'Play ' + game.title);
+
+      const bookmarkButton = document.createElement('button');
+      bookmarkButton.type = 'button';
+      bookmarkButton.className = 'game-bookmark-btn';
+      bookmarkButton.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleBookmark(game, bookmarkButton);
+      });
+      updateBookmarkButton(bookmarkButton, game);
+      card.appendChild(bookmarkButton);
 
       const img = document.createElement('img');
       img.className = 'game-thumbnail';
@@ -304,11 +457,11 @@
       heading.textContent = game.title;
       card.appendChild(heading);
 
-      const description = document.createElement('p');
-      description.textContent = game.htmlFiles.length > 1
-        ? game.htmlFiles.length + ' HTML files'
-        : 'Open game';
-      card.appendChild(description);
+      if (game.htmlFiles.length > 1) {
+        const description = document.createElement('p');
+        description.textContent = game.htmlFiles.length + ' HTML files';
+        card.appendChild(description);
+      }
 
       const folder = document.createElement('span');
       folder.className = 'game-folder-name';
@@ -317,6 +470,7 @@
 
       card.addEventListener('click', () => openGame(game));
       card.addEventListener('keydown', event => {
+        if (event.target !== card) return;
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
           openGame(game);
@@ -332,11 +486,15 @@
       if (!visibleGames.length) {
         const empty = document.createElement('p');
         empty.id = 'gamesEmpty';
-        empty.textContent = games.length ? 'No games match that search.' : 'No game folders containing an index.html were found.';
+        empty.textContent = showBookmarkedOnly
+          ? 'No bookmarked games match this search yet.'
+          : (games.length ? 'No games match that search.' : 'No game folders containing an index.html were found.');
         fragment.appendChild(empty);
       }
       container.appendChild(fragment);
-      totalEl.textContent = games.length ? `${visibleGames.length} of ${games.length} games` : '';
+      renderBookmarksShelf();
+      updateTotals();
+      if (!games.length) totalEl.textContent = '';
     }
 
     function setStatus(message) {
@@ -420,11 +578,26 @@
       return frame;
     }
 
-    function loadActiveHtml() {
+    async function loadActiveHtml() {
       if (!activeGame) return;
+      const game = activeGame;
       activeHtml = htmlSelector.value || 'index.html';
+      const htmlFile = activeHtml;
+      const requestToken = ++activeLoadToken;
       const frame = createGameFrame();
-      frame.src = gameUrl(activeGame, activeHtml);
+      frame.srcdoc = '<!doctype html><html><body style="margin:0;background:#111;color:#fff;font:16px sans-serif;display:grid;place-items:center;height:100vh"><p>Loading ' + escapeHtml(game.title) + '…</p></body></html>';
+
+      try {
+        const gameHtml = await fetchGameHtml(game, htmlFile);
+        if (activeGame === game && frame.isConnected && requestToken === activeLoadToken) {
+          frame.srcdoc = gameHtml;
+        }
+      } catch (error) {
+        console.error('Could not load game:', error);
+        if (activeGame === game && frame.isConnected && requestToken === activeLoadToken) {
+          frame.srcdoc = '<!doctype html><html><body style="margin:0;padding:2em;background:#111;color:#fff;font:16px sans-serif"><h2>Could not load this game</h2><p>' + escapeHtml(error.message) + '</p><p>Try Refresh or choose another HTML file.</p></body></html>';
+        }
+      }
     }
 
     function openGame(game) {
@@ -444,6 +617,7 @@
       viewer.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
       activeGame = null;
+      activeLoadToken++;
       const frame = document.getElementById('gameFrame');
       if (frame) {
         frame.src = 'about:blank';
@@ -458,15 +632,11 @@
       htmlSelector.title = 'Choose a game first';
     }
 
-    function openGameInNewTab() {
-      if (!activeGame) return;
-      window.open(gameUrl(activeGame, htmlSelector.value || activeHtml), '_blank', 'noopener');
-    }
-
     async function openGameInAboutBlank() {
       if (!activeGame) return;
       const game = activeGame;
       const file = htmlSelector.value || activeHtml || 'index.html';
+      // Open the tab synchronously within the click handler to avoid popup blockers.
       const popup = window.open('about:blank', '_blank');
       if (!popup) {
         alert('Your browser blocked the new tab. Allow pop-ups for this site and try again.');
@@ -476,15 +646,9 @@
       popup.document.write('<!doctype html><title>Loading game…</title><body style="font:16px sans-serif;padding:2em">Loading game…</body>');
       popup.document.close();
       try {
-        const response = await fetch(gameUrl(game, file));
-        if (!response.ok) throw new Error('HTTP ' + response.status);
-        let html = await response.text();
-        html = html.replace(/<base\b[^>]*>/ig, '');
-        const baseTag = '<base href="' + folderUrl(game) + '">';
-        if (/<head\b[^>]*>/i.test(html)) html = html.replace(/<head\b[^>]*>/i, match => match + baseTag);
-        else html = '<!doctype html><html><head>' + baseTag + '</head><body>' + html + '</body></html>';
+        const gameHtml = await fetchGameHtml(game, file);
         popup.document.open();
-        popup.document.write(html);
+        popup.document.write(gameHtml);
         popup.document.close();
       } catch (error) {
         popup.document.body.textContent = 'Could not load this game: ' + error.message;
@@ -495,8 +659,11 @@
     searchBar.addEventListener('input', applySearch);
     htmlSelector.addEventListener('change', loadActiveHtml);
     document.getElementById('closeGame').addEventListener('click', closeGame);
-    document.getElementById('newTabGame').addEventListener('click', openGameInNewTab);
     document.getElementById('aboutBlankGame').addEventListener('click', openGameInAboutBlank);
+    bookmarkFilter.addEventListener('click', () => {
+      showBookmarkedOnly = !showBookmarkedOnly;
+      applySearch();
+    });
     viewer.addEventListener('click', event => { if (event.target === viewer) closeGame(); });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && viewer.classList.contains('is-open')) closeGame();
