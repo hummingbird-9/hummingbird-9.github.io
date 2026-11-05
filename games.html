@@ -11,23 +11,145 @@
     .games-nav { display:flex; justify-content:center; flex-wrap:wrap; gap:10px; margin: 12px auto 18px; }
     .games-nav a, .games-nav button { display:inline-block; text-decoration:none; padding:10px 16px; border:1px solid rgba(160,220,190,.4); border-radius:12px; background:rgba(10,60,40,.4); color:#aad9c3; font-weight:600; cursor:pointer; }
     body:not(.dark-mode) .games-nav a, body:not(.dark-mode) .games-nav button { background:rgba(182,240,212,.4); color:#0f3c29; border-color:rgba(15,60,41,.3); }
-    #searchBar { box-sizing:border-box; }
+    #searchBar { box-sizing:border-box; width:min(92%,700px); }
     #gamesStatus { width:min(90%,1000px); margin:10px auto; text-align:center; min-height:24px; }
-    #container { width:min(95%,1100px); }
-    .game-card { min-width:0; }
-    .game-card img { display:block; width:100%; height:118px !important; object-fit:cover; background:rgba(0,0,0,.18); }
-    body.dark-mode .game-card button { display:block; width:100%; min-height:48px; white-space:normal; line-height:1.25; }
-    .game-card button { min-height:48px; white-space:normal; line-height:1.25; }
-    .game-filename { display:block; padding:0 8px 8px; opacity:.7; font-size:11px; overflow-wrap:anywhere; }
-    #gamesLoadMore { display:block; margin:20px auto; padding:10px 22px; }
-    #zoneViewer { display:none; }
-    #zoneFrame { display:block; width:100%; height:calc(100% - 48px); border:0; background:white; }
-    @media (max-width:650px) {
-      #zoneViewer { width:96vw !important; height:88vh !important; }
-      #zoneInfo { flex-wrap:wrap; gap:8px; }
-      #controls { display:flex; flex-wrap:wrap; gap:5px; }
+    .zone-wrapper { width:100%; }
+    #container {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));
+      align-items:stretch;
+      gap:16px;
+      width:min(95%,1100px);
+      margin:18px auto 0;
+      box-sizing:border-box;
     }
+    #container .game-card {
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+      width:100%;
+      overflow:hidden;
+      padding:0;
+      box-sizing:border-box;
+      border:1px solid rgba(160,220,190,.25);
+      background:rgba(5,35,24,.55);
+      border-radius:14px;
+      text-align:left;
+      cursor:pointer;
+      transition:transform .18s ease,border-color .18s ease,background .18s ease;
+    }
+    #container .game-card:hover, #container .game-card:focus-visible {
+      transform:translateY(-3px);
+      border-color:rgba(120,230,170,.75);
+      outline:none;
+      background:rgba(10,55,36,.8);
+    }
+    #container .game-card img { display:block; width:100%; height:132px !important; object-fit:cover; background:rgba(0,0,0,.25); }
+    #container .game-card button {
+      display:block;
+      width:100%;
+      min-width:0 !important;
+      min-height:54px;
+      margin:0 !important;
+      padding:10px 9px !important;
+      border:0 !important;
+      border-radius:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      font-size:14px !important;
+      line-height:1.25;
+      white-space:normal;
+    }
+    #container .game-card button:hover { transform:none !important; background:rgba(255,255,255,.08) !important; }
+    .game-filename { display:block; padding:0 10px 10px; opacity:.68; font-size:11px; overflow-wrap:anywhere; }
+    #gamesLoadMore { display:block; margin:20px auto; padding:10px 22px; }
+
+    /* The selected game's overview/player is a viewport overlay, never an element
+       appended below the long game list. */
+    #zoneViewer {
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:20000;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      box-sizing:border-box;
+      background:rgba(0,0,0,.78);
+      backdrop-filter:blur(7px);
+      -webkit-backdrop-filter:blur(7px);
+    }
+    .game-dialog-card {
+      position:relative;
+      z-index:1;
+      display:flex;
+      flex-direction:column;
+      width:min(1040px,96vw);
+      height:min(760px,92vh);
+      min-height:320px;
+      overflow:hidden;
+      border:1px solid rgba(144,228,193,.42);
+      border-radius:18px;
+      background:#071b13;
+      color:#effff5;
+      box-shadow:0 24px 90px rgba(0,0,0,.65);
+      text-align:left;
+    }
+    #zoneInfo {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      padding:12px 16px;
+      border-bottom:1px solid rgba(160,220,190,.2);
+      background:rgba(14,55,38,.95);
+    }
+    #zoneTitle { font-size:17px; font-weight:700; }
+    #zoneId { margin-left:6px; font-size:12px; opacity:.65; }
+    #controls { display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:7px; }
+    #controls button {
+      min-width:0 !important;
+      margin:0 !important;
+      padding:8px 12px !important;
+      border-radius:9px !important;
+      font-size:13px !important;
+    }
+    #playGameBtn { background:rgba(35,150,91,.8) !important; }
+    .game-overview {
+      display:grid;
+      grid-template-columns:minmax(0,1.15fr) minmax(230px,.85fr);
+      align-items:center;
+      gap:24px;
+      padding:24px;
+      overflow:auto;
+    }
+    .game-overview[hidden], #gamePlayer[hidden], #controls button[hidden] { display:none !important; }
+    #zoneOverviewCover {
+      display:block;
+      width:100%;
+      max-height:440px;
+      aspect-ratio:16/10;
+      object-fit:contain;
+      background:#020906;
+      border:1px solid rgba(160,220,190,.2);
+      border-radius:12px;
+    }
+    .overview-copy h2 { margin:0 0 12px; color:#90e4c1; font-size:25px; }
+    .overview-copy p { line-height:1.55; overflow-wrap:anywhere; }
+    #zoneFilename { color:#b6dfc9; font-family:monospace; font-size:12px; }
+    #gamePlayer { flex:1; min-height:0; background:#000; }
+    #zoneFrame { display:block; width:100%; height:100%; min-height:0; border:0; background:white; }
     .loading-note { opacity:.8; font-size:13px; }
+    @media (max-width:650px) {
+      #zoneViewer { padding:8px; }
+      .game-dialog-card { width:100%; height:94vh; border-radius:12px; }
+      #zoneInfo { align-items:flex-start; }
+      #controls { justify-content:flex-start; }
+      .game-overview { grid-template-columns:1fr; gap:14px; padding:14px; }
+      #zoneOverviewCover { max-height:34vh; }
+      .overview-copy h2 { font-size:21px; }
+    }
   </style>
 </head>
 <body class="dark-mode">
@@ -53,16 +175,29 @@
     <div id="container"></div>
     <button id="gamesLoadMore" type="button" hidden>Load More</button>
   </div>
-  <div id="zoneViewer" role="dialog" aria-modal="true" aria-label="Game viewer">
-    <div id="zoneInfo">
-      <div id="zoneTitle"><span id="zoneName"></span> <span id="zoneId"></span></div>
-      <div id="controls">
-        <button id="closeGame" type="button">Close</button>
-        <button id="fullscreenGame" type="button">Fullscreen</button>
-        <button id="newTabGame" type="button">Open in New Tab</button>
+  <div id="zoneViewer" role="dialog" aria-modal="true" aria-label="Game overview" aria-hidden="true">
+    <section class="game-dialog-card" aria-labelledby="zoneName">
+      <div id="zoneInfo">
+        <div id="zoneTitle"><span id="zoneName"></span><span id="zoneId"></span></div>
+        <div id="controls">
+          <button id="playGameBtn" type="button">Play Game</button>
+          <button id="newTabGame" type="button">Open in New Tab</button>
+          <button id="fullscreenGame" type="button" hidden>Fullscreen</button>
+          <button id="closeGame" type="button">Close</button>
+        </div>
       </div>
-    </div>
-    <iframe id="zoneFrame" title="Selected game" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen></iframe>
+      <div id="gameOverview" class="game-overview">
+        <img id="zoneOverviewCover" src="" alt="Game cover">
+        <div class="overview-copy">
+          <h2>Game overview</h2>
+          <p id="zoneFilename"></p>
+          <p>Review the game details, then select <strong>Play Game</strong> to launch it here. You can also open it in a separate tab.</p>
+        </div>
+      </div>
+      <div id="gamePlayer" hidden>
+        <iframe id="zoneFrame" title="Selected game" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen></iframe>
+      </div>
+    </section>
   </div>
   <button id="darkModeToggle" type="button">Toggle Dark Mode</button>
 
@@ -92,6 +227,11 @@
     const viewer = document.getElementById('zoneViewer');
     const nameEl = document.getElementById('zoneName');
     const idEl = document.getElementById('zoneId');
+    const overview = document.getElementById('gameOverview');
+    const overviewCover = document.getElementById('zoneOverviewCover');
+    const filenameEl = document.getElementById('zoneFilename');
+    const player = document.getElementById('gamePlayer');
+    const playGameBtn = document.getElementById('playGameBtn');
 
     let games = [];
     let filteredGames = [];
@@ -298,16 +438,49 @@
       frame.allowFullscreen = true;
       const previous = document.getElementById('zoneFrame');
       if (previous) previous.replaceWith(frame);
-      else viewer.appendChild(frame);
+      else player.appendChild(frame);
       return frame;
     }
 
-    async function openGame(game) {
+    function openGame(game) {
       activeGame = game;
       activeHtml = '';
       nameEl.textContent = game.title;
       idEl.textContent = '#' + game.id;
-      viewer.style.display = 'block';
+      filenameEl.textContent = game.filename;
+      overviewCover.onerror = () => {
+        overviewCover.onerror = null;
+        overviewCover.src = 'https://github.com/' + OWNER + '.png?size=640';
+        overviewCover.alt = 'No cover available for ' + game.title;
+      };
+      overviewCover.src = COVERS_CDN + '/' + game.id + '.png';
+      overviewCover.alt = game.title + ' cover';
+
+      const oldFrame = document.getElementById('zoneFrame');
+      if (oldFrame) {
+        oldFrame.src = 'about:blank';
+        oldFrame.remove();
+      }
+      player.hidden = true;
+      overview.hidden = false;
+      playGameBtn.hidden = false;
+      document.getElementById('fullscreenGame').hidden = true;
+      viewer.style.display = 'flex';
+      viewer.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      playGameBtn.focus();
+    }
+
+    async function playSelectedGame() {
+      if (!activeGame) return;
+      const game = activeGame;
+      playGameBtn.disabled = true;
+      playGameBtn.textContent = 'Loading...';
+      overview.hidden = true;
+      player.hidden = false;
+      playGameBtn.hidden = true;
+      document.getElementById('fullscreenGame').hidden = false;
+
       const frame = createFrame();
       frame.srcdoc = '<!doctype html><html><body style="font:16px sans-serif;background:#111;color:#fff;display:grid;place-items:center;height:90vh"><p>Loading ' + game.title.replace(/[&<>"']/g, '') + '...</p></body></html>';
       try {
@@ -315,12 +488,19 @@
         if (activeGame === game && frame.isConnected) frame.srcdoc = activeHtml;
       } catch (error) {
         console.error(error);
-        if (activeGame === game && frame.isConnected) frame.srcdoc = '<!doctype html><title>Load failed</title><body style="font:16px sans-serif;padding:2em"><h2>Could not load this game</h2><p>' + error.message.replace(/[&<>"']/g, '') + '</p><p>Try Open in New Tab or check the repository file.</p></body>';
+        if (activeGame === game && frame.isConnected) {
+          frame.srcdoc = '<!doctype html><title>Load failed</title><body style="font:16px sans-serif;padding:2em"><h2>Could not load this game</h2><p>' + error.message.replace(/[&<>"']/g, '') + '</p><p>Try Open in New Tab or check the repository file.</p></body>';
+        }
+      } finally {
+        playGameBtn.disabled = false;
+        playGameBtn.textContent = 'Play Game';
       }
     }
 
     function closeGame() {
       viewer.style.display = 'none';
+      viewer.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
       activeGame = null;
       activeHtml = '';
       const frame = document.getElementById('zoneFrame');
@@ -328,12 +508,12 @@
         frame.src = 'about:blank';
         frame.remove();
       }
-      const fresh = document.createElement('iframe');
-      fresh.id = 'zoneFrame';
-      fresh.title = 'Selected game';
-      fresh.allow = 'autoplay; fullscreen; gamepad; clipboard-read; clipboard-write';
-      fresh.allowFullscreen = true;
-      document.getElementById('zoneViewer').appendChild(fresh);
+      player.hidden = true;
+      overview.hidden = false;
+      playGameBtn.hidden = false;
+      playGameBtn.disabled = false;
+      playGameBtn.textContent = 'Play Game';
+      document.getElementById('fullscreenGame').hidden = true;
     }
 
     async function openGameInNewTab() {
@@ -353,6 +533,7 @@
     }
 
     document.getElementById('closeGame').addEventListener('click', closeGame);
+    playGameBtn.addEventListener('click', playSelectedGame);
     document.getElementById('fullscreenGame').addEventListener('click', () => {
       const frame = document.getElementById('zoneFrame');
       if (frame && frame.requestFullscreen) frame.requestFullscreen();
@@ -363,7 +544,7 @@
     searchBar.addEventListener('input', applyFilterAndRender);
     sortOptions.addEventListener('change', applyFilterAndRender);
     document.getElementById('darkModeToggle').addEventListener('click', () => document.body.classList.toggle('dark-mode'));
-    document.addEventListener('keydown', event => { if (event.key === 'Escape' && viewer.style.display === 'block') closeGame(); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape' && viewer.getAttribute('aria-hidden') === 'false') closeGame(); });
 
     loadRepositoryData(false);
   })();
