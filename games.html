@@ -169,6 +169,51 @@
       #container .game-card { flex-basis:100%; max-width:none; }
     }
   </style>
+  <style>
+    .game-card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      justify-content: center;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .game-action-btn {
+      min-width: 0 !important;
+      margin: 0 !important;
+      padding: 8px 12px !important;
+      font-size: 0.85rem !important;
+    }
+    .game-action-btn:disabled, #downloadActiveGame:disabled {
+      opacity: 0.65;
+      cursor: wait;
+    }
+    .game-about-dialog {
+      width: min(760px, calc(100% - 36px));
+      max-height: 80vh;
+      padding: 20px;
+      color: #fff;
+      background: #101810;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 16px;
+    }
+    .game-about-dialog::backdrop { background: rgba(0,0,0,.78); }
+    .game-about-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    .game-about-header h2 { margin: 0; }
+    .game-about-body {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      max-height: 65vh;
+      overflow: auto;
+      font: 0.95rem/1.55 'Segoe UI', sans-serif;
+      color: #e5f2e5;
+    }
+  </style>
 </head>
 <body class="gallery-body">
   <div class="top-button-container">
@@ -202,10 +247,19 @@
   <div id="gamesTotal"></div>
   <div id="container" class="gallery-container"></div>
 
+  <dialog id="gameAboutDialog" class="game-about-dialog">
+    <div class="game-about-header">
+      <h2 id="gameAboutTitle">About game</h2>
+      <button id="closeGameAbout" class="utility-btn" type="button">Close</button>
+    </div>
+    <pre id="gameAboutBody" class="game-about-body"></pre>
+  </dialog>
+
   <div id="gameViewer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Game player">
     <div class="game-viewer-navbar">
       <h2 id="gameViewerTitle">Game</h2>
       <div class="game-viewer-controls">
+        <button id="downloadActiveGame" class="utility-btn" type="button">Download ZIP</button>
         <button id="aboutBlankGame" class="utility-btn" type="button">about:blank</button>
         <button id="closeGame" class="utility-btn" type="button">Close</button>
       </div>
@@ -222,7 +276,7 @@
     const BRANCH = 'main';
     const TREE_API = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${BRANCH}?recursive=1`;
     const CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@${BRANCH}/`;
-    const CACHE_KEY = 'hummingbird-games-folder-catalog-v1';
+    const CACHE_KEY = 'hummingbird-games-folder-catalog-v2';
     const BOOKMARKS_KEY = 'hummingbird-games-bookmarks-v1';
     const CACHE_TTL = 60 * 60 * 1000;
 
@@ -293,23 +347,28 @@
         .replace(/\b([a-z])/g, letter => letter.toUpperCase());
     }
 
-    function chooseCover(folder, pngPaths) {
-      if (!pngPaths.length) return '';
-      const direct = pngPaths.filter(path => !path.slice(folder.length + 1).includes('/'));
-      const candidates = direct.length ? direct : pngPaths;
+    function chooseCover(folder, imagePaths) {
+      if (!imagePaths.length) return '';
+      const direct = imagePaths.filter(path => !path.slice(folder.length + 1).includes('/'));
+      const candidates = direct.length ? direct : imagePaths;
+      const extensions = ['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif'];
       const score = path => {
         const file = path.split('/').pop().toLowerCase();
-        if (file === 'cover.png') return 0;
-        if (file === 'thumbnail.png' || file === 'thumb.png') return 1;
-        if (file === 'icon.png' || file === 'logo.png') return 2;
-        if (file === folder.toLowerCase() + '.png') return 3;
-        return 10;
+        const ext = file.split('.').pop();
+        const rank = extensions.indexOf(ext);
+        if (file === 'cover.' + ext) return rank;
+        if (file === 'thumbnail.' + ext || file === 'thumb.' + ext) return 10 + rank;
+        if (file === 'icon.' + ext || file === 'logo.' + ext) return 20 + rank;
+        if (file === folder.toLowerCase() + '.' + ext) return 30 + rank;
+        return 100 + rank;
       };
       return candidates.slice().sort((a, b) => score(a) - score(b) || a.localeCompare(b))[0];
     }
 
     function makeCatalog(treeEntries) {
       const byFolder = new Map();
+      const imagePattern = /\.(jpe?g|png|webp|avif|gif)$/i;
+      const aboutNames = ['readme.md', 'readme.txt', 'about.md', 'about.txt', 'description.md', 'description.txt'];
       for (const entry of treeEntries) {
         if (!entry || entry.type !== 'blob' || typeof entry.path !== 'string') continue;
         const match = entry.path.match(/^([^/]+)\/(.+)$/);
@@ -317,12 +376,16 @@
         const folder = match[1];
         const relativePath = match[2];
         if (folder.startsWith('.')) continue;
-        if (!byFolder.has(folder)) byFolder.set(folder, { htmlFiles: [], pngPaths: [] });
+        if (!byFolder.has(folder)) byFolder.set(folder, { htmlFiles: [], imagePaths: [], files: [], aboutPath: '' });
         const record = byFolder.get(folder);
-        if (/\.html?$/i.test(relativePath) && !relativePath.includes('/')) {
-          record.htmlFiles.push(relativePath);
+        record.files.push({ path: entry.path, size: entry.size || 0 });
+        if (/\.html?$/i.test(relativePath) && !relativePath.includes('/')) record.htmlFiles.push(relativePath);
+        if (imagePattern.test(relativePath)) record.imagePaths.push(entry.path);
+        if (!relativePath.includes('/') && aboutNames.includes(relativePath.toLowerCase())) {
+          const currentRank = aboutNames.indexOf((record.aboutPath.split('/').pop() || '').toLowerCase());
+          const nextRank = aboutNames.indexOf(relativePath.toLowerCase());
+          if (!record.aboutPath || nextRank < currentRank) record.aboutPath = entry.path;
         }
-        if (/\.png$/i.test(relativePath)) record.pngPaths.push(entry.path);
       }
 
       const result = [];
@@ -333,12 +396,14 @@
           return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
         });
         if (!htmlFiles.some(file => file.toLowerCase() === 'index.html')) continue;
-        const coverPath = chooseCover(folder, record.pngPaths);
+        const coverPath = chooseCover(folder, record.imagePaths);
         result.push({
           folder,
           title: humanizeFolder(folder),
           htmlFiles,
           coverPath,
+          files: record.files,
+          aboutPath: record.aboutPath,
           searchText: (folder + ' ' + humanizeFolder(folder)).toLowerCase()
         });
       }
@@ -468,6 +533,29 @@
       folder.textContent = game.folder + '/';
       card.appendChild(folder);
 
+      const actions = document.createElement('div');
+      actions.className = 'game-card-actions';
+      const aboutButton = document.createElement('button');
+      aboutButton.type = 'button';
+      aboutButton.className = 'utility-btn game-action-btn';
+      aboutButton.textContent = 'About';
+      aboutButton.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        openGameAbout(game);
+      });
+      const downloadButton = document.createElement('button');
+      downloadButton.type = 'button';
+      downloadButton.className = 'utility-btn game-action-btn';
+      downloadButton.textContent = 'Download ZIP';
+      downloadButton.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        downloadGame(game, downloadButton);
+      });
+      actions.append(aboutButton, downloadButton);
+      card.appendChild(actions);
+
       card.addEventListener('click', () => openGame(game));
       card.addEventListener('keydown', event => {
         if (event.target !== card) return;
@@ -499,6 +587,96 @@
 
     function setStatus(message) {
       statusEl.textContent = message;
+    }
+
+    function openGameAbout(game) {
+      const dialog = document.getElementById('gameAboutDialog');
+      const title = document.getElementById('gameAboutTitle');
+      const body = document.getElementById('gameAboutBody');
+      title.textContent = game.title + ' — About';
+      body.textContent = 'Loading game information…';
+      if (typeof dialog.showModal === 'function') dialog.showModal();
+      else dialog.setAttribute('open', '');
+      if (!game.aboutPath) {
+        body.textContent = 'No separate about or description file is included with this game. Its files are available in the game folder.';
+        return;
+      }
+      fetch(CDN_ROOT + encodePath(game.aboutPath))
+        .then(response => {
+          if (!response.ok) throw new Error('HTTP ' + response.status);
+          return response.text();
+        })
+        .then(text => { body.textContent = text.slice(0, 20000); })
+        .catch(error => { body.textContent = 'Could not load the about information: ' + error.message; });
+    }
+
+    let zipLibraryPromise = null;
+    function loadZipLibrary() {
+      if (window.JSZip) return Promise.resolve(window.JSZip);
+      if (!zipLibraryPromise) {
+        zipLibraryPromise = new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+          script.onload = () => window.JSZip ? resolve(window.JSZip) : reject(new Error('ZIP library did not initialize.'));
+          script.onerror = () => reject(new Error('Could not load the ZIP library. Check your connection and try again.'));
+          document.head.appendChild(script);
+        });
+      }
+      return zipLibraryPromise;
+    }
+
+    async function downloadGame(game, button) {
+      const originalLabel = button.textContent;
+      button.disabled = true;
+      try {
+        if (!Array.isArray(game.files) || !game.files.length) throw new Error('The game file list is missing. Press Refresh Games and try again.');
+        const JSZip = await loadZipLibrary();
+        const zip = new JSZip();
+        const files = game.files.slice();
+        let completed = 0;
+        let next = 0;
+        let failed = [];
+        button.textContent = 'Preparing 0/' + files.length;
+        async function worker() {
+          while (next < files.length) {
+            const index = next++;
+            const item = files[index];
+            try {
+              const response = await fetch(CDN_ROOT + encodePath(item.path));
+              if (!response.ok) throw new Error('HTTP ' + response.status);
+              const data = await response.arrayBuffer();
+              const relativePath = item.path.slice(game.folder.length + 1);
+              zip.file(relativePath, data);
+            } catch (error) {
+              failed.push(item.path + ' (' + error.message + ')');
+            }
+            completed++;
+            button.textContent = 'Files ' + completed + '/' + files.length;
+          }
+        }
+        await Promise.all(Array.from({ length: Math.min(5, files.length) }, () => worker()));
+        if (failed.length) throw new Error(failed.length + ' file(s) could not be downloaded. First: ' + failed[0]);
+        button.textContent = 'Building ZIP…';
+        const blob = await zip.generateAsync(
+          { type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 3 } },
+          progress => { button.textContent = 'Zipping ' + Math.round(progress.percent) + '%'; }
+        );
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = game.folder.replace(/[^a-z0-9._-]+/gi, '-') + '.zip';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+        setStatus('Downloaded ' + game.title + ' (' + files.length + ' files).');
+      } catch (error) {
+        console.error('Game download failed:', error);
+        alert('Could not download ' + game.title + ': ' + error.message);
+      } finally {
+        button.disabled = false;
+        button.textContent = originalLabel;
+      }
     }
 
     async function loadGames(forceRefresh = false) {
@@ -660,6 +838,14 @@
     htmlSelector.addEventListener('change', loadActiveHtml);
     document.getElementById('closeGame').addEventListener('click', closeGame);
     document.getElementById('aboutBlankGame').addEventListener('click', openGameInAboutBlank);
+    document.getElementById('downloadActiveGame').addEventListener('click', event => {
+      if (activeGame) downloadGame(activeGame, event.currentTarget);
+    });
+    document.getElementById('closeGameAbout').addEventListener('click', () => {
+      const dialog = document.getElementById('gameAboutDialog');
+      if (typeof dialog.close === 'function') dialog.close();
+      else dialog.removeAttribute('open');
+    });
     bookmarkFilter.addEventListener('click', () => {
       showBookmarkedOnly = !showBookmarkedOnly;
       applySearch();
