@@ -1,12 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
   initChronographTheme();
-  injectCustomContextMenuShell();
-  injectHardwareProfilerHUD();
-  
   if (localStorage.getItem("extreme_lightweight") === "true") {
     applyLightweightUIAdjustments();
   } else {
-    loadErudaDevToolsEngine(false);
+    injectCustomContextMenuShell();
+    injectHardwareProfilerHUD();
   }
 });
 
@@ -37,11 +35,11 @@ function toggleLightweightEngine() {
 }
 
 function applyLightweightUIAdjustments() {
+  document.body.classList.add("hb-lightweight");
+  document.body.dataset.glass = "false";
+  document.body.dataset.motion = "reduced";
   const b = document.getElementById("lightweightToggleBtn");
-  if (b) {
-    b.style.background = "#ff3b30";
-    b.innerText = "Lightweight Active";
-  }
+  if (b) b.innerText = "Lightweight Active";
 }
 
 function loadErudaDevToolsEngine(triggerImmediately) {
@@ -253,15 +251,23 @@ function updateProfilerDisplayData() {
 }
 
 
-/* humming[bird]Tech shared settings */
+
 (() => {
   const KEY = "hummingbird_site_preferences_v1";
   const defaults = {
     theme: "normal", background: "original", customBackground: "#102719",
-    accent: "#76e6a0", fontScale: "100", compact: false, motion: false, glass: true
+    accent: "#76e6a0", fontScale: "100", compact: false, motion: false, glass: true, lightweight: false
   };
   let prefs = { ...defaults };
-  try { prefs = { ...defaults, ...JSON.parse(localStorage.getItem(KEY) || "{}") }; } catch (_) {}
+  try {
+    const stored = JSON.parse(localStorage.getItem(KEY) || "{}");
+    prefs = { ...defaults, ...stored };
+    if (!Object.prototype.hasOwnProperty.call(stored, "lightweight")) {
+      prefs.lightweight = localStorage.getItem("extreme_lightweight") === "true";
+    }
+  } catch (_) {
+    prefs.lightweight = localStorage.getItem("extreme_lightweight") === "true";
+  }
 
   function save() {
     try { localStorage.setItem(KEY, JSON.stringify(prefs)); } catch (_) {}
@@ -272,7 +278,9 @@ function updateProfilerDisplayData() {
     document.body.dataset.background = prefs.background;
     document.body.dataset.compact = String(!!prefs.compact);
     document.body.dataset.motion = prefs.motion ? "reduced" : "normal";
-    document.body.dataset.glass = String(!!prefs.glass);
+    document.body.dataset.glass = String(!!prefs.glass && !prefs.lightweight);
+    document.body.classList.toggle("hb-lightweight", !!prefs.lightweight);
+    try { localStorage.setItem("extreme_lightweight", String(!!prefs.lightweight)); } catch (_) {}
     document.body.style.setProperty("--hb-custom-background", prefs.customBackground);
     document.body.style.setProperty("--hb-accent", prefs.accent);
     document.body.style.setProperty("--hb-accent-contrast", contrastColor(prefs.accent));
@@ -324,6 +332,7 @@ function updateProfilerDisplayData() {
   }
   function init() {
     apply();
+    initPointerTrail();
     if (document.getElementById("hbSettingsDialog")) return;
 
     const launcher = element("button", {
@@ -336,8 +345,8 @@ function updateProfilerDisplayData() {
     const dialog = element("dialog", { id: "hbSettingsDialog", class: "hb-settings-dialog", "aria-labelledby": "hbSettingsTitle" });
     const head = element("div", { class: "hb-settings-head" });
     const titleWrap = element("div");
-    titleWrap.append(element("h2", { id: "hbSettingsTitle" }, "Personalize your experience"),
-      element("p", {}, "Make humming[bird]Tech feel like yours. Your choices save on this device."));
+    titleWrap.append(element("h2", { id: "hbSettingsTitle" }, "Settings"),
+      element("p", {}, "Preferences are saved on this device."));
     const close = element("button", { type: "button", class: "utility-btn hb-settings-close" }, "✕");
     close.addEventListener("click", () => dialog.close());
     head.append(titleWrap, close);
@@ -360,10 +369,10 @@ function updateProfilerDisplayData() {
     });
 
     // Appearance
-    const themeSelect = makeSelect("hbTheme", [["normal", "Normal — original green"], ["dark", "Dark — deeper black"], ["light", "Light — bright and clean"]], prefs.theme);
+    const themeSelect = makeSelect("hbTheme", [["normal", "Normal"], ["dark", "Dark"], ["light", "Light"]], prefs.theme);
     themeSelect.addEventListener("change", () => { prefs.theme = themeSelect.value; save(); apply(); });
     const themeRow = element("div", { class: "hb-setting-row" }); themeRow.append(rowLabel("Color theme"), themeSelect);
-    panels.appearance.appendChild(group("Theme", "Choose the overall look. Normal keeps the familiar humming[bird]Tech green style.", themeRow));
+    panels.appearance.appendChild(group("Theme", "Changes interface surfaces and text without changing the page background.", themeRow));
 
     const accent = element("input", { type: "color", id: "hbAccent", value: prefs.accent, "aria-label": "Accent color" });
     accent.addEventListener("input", () => { prefs.accent = accent.value; save(); apply(); });
@@ -373,7 +382,7 @@ function updateProfilerDisplayData() {
     const font = makeSelect("hbFontScale", [["90", "Small"], ["100", "Default"], ["110", "Large"], ["120", "Extra large"]], prefs.fontScale);
     font.addEventListener("change", () => { prefs.fontScale = font.value; save(); apply(); });
     const fontRow = element("div", { class: "hb-setting-row" }); fontRow.append(rowLabel("Text size"), font);
-    panels.appearance.appendChild(group("Typography", "Adjust text size across the site.", fontRow));
+    panels.appearance.appendChild(group("Text size", "Adjust interface text size.", fontRow));
 
     // Background
     const bg = makeSelect("hbBackground", [
@@ -382,7 +391,7 @@ function updateProfilerDisplayData() {
     ], prefs.background);
     bg.addEventListener("change", () => { prefs.background = bg.value; save(); apply(); });
     const bgRow = element("div", { class: "hb-setting-row" }); bgRow.append(rowLabel("Background style"), bg);
-    panels.background.appendChild(group("Background preset", "Change the page backdrop without changing your content or layout.", bgRow));
+    panels.background.appendChild(group("Background", "Choose a page background independently of the color theme.", bgRow));
 
     const custom = element("input", { type: "color", id: "hbCustomBackground", value: prefs.customBackground, "aria-label": "Custom background color" });
     custom.addEventListener("input", () => { prefs.customBackground = custom.value; prefs.background = "custom"; bg.value = "custom"; save(); apply(); });
@@ -394,8 +403,10 @@ function updateProfilerDisplayData() {
       toggleControl("hbCompact", "Use compact spacing", prefs.compact, v => { prefs.compact = v; save(); apply(); })));
     panels.interface.appendChild(group("Reduced motion", "Reduce animations and transitions for a calmer experience.",
       toggleControl("hbMotion", "Reduce motion", prefs.motion, v => { prefs.motion = v; save(); apply(); })));
-    panels.interface.appendChild(group("Glass effects", "Turn translucent blur effects on or off.",
-      toggleControl("hbGlass", "Enable glass / blur effects", prefs.glass, v => { prefs.glass = v; save(); apply(); })));
+    panels.interface.appendChild(group("Glass effects", "Control translucent surfaces and blur.",
+      toggleControl("hbGlass", "Enable glass effects", prefs.glass, v => { prefs.glass = v; save(); apply(); })));
+    panels.interface.appendChild(group("Extreme lightweight mode", "Disables the cursor trail, blur, decorative motion, diagnostics polling, and nonessential effects to reduce CPU and GPU work.",
+      toggleControl("hbLightweight", "Enable extreme lightweight mode", prefs.lightweight, v => { prefs.lightweight = v; save(); apply(); location.reload(); })));
 
     const footer = element("div", { class: "hb-settings-actions" });
     const reset = element("button", { type: "button", class: "utility-btn" }, "Reset settings");
@@ -418,3 +429,65 @@ function updateProfilerDisplayData() {
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
   else init();
 })();
+
+function initPointerTrail() {
+  if (localStorage.getItem("extreme_lightweight") === "true" || document.querySelector(".hb-pointer-trail")) return;
+  const canvas = document.createElement("canvas");
+  canvas.className = "hb-pointer-trail";
+  canvas.setAttribute("aria-hidden", "true");
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext("2d", { alpha: true });
+  if (!ctx) { canvas.remove(); return; }
+  let width = 0, height = 0, dpr = 1, points = [], frame = 0, last = null;
+  const resize = () => {
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  const draw = () => {
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.fillStyle = "rgba(0,0,0,.105)";
+    ctx.fillRect(0, 0, width, height);
+    ctx.globalCompositeOperation = "source-over";
+    if (points.length > 1) {
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = "rgba(142,255,190,.68)";
+      ctx.shadowColor = "rgba(90,255,160,.55)";
+      ctx.shadowBlur = 9;
+      ctx.beginPath();
+      points.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+    points = points.filter(p => performance.now() - p.t < 520);
+    if (points.length) frame = requestAnimationFrame(draw);
+    else { frame = 0; ctx.clearRect(0, 0, width, height); }
+  };
+  window.addEventListener("resize", resize, { passive: true });
+  window.addEventListener("pointermove", e => {
+    if (e.pointerType === "touch") return;
+    const now = performance.now();
+    if (last) {
+      const dx = e.clientX - last.x, dy = e.clientY - last.y;
+      const length = Math.hypot(dx, dy);
+      if (length > 2) {
+        const offset = Math.min(8, length * .12);
+        const nx = -dy / length, ny = dx / length;
+        const side = points.length % 2 ? -1 : 1;
+        points.push({ x: e.clientX + nx * offset * side, y: e.clientY + ny * offset * side, t: now });
+        points.push({ x: e.clientX, y: e.clientY, t: now });
+      }
+    }
+    last = { x: e.clientX, y: e.clientY };
+    if (!frame && points.length) frame = requestAnimationFrame(draw);
+  }, { passive: true });
+  window.addEventListener("blur", () => { last = null; points = []; if (frame) cancelAnimationFrame(frame); frame = 0; ctx.clearRect(0, 0, width, height); });
+  resize();
+}

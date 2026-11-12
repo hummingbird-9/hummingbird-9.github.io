@@ -1,64 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0a2e0a">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>humming[bird]Tech</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="shortcut icon" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png">
+
   <style>
-    body.home-page { justify-content:flex-start; padding:64px 20px 48px; }
-    .home-shell { width:min(920px,100%); margin:auto; display:flex; flex-direction:column; align-items:center; gap:22px; }
-    .home-brand { width:min(540px,82vw); margin:16px auto 0; }
-    .home-brand img { width:100%; height:auto; object-fit:contain; }
-    .home-intro { max-width:620px; margin:0; color:var(--hb-muted); font-size:1.08rem; }
-    .home-gallery-buttons { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; width:min(720px,100%); }
-    .home-gallery-buttons button, .home-secondary { min-width:0 !important; width:100%; min-height:58px; margin:0 !important; padding:16px 22px !important; font-size:1rem !important; font-weight:650 !important; }
-    .home-secondary { width:min(350px,100%); }
-    #warning-text { margin:0; color:#ff7474; font-size:.9rem; opacity:0; transition:opacity .2s; }
-    .home-gallery-buttons:hover ~ #warning-text { opacity:1; }
-    @media(max-width:600px) { .home-gallery-buttons { grid-template-columns:1fr; } body.home-page { padding-top:76px; } }
+    /* --- Your Original Styles --- */
+    body {
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(135deg, #0a2e0a, #1a5d1a, #0a2e0a, #1a5d1a);
+      background-size: 400% 400%;
+      animation: gradientBG 20s ease infinite;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+      text-align: center;
+      justify-content: flex-start;
+      padding-top: 40px;
+      position: relative;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    button {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #e0f7e0;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 10px 0; /* Keeps buttons tight together */
+      padding: 14px 40px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 32px 0 rgba(0, 255, 45, 0.15);
+      backdrop-filter: saturate(180%) blur(10px);
+      -webkit-backdrop-filter: saturate(180%) blur(10px);
+      transition: transform 0.3s ease, background 0.3s ease;
+      min-width: 180px;
+      user-select: none;
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+      outline: none;
+    }
+
+    /* --- IMPROVED HOVER WARNING --- */
+    .home-gallery-buttons {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      width: 100%;
+      max-width: 760px;
+    }
+
+    .home-gallery-buttons button {
+      display: block;
+      width: auto;
+      max-width: calc(100vw - 40px);
+    }
+
+    #warning-text {
+      font-size: 1.1rem;
+      color: #ff4d4d;
+      opacity: 0; 
+      transition: opacity 0.3s ease;
+      max-width: 600px;
+      position: absolute; 
+      pointer-events: none;
+      /* Positions the warning text slightly below the Gallery button without moving other buttons */
+      transform: translateY(65px); 
+    }
+
+    .home-gallery-buttons:hover ~ #warning-text {
+      opacity: 1;
+    }
   </style>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="settings.css">
 </head>
-<body class="home-page">
-  <main class="home-shell">
-    <a class="home-brand" href="index.html" aria-label="humming[bird]Tech home">
-      <img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png" alt="Humming[bird]Tech">
-    </a>
-    <p class="home-intro">A collection of web ports, projects, and tools.</p>
-    <nav class="home-gallery-buttons" aria-label="Explore">
-      <button id="gallery-btn" type="button" onclick="location.href='gallery.html'">View Web Ports and Projects</button>
-      <button id="games-btn" type="button" onclick="location.href='games.html'">View HTML Games</button>
-    </nav>
-    <p id="warning-text">ONLY FOR USE OUTSIDE OF CLASS</p>
-    <button class="utility-btn home-secondary" type="button" onclick="location.href='web.html'">Search Hummingweb</button>
-  </main>
-  <script src="global-utils.js"></script>
+
+<body>
+
+<h1>
+  <a href="noacd.html">
+    <img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png" alt="Logo" style="cursor: pointer; border: none;">
+  </a>
+</h1>
+
+  <div class="home-gallery-buttons">
+  <button id="gallery-btn" onclick="location.href='gallery.html'">View Web Ports and Projects</button>
+  <button id="games-btn" onclick="location.href='games.html'">View HTMLs</button>
+</div>
+  
+  <h3 id="warning-text">ONLY FOR USE OUTSIDE OF CLASS</h3>
+
+  <button id="hummingweb-btn" onclick="location.href='web.html'">Search Hummingweb</button>
+
   <script>
     function checkClassStatus() {
+//pings onecompiler for science class detection
       fetch('https://onecompiler.com', { mode: 'no-cors' })
         .then(() => {
-          document.getElementById('gallery-btn').style.display = 'block';
-          document.getElementById('games-btn').style.display = 'block';
-          document.getElementById('warning-text').style.visibility = 'visible';
+          // If reachable, show the button
+          document.getElementById('gallery-btn').style.display = 'inline-block';
+          document.getElementById('games-btn').style.display = 'inline-block';
+          // Ensure warning text can reappear if class ends
+          document.getElementById('warning-text').style.visibility = 'visible'; 
         })
         .catch(() => {
+          // If blocked (Science class active), hide everything risky
           document.getElementById('gallery-btn').style.display = 'none';
           document.getElementById('games-btn').style.display = 'none';
           document.getElementById('warning-text').style.opacity = '0';
           document.getElementById('warning-text').style.visibility = 'hidden';
+          console.log("Science Class Active: Gallery Hidden.");
         });
     }
+
+    // Run immediately on load
     checkClassStatus();
+
+    // Check every 10 seconds in case the teacher starts/ends class while the tab is open
     setInterval(checkClassStatus, 10000);
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') {
+
+    // EMERGENCY MANUAL HIDE: Press 'Escape' to hide the gallery instantly
+    document.addEventListener('keydown', (e) => {
+      if (e.key === "Escape") {
         document.getElementById('gallery-btn').style.display = 'none';
-        document.getElementById('games-btn').style.display = 'none';
+          document.getElementById('games-btn').style.display = 'none';
         document.getElementById('warning-text').style.display = 'none';
       }
     });
   </script>
 </body>
+
 </html>
