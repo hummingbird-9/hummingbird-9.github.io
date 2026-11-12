@@ -96,6 +96,12 @@
 </head>
 
 <body>
+<div class="utility-controls-container">
+<button class="utility-btn" onclick="toggleHardwareProfilerOverlay()">Hardware HUD</button>
+<button id="lightweightToggleBtn" class="utility-btn" onclick="toggleLightweightEngine()">Extreme Lightweight</button>
+<button id="themeToggleBtn" class="utility-btn" onclick="toggleTheme()">Theme Mode</button>
+</div>
+
 
 <h1>
   <a href="noacd.html">
@@ -148,6 +154,7 @@
       }
     });
   </script>
+<script src="global-utils.js"></script>
 </body>
 
 </html>
