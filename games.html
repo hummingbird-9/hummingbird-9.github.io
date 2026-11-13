@@ -23,14 +23,13 @@
     </form>
     <div class="games-search-side-actions" aria-label="Quick actions">
       <button id="refreshGames" class="utility-btn" type="button" title="Refresh the games from GitHub">↻ Refresh</button>
-      <button id="randomGame" class="utility-btn" type="button" title="Launch a random game">🎲 Random game</button>
+      <button id="randomGame" class="utility-btn" type="button" title="Launch a random game">Random game</button>
     </div>
     </div>
 
     <div class="games-toolbar" aria-label="Game library controls">
       <section class="games-control-group games-library-group" aria-label="Library actions">
         <div class="games-actions-row">
-          <button id="bookmarkFilter" class="utility-btn" type="button" aria-pressed="false">☆ Bookmarks</button>
           <label class="games-sort-control">
             <span class="visually-hidden">Sort games</span>
             <select id="gamesSort" class="utility-btn" aria-label="Sort games">
@@ -39,15 +38,12 @@
               <option value="recent">Sort: Recently played</option>
             </select>
           </label>
+          <button id="bookmarkFilter" class="utility-btn" type="button" aria-pressed="false">☆ Bookmarks</button>
         </div>
       </section>
-      <section class="games-control-group games-file-group" aria-label="Game file selector">
-        <label class="games-control-label" for="htmlSelector">Game file</label>
-        <select id="htmlSelector" class="utility-btn" aria-label="Choose which HTML file to play" disabled>
-          <option value="">Open a game to choose its HTML file</option>
-        </select>
-        <span class="games-control-hint">Select a game before choosing another HTML entry point</span>
-      </section>
+      <select id="htmlSelector" hidden aria-hidden="true" tabindex="-1" disabled>
+        <option value="">Open a game to choose its HTML file</option>
+      </select>
     </div>
 
     <div id="gamesStatus" role="status" aria-live="polite">Loading games from GitHub...</div>
