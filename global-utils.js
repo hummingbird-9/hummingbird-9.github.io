@@ -27,6 +27,8 @@
   let settings = readSettings();
   let contextMenuElement = null;
   let contextImage = null;
+  let erudaLoadPromise = null;
+  let erudaInitialized = false;
 
   function readSettings() {
     let stored = {};
@@ -176,7 +178,7 @@
     if (settings.compactCards) body.classList.add('compact-cards');
 
     body.style.setProperty('--corner-radius', `${clamp(settings.cornerRadius, 0, 32)}px`);
-    body.style.setProperty('--glass-opacity', `${clamp(settings.glassOpacity, 0, 40) / 100}`);
+    body.style.setProperty('--glass-opacity', `${clamp(settings.glassOpacity, 0, 90) / 100}`);
     body.style.setProperty('--glass-blur', `${clamp(settings.glassBlur, 0, 24)}px`);
     body.style.setProperty('--accent', accentColor(settings.accent));
     body.style.setProperty('--custom-page-background', settings.customBackground);
@@ -284,7 +286,7 @@
         </section>
         <section class="settings-section"><h3>Interface</h3>
           <label class="settings-range"><span>Corner roundness <output id="cornerRadiusValue">16px</output></span><input id="settingCornerRadius" type="range" min="0" max="32" step="1"></label>
-          <label class="settings-range"><span>Liquid glass opacity <output id="glassOpacityValue">14%</output></span><input id="settingGlassOpacity" type="range" min="0" max="40" step="1"></label>
+          <label class="settings-range"><span>Liquid glass opacity <output id="glassOpacityValue">14%</output></span><input id="settingGlassOpacity" type="range" min="0" max="90" step="1"></label>
           <label class="settings-range"><span>Glass blur <output id="glassBlurValue">10px</output></span><input id="settingGlassBlur" type="range" min="0" max="24" step="1"></label>
           <label class="settings-field"><span>Surface style</span><select id="settingSurfaceStyle"><option value="glass">Liquid glass</option><option value="solid">Solid</option><option value="minimal">Minimal</option><option value="flat">Flat</option></select></label>
           <label class="settings-check"><input id="settingCompactCards" type="checkbox"><span>Compact cards</span></label>
@@ -295,7 +297,7 @@
         </section>
         <section class="settings-section"><h3>Performance and controls</h3>
           <label class="settings-check"><input id="settingLightweight" type="checkbox"><span>Lightweight mode</span></label>
-          <label class="settings-check"><input id="settingContextMenu" type="checkbox"><span>Custom right-click menu</span></label>
+          <label class="settings-check"><input id="settingContextMenu" type="checkbox"><span>Show custom right-click screen</span></label>
         </section>
       </div>
       <div class="settings-footer">
@@ -488,6 +490,37 @@
     contextMenuElement.addEventListener('click', handleContextMenuAction);
   }
 
+
+  function openErudaConsole() {
+    const initializeConsole = () => {
+      if (!window.eruda) throw new Error('Eruda did not finish loading.');
+      if (!erudaInitialized) {
+        window.eruda.init();
+        erudaInitialized = true;
+      }
+      window.eruda.show();
+    };
+
+    if (window.eruda) {
+      initializeConsole();
+      return Promise.resolve();
+    }
+    if (!erudaLoadPromise) {
+      erudaLoadPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/eruda';
+        script.async = true;
+        script.onload = resolve;
+        script.onerror = () => reject(new Error('Could not load Eruda. Check your connection and try again.'));
+        document.head.appendChild(script);
+      }).catch(error => {
+        erudaLoadPromise = null;
+        throw error;
+      });
+    }
+    return erudaLoadPromise.then(initializeConsole);
+  }
+
   function renderContextMenu() {
     const selection = window.getSelection()?.toString().trim() || '';
     const imageItems = contextImage ? `
@@ -505,6 +538,7 @@
       <button class="context-item" type="button" data-action="search" data-selection="${escapeAttribute(selection)}">Search the web</button>
       ${imageItems}
       <div class="context-divider"></div>
+      <button class="context-item" type="button" data-action="eruda">Developer console (Eruda)</button>
       <button class="context-item" type="button" data-action="settings">Settings</button>`;
   }
 
@@ -534,6 +568,7 @@
         case 'save-image': if (selectedImage) await saveImage(selectedImage); break;
         case 'copy-image-url': if (selectedImage) await copyText(selectedImage.currentSrc || selectedImage.src); break;
         case 'copy-image-base64': if (selectedImage) await copyImageAsBase64(selectedImage); break;
+        case 'eruda': await openErudaConsole(); break;
         case 'settings': openSettings(); break;
       }
     } catch (error) {
