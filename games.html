@@ -770,10 +770,37 @@
         searchBar.focus();
       }
     });
-    loadMoreButton.addEventListener('click', () => {
+    let autoLoadBusy = false;
+    let scrollCheckFrame = 0;
+
+    function loadNextGamesPage() {
+      if (autoLoadBusy || currentLimit >= visibleGames.length) return;
+      autoLoadBusy = true;
       currentLimit = Math.min(currentLimit + PAGE_SIZE, visibleGames.length);
       renderGames();
-    });
+      requestAnimationFrame(() => {
+        autoLoadBusy = false;
+        checkGamesBottom();
+      });
+    }
+
+    function checkGamesBottom() {
+      if (scrollCheckFrame) return;
+      scrollCheckFrame = requestAnimationFrame(() => {
+        scrollCheckFrame = 0;
+        if (autoLoadBusy || pagination.hidden || currentLimit >= visibleGames.length) return;
+        const documentHeight = Math.max(
+          document.documentElement.scrollHeight,
+          document.body.scrollHeight
+        );
+        const distanceToBottom = documentHeight - (window.scrollY + window.innerHeight);
+        if (distanceToBottom <= 100) loadNextGamesPage();
+      });
+    }
+
+    loadMoreButton.addEventListener('click', loadNextGamesPage);
+    window.addEventListener('scroll', checkGamesBottom, { passive: true });
+    window.addEventListener('resize', checkGamesBottom);
     htmlSelector.addEventListener('change', loadActiveHtml);
     document.getElementById('closeGame').addEventListener('click', closeGame);
     document.getElementById('aboutBlankGame').addEventListener('click', openGameInAboutBlank);
