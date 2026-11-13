@@ -1148,3 +1148,75 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   .site-brand { min-width:48px; }
 }
 .submit-page-main { width:min(1240px,100%); }
+
+
+/* Final navigation sizing and overflow fix. */
+#siteHeader .site-brand {
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex:0 0 auto !important;
+  min-width:88px !important;
+  min-height:88px !important;
+  overflow:visible !important;
+}
+#siteHeader .site-brand > img {
+  display:block !important;
+  width:88px !important;
+  height:88px !important;
+  max-width:none !important;
+  max-height:none !important;
+  flex:0 0 88px !important;
+  object-fit:contain !important;
+}
+#siteHeader.site-header {
+  min-height:96px !important;
+  padding:4px 0 !important;
+  overflow:visible !important;
+}
+#siteHeader .site-header-actions {
+  display:flex !important;
+  align-items:center !important;
+  align-content:center !important;
+  flex-wrap:wrap !important;
+  overflow:visible !important;
+  min-width:0 !important;
+  gap:6px !important;
+}
+#siteHeader .site-tab {
+  transform:none !important;
+  background:color-mix(in srgb,var(--panel) 88%,#000 12%) !important;
+  transition:background .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease !important;
+}
+#siteHeader .site-tab:hover,
+#siteHeader .site-settings-tab[aria-expanded="true"] {
+  transform:none !important;
+  background:color-mix(in srgb,var(--panel) 78%,#000 22%) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 5px 16px rgba(0,0,0,.16) !important;
+}
+#siteHeader .site-tab:active {
+  transform:none !important;
+}
+@media(max-width:760px) {
+  #siteHeader.site-header {
+    min-height:0 !important;
+    align-items:center !important;
+    flex-wrap:wrap !important;
+    gap:7px !important;
+  }
+  #siteHeader .site-brand {
+    min-width:72px !important;
+    min-height:72px !important;
+  }
+  #siteHeader .site-brand > img {
+    width:72px !important;
+    height:72px !important;
+    flex-basis:72px !important;
+  }
+  #siteHeader .site-header-actions {
+    width:100% !important;
+    flex-wrap:wrap !important;
+    overflow:visible !important;
+    justify-content:flex-start !important;
+  }
+}
