@@ -1059,3 +1059,11 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   .games-submit-panel { width:calc(100% - 16px); padding:16px; }
   .submission-primary-button, .continue-submission-button { width:100%; }
 }
+
+
+/* Keep search focus neutral instead of using the site's green accent. */
+.games-search-controls .search-bar:focus {
+  outline:none;
+  border-color:var(--panel-border);
+  box-shadow:0 0 0 3px rgba(255,255,255,.075), inset 0 1px 0 rgba(255,255,255,.12);
+}
