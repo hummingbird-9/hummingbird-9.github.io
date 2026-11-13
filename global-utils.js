@@ -137,27 +137,27 @@
     header.className = 'site-header';
     const isHome = document.body.classList.contains('home-page');
     header.innerHTML = `
-      ${isHome ? '' : `<a class="site-brand" href="index.html" aria-label="HummingbirdTech home"><img src="${LOGO_URL}" alt="" width="38" height="38"><span>humming[bird]Tech</span></a>`}
-      <nav class="site-header-actions" aria-label="Site controls">
-        <button class="site-control-btn" id="brightnessToggleBtn" type="button" title="Cycle normal, dark, and light brightness modes">Brightness: Normal</button>
-        <button class="site-control-btn" id="lightweightToggleBtn" type="button" aria-pressed="false">Lightweight: Off</button>
-        <button class="site-control-btn site-settings-btn" id="settingsOpenBtn" type="button">Settings</button>
+      <a class="site-brand" href="index.html" aria-label="HummingbirdTech home"><img src="${LOGO_URL}" alt="" width="34" height="34"><span>humming[bird]Tech</span></a>
+      <nav class="site-header-actions" aria-label="Main navigation">
+        <a class="site-tab" href="gallery.html">View applications and projects</a>
+        <a class="site-tab" href="games.html">Browse games</a>
+        <a class="site-tab" href="web.html">Search the HummingWeb</a>
+        <button class="site-tab site-settings-tab" id="settingsOpenBtn" type="button" aria-expanded="false">Settings</button>
       </nav>`;
     document.body.prepend(header);
-    document.getElementById('brightnessToggleBtn').addEventListener('click', cycleBrightness);
-    document.getElementById('lightweightToggleBtn').addEventListener('click', toggleLightweightEngine);
     document.getElementById('settingsOpenBtn').addEventListener('click', openSettings);
+    injectSettingsDialog();
+    const current = location.pathname.split('/').pop() || 'index.html';
+    header.querySelectorAll('a.site-tab').forEach(link => {
+      if (link.getAttribute('href') === current) link.classList.add('is-current');
+    });
   }
 
   function updateHeaderLabels() {
-    const brightness = document.getElementById('brightnessToggleBtn');
-    const lightweight = document.getElementById('lightweightToggleBtn');
-    if (brightness) brightness.textContent = `Brightness: ${capitalize(settings.brightness)}`;
-    if (lightweight) {
-      lightweight.textContent = `Lightweight: ${settings.lightweight ? 'On' : 'Off'}`;
-      lightweight.setAttribute('aria-pressed', settings.lightweight ? 'true' : 'false');
-      lightweight.classList.toggle('is-active', settings.lightweight);
-    }
+    const theme = document.getElementById('settingBrightness');
+    const lightweight = document.getElementById('settingLightweight');
+    if (theme) theme.value = settings.brightness;
+    if (lightweight) lightweight.checked = Boolean(settings.lightweight);
   }
 
   function capitalize(value) {
@@ -181,73 +181,52 @@
   }
 
   function injectSettingsDialog() {
-    if (document.getElementById('siteSettingsDialog')) return;
-    const dialog = document.createElement('dialog');
-    dialog.id = 'siteSettingsDialog';
-    dialog.className = 'site-settings-dialog';
-    dialog.innerHTML = `
-      <form method="dialog" class="settings-shell">
-        <div class="settings-heading">
-          <div><span class="settings-eyebrow">PERSONALIZE</span><h2>Settings</h2><p>Adjust the look and behavior of the site.</p></div>
-          <button class="settings-close" type="submit" aria-label="Close settings">×</button>
-        </div>
-        <section class="settings-section">
-          <h3>Appearance</h3>
-          <label class="settings-field"><span>Brightness mode</span>
-            <select id="settingBrightness"><option value="normal">Normal</option><option value="dark">Dark</option><option value="light">Light</option></select>
-          </label>
-          <label class="settings-field"><span>Background style</span>
-            <select id="settingBackground"><option value="gradient">Original gradient</option><option value="forest">Deep forest</option><option value="midnight">Midnight blue</option><option value="slate">Graphite slate</option><option value="sunrise">Warm dusk</option><option value="plain">Plain white</option><option value="custom">Custom solid color</option></select>
-          </label>
-          <label class="settings-field"><span>Custom background color</span><input id="settingCustomBackground" type="color" aria-label="Custom background color"></label>
-          <label class="settings-field"><span>Accent color</span>
-            <select id="settingAccent"><option value="green">Green</option><option value="blue">Blue</option><option value="violet">Violet</option><option value="amber">Amber</option><option value="slate">Slate</option><option value="custom">Custom</option></select>
-          </label>
+    if (document.getElementById('siteSettingsPanel')) return;
+    const panel = document.createElement('section');
+    panel.id = 'siteSettingsPanel';
+    panel.className = 'site-settings-panel';
+    panel.hidden = true;
+    panel.innerHTML = `
+      <div class="settings-panel-heading"><h2>Settings</h2><button id="settingsCloseBtn" type="button" class="settings-close">Close</button></div>
+      <div class="settings-panel-grid">
+        <section class="settings-section"><h3>Appearance</h3>
+          <label class="settings-field"><span>Theme</span><select id="settingBrightness"><option value="normal">Normal</option><option value="dark">Dark</option><option value="light">Light</option></select></label>
+          <label class="settings-field"><span>Background</span><select id="settingBackground"><option value="gradient">Original gradient</option><option value="forest">Deep forest</option><option value="midnight">Midnight blue</option><option value="slate">Graphite slate</option><option value="sunrise">Warm dusk</option><option value="plain">Plain white</option><option value="custom">Custom color</option></select></label>
+          <label class="settings-field"><span>Custom background</span><input id="settingCustomBackground" type="color" aria-label="Custom background color"></label>
+          <label class="settings-field"><span>Accent</span><select id="settingAccent"><option value="green">Green</option><option value="blue">Blue</option><option value="violet">Violet</option><option value="amber">Amber</option><option value="slate">Slate</option><option value="custom">Custom</option></select></label>
           <label class="settings-field"><span>Custom accent</span><input id="settingCustomAccent" type="color" aria-label="Custom accent color"></label>
           <label class="settings-field"><span>Text size</span><select id="settingFontScale"><option value="90">Small</option><option value="100">Default</option><option value="110">Large</option><option value="120">Extra large</option><option value="130">Huge</option></select></label>
         </section>
-        <section class="settings-section">
-          <h3>Interface</h3>
+        <section class="settings-section"><h3>Interface</h3>
           <label class="settings-range"><span>Corner roundness <output id="cornerRadiusValue">16px</output></span><input id="settingCornerRadius" type="range" min="0" max="32" step="1"></label>
           <label class="settings-range"><span>Liquid glass opacity <output id="glassOpacityValue">14%</output></span><input id="settingGlassOpacity" type="range" min="0" max="40" step="1"></label>
           <label class="settings-range"><span>Glass blur <output id="glassBlurValue">10px</output></span><input id="settingGlassBlur" type="range" min="0" max="24" step="1"></label>
-          <label class="settings-check"><input id="settingLiquidGlass" type="checkbox"><span>Use liquid glass surfaces</span></label>
-          <label class="settings-check"><input id="settingCompactCards" type="checkbox"><span>Compact cards and spacing</span></label>
-          <label class="settings-check"><input id="settingReducedMotion" type="checkbox"><span>Reduce motion and transitions</span></label>
+          <label class="settings-check"><input id="settingLiquidGlass" type="checkbox"><span>Liquid glass surfaces</span></label>
+          <label class="settings-check"><input id="settingCompactCards" type="checkbox"><span>Compact cards</span></label>
+          <label class="settings-check"><input id="settingReducedMotion" type="checkbox"><span>Reduce motion</span></label>
         </section>
-        <section class="settings-section">
-          <h3>Performance and controls</h3>
+        <section class="settings-section"><h3>Performance and controls</h3>
           <label class="settings-check"><input id="settingLightweight" type="checkbox"><span>Lightweight mode</span></label>
-          <label class="settings-check"><input id="settingContextMenu" type="checkbox"><span>Use custom right-click menu</span></label>
+          <label class="settings-check"><input id="settingContextMenu" type="checkbox"><span>Custom right-click menu</span></label>
         </section>
-        <div class="settings-footer"><button class="settings-reset" id="settingsReset" type="button">Reset settings</button><button class="settings-done" type="submit">Done</button></div>
-      </form>`;
-    document.body.appendChild(dialog);
-
-    dialog.addEventListener('click', event => {
-      if (event.target === dialog) dialog.close();
-    });
+      </div>
+      <div class="settings-footer"><button class="settings-reset" id="settingsReset" type="button">Reset settings</button></div>`;
+    const header = document.getElementById('siteHeader');
+    header.insertAdjacentElement('afterend', panel);
+    document.getElementById('settingsCloseBtn').addEventListener('click', closeSettings);
     document.getElementById('settingsReset').addEventListener('click', () => {
       settings = { ...DEFAULTS };
       saveSettings();
       applySettings();
       syncSettingsControls();
     });
-
     const bindings = {
-      settingBrightness: 'brightness',
-      settingBackground: 'background',
-      settingAccent: 'accent',
-      settingCustomBackground: 'customBackground',
-      settingCustomAccent: 'customAccent',
-      settingFontScale: 'fontScale',
-      settingCornerRadius: 'cornerRadius',
-      settingGlassOpacity: 'glassOpacity',
-      settingGlassBlur: 'glassBlur',
-      settingLiquidGlass: 'liquidGlass',
-      settingCompactCards: 'compactCards',
-      settingReducedMotion: 'reducedMotion',
-      settingLightweight: 'lightweight',
+      settingBrightness: 'brightness', settingBackground: 'background', settingAccent: 'accent',
+      settingCustomBackground: 'customBackground', settingCustomAccent: 'customAccent',
+      settingFontScale: 'fontScale', settingCornerRadius: 'cornerRadius',
+      settingGlassOpacity: 'glassOpacity', settingGlassBlur: 'glassBlur',
+      settingLiquidGlass: 'liquidGlass', settingCompactCards: 'compactCards',
+      settingReducedMotion: 'reducedMotion', settingLightweight: 'lightweight',
       settingContextMenu: 'customContextMenu'
     };
     Object.entries(bindings).forEach(([id, key]) => {
@@ -256,6 +235,26 @@
       control.addEventListener('change', () => updateSettingFromControl(control, key));
     });
     syncSettingsControls();
+  }
+
+  function openSettings() {
+    const panel = document.getElementById('siteSettingsPanel');
+    if (!panel) return;
+    const shouldOpen = panel.hidden;
+    panel.hidden = !shouldOpen;
+    const button = document.getElementById('settingsOpenBtn');
+    if (button) button.setAttribute('aria-expanded', String(shouldOpen));
+    if (shouldOpen) {
+      syncSettingsControls();
+      panel.scrollIntoView({ behavior: settings.reducedMotion || settings.lightweight ? 'auto' : 'smooth', block: 'start' });
+    }
+  }
+
+  function closeSettings() {
+    const panel = document.getElementById('siteSettingsPanel');
+    if (panel) panel.hidden = true;
+    const button = document.getElementById('settingsOpenBtn');
+    if (button) button.setAttribute('aria-expanded', 'false');
   }
 
   function updateSettingFromControl(control, key) {
@@ -287,20 +286,13 @@
 
   function syncSettingsControls() {
     const values = {
-      settingBrightness: settings.brightness,
-      settingBackground: settings.background,
-      settingAccent: settings.accent,
-      settingCustomBackground: settings.customBackground,
-      settingCustomAccent: settings.customAccent,
-      settingFontScale: settings.fontScale,
-      settingCornerRadius: settings.cornerRadius,
-      settingGlassOpacity: settings.glassOpacity,
-      settingGlassBlur: settings.glassBlur,
-      settingLiquidGlass: settings.liquidGlass,
-      settingCompactCards: settings.compactCards,
-      settingReducedMotion: settings.reducedMotion,
-      settingLightweight: settings.lightweight,
-      settingContextMenu: settings.customContextMenu
+      settingBrightness: settings.brightness, settingBackground: settings.background,
+      settingAccent: settings.accent, settingCustomBackground: settings.customBackground,
+      settingCustomAccent: settings.customAccent, settingFontScale: settings.fontScale,
+      settingCornerRadius: settings.cornerRadius, settingGlassOpacity: settings.glassOpacity,
+      settingGlassBlur: settings.glassBlur, settingLiquidGlass: settings.liquidGlass,
+      settingCompactCards: settings.compactCards, settingReducedMotion: settings.reducedMotion,
+      settingLightweight: settings.lightweight, settingContextMenu: settings.customContextMenu
     };
     Object.entries(values).forEach(([id, value]) => {
       const control = document.getElementById(id);
@@ -310,14 +302,6 @@
     });
     updateRangeOutputs();
     updateHeaderLabels();
-  }
-
-  function openSettings() {
-    const dialog = document.getElementById('siteSettingsDialog');
-    if (!dialog) return;
-    syncSettingsControls();
-    if (typeof dialog.showModal === 'function') dialog.showModal();
-    else dialog.setAttribute('open', '');
   }
 
   function injectContextMenu() {

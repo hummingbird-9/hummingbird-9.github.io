@@ -225,8 +225,7 @@
       else bookmarks.add(game.folder);
       saveBookmarks();
       updateBookmarkButton(button, game);
-      if (showBookmarkedOnly) applySearch();
-      else updateTotals();
+      applySearch();
     }
 
 
@@ -250,6 +249,7 @@
         (!query || game.searchText.includes(query)) &&
         (!showBookmarkedOnly || bookmarks.has(game.folder))
       );
+      visibleGames.sort((a, b) => Number(bookmarks.has(b.folder)) - Number(bookmarks.has(a.folder)));
       renderGames();
       updateSearchUrl();
     }
@@ -326,7 +326,26 @@
     function renderGames() {
       container.replaceChildren();
       const fragment = document.createDocumentFragment();
-      visibleGames.slice(0, currentLimit).forEach(game => fragment.appendChild(makeCard(game)));
+      const bookmarked = visibleGames.filter(game => bookmarks.has(game.folder));
+      const regular = visibleGames.filter(game => !bookmarks.has(game.folder));
+      const ordered = [...bookmarked, ...regular].slice(0, currentLimit);
+
+      if (bookmarked.length) {
+        const heading = document.createElement('h2');
+        heading.className = 'games-group-heading';
+        heading.textContent = 'Bookmarked games';
+        fragment.appendChild(heading);
+        bookmarked.slice(0, currentLimit).forEach(game => fragment.appendChild(makeCard(game)));
+      }
+      if (regular.length && ordered.length > bookmarked.length) {
+        if (bookmarked.length) {
+          const heading = document.createElement('h2');
+          heading.className = 'games-group-heading';
+          heading.textContent = 'All games';
+          fragment.appendChild(heading);
+        }
+        regular.slice(0, Math.max(0, currentLimit - bookmarked.length)).forEach(game => fragment.appendChild(makeCard(game)));
+      }
       if (!visibleGames.length) {
         const empty = document.createElement('p');
         empty.id = 'gamesEmpty';

@@ -386,3 +386,73 @@ body.reduced-motion { scroll-behavior: auto; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
+
+/* Flat navigation tabs and inline settings */
+.site-header {
+  position: relative; inset: auto; z-index: 1000;
+  width: min(1240px,100%); min-height: 54px; margin: 0 auto 20px;
+  padding: 4px 0; border: 0; border-bottom: 1px solid var(--panel-border);
+  border-radius: 0; background: transparent; box-shadow: none;
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+body.home-page { padding-top: 16px; }
+body.gallery-body { padding-top: 18px; }
+.site-brand { flex: 0 0 auto; }
+.site-header-actions { gap: 3px; flex-wrap: wrap; }
+.site-tab {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 42px; padding: 9px 13px; border: 0; border-radius: 8px;
+  background: transparent; color: var(--page-muted); text-decoration: none;
+  font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.site-tab:hover, .site-tab.is-current, .site-settings-tab[aria-expanded="true"] {
+  background: var(--panel); color: var(--page-text); transform: none;
+}
+.site-tab.is-current { box-shadow: inset 0 -2px 0 var(--accent); }
+.site-settings-tab { box-shadow: none; }
+.site-settings-panel {
+  width: min(1120px,100%); margin: 0 auto 28px; padding: 20px;
+  border: 1px solid var(--panel-border); border-radius: var(--corner-radius);
+  background: var(--panel); color: var(--page-text); text-align: left;
+}
+.site-settings-panel[hidden] { display: none !important; }
+.settings-panel-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.settings-panel-heading h2 { margin:0; font-size:1.35rem; }
+.settings-panel-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:20px; }
+.site-settings-panel .settings-section { border:0; padding:14px 0; }
+.site-settings-panel .settings-section h3 { color:var(--page-text); }
+.site-settings-panel .settings-field, .site-settings-panel .settings-range, .site-settings-panel .settings-check { color:var(--page-text); }
+.site-settings-panel .settings-field select, .site-settings-panel .settings-field input[type="color"] {
+  background:var(--panel); color:var(--page-text); border:1px solid var(--panel-border);
+}
+.site-settings-panel .settings-range output { color:var(--accent); }
+.site-settings-panel .settings-close { width:auto; min-width:0; padding:8px 12px; font-size:13px; }
+.site-settings-panel .settings-footer { justify-content:flex-start; }
+.games-group-heading {
+  flex: 0 0 100%; width:100%; margin:12px 0 0; padding:0 2px 8px;
+  color:var(--page-text); font-size:1.1rem; font-weight:700;
+  border-bottom:1px solid var(--panel-border);
+}
+.game-thumbnail-wrap { isolation:isolate; }
+.game-bookmark-btn {
+  top:7px; right:7px; left:auto; width:36px; height:36px; min-width:36px;
+  padding:0; justify-content:center; border:1px solid rgba(255,255,255,.42);
+  border-radius:10px; background:rgba(12,18,15,.72); color:#fff;
+  font-size:20px; line-height:1; backdrop-filter:blur(5px);
+}
+.game-bookmark-btn:hover { background:rgba(12,18,15,.88); }
+.home-footer {
+  width:min(900px,100%); margin:34px auto 18px; padding:20px 0;
+  border-top:1px solid var(--panel-border); color:var(--page-muted);
+  text-align:center; font-size:.85rem;
+}
+.home-footer h2 { margin:0 0 8px; color:var(--page-text); font-size:1rem; }
+.home-footer p { margin:5px 0; }
+.home-footer .patch-notes { display:flex; flex-wrap:wrap; justify-content:center; gap:8px 18px; }
+body.lightweight-mode .site-settings-panel { backdrop-filter:none; }
+@media(max-width:760px) {
+  .site-header { width:100%; flex-wrap:wrap; gap:8px; padding-bottom:8px; }
+  .site-header-actions { width:100%; justify-content:flex-start; overflow-x:auto; flex-wrap:nowrap; }
+  .site-tab { white-space:nowrap; padding:8px 10px; }
+  body.gallery-body { padding-top:12px; }
+}
