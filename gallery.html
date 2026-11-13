@@ -45,7 +45,7 @@
 
       async function resolveRawLinkRegistryMap() {
         try {
-          const response = await fetch('/html/repos.json');
+          const response = await fetch('/html/applications-projects/repos.json');
           if (!response.ok) throw new Error('Data map configuration file missing');
           
           let data;
