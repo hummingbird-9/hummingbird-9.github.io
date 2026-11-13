@@ -1220,3 +1220,53 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
     justify-content:flex-start !important;
   }
 }
+
+
+/* Last-pass brand scale: the source is a wide wordmark, not a square app icon. */
+#siteHeader.site-header {
+  min-height:112px !important;
+  overflow:visible !important;
+}
+#siteHeader .site-brand {
+  display:flex !important;
+  flex:0 0 220px !important;
+  width:220px !important;
+  min-width:220px !important;
+  height:100px !important;
+  min-height:100px !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  overflow:visible !important;
+}
+#siteHeader .site-brand > img {
+  display:block !important;
+  flex:0 0 220px !important;
+  width:220px !important;
+  height:100px !important;
+  max-width:none !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  object-position:left center !important;
+}
+#siteHeader .site-header-actions {
+  overflow:visible !important;
+  flex-wrap:wrap !important;
+  align-items:center !important;
+}
+@media(max-width:760px) {
+  #siteHeader.site-header {
+    min-height:0 !important;
+  }
+  #siteHeader .site-brand {
+    flex:0 0 190px !important;
+    width:190px !important;
+    min-width:190px !important;
+    height:86px !important;
+    min-height:86px !important;
+  }
+  #siteHeader .site-brand > img {
+    flex-basis:190px !important;
+    width:190px !important;
+    height:86px !important;
+  }
+}
