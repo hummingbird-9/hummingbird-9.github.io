@@ -22,17 +22,18 @@
       <label class="visually-hidden" for="searchBar">Find a game</label>
       <div class="games-search-controls">
         <input type="search" id="searchBar" class="search-bar" placeholder="Search games..." autocomplete="off" spellcheck="false" aria-label="Search games">
-        <button id="clearGamesSearch" class="utility-btn games-clear-search" type="button" aria-label="Clear game search" title="Clear search">×</button>
         <button id="submitGamesSearch" class="utility-btn games-submit-search" type="submit">Search</button>
       </div>
     </form>
+    <div class="games-search-side-actions" aria-label="Quick actions">
+      <button id="refreshGames" class="utility-btn" type="button" title="Refresh the games from GitHub">↻ Refresh</button>
+      <button id="randomGame" class="utility-btn" type="button" title="Launch a random game">🎲 Random game</button>
+    </div>
+    </div>
 
     <div class="games-toolbar" aria-label="Game library controls">
       <section class="games-control-group games-library-group" aria-label="Library actions">
-        <span class="games-control-label">Library</span>
         <div class="games-actions-row">
-          <button id="refreshGames" class="utility-btn" type="button" title="Refresh the games from GitHub">↻ Refresh</button>
-          <button id="randomGame" class="utility-btn" type="button" title="Launch a random game">🎲 Random game</button>
           <button id="bookmarkFilter" class="utility-btn" type="button" aria-pressed="false">☆ Bookmarks</button>
           <label class="games-sort-control">
             <span class="visually-hidden">Sort games</span>
@@ -80,9 +81,9 @@
           <p class="submission-help">Choose the folder that contains the game. It must have an index.html file at its top level.</p>
         </div>
         <div id="htmlPicker" class="submission-file-picker" hidden>
-          <label for="gameHtmlInput">Select the HTML file</label>
+          <label for="gameHtmlInput">Select index.html</label>
           <input id="gameHtmlInput" type="file" accept=".html,.htm,text/html">
-          <p class="submission-help">This option only includes the selected HTML file. Use it for self-contained games; choose a folder when the game needs local images, scripts, or other files.</p>
+          <p class="submission-help">Choose the game's index.html. For games with images, scripts, or other local assets, choose the complete folder instead.</p>
         </div>
         <p id="gameFileSelection" class="submission-selection" aria-live="polite">No game files selected.</p>
       </fieldset>
@@ -93,7 +94,8 @@
         </label>
         <label class="submission-field" for="submissionGameDescription">
           <span>Description</span>
-          <textarea id="submissionGameDescription" name="gameDescription" rows="4" maxlength="800" required placeholder="What is the game about?"></textarea>
+          <textarea id="submissionGameDescription" name="gameDescription" rows="3" maxlength="50" required placeholder="A short description (50 characters max)"></textarea>
+          <small class="submission-description-count"><span id="submissionDescriptionCount">0</span>/50 characters</small>
         </label>
         <div class="submission-field">
           <label for="submissionCover">Cover image</label>
@@ -105,10 +107,10 @@
         </div>
       </div>
       <div class="submission-notes">
-        <p>The folder and cover are packaged on your device. The review issue opens on GitHub so you can attach the prepared ZIP and cover image.</p>
-        <p>GitHub currently allows ZIP attachments up to 25 MB and image attachments up to 10 MB. A single HTML file must be self-contained or use hosted assets.</p>
+        <p>Your game folder (including every asset) and cover image are packaged together. The review issue opens automatically when the ZIP is ready.</p>
+        <p>Attach the single ZIP to the prefilled GitHub issue and submit it. After that, the review and approval process is automatic.</p>
       </div>
-      <button id="prepareGameSubmission" class="utility-btn submission-primary-button" type="submit">Prepare submission</button>
+      <button id="prepareGameSubmission" class="utility-btn submission-primary-button" type="submit">Submit for review</button>
       <p id="gameSubmissionStatus" class="game-submission-status" role="status" aria-live="polite"></p>
       <a id="continueGameSubmission" class="utility-btn continue-submission-button" href="#" target="_blank" rel="noopener noreferrer" hidden>Continue to GitHub</a>
     </form>
@@ -145,6 +147,8 @@
     const folderInput = document.getElementById('gameFolderInput');
     const htmlInput = document.getElementById('gameHtmlInput');
     const coverInput = document.getElementById('submissionCover');
+    const descriptionInput = document.getElementById('submissionGameDescription');
+    const descriptionCount = document.getElementById('submissionDescriptionCount');
     const selectionNote = document.getElementById('gameFileSelection');
     const coverPreview = document.getElementById('submissionCoverPreview');
     const coverImage = document.getElementById('submissionCoverImage');
@@ -155,6 +159,10 @@
     const continueLink = document.getElementById('continueGameSubmission');
     let selectedMode = 'folder';
     let coverObjectUrl = '';
+
+    descriptionInput.addEventListener('input', () => {
+      descriptionCount.textContent = String(descriptionInput.value.length);
+    });
 
     function switchSection(section) {
       Object.keys(tabs).forEach(key => {
@@ -323,8 +331,8 @@
         '',
         '## Files to attach',
         '- Attach the prepared game archive: ' + zipName + ' (ZIP, up to 25 MB).',
-        '- Attach the cover image: ' + coverFileName + ' (image, up to 10 MB).',
-        '- Game selection: ' + (entryMode === 'folder' ? 'complete folder' : 'single HTML file'),
+        '- The cover image is already included inside the ZIP as community-cover.',
+        '- Game selection: ' + (entryMode === 'folder' ? 'complete folder and assets' : 'index.html only'),
         '',
         '## Review',
         'This submission is pending review. It must not be added to the public games library until approved.'
@@ -384,8 +392,8 @@
           entries.push({ file: item.file, path: item.path });
         }
       } else {
-        if (sourceFiles.length !== 1 || !/\.html?$/i.test(sourceFiles[0].name)) {
-          submitStatus.textContent = 'Choose one .html or .htm file.';
+        if (sourceFiles.length !== 1 || sourceFiles[0].name.toLowerCase() !== 'index.html') {
+          submitStatus.textContent = 'Choose the game’s index.html file. Select the complete folder if it needs local assets.';
           return;
         }
         entries.push({ file: sourceFiles[0], path: 'index.html' });
@@ -400,6 +408,7 @@
       ].join('\n');
       entries.push({ file: new File([metadata], 'SUBMISSION.txt', { type: 'text/plain' }), path: 'SUBMISSION.txt' });
 
+      const issueTab = window.open('about:blank', '_blank');
       prepareButton.disabled = true;
       prepareButton.textContent = 'Preparing ZIP…';
       submitStatus.textContent = 'Packaging files in your browser…';
@@ -416,10 +425,19 @@
         download.remove();
         window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 60000);
 
-        continueLink.href = makeIssueUrl(name, description, zipName, cover.name, selectedMode);
-        continueLink.hidden = false;
-        submitStatus.textContent = 'ZIP prepared and downloaded. Next, open GitHub, attach the ZIP and cover image, then submit the review issue.';
+        const issueUrl = makeIssueUrl(name, description, zipName, cover.name, selectedMode);
+        if (issueTab && !issueTab.closed) {
+          issueTab.location.href = issueUrl;
+          continueLink.hidden = true;
+        } else {
+          continueLink.href = issueUrl;
+          continueLink.hidden = false;
+        }
+        submitStatus.textContent = issueTab
+          ? 'ZIP downloaded and the review issue opened. Attach the ZIP and submit the issue; it will wait for approval.'
+          : 'ZIP downloaded. Your browser blocked the review tab, so use the link below and attach the ZIP.';
       } catch (error) {
+        if (issueTab && !issueTab.closed) issueTab.close();
         submitStatus.textContent = error && error.message ? error.message : 'Could not prepare the ZIP. Try a smaller folder.';
       } finally {
         prepareButton.disabled = false;
@@ -460,7 +478,6 @@
     const bookmarkFilter = document.getElementById('bookmarkFilter');
     const sortSelect = document.getElementById('gamesSort');
     const randomGameButton = document.getElementById('randomGame');
-    const clearSearchButton = document.getElementById('clearGamesSearch');
     const searchForm = document.getElementById('gameSearchForm');
     const pagination = document.getElementById('gamesPagination');
     const loadMoreButton = document.getElementById('loadMoreGames');
@@ -1097,12 +1114,6 @@
         return;
       }
       openGame(pool[Math.floor(Math.random() * pool.length)]);
-    });
-    clearSearchButton.addEventListener('click', () => {
-      searchBar.value = '';
-      activeSearchQuery = '';
-      applySearch();
-      searchBar.focus();
     });
     searchForm.addEventListener('submit', event => {
       event.preventDefault();
