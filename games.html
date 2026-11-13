@@ -55,6 +55,18 @@
     </div>
   </section>
 
+  <section id="gameViewer" aria-hidden="true" aria-label="Game player">
+    <header class="game-viewer-navbar">
+      <h2 id="gameViewerTitle">Game</h2>
+      <div class="game-viewer-controls">
+        <button id="aboutBlankGame" class="utility-btn" type="button">Open in new tab</button>
+        <button id="downloadActiveGame" class="utility-btn" type="button">Download game</button>
+        <button id="closeGame" class="utility-btn" type="button">Close</button>
+      </div>
+    </header>
+    <div id="gameFrameWrap" class="game-frame-wrap"></div>
+  </section>
+
   <script src="global-utils.js?v=20261112-settings-eruda-opacity-12"></script>
   <script>
   (() => {
