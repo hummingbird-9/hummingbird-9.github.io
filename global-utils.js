@@ -210,6 +210,7 @@
         <a class="site-tab" href="index.html">Home</a>
         <a class="site-tab" href="gallery.html">View applications and projects</a>
         <a class="site-tab" href="games.html">Browse games</a>
+        <a class="site-tab" href="submit.html">Submit a game</a>
         <a class="site-tab" href="web.html">Search the HummingWeb</a>
         <a class="site-tab" href="chat.html">Chat</a>
         <button class="site-tab site-settings-tab" id="settingsOpenBtn" type="button" aria-expanded="false">Settings</button>

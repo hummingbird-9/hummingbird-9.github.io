@@ -1103,3 +1103,48 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 }
 .site-settings-tab { border-bottom-color:transparent; }
 .site-settings-tab[aria-expanded="true"] { border-bottom-color:var(--page-muted); }
+
+
+/* Pin the bookmark control inside the thumbnail so hover feedback never clips it. */
+.game-thumbnail-wrap { position:relative; }
+.game-thumbnail-wrap > .game-bookmark-btn {
+  top:8px;
+  right:8px;
+  left:auto;
+  z-index:8;
+  width:36px;
+  min-width:36px;
+  height:36px;
+  min-height:36px;
+  padding:0;
+  transform:translate3d(0,0,0) !important;
+  box-shadow:0 2px 8px rgba(0,0,0,.22);
+}
+.game-thumbnail-wrap > .game-bookmark-btn:hover,
+.game-thumbnail-wrap > .game-bookmark-btn:active,
+.game-thumbnail-wrap > .game-bookmark-btn:focus-visible {
+  top:8px;
+  transform:translate3d(0,0,0) !important;
+}
+.game-thumbnail-wrap > .game-bookmark-btn:hover {
+  border-color:rgba(255,255,255,.52);
+  background:rgba(12,18,15,.88);
+  filter:brightness(1.08);
+}
+
+/* Make the logo beside the navigation links readable without changing the large home logo. */
+.site-header { min-height:70px; }
+.site-brand img {
+  width:56px;
+  height:56px;
+  max-width:none;
+  flex:0 0 56px;
+  border-radius:12px;
+}
+.site-brand { min-width:56px; }
+@media (max-width:760px) {
+  .site-header { min-height:0; }
+  .site-brand img { width:48px; height:48px; flex-basis:48px; }
+  .site-brand { min-width:48px; }
+}
+.submit-page-main { width:min(1240px,100%); }
