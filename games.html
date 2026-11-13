@@ -14,9 +14,16 @@
 
   <div class="games-toolbar" role="search">
     <button id="refreshGames" class="utility-btn" type="button" title="Refresh the games from GitHub">↻ Refresh</button>
+    <button id="randomGame" class="utility-btn" type="button" title="Launch a random game">🎲 Random game</button>
     <div class="search-container games-search-container">
       <input type="search" id="searchBar" class="search-bar" placeholder="Search games..." autocomplete="off" spellcheck="false" aria-label="Search games">
+      <button id="clearGamesSearch" class="utility-btn" type="button" aria-label="Clear game search" title="Clear search">×</button>
     </div>
+    <select id="gamesSort" class="utility-btn" aria-label="Sort games">
+      <option value="az">A–Z</option>
+      <option value="za">Z–A</option>
+      <option value="recent">Recently played</option>
+    </select>
     <select id="htmlSelector" class="utility-btn" aria-label="Choose which HTML file to play" disabled>
       <option value="">HTML file — open a game first</option>
     </select>
@@ -60,6 +67,7 @@
     const CACHE_KEY = 'hummingbird-games-folder-catalog-v3';
     const PAGE_SIZE = 100;
     const BOOKMARKS_KEY = 'hummingbird-games-bookmarks-v1';
+    const RECENT_KEY = 'hummingbird-games-recent-v1';
     const CACHE_TTL = 60 * 60 * 1000;
 
     const container = document.getElementById('container');
@@ -71,6 +79,9 @@
     const viewerTitle = document.getElementById('gameViewerTitle');
     const frameWrap = document.getElementById('gameFrameWrap');
     const bookmarkFilter = document.getElementById('bookmarkFilter');
+    const sortSelect = document.getElementById('gamesSort');
+    const randomGameButton = document.getElementById('randomGame');
+    const clearSearchButton = document.getElementById('clearGamesSearch');
     const pagination = document.getElementById('gamesPagination');
     const loadMoreButton = document.getElementById('loadMoreGames');
     const paginationStatus = document.getElementById('gamesPaginationStatus');
@@ -79,6 +90,8 @@
     let visibleGames = [];
     let currentLimit = PAGE_SIZE;
     let bookmarks = loadBookmarks();
+    let recentlyPlayed = loadRecentlyPlayed();
+    let sortMode = 'az';
     let showBookmarkedOnly = false;
     let activeGame = null;
     let activeHtml = 'index.html';
@@ -211,6 +224,24 @@
       }
     }
 
+    function loadRecentlyPlayed() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
+        return Array.isArray(saved) ? saved.filter(item => typeof item === 'string').slice(0, 20) : [];
+      } catch (_) {
+        return [];
+      }
+    }
+
+    function recordRecentlyPlayed(game) {
+      recentlyPlayed = [game.folder, ...recentlyPlayed.filter(folder => folder !== game.folder)].slice(0, 20);
+      try {
+        localStorage.setItem(RECENT_KEY, JSON.stringify(recentlyPlayed));
+      } catch (error) {
+        console.warn('Could not save recent games:', error);
+      }
+    }
+
     function updateBookmarkButton(button, game) {
       const saved = bookmarks.has(game.folder);
       button.classList.toggle('is-bookmarked', saved);
@@ -249,7 +280,18 @@
         (!query || game.searchText.includes(query)) &&
         (!showBookmarkedOnly || bookmarks.has(game.folder))
       );
-      visibleGames.sort((a, b) => Number(bookmarks.has(b.folder)) - Number(bookmarks.has(a.folder)));
+      visibleGames.sort((a, b) => {
+        const bookmarkOrder = Number(bookmarks.has(b.folder)) - Number(bookmarks.has(a.folder));
+        if (bookmarkOrder) return bookmarkOrder;
+        if (sortMode === 'za') return b.title.localeCompare(a.title, undefined, { numeric: true, sensitivity: 'base' });
+        if (sortMode === 'recent') {
+          const aIndex = recentlyPlayed.indexOf(a.folder);
+          const bIndex = recentlyPlayed.indexOf(b.folder);
+          return (aIndex < 0 ? Infinity : aIndex) - (bIndex < 0 ? Infinity : bIndex) ||
+            a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' });
+        }
+        return a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' });
+      });
       renderGames();
       updateSearchUrl();
     }
@@ -335,6 +377,14 @@
         heading.textContent = 'Bookmarked games';
         fragment.appendChild(heading);
         bookmarked.slice(0, currentLimit).forEach(game => fragment.appendChild(makeCard(game)));
+      }
+      const recentGames = visibleGames.filter(game => recentlyPlayed.includes(game.folder)).slice(0, 8);
+      if (recentGames.length) {
+        const heading = document.createElement('h2');
+        heading.className = 'games-group-heading';
+        heading.textContent = 'Recently played';
+        fragment.appendChild(heading);
+        recentGames.forEach(game => fragment.appendChild(makeCard(game)));
       }
       if (pageGames.length) {
         const heading = document.createElement('h2');
@@ -553,6 +603,8 @@
     }
 
     function openGame(game) {
+      recordRecentlyPlayed(game);
+      applySearch();
       activeGame = game;
       activeHtml = game.htmlFiles[0] || 'index.html';
       viewerTitle.textContent = game.title;
@@ -608,6 +660,38 @@
     }
 
     document.getElementById('refreshGames').addEventListener('click', () => loadGames(true));
+    randomGameButton.addEventListener('click', () => {
+      const pool = visibleGames.length ? visibleGames : games;
+      if (!pool.length) {
+        setStatus('There are no games available to launch yet.');
+        return;
+      }
+      openGame(pool[Math.floor(Math.random() * pool.length)]);
+    });
+    clearSearchButton.addEventListener('click', () => {
+      searchBar.value = '';
+      applySearch();
+      searchBar.focus();
+    });
+    sortSelect.addEventListener('change', () => {
+      sortMode = sortSelect.value;
+      applySearch();
+    });
+    searchBar.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && searchBar.value) {
+        searchBar.value = '';
+        applySearch();
+      }
+    });
+    document.addEventListener('keydown', event => {
+      const target = event.target;
+      const editing = target instanceof HTMLElement &&
+        (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+      if (event.key === '/' && !editing && !viewer.classList.contains('is-open')) {
+        event.preventDefault();
+        searchBar.focus();
+      }
+    });
     loadMoreButton.addEventListener('click', () => {
       currentLimit = Math.min(currentLimit + PAGE_SIZE, visibleGames.length);
       renderGames();
