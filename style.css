@@ -1605,3 +1605,65 @@ body.web-page .site-footer { width:min(1240px,100%); margin:8px auto 0; padding:
   pointer-events:none;
 }
 body.theme-dark.background-paper { --page-bg:#252522; }
+
+
+/* Exact Normal-mode controls from HummingWeb's modern theme. */
+body.theme-normal {
+  --accent:#90E4C1 !important;
+  --card-title:#90E4C1 !important;
+}
+body.theme-normal button:not(.site-tab),
+body.theme-normal .open-page-btn,
+body.theme-normal .utility-btn,
+body.theme-normal .site-control-btn {
+  border:2px solid #90E4C1 !important;
+  background:#000 !important;
+  color:#90E4C1 !important;
+  border-radius:8px !important;
+  padding:8px 15px !important;
+  font-weight:700 !important;
+  cursor:pointer;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+body.theme-normal button:not(.site-tab):hover,
+body.theme-normal .open-page-btn:hover,
+body.theme-normal .utility-btn:hover,
+body.theme-normal .site-control-btn:hover {
+  border-color:#90E4C1 !important;
+  background:#000 !important;
+  color:#90E4C1 !important;
+  box-shadow:none !important;
+  filter:brightness(1.12);
+}
+body.theme-normal button:not(.site-tab):active,
+body.theme-normal .open-page-btn:active,
+body.theme-normal .utility-btn:active,
+body.theme-normal .site-control-btn:active {
+  transform:translateY(1px);
+  filter:brightness(.92);
+}
+body.theme-normal .search-bar,
+body.theme-normal input[type="search"],
+body.theme-normal #searchBar,
+body.theme-normal #gallerySearch {
+  background:rgba(0,0,0,.6) !important;
+  border:2px solid #90E4C1 !important;
+  color:#fff !important;
+  border-radius:12px !important;
+  padding:15px !important;
+  font-size:1.1rem !important;
+  outline:none;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+body.theme-normal .search-bar::placeholder,
+body.theme-normal input[type="search"]::placeholder {
+  color:rgba(255,255,255,.72) !important;
+}
+body.theme-normal .games-search-controls .search-bar {
+  min-height:40px;
+  height:40px;
+}
