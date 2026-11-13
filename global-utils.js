@@ -19,7 +19,8 @@
     lightweight: false,
     customContextMenu: true,
     reducedMotion: false,
-    compactCards: false
+    compactCards: false,
+    showRecentlyPlayed: false
   };
 
   let settings = readSettings();
@@ -62,7 +63,8 @@
       lightweight: source.lightweight ?? (localStorage.getItem('extreme_lightweight') === 'true'),
       customContextMenu: source.customContextMenu ?? DEFAULTS.customContextMenu,
       reducedMotion: source.reducedMotion ?? source.motion ?? DEFAULTS.reducedMotion,
-      compactCards: source.compactCards ?? source.compact ?? DEFAULTS.compactCards
+      compactCards: source.compactCards ?? source.compact ?? DEFAULTS.compactCards,
+      showRecentlyPlayed: source.showRecentlyPlayed === true
     };
   }
 
@@ -81,6 +83,9 @@
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(compatible));
       localStorage.setItem('system_theme_mode', settings.brightness);
       localStorage.setItem('extreme_lightweight', String(Boolean(settings.lightweight)));
+      window.dispatchEvent(new CustomEvent('hummingbird-settings-updated', {
+        detail: { ...settings }
+      }));
     } catch (error) {
       console.warn('Could not save Hummingbird settings:', error);
     }
@@ -253,6 +258,9 @@
           <label class="settings-check"><input id="settingCompactCards" type="checkbox"><span>Compact cards</span></label>
           <label class="settings-check"><input id="settingReducedMotion" type="checkbox"><span>Reduce motion</span></label>
         </section>
+        <section class="settings-section"><h3>Game browsing</h3>
+          <label class="settings-check"><input id="settingShowRecentlyPlayed" type="checkbox"><span>Show recently played games</span></label>
+        </section>
         <section class="settings-section"><h3>Performance and controls</h3>
           <label class="settings-check"><input id="settingLightweight" type="checkbox"><span>Lightweight mode</span></label>
           <label class="settings-check"><input id="settingContextMenu" type="checkbox"><span>Custom right-click menu</span></label>
@@ -283,7 +291,7 @@
       settingGlassOpacity: 'glassOpacity', settingGlassBlur: 'glassBlur',
       settingLiquidGlass: 'liquidGlass', settingCompactCards: 'compactCards',
       settingReducedMotion: 'reducedMotion', settingLightweight: 'lightweight',
-      settingContextMenu: 'customContextMenu'
+      settingContextMenu: 'customContextMenu', settingShowRecentlyPlayed: 'showRecentlyPlayed'
     };
     Object.entries(bindings).forEach(([id, key]) => {
       const control = document.getElementById(id);
@@ -407,7 +415,8 @@
       settingCornerRadius: settings.cornerRadius, settingGlassOpacity: settings.glassOpacity,
       settingGlassBlur: settings.glassBlur, settingLiquidGlass: settings.liquidGlass,
       settingCompactCards: settings.compactCards, settingReducedMotion: settings.reducedMotion,
-      settingLightweight: settings.lightweight, settingContextMenu: settings.customContextMenu
+      settingLightweight: settings.lightweight, settingContextMenu: settings.customContextMenu,
+      settingShowRecentlyPlayed: settings.showRecentlyPlayed
     };
     Object.entries(values).forEach(([id, value]) => {
       const control = document.getElementById(id);

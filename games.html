@@ -12,27 +12,43 @@
     <h1>Games</h1>
     <p class="content">Browse, search, bookmark, and play games.</p>
 
-  <div class="games-toolbar" role="search">
-    <button id="refreshGames" class="utility-btn" type="button" title="Refresh the games from GitHub">↻ Refresh</button>
-    <button id="randomGame" class="utility-btn" type="button" title="Launch a random game">🎲 Random game</button>
-    <div class="search-container games-search-container">
-      <input type="search" id="searchBar" class="search-bar" placeholder="Search games..." autocomplete="off" spellcheck="false" aria-label="Search games">
-      <button id="clearGamesSearch" class="utility-btn" type="button" aria-label="Clear game search" title="Clear search">×</button>
-    </div>
-    <select id="gamesSort" class="utility-btn" aria-label="Sort games">
-      <option value="az">A–Z</option>
-      <option value="za">Z–A</option>
-      <option value="recent">Recently played</option>
-    </select>
-    <select id="htmlSelector" class="utility-btn" aria-label="Choose which HTML file to play" disabled>
-      <option value="">HTML file — open a game first</option>
-    </select>
+  <div class="games-toolbar" aria-label="Game library controls">
+    <section class="games-control-group games-search-group" role="search">
+      <label class="games-control-label" for="searchBar">Find a game</label>
+      <div class="games-search-controls">
+        <input type="search" id="searchBar" class="search-bar" placeholder="Search games..." autocomplete="off" spellcheck="false" aria-label="Search games">
+        <button id="clearGamesSearch" class="utility-btn games-clear-search" type="button" aria-label="Clear game search" title="Clear search">×</button>
+      </div>
+      <span class="games-control-hint">Search by game title or folder name</span>
+    </section>
+
+    <section class="games-control-group games-library-group" aria-label="Library actions">
+      <span class="games-control-label">Library</span>
+      <div class="games-actions-row">
+        <button id="refreshGames" class="utility-btn" type="button" title="Refresh the games from GitHub">↻ Refresh</button>
+        <button id="randomGame" class="utility-btn" type="button" title="Launch a random game">🎲 Random game</button>
+        <button id="bookmarkFilter" class="utility-btn" type="button" aria-pressed="false">☆ Bookmarks</button>
+        <label class="games-sort-control">
+          <span class="visually-hidden">Sort games</span>
+          <select id="gamesSort" class="utility-btn" aria-label="Sort games">
+            <option value="az">Sort: A–Z</option>
+            <option value="za">Sort: Z–A</option>
+            <option value="recent">Sort: Recently played</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="games-control-group games-file-group" aria-label="Game file selector">
+      <label class="games-control-label" for="htmlSelector">Game file</label>
+      <select id="htmlSelector" class="utility-btn" aria-label="Choose which HTML file to play" disabled>
+        <option value="">Open a game to choose its HTML file</option>
+      </select>
+      <span class="games-control-hint">Select a game before choosing another HTML entry point</span>
+    </section>
   </div>
 
   <div id="gamesStatus" role="status" aria-live="polite">Loading games from GitHub...</div>
-  <div id="gamesFilters">
-    <button id="bookmarkFilter" class="utility-btn" type="button" aria-pressed="false">☆ Bookmarks</button>
-  </div>
   <div id="gamesTotal"></div>
   <div id="container" class="gallery-container"></div>
   <div id="gamesPagination" class="games-pagination" hidden>
@@ -69,6 +85,7 @@
     const BOOKMARKS_KEY = 'hummingbird-games-bookmarks-v1';
     const RECENT_KEY = 'hummingbird-games-recent-v1';
     const CACHE_TTL = 60 * 60 * 1000;
+    const SITE_SETTINGS_KEY = 'hummingbird_site_preferences_v1';
 
     const container = document.getElementById('container');
     const searchBar = document.getElementById('searchBar');
@@ -91,6 +108,7 @@
     let currentLimit = PAGE_SIZE;
     let bookmarks = loadBookmarks();
     let recentlyPlayed = loadRecentlyPlayed();
+    let showRecentlyPlayedGames = loadShowRecentlyPlayedSetting();
     let sortMode = 'az';
     let showBookmarkedOnly = false;
     let activeGame = null;
@@ -230,6 +248,15 @@
         return Array.isArray(saved) ? saved.filter(item => typeof item === 'string').slice(0, 20) : [];
       } catch (_) {
         return [];
+      }
+    }
+
+    function loadShowRecentlyPlayedSetting() {
+      try {
+        const preferences = JSON.parse(localStorage.getItem(SITE_SETTINGS_KEY) || '{}');
+        return preferences.showRecentlyPlayed === true;
+      } catch (_) {
+        return false;
       }
     }
 
@@ -378,7 +405,9 @@
         fragment.appendChild(heading);
         bookmarked.slice(0, currentLimit).forEach(game => fragment.appendChild(makeCard(game)));
       }
-      const recentGames = visibleGames.filter(game => recentlyPlayed.includes(game.folder)).slice(0, 8);
+      const recentGames = showRecentlyPlayedGames
+        ? visibleGames.filter(game => recentlyPlayed.includes(game.folder)).slice(0, 8)
+        : [];
       if (recentGames.length) {
         const heading = document.createElement('h2');
         heading.className = 'games-group-heading';
@@ -676,6 +705,19 @@
     sortSelect.addEventListener('change', () => {
       sortMode = sortSelect.value;
       applySearch();
+    });
+    function syncRecentGamesPreference() {
+      const nextValue = loadShowRecentlyPlayedSetting();
+      if (nextValue === showRecentlyPlayedGames) return;
+      showRecentlyPlayedGames = nextValue;
+      renderGames();
+    }
+    window.addEventListener('hummingbird-settings-updated', event => {
+      showRecentlyPlayedGames = event.detail?.showRecentlyPlayed === true;
+      renderGames();
+    });
+    window.addEventListener('storage', event => {
+      if (event.key === SITE_SETTINGS_KEY) syncRecentGamesPreference();
     });
     searchBar.addEventListener('keydown', event => {
       if (event.key === 'Escape' && searchBar.value) {
