@@ -13,14 +13,14 @@
     <p class="content">Browse, search, bookmark, and play games.</p>
 
   <div class="games-toolbar" aria-label="Game library controls">
-    <section class="games-control-group games-search-group" role="search">
+    <form id="gameSearchForm" class="games-control-group games-search-group" role="search">
       <label class="games-control-label" for="searchBar">Find a game</label>
       <div class="games-search-controls">
         <input type="search" id="searchBar" class="search-bar" placeholder="Search games..." autocomplete="off" spellcheck="false" aria-label="Search games">
         <button id="clearGamesSearch" class="utility-btn games-clear-search" type="button" aria-label="Clear game search" title="Clear search">×</button>
+        <button id="submitGamesSearch" class="utility-btn games-submit-search" type="submit">Search</button>
       </div>
-      <span class="games-control-hint">Search by game title or folder name</span>
-    </section>
+    </form>
 
     <section class="games-control-group games-library-group" aria-label="Library actions">
       <span class="games-control-label">Library</span>
@@ -99,6 +99,7 @@
     const sortSelect = document.getElementById('gamesSort');
     const randomGameButton = document.getElementById('randomGame');
     const clearSearchButton = document.getElementById('clearGamesSearch');
+    const searchForm = document.getElementById('gameSearchForm');
     const pagination = document.getElementById('gamesPagination');
     const loadMoreButton = document.getElementById('loadMoreGames');
     const paginationStatus = document.getElementById('gamesPaginationStatus');
@@ -109,6 +110,8 @@
     let bookmarks = loadBookmarks();
     let recentlyPlayed = loadRecentlyPlayed();
     let showRecentlyPlayedGames = loadShowRecentlyPlayedSetting();
+    let activeSearchQuery = '';
+    let restoredGameFromAddress = false;
     let sortMode = 'az';
     let showBookmarkedOnly = false;
     let activeGame = null;
@@ -218,10 +221,10 @@
 
     function updateSearchUrl() {
       const url = new URL(window.location.href);
-      const query = searchBar.value.trim();
+      const query = activeSearchQuery;
       if (query) url.searchParams.set('q', query);
       else url.searchParams.delete('q');
-      window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+      window.history.replaceState({ ...(window.history.state || {}), activeGame: activeGame ? activeGame.folder : null }, '', url.pathname + url.search + url.hash);
     }
 
     function loadBookmarks() {
@@ -302,7 +305,7 @@
 
     function applySearch() {
       currentLimit = PAGE_SIZE;
-      const query = searchBar.value.trim().toLowerCase();
+      const query = activeSearchQuery;
       visibleGames = games.filter(game =>
         (!query || game.searchText.includes(query)) &&
         (!showBookmarkedOnly || bookmarks.has(game.folder))
@@ -542,6 +545,7 @@
         games = cached.games;
         applySearch();
         setStatus('Loaded the saved game list.');
+        openGameFromAddress();
         isLoading = false;
         return;
       }
@@ -565,12 +569,14 @@
         catch (cacheError) { console.warn('Game list loaded, but could not cache it:', cacheError); }
         applySearch();
         setStatus(`Found ${games.length} games from the GitHub folders.`);
+        openGameFromAddress();
       } catch (error) {
         console.error('Game catalog load failed:', error);
         if (cached && Array.isArray(cached.games) && cached.games.length) {
           games = cached.games;
           applySearch();
           setStatus('Could not refresh GitHub (' + error.message + '). Showing the last saved game list.');
+          openGameFromAddress();
         } else {
           games = [];
           visibleGames = [];
@@ -613,6 +619,7 @@
       if (!activeGame) return;
       const game = activeGame;
       activeHtml = htmlSelector.value || 'index.html';
+      if (activeGame) updateGameAddress(activeGame, activeHtml);
       const htmlFile = activeHtml;
       const requestToken = ++activeLoadToken;
       const frame = createGameFrame();
@@ -631,13 +638,43 @@
       }
     }
 
-    function openGame(game) {
+    function updateGameAddress(game, htmlFile) {
+      const url = new URL(window.location.href);
+      if (game) {
+        url.searchParams.set('game', game.folder);
+        if (htmlFile && htmlFile !== 'index.html') url.searchParams.set('file', htmlFile);
+        else url.searchParams.delete('file');
+      } else {
+        url.searchParams.delete('game');
+        url.searchParams.delete('file');
+      }
+      // Keep one history entry for the page instead of pushing every game launch.
+      window.history.replaceState({ ...(window.history.state || {}), activeGame: game ? game.folder : null }, '', url.pathname + url.search + url.hash);
+    }
+
+    function openGameFromAddress() {
+      if (restoredGameFromAddress) return;
+      const params = new URLSearchParams(window.location.search);
+      const folder = params.get('game');
+      if (!folder) return;
+      const game = games.find(item => item.folder === folder);
+      if (!game) return;
+      restoredGameFromAddress = true;
+      openGame(game, params.get('file'));
+    }
+
+    function openGame(game, requestedFile) {
       recordRecentlyPlayed(game);
-      applySearch();
       activeGame = game;
       activeHtml = game.htmlFiles[0] || 'index.html';
       viewerTitle.textContent = game.title;
       setHtmlChoices(game);
+      if (requestedFile && game.htmlFiles.includes(requestedFile)) {
+        htmlSelector.value = requestedFile;
+        activeHtml = requestedFile;
+      }
+      updateGameAddress(game, activeHtml);
+      applySearch();
       viewer.classList.add('is-open');
       viewer.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
@@ -646,6 +683,7 @@
     }
 
     function closeGame() {
+      updateGameAddress(null);
       viewer.classList.remove('is-open');
       viewer.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
@@ -699,8 +737,14 @@
     });
     clearSearchButton.addEventListener('click', () => {
       searchBar.value = '';
+      activeSearchQuery = '';
       applySearch();
       searchBar.focus();
+    });
+    searchForm.addEventListener('submit', event => {
+      event.preventDefault();
+      activeSearchQuery = searchBar.value.trim().toLowerCase();
+      applySearch();
     });
     sortSelect.addEventListener('change', () => {
       sortMode = sortSelect.value;
@@ -722,6 +766,7 @@
     searchBar.addEventListener('keydown', event => {
       if (event.key === 'Escape' && searchBar.value) {
         searchBar.value = '';
+        activeSearchQuery = '';
         applySearch();
       }
     });
@@ -738,7 +783,6 @@
       currentLimit = Math.min(currentLimit + PAGE_SIZE, visibleGames.length);
       renderGames();
     });
-    searchBar.addEventListener('input', applySearch);
     htmlSelector.addEventListener('change', loadActiveHtml);
     document.getElementById('closeGame').addEventListener('click', closeGame);
     document.getElementById('aboutBlankGame').addEventListener('click', openGameInAboutBlank);
@@ -756,6 +800,7 @@
 
     const initialQuery = new URLSearchParams(window.location.search).get('q') || '';
     searchBar.value = initialQuery;
+    activeSearchQuery = initialQuery.trim().toLowerCase();
     loadGames(false);
   })();
   </script>

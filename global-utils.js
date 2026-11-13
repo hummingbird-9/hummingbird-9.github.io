@@ -8,6 +8,7 @@
   const DEFAULTS = {
     brightness: 'normal',
     background: 'gradient',
+    surfaceStyle: 'glass',
     customBackground: '#ffffff',
     cornerRadius: 16,
     glassOpacity: 14,
@@ -38,7 +39,7 @@
     const brightness = source.brightness || source.theme || localStorage.getItem('system_theme_mode') || DEFAULTS.brightness;
     let background = source.background || DEFAULTS.background;
     if (background === 'original') background = 'gradient';
-    if (!['gradient', 'forest', 'midnight', 'slate', 'sunrise', 'custom', 'plain'].includes(background)) background = DEFAULTS.background;
+    if (!['gradient', 'forest', 'midnight', 'slate', 'sunrise', 'ocean', 'charcoal', 'lavender', 'sand', 'paper', 'custom', 'plain'].includes(background)) background = DEFAULTS.background;
 
     let accent = source.accent ?? DEFAULTS.accent;
     let customAccent = source.customAccent || DEFAULTS.customAccent;
@@ -50,8 +51,11 @@
 
     return {
       ...DEFAULTS,
-      brightness: ['normal', 'dark', 'light'].includes(brightness) ? brightness : DEFAULTS.brightness,
+      brightness: ['normal', 'dark', 'light', 'contrast'].includes(brightness) ? brightness : DEFAULTS.brightness,
       background,
+      surfaceStyle: ['glass', 'solid', 'minimal', 'flat'].includes(source.surfaceStyle)
+        ? source.surfaceStyle
+        : (source.liquidGlass === false || source.glass === false ? 'solid' : DEFAULTS.surfaceStyle),
       customBackground: /^#[0-9a-f]{6}$/i.test(source.customBackground || '') ? source.customBackground : DEFAULTS.customBackground,
       cornerRadius: source.cornerRadius ?? DEFAULTS.cornerRadius,
       glassOpacity: source.glassOpacity ?? DEFAULTS.glassOpacity,
@@ -146,13 +150,27 @@
 
   function applySettings() {
     const body = document.body;
-    body.classList.remove('theme-normal', 'theme-dark', 'theme-light', 'plain-background', 'background-forest', 'background-midnight', 'background-slate', 'background-sunrise', 'custom-background', 'lightweight-mode', 'no-glass', 'reduced-motion', 'compact-cards');
-    body.classList.add(`theme-${['normal', 'dark', 'light'].includes(settings.brightness) ? settings.brightness : 'normal'}`);
+    body.classList.remove(
+      'theme-normal', 'theme-dark', 'theme-light', 'theme-contrast',
+      'plain-background', 'background-forest', 'background-midnight', 'background-slate',
+      'background-sunrise', 'background-ocean', 'background-charcoal', 'background-lavender',
+      'background-sand', 'background-paper', 'custom-background', 'lightweight-mode',
+      'no-glass', 'surface-glass', 'surface-solid', 'surface-minimal', 'surface-flat',
+      'reduced-motion', 'compact-cards'
+    );
+    const theme = ['normal', 'dark', 'light', 'contrast'].includes(settings.brightness)
+      ? settings.brightness : 'normal';
+    const surfaceStyle = ['glass', 'solid', 'minimal', 'flat'].includes(settings.surfaceStyle)
+      ? settings.surfaceStyle : (settings.liquidGlass ? 'glass' : 'solid');
+    settings.surfaceStyle = surfaceStyle;
+    settings.liquidGlass = surfaceStyle === 'glass';
+    body.classList.add(`theme-${theme}`, `surface-${surfaceStyle}`);
     if (settings.background === 'plain') body.classList.add('plain-background');
-    else if (['forest', 'midnight', 'slate', 'sunrise'].includes(settings.background)) body.classList.add(`background-${settings.background}`);
-    else if (settings.background === 'custom') body.classList.add('custom-background');
+    else if (['forest', 'midnight', 'slate', 'sunrise', 'ocean', 'charcoal', 'lavender', 'sand', 'paper'].includes(settings.background)) {
+      body.classList.add(`background-${settings.background}`);
+    } else if (settings.background === 'custom') body.classList.add('custom-background');
     if (settings.lightweight) body.classList.add('lightweight-mode');
-    if (!settings.liquidGlass) body.classList.add('no-glass');
+    if (surfaceStyle !== 'glass') body.classList.add('no-glass');
     if (settings.reducedMotion) body.classList.add('reduced-motion');
     if (settings.compactCards) body.classList.add('compact-cards');
 
@@ -173,10 +191,10 @@
   function accentColor(name) {
     return ({
       green: '#48b982',
-      blue: '#4b9ee8',
-      violet: '#9270d5',
-      amber: '#d59a3b',
-      slate: '#718096'
+      blue: '#718b91',
+      violet: '#897d91',
+      amber: '#b58b53',
+      slate: '#68746d'
     })[name] || (name === 'custom' && /^#[0-9a-f]{6}$/i.test(settings.customAccent) ? settings.customAccent : '#48b982');
   }
 
@@ -187,7 +205,7 @@
     header.className = 'site-header';
     const isHome = document.body.classList.contains('home-page');
     header.innerHTML = `
-      <a class="site-brand" href="index.html" aria-label="HummingbirdTech home"><img src="${LOGO_URL}" alt="" width="34" height="34"><span>humming[bird]Tech</span></a>
+      <a class="site-brand" href="index.html" aria-label="Home"><img src="${LOGO_URL}" alt="Home" width="34" height="34"></a>
       <nav class="site-header-actions" aria-label="Main navigation">
         <a class="site-tab" href="index.html">Home</a>
         <a class="site-tab" href="gallery.html">View applications and projects</a>
@@ -243,10 +261,10 @@
       <label class="settings-search"><span>Find a setting</span><input id="settingsSearch" type="search" placeholder="Search settings…" autocomplete="off"></label>
       <div class="settings-panel-grid">
         <section class="settings-section"><h3>Appearance</h3>
-          <label class="settings-field"><span>Theme</span><select id="settingBrightness"><option value="normal">Normal</option><option value="dark">Dark</option><option value="light">Light</option></select></label>
-          <label class="settings-field"><span>Background</span><select id="settingBackground"><option value="gradient">Original gradient</option><option value="forest">Deep forest</option><option value="midnight">Midnight blue</option><option value="slate">Graphite slate</option><option value="sunrise">Warm dusk</option><option value="plain">Plain white</option><option value="custom">Custom color</option></select></label>
+          <label class="settings-field"><span>Theme</span><select id="settingBrightness"><option value="normal">Normal</option><option value="dark">Dark</option><option value="light">Light</option><option value="contrast">High contrast</option></select></label>
+          <label class="settings-field"><span>Background</span><select id="settingBackground"><option value="gradient">Original</option><option value="forest">Forest</option><option value="midnight">Midnight</option><option value="slate">Slate</option><option value="sunrise">Sunset</option><option value="ocean">Ocean</option><option value="charcoal">Charcoal</option><option value="lavender">Lavender</option><option value="sand">Sand</option><option value="paper">Paper</option><option value="plain">Plain white</option><option value="custom">Custom color</option></select></label>
           <label class="settings-field"><span>Custom background</span><input id="settingCustomBackground" type="color" aria-label="Custom background color"></label>
-          <label class="settings-field"><span>Accent</span><select id="settingAccent"><option value="green">Green</option><option value="blue">Blue</option><option value="violet">Violet</option><option value="amber">Amber</option><option value="slate">Slate</option><option value="custom">Custom</option></select></label>
+          <label class="settings-field"><span>Accent</span><select id="settingAccent"><option value="green">Green</option><option value="blue">Muted teal</option><option value="violet">Plum</option><option value="amber">Warm</option><option value="slate">Graphite</option><option value="custom">Custom</option></select></label>
           <label class="settings-field"><span>Custom accent</span><input id="settingCustomAccent" type="color" aria-label="Custom accent color"></label>
           <label class="settings-field"><span>Text size</span><select id="settingFontScale"><option value="90">Small</option><option value="100">Default</option><option value="110">Large</option><option value="120">Extra large</option><option value="130">Huge</option></select></label>
         </section>
@@ -254,7 +272,7 @@
           <label class="settings-range"><span>Corner roundness <output id="cornerRadiusValue">16px</output></span><input id="settingCornerRadius" type="range" min="0" max="32" step="1"></label>
           <label class="settings-range"><span>Liquid glass opacity <output id="glassOpacityValue">14%</output></span><input id="settingGlassOpacity" type="range" min="0" max="40" step="1"></label>
           <label class="settings-range"><span>Glass blur <output id="glassBlurValue">10px</output></span><input id="settingGlassBlur" type="range" min="0" max="24" step="1"></label>
-          <label class="settings-check"><input id="settingLiquidGlass" type="checkbox"><span>Liquid glass surfaces</span></label>
+          <label class="settings-field"><span>Surface style</span><select id="settingSurfaceStyle"><option value="glass">Liquid glass</option><option value="solid">Solid</option><option value="minimal">Minimal</option><option value="flat">Flat</option></select></label>
           <label class="settings-check"><input id="settingCompactCards" type="checkbox"><span>Compact cards</span></label>
           <label class="settings-check"><input id="settingReducedMotion" type="checkbox"><span>Reduce motion</span></label>
         </section>
@@ -289,7 +307,7 @@
       settingCustomBackground: 'customBackground', settingCustomAccent: 'customAccent',
       settingFontScale: 'fontScale', settingCornerRadius: 'cornerRadius',
       settingGlassOpacity: 'glassOpacity', settingGlassBlur: 'glassBlur',
-      settingLiquidGlass: 'liquidGlass', settingCompactCards: 'compactCards',
+      settingSurfaceStyle: 'surfaceStyle', settingCompactCards: 'compactCards',
       settingReducedMotion: 'reducedMotion', settingLightweight: 'lightweight',
       settingContextMenu: 'customContextMenu', settingShowRecentlyPlayed: 'showRecentlyPlayed'
     };
@@ -393,6 +411,7 @@
       const accentSelect = document.getElementById('settingAccent');
       if (accentSelect) accentSelect.value = 'custom';
     }
+    if (key === 'surfaceStyle') settings.liquidGlass = settings.surfaceStyle === 'glass';
     saveSettings();
     applySettings();
     updateRangeOutputs();
@@ -413,7 +432,7 @@
       settingAccent: settings.accent, settingCustomBackground: settings.customBackground,
       settingCustomAccent: settings.customAccent, settingFontScale: settings.fontScale,
       settingCornerRadius: settings.cornerRadius, settingGlassOpacity: settings.glassOpacity,
-      settingGlassBlur: settings.glassBlur, settingLiquidGlass: settings.liquidGlass,
+      settingGlassBlur: settings.glassBlur, settingSurfaceStyle: settings.surfaceStyle,
       settingCompactCards: settings.compactCards, settingReducedMotion: settings.reducedMotion,
       settingLightweight: settings.lightweight, settingContextMenu: settings.customContextMenu,
       settingShowRecentlyPlayed: settings.showRecentlyPlayed

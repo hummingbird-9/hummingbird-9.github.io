@@ -5,16 +5,47 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Search the HummingWeb</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png">
   <style>
-    body.web-page { display:block; padding:88px 12px 12px; overflow:hidden; }
-    .web-viewport { width:100%; height:calc(100vh - 100px); border:1px solid var(--panel-border); border-radius:var(--corner-radius); overflow:hidden; background:#10291a; }
+    body.web-page { display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start; width:100%; height:100vh; height:100dvh; min-height:0; padding:8px 14px 12px; overflow:hidden; text-align:left; }
+    body.web-page .site-header { flex:0 0 auto; width:min(1240px,100%); min-height:42px; margin:0 auto 7px; }
+    .web-controls { display:flex; align-items:center; justify-content:space-between; gap:12px; width:min(1240px,100%); min-height:38px; margin:0 auto 7px; color:var(--page-muted); font-size:.82rem; }
+    .web-controls button { min-height:34px; padding:7px 12px; }
+    .web-viewport { flex:1 1 auto; min-height:0; width:min(1240px,100%); margin:0 auto; overflow:hidden; border:1px solid var(--panel-border); border-radius:var(--corner-radius); background:#10291a; }
     .web-viewport iframe { display:block; width:100%; height:100%; border:0; background:#10291a; }
+    .web-viewport:fullscreen { width:100%; height:100%; border:0; border-radius:0; }
+    @media(max-width:760px) { body.web-page { padding:6px 8px 8px; } body.web-page .site-header,.web-controls { margin-bottom:5px; } }
   </style>
 </head>
 <body class="web-page">
-  <main class="web-viewport">
+  <div class="web-controls"><span>HummingWeb</span><button id="webFullscreenBtn" class="utility-btn" type="button">Fullscreen</button></div>
+  <main class="web-viewport" id="webViewport">
     <iframe src="https://hummingproxy-saj5.onrender.com/" title="HummingWeb search" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen loading="eager"></iframe>
   </main>
   <script src="global-utils.js"></script>
+  <script>
+    (() => {
+      const viewport = document.getElementById('webViewport');
+      const button = document.getElementById('webFullscreenBtn');
+      async function toggleFullscreen() {
+        try {
+          if (document.fullscreenElement) await document.exitFullscreen();
+          else if (viewport.requestFullscreen) await viewport.requestFullscreen();
+          else {
+            const frame = viewport.querySelector('iframe');
+            if (frame && frame.requestFullscreen) await frame.requestFullscreen();
+            else throw new Error('Fullscreen is not available in this browser.');
+          }
+        } catch (error) {
+          console.warn('Could not enter fullscreen:', error);
+          button.textContent = 'Fullscreen unavailable';
+        }
+      }
+      button.addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', () => {
+        button.textContent = document.fullscreenElement ? 'Exit fullscreen' : 'Fullscreen';
+      });
+    })();
+  </script>
 </body>
 </html>
