@@ -1588,3 +1588,20 @@ body.theme-contrast.plain-background {
 .site-footer p { margin:2px 0; }
 .site-footer a { color:var(--accent); text-decoration:underline; text-underline-offset:2px; }
 body.web-page .site-footer { width:min(1240px,100%); margin:8px auto 0; padding:8px 6px 2px; }
+
+
+/* The navigation separator sits a little lower without moving the logo or tabs. */
+#siteHeader.site-header {
+  border-bottom:0 !important;
+}
+#siteHeader.site-header::after {
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:calc(100% + 8px);
+  height:1px;
+  background:var(--panel-border);
+  pointer-events:none;
+}
+body.theme-dark.background-paper { --page-bg:#252522; }
