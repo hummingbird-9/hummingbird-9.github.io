@@ -1840,3 +1840,64 @@ body.theme-normal .games-search-controls .search-bar {
   margin:0;
   white-space:nowrap;
 }
+
+
+/* Live glass styling for the Settings screen */
+.site-settings-panel {
+  background:color-mix(in srgb,var(--panel) 75%,transparent) !important;
+  border:1px solid var(--panel-border) !important;
+  border-radius:calc(var(--corner-radius) + 4px) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 12px 38px rgba(0,0,0,.12) !important;
+  backdrop-filter:saturate(165%) blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter:saturate(165%) blur(var(--glass-blur)) !important;
+}
+.site-settings-panel .settings-search input,
+.site-settings-panel .settings-field select,
+.site-settings-panel .settings-field input[type="color"],
+.site-settings-panel .settings-footer button {
+  background:var(--panel) !important;
+  border:1px solid var(--panel-border) !important;
+  color:var(--page-text) !important;
+  border-radius:var(--corner-radius) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 4px 14px rgba(0,0,0,.08) !important;
+  backdrop-filter:saturate(160%) blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter:saturate(160%) blur(var(--glass-blur)) !important;
+  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease !important;
+}
+.site-settings-panel .settings-search input:focus,
+.site-settings-panel .settings-field select:focus,
+.site-settings-panel .settings-footer button:hover {
+  border-color:var(--accent) !important;
+  background:color-mix(in srgb,var(--panel) 78%,white 8%) !important;
+  outline:none;
+}
+.site-settings-panel .settings-range input[type="range"] {
+  accent-color:var(--accent) !important;
+  cursor:pointer;
+}
+.site-settings-panel .settings-check input {
+  accent-color:var(--accent) !important;
+  cursor:pointer;
+}
+.site-settings-panel .settings-range output {
+  min-width:3.5em;
+  color:var(--page-text) !important;
+  font-variant-numeric:tabular-nums;
+}
+body.lightweight-mode .site-settings-panel,
+body.lightweight-mode .site-settings-panel .settings-search input,
+body.lightweight-mode .site-settings-panel .settings-field select,
+body.lightweight-mode .site-settings-panel .settings-footer button {
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+body.plain-background .site-settings-panel {
+  background:rgba(255,255,255,.88) !important;
+  color:#202124 !important;
+}
+body.plain-background .site-settings-panel .settings-search input,
+body.plain-background .site-settings-panel .settings-field select,
+body.plain-background .site-settings-panel .settings-footer button {
+  background:#fff !important;
+  color:#202124 !important;
+}
