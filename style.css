@@ -3,7 +3,7 @@
   --corner-radius: 16px;
   --glass-opacity: .14;
   --glass-blur: 10px;
-  --accent: #48b982;
+  --accent: #90e4c1;
   --page-text: #f3faf5;
   --page-muted: rgba(243,250,245,.72);
   --panel: rgba(255,255,255,var(--glass-opacity));
@@ -853,7 +853,7 @@ body.lightweight-mode #bookmarkFilter { background:var(--panel); box-shadow:none
 .site-tab:hover { transform:none; border-color:var(--accent); background:color-mix(in srgb,var(--panel) 78%,var(--accent) 22%); color:var(--page-text); }
 .site-tab.is-current { border-color:var(--accent); box-shadow:inset 0 -2px 0 var(--accent),0 2px 8px rgba(0,0,0,.08); }
 .site-settings-tab[aria-expanded="true"] { border-color:var(--accent); background:var(--panel); color:var(--page-text); }
-body.theme-contrast { color-scheme:dark; --page-text:#fff; --page-muted:#ddd; --panel:#111; --panel-border:#aaa; --accent:#f4d35e; --card-text:#fff; --card-title:#f4d35e; background:#000; --page-bg:#000; animation:none; }
+body.theme-contrast { color-scheme:dark; --page-text:#fff; --page-muted:#ddd; --panel:#111; --panel-border:#aaa; --accent:#f4d35e; --card-text:#fff; --card-title:#f4d35e; background-color:#000; animation:none; }
 body.theme-contrast .site-tab,body.theme-contrast button,body.theme-contrast .utility-btn { border-color:#aaa; color:#fff; }
 body.background-ocean { --page-bg:linear-gradient(145deg,#0b2830,#164b58 55%,#08232a); background:var(--page-bg); }
 body.background-charcoal { --page-bg:linear-gradient(145deg,#252729,#17191b 58%,#101112); background:var(--page-bg); }
@@ -1390,3 +1390,201 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
     overflow:visible !important;
   }
 }
+
+
+/* Normal theme port from the attached HummingWeb modern CSS. */
+body.theme-normal {
+  --page-text:#fff;
+  --page-muted:rgba(255,255,255,.76);
+  --card-text:#fff;
+  --card-title:#90E4C1;
+  background-size:400% 400%;
+  animation:gradientBG 20s ease infinite;
+  color:#fff;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+body.theme-normal :is(button,.open-page-btn,.utility-btn,.site-control-btn):not(.site-tab) {
+  border:2px solid var(--accent);
+  border-radius:8px;
+  background:#000;
+  color:var(--accent);
+  box-shadow:none;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  font-weight:700;
+  transition:transform .1s ease,background .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease;
+}
+body.theme-normal :is(button,.open-page-btn,.utility-btn,.site-control-btn):not(.site-tab):hover {
+  border-color:var(--accent);
+  background:#171717;
+  color:var(--accent);
+  box-shadow:0 5px 16px rgba(0,0,0,.28);
+  transform:translateY(-2px);
+}
+body.theme-normal :is(button,.open-page-btn,.utility-btn,.site-control-btn):not(.site-tab):active {
+  transform:translateY(2px);
+  box-shadow:none;
+}
+body.theme-normal #siteHeader .site-tab {
+  min-height:42px;
+  padding:5px 10px 7px;
+  border:2px solid transparent;
+  border-bottom:3px solid transparent;
+  border-radius:0;
+  background:transparent;
+  color:#fff;
+  opacity:.72;
+  box-shadow:none;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  font-weight:700;
+}
+body.theme-normal #siteHeader .site-tab:hover {
+  opacity:1;
+  border-color:transparent;
+  border-bottom-color:transparent;
+  background:rgba(0,0,0,.28);
+  color:#fff;
+  transform:translateY(-2px) !important;
+  box-shadow:0 5px 14px rgba(0,0,0,.2);
+}
+body.theme-normal #siteHeader .site-tab.is-current {
+  opacity:1;
+  color:var(--accent);
+  border-color:transparent;
+  border-bottom:3px solid var(--accent);
+  background:transparent;
+  box-shadow:none;
+}
+body.theme-normal #siteHeader .site-tab.is-current:hover {
+  background:rgba(0,0,0,.22);
+}
+body.theme-normal .search-bar,
+body.theme-normal input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+body.theme-normal textarea,
+body.theme-normal select {
+  background:rgba(0,0,0,.6);
+  border:2px solid var(--accent);
+  border-radius:12px;
+  color:#fff;
+}
+body.theme-normal .search-bar::placeholder,
+body.theme-normal input::placeholder,
+body.theme-normal textarea::placeholder {
+  color:rgba(255,255,255,.68);
+}
+body.theme-normal .game-card,
+body.theme-normal .site-settings-panel,
+body.theme-normal .site-settings-dialog,
+body.theme-normal .game-viewer-navbar,
+body.theme-normal .web-viewport {
+  background:rgba(0,0,0,.4);
+  border-color:rgba(144,228,193,.38);
+  box-shadow:0 8px 32px rgba(0,0,0,.28);
+}
+body.theme-normal .game-card h3,
+body.theme-normal a:not(.site-tab),
+body.theme-normal .settings-panel-heading h2 {
+  color:var(--accent);
+}
+body.theme-normal .game-card p,
+body.theme-normal .content {
+  color:rgba(255,255,255,.78);
+}
+body.theme-normal .site-settings-panel .settings-field select,
+body.theme-normal .site-settings-panel .settings-field input[type="color"] {
+  background:rgba(0,0,0,.72);
+  border:1px solid var(--accent);
+  color:#fff;
+}
+
+/* Keep every selectable backdrop visible, including when High Contrast is selected. */
+body.background-forest { --page-bg:radial-gradient(ellipse at 50% 0%,#164b2a,#092515 58%,#04130b); }
+body.background-midnight { --page-bg:radial-gradient(ellipse at 50% 0%,#243954,#101b2d 55%,#080e18); }
+body.background-slate { --page-bg:linear-gradient(145deg,#354655,#1b2935 55%,#111a22); }
+body.background-sunrise { --page-bg:linear-gradient(135deg,#593444,#9b5941 48%,#263d43); }
+body.background-ocean { --page-bg:linear-gradient(145deg,#0b2830,#164b58 55%,#08232a); }
+body.background-charcoal { --page-bg:linear-gradient(145deg,#30363b,#20272d 58%,#151a1f); }
+body.background-lavender { --page-bg:linear-gradient(145deg,#49415f,#6b5f80 55%,#332e46); }
+body.background-sand { --page-bg:linear-gradient(135deg,#827052,#b49a6e 52%,#5e523e); }
+body.background-paper { --page-bg:#e9e7df; }
+body.background-forest,
+body.background-midnight,
+body.background-slate,
+body.background-sunrise,
+body.background-ocean,
+body.background-charcoal,
+body.background-lavender,
+body.background-sand,
+body.background-paper {
+  background-color:#101b16 !important;
+  background-image:var(--page-bg) !important;
+  background-repeat:no-repeat !important;
+  background-size:cover !important;
+  background-attachment:fixed !important;
+  animation:none !important;
+}
+body.theme-dark.background-forest,
+body.theme-dark.background-midnight,
+body.theme-dark.background-slate,
+body.theme-dark.background-sunrise,
+body.theme-dark.background-ocean,
+body.theme-dark.background-charcoal,
+body.theme-dark.background-lavender,
+body.theme-dark.background-sand,
+body.theme-dark.background-paper {
+  background-image:linear-gradient(rgba(0,0,0,.42),rgba(0,0,0,.42)),var(--page-bg) !important;
+  background-color:#080d0a !important;
+}
+body.theme-light.background-forest,
+body.theme-light.background-midnight,
+body.theme-light.background-slate,
+body.theme-light.background-sunrise,
+body.theme-light.background-ocean,
+body.theme-light.background-charcoal,
+body.theme-light.background-lavender,
+body.theme-light.background-sand,
+body.theme-light.background-paper {
+  background-image:linear-gradient(rgba(255,255,255,.36),rgba(255,255,255,.36)),var(--page-bg) !important;
+  background-color:#f5f8f5 !important;
+}
+body.theme-contrast.background-forest,
+body.theme-contrast.background-midnight,
+body.theme-contrast.background-slate,
+body.theme-contrast.background-sunrise,
+body.theme-contrast.background-ocean,
+body.theme-contrast.background-charcoal,
+body.theme-contrast.background-lavender,
+body.theme-contrast.background-sand,
+body.theme-contrast.background-paper {
+  background-image:var(--page-bg) !important;
+  background-color:#000 !important;
+}
+body.theme-contrast.plain-background {
+  background:#fff !important;
+  background-image:none !important;
+  --page-text:#000;
+  --page-muted:#222;
+  --panel:#fff;
+  --panel-border:#000;
+  --card-text:#000;
+  --card-title:#000080;
+  color:#000;
+}
+
+/* Legal footer shared by all pages. */
+.site-footer {
+  display:block;
+  flex:0 0 auto;
+  width:min(1240px,100%);
+  margin:28px auto 0;
+  padding:16px 12px 10px;
+  border-top:1px solid var(--panel-border);
+  color:var(--page-muted);
+  text-align:center;
+  font-size:.8rem;
+  line-height:1.6;
+}
+.site-footer p { margin:2px 0; }
+.site-footer a { color:var(--accent); text-decoration:underline; text-underline-offset:2px; }
+body.web-page .site-footer { width:min(1240px,100%); margin:8px auto 0; padding:8px 6px 2px; }
