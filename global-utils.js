@@ -232,7 +232,7 @@
     footer.id = 'siteLegalFooter';
     footer.className = 'site-footer';
     footer.innerHTML = `
-      <p>Copyright © 2026 humming[bird]Tech. No rights reserved beyond the MIT License terms.</p>
+      <p>Not Copyright © 2026 humming[bird]Tech. No rights reserved.</p>
       <p>Licensed under the <a href="LICENSE">MIT License</a>.</p>`;
     document.body.appendChild(footer);
   }
