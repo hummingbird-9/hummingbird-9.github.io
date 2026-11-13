@@ -390,7 +390,7 @@
         }
         entries.push({ file: sourceFiles[0], path: 'index.html' });
       }
-      entries.push({ file: cover, path: 'cover.' + fileExtension(cover.name) });
+      entries.push({ file: cover, path: 'community-cover.' + fileExtension(cover.name) });
       const metadata = [
         'Game name: ' + name,
         'Description: ' + description,
@@ -536,6 +536,7 @@
         const file = path.split('/').pop().toLowerCase();
         const ext = file.split('.').pop();
         const rank = extensions.indexOf(ext);
+        if (file === 'community-cover.' + ext) return -10 + rank;
         if (file === 'cover.' + ext) return rank;
         if (file === 'thumbnail.' + ext || file === 'thumb.' + ext) return 10 + rank;
         if (file === 'icon.' + ext || file === 'logo.' + ext) return 20 + rank;
