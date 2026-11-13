@@ -68,14 +68,6 @@
   <script>
   (() => {
     'use strict';
-    const tabs = {
-      library: document.getElementById('gamesLibraryTab'),
-      submit: document.getElementById('gamesSubmitTab')
-    };
-    const panels = {
-      library: document.getElementById('gamesLibraryPanel'),
-      submit: document.getElementById('gamesSubmitPanel')
-    };
     const folderModeButton = document.getElementById('folderModeButton');
     const htmlModeButton = document.getElementById('htmlModeButton');
     const folderPicker = document.getElementById('folderPicker');
@@ -99,17 +91,6 @@
     descriptionInput.addEventListener('input', () => {
       descriptionCount.textContent = String(descriptionInput.value.length);
     });
-
-    function switchSection(section) {
-      Object.keys(tabs).forEach(key => {
-        const active = key === section;
-        tabs[key].classList.toggle('is-selected', active);
-        tabs[key].setAttribute('aria-selected', active ? 'true' : 'false');
-        panels[key].hidden = !active;
-      });
-    }
-    tabs.library.addEventListener('click', () => switchSection('library'));
-    tabs.submit.addEventListener('click', () => switchSection('submit'));
 
     function setMode(mode) {
       selectedMode = mode;
@@ -381,7 +362,6 @@
       }
     });
 
-    switchSection('library');
     setMode('folder');
   })();
   </script>
