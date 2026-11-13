@@ -16,3 +16,7 @@ Recent interface updates:
 
 Preferences are stored locally in the browser. The Padlet discussion and games
 catalog require an internet connection.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
