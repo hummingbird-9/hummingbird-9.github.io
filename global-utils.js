@@ -205,7 +205,7 @@
     header.className = 'site-header';
     const isHome = document.body.classList.contains('home-page');
     header.innerHTML = `
-      <a class="site-brand" href="index.html" aria-label="Home"><img src="${LOGO_URL}" alt="Home" width="34" height="34"></a>
+      <a class="site-brand" href="index.html" aria-label="Home"><img src="${LOGO_URL}" alt="Home" width="68" height="68"></a>
       <nav class="site-header-actions" aria-label="Main navigation">
         <a class="site-tab" href="index.html">Home</a>
         <a class="site-tab" href="gallery.html">View applications and projects</a>
