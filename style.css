@@ -834,3 +834,11 @@ body.lightweight-mode #bookmarkFilter { background:var(--panel); box-shadow:none
   .release-note summary span { flex:1 0 calc(100% - 40px); margin-left:31px; order:2; }
   .release-note ul { margin-left:36px; }
 }
+
+
+/* Keep the grouped Games controls in their authored order on narrow screens. */
+@media(max-width:820px) {
+  .games-actions-row > * { order:0; }
+  #refreshGames { order:0; }
+  #htmlSelector { order:0; max-width:none; flex:initial; }
+}
