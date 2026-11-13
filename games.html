@@ -3,190 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>humming[bird]Tech — Games</title>
+  <title>Games — humming[bird]Tech</title>
   <link rel="stylesheet" href="style.css">
   <link rel="shortcut icon" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png">
-  <style>
-    /* Keep the same glass search styling and card language used by gallery.html. */
-    .games-toolbar {
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      width:min(1100px, calc(100% - 20px));
-      margin:10px auto 0;
-    }
-    .games-search-container {
-      flex:1 1 520px;
-      width:100%;
-      max-width:700px;
-      min-width:180px;
-      margin:0;
-      gap:0;
-    }
-    .games-search-container .search-bar { width:100%; }
-    #refreshGames, #htmlSelector {
-      flex:0 0 auto;
-      min-width:0 !important;
-      width:auto;
-      max-width:230px;
-      margin:0 !important;
-      padding:11px 16px !important;
-      border-radius:12px !important;
-      font-size:14px !important;
-    }
-    #htmlSelector { color:white; }
-    #htmlSelector:disabled { opacity:.65; cursor:not-allowed; }
-    #htmlSelector option { color:#10251b; background:#eafff3; }
-    #gamesStatus {
-      width:min(1100px, calc(100% - 24px));
-      min-height:24px;
-      margin:12px auto 0;
-      color:rgba(255,255,255,.85);
-      text-align:center;
-      font-size:.95rem;
-    }
-    #gamesTotal { margin-left:8px; opacity:.72; font-size:.85em; }
-    #container { margin-top:22px; }
-    #container .game-card {
-      flex:1 1 calc(25% - 20px);
-      flex-basis:calc(25% - 20px);
-      max-width:240px;
-      min-width:180px;
-      padding:12px;
-      box-sizing:border-box;
-    }
-    #container .game-thumbnail {
-      height:115px;
-      margin-bottom:8px;
-    }
-    #container .game-card h3 {
-      margin:0 0 4px;
-      font-size:1.05rem;
-      overflow-wrap:anywhere;
-    }
-    #container .game-card p {
-      font-size:.85rem;
-      line-height:1.3;
-    }
-    .game-folder-name {
-      display:block;
-      margin-top:7px;
-      color:rgba(255,255,255,.63);
-      font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size:11px;
-      overflow-wrap:anywhere;
-    }
-    #gamesEmpty { width:100%; text-align:center; opacity:.8; }
-    #bookmarksShelf { width:100%; }
-    .bookmarks-shelf-title { width:min(1100px,calc(100% - 24px)); margin:14px auto 4px; font-size:1.15rem; }
-    #bookmarksContainer { padding-top:4px; padding-bottom:8px; }
-    #gamesFilters {
-      width:min(1100px, calc(100% - 24px));
-      margin:4px auto 0;
-      display:flex;
-      justify-content:flex-end;
-    }
-    #bookmarkFilter[aria-pressed="true"] {
-      background:rgba(255,210,90,.95) !important;
-      color:#172018 !important;
-      border-color:rgba(255,230,150,.9) !important;
-    }
-    #container .game-card { position:relative; }
-    .game-bookmark-btn {
-      position:absolute;
-      top:18px;
-      right:18px;
-      z-index:3;
-      display:grid;
-      place-items:center;
-      width:38px;
-      height:38px;
-      margin:0 !important;
-      padding:0 !important;
-      border:1px solid rgba(255,255,255,.28) !important;
-      border-radius:11px !important;
-      background:rgba(10,16,20,.82) !important;
-      color:#fff !important;
-      font-size:24px !important;
-      line-height:1;
-      backdrop-filter:blur(8px);
-      -webkit-backdrop-filter:blur(8px);
-      cursor:pointer;
-    }
-    .game-bookmark-btn:hover { transform:scale(1.07); }
-    .game-bookmark-btn.is-bookmarked {
-      background:rgba(255,210,90,.96) !important;
-      color:#172018 !important;
-      border-color:rgba(255,230,150,.95) !important;
-    }
-    .game-bookmark-btn:focus-visible, #bookmarkFilter:focus-visible {
-      outline:2px solid #ffe08a;
-      outline-offset:3px;
-    }
-
-    /* Game player overlay mirrors the gallery's centered application viewport. */
-    #gameViewer {
-      display:none;
-      position:fixed;
-      inset:0;
-      z-index:20000;
-      flex-direction:column;
-      background:rgba(0,0,0,.92);
-    }
-    #gameViewer.is-open { display:flex; }
-    .game-viewer-navbar {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:10px 16px;
-      background:#111;
-      border-bottom:1px solid #292929;
-      text-align:left;
-    }
-    #gameViewerTitle { margin:0; color:#fff; font-size:17px; font-weight:600; }
-    .game-viewer-controls { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
-    .game-viewer-controls button {
-      min-width:0 !important;
-      margin:0 !important;
-      padding:8px 13px !important;
-      font-size:13px !important;
-      border-radius:10px !important;
-    }
-    .game-frame-wrap { flex:1; min-height:0; background:#000; }
-    #gameFrame { display:block; width:100%; height:100%; border:0; background:#fff; }
-    @media (max-width:720px) {
-      .games-toolbar { flex-wrap:wrap; }
-      .games-search-container { order:3; flex:1 1 100%; max-width:none; }
-      #refreshGames { order:2; }
-      #htmlSelector { order:4; max-width:100%; flex:1 1 100%; }
-      #container .game-card { flex-basis:calc(50% - 20px); min-width:145px; }
-      .game-viewer-navbar { align-items:flex-start; flex-direction:column; }
-      .game-viewer-controls { width:100%; justify-content:flex-start; }
-    }
-    @media (max-width:420px) {
-      #container .game-card { flex-basis:100%; max-width:none; }
-    }
-  </style>
-  <link rel="stylesheet" href="settings.css">
 </head>
 <body class="gallery-body">
-<div class="utility-controls-container">
-<button class="utility-btn" onclick="toggleHardwareProfilerOverlay()">Hardware HUD</button>
-<button id="lightweightToggleBtn" class="utility-btn" onclick="toggleLightweightEngine()">Extreme Lightweight</button>
-<button id="themeToggleBtn" class="utility-btn" onclick="toggleTheme()">Theme Mode</button>
-</div>
-
-  <div class="top-button-container">
-    <a href="index.html" class="open-page-btn back-btn">← Home</a>
-  </div>
-
-  <div class="logo-container gallery-logo-container">
-    <img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png" alt="Humming[bird]Tech Logo" class="brand-logo">
-  </div>
-
-  <p class="content">Browse and play games</p>
+  <main class="home-page-main">
+    <h1>Games</h1>
+    <p class="content">Browse, search, bookmark, and play games.</p>
 
   <div class="games-toolbar" role="search">
     <button id="refreshGames" class="utility-btn" type="button" title="Refresh the games from GitHub">↻ Refresh</button>
@@ -202,17 +26,20 @@
   <div id="gamesFilters">
     <button id="bookmarkFilter" class="utility-btn" type="button" aria-pressed="false">☆ Bookmarks</button>
   </div>
-  <section id="bookmarksShelf" aria-label="Bookmarked games" hidden>
-    <h2 class="bookmarks-shelf-title">★ Bookmarked games</h2>
-    <div id="bookmarksContainer" class="gallery-container"></div>
-  </section>
   <div id="gamesTotal"></div>
   <div id="container" class="gallery-container"></div>
+  <div id="gamesPagination" class="games-pagination" hidden>
+    <button id="loadMoreGames" class="utility-btn" type="button">Load 100 more</button>
+    <span id="gamesPaginationStatus" aria-live="polite"></span>
+  </div>
+
+  </main>
 
   <div id="gameViewer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Game player">
     <div class="game-viewer-navbar">
       <h2 id="gameViewerTitle">Game</h2>
       <div class="game-viewer-controls">
+        <button id="downloadActiveGame" class="utility-btn" type="button">Download ZIP</button>
         <button id="aboutBlankGame" class="utility-btn" type="button">about:blank</button>
         <button id="closeGame" class="utility-btn" type="button">Close</button>
       </div>
@@ -220,6 +47,7 @@
     <div class="game-frame-wrap" id="gameFrameWrap"></div>
   </div>
 
+  <script src="global-utils.js"></script>
   <script>
   (() => {
     'use strict';
@@ -229,13 +57,12 @@
     const BRANCH = 'main';
     const TREE_API = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${BRANCH}?recursive=1`;
     const CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@${BRANCH}/`;
-    const CACHE_KEY = 'hummingbird-games-folder-catalog-v1';
+    const CACHE_KEY = 'hummingbird-games-folder-catalog-v3';
+    const PAGE_SIZE = 100;
     const BOOKMARKS_KEY = 'hummingbird-games-bookmarks-v1';
     const CACHE_TTL = 60 * 60 * 1000;
 
     const container = document.getElementById('container');
-    const bookmarksShelf = document.getElementById('bookmarksShelf');
-    const bookmarksContainer = document.getElementById('bookmarksContainer');
     const searchBar = document.getElementById('searchBar');
     const statusEl = document.getElementById('gamesStatus');
     const totalEl = document.getElementById('gamesTotal');
@@ -244,9 +71,13 @@
     const viewerTitle = document.getElementById('gameViewerTitle');
     const frameWrap = document.getElementById('gameFrameWrap');
     const bookmarkFilter = document.getElementById('bookmarkFilter');
+    const pagination = document.getElementById('gamesPagination');
+    const loadMoreButton = document.getElementById('loadMoreGames');
+    const paginationStatus = document.getElementById('gamesPaginationStatus');
 
     let games = [];
     let visibleGames = [];
+    let currentLimit = PAGE_SIZE;
     let bookmarks = loadBookmarks();
     let showBookmarkedOnly = false;
     let activeGame = null;
@@ -300,23 +131,27 @@
         .replace(/\b([a-z])/g, letter => letter.toUpperCase());
     }
 
-    function chooseCover(folder, pngPaths) {
-      if (!pngPaths.length) return '';
-      const direct = pngPaths.filter(path => !path.slice(folder.length + 1).includes('/'));
-      const candidates = direct.length ? direct : pngPaths;
+    function chooseCover(folder, imagePaths) {
+      if (!imagePaths.length) return '';
+      const direct = imagePaths.filter(path => !path.slice(folder.length + 1).includes('/'));
+      const candidates = direct.length ? direct : imagePaths;
+      const extensions = ['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif'];
       const score = path => {
         const file = path.split('/').pop().toLowerCase();
-        if (file === 'cover.png') return 0;
-        if (file === 'thumbnail.png' || file === 'thumb.png') return 1;
-        if (file === 'icon.png' || file === 'logo.png') return 2;
-        if (file === folder.toLowerCase() + '.png') return 3;
-        return 10;
+        const ext = file.split('.').pop();
+        const rank = extensions.indexOf(ext);
+        if (file === 'cover.' + ext) return rank;
+        if (file === 'thumbnail.' + ext || file === 'thumb.' + ext) return 10 + rank;
+        if (file === 'icon.' + ext || file === 'logo.' + ext) return 20 + rank;
+        if (file === folder.toLowerCase() + '.' + ext) return 30 + rank;
+        return 100 + rank;
       };
       return candidates.slice().sort((a, b) => score(a) - score(b) || a.localeCompare(b))[0];
     }
 
     function makeCatalog(treeEntries) {
       const byFolder = new Map();
+      const imagePattern = /\.(jpe?g|png|webp|avif|gif)$/i;
       for (const entry of treeEntries) {
         if (!entry || entry.type !== 'blob' || typeof entry.path !== 'string') continue;
         const match = entry.path.match(/^([^/]+)\/(.+)$/);
@@ -324,12 +159,10 @@
         const folder = match[1];
         const relativePath = match[2];
         if (folder.startsWith('.')) continue;
-        if (!byFolder.has(folder)) byFolder.set(folder, { htmlFiles: [], pngPaths: [] });
+        if (!byFolder.has(folder)) byFolder.set(folder, { htmlFiles: [], imagePaths: [] });
         const record = byFolder.get(folder);
-        if (/\.html?$/i.test(relativePath) && !relativePath.includes('/')) {
-          record.htmlFiles.push(relativePath);
-        }
-        if (/\.png$/i.test(relativePath)) record.pngPaths.push(entry.path);
+        if (/\.html?$/i.test(relativePath) && !relativePath.includes('/')) record.htmlFiles.push(relativePath);
+        if (imagePattern.test(relativePath)) record.imagePaths.push(entry.path);
       }
 
       const result = [];
@@ -340,7 +173,7 @@
           return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
         });
         if (!htmlFiles.some(file => file.toLowerCase() === 'index.html')) continue;
-        const coverPath = chooseCover(folder, record.pngPaths);
+        const coverPath = chooseCover(folder, record.imagePaths);
         result.push({
           folder,
           title: humanizeFolder(folder),
@@ -392,30 +225,26 @@
       else bookmarks.add(game.folder);
       saveBookmarks();
       updateBookmarkButton(button, game);
-      renderBookmarksShelf();
       if (showBookmarkedOnly) applySearch();
       else updateTotals();
     }
 
-    function renderBookmarksShelf() {
-      const savedGames = games.filter(game => bookmarks.has(game.folder));
-      bookmarksContainer.replaceChildren();
-      bookmarksShelf.hidden = savedGames.length === 0;
-      const fragment = document.createDocumentFragment();
-      savedGames.forEach(game => fragment.appendChild(makeCard(game)));
-      bookmarksContainer.appendChild(fragment);
-    }
 
     function updateTotals() {
-      const countText = `${visibleGames.length} of ${games.length} games`;
+      const shown = Math.min(currentLimit, visibleGames.length);
+      const countText = `${visibleGames.length} matching games`;
       totalEl.textContent = showBookmarkedOnly
         ? `${visibleGames.length} bookmarked · ${countText}`
         : countText;
+      pagination.hidden = visibleGames.length <= shown;
+      paginationStatus.textContent = `Showing ${shown} of ${visibleGames.length}. Only ${PAGE_SIZE} cards are added at a time.`;
+      loadMoreButton.textContent = `Load ${Math.min(PAGE_SIZE, visibleGames.length - shown)} more`;
       bookmarkFilter.setAttribute('aria-pressed', showBookmarkedOnly ? 'true' : 'false');
       bookmarkFilter.textContent = showBookmarkedOnly ? '★ Showing bookmarks' : '☆ Bookmarks';
     }
 
     function applySearch() {
+      currentLimit = PAGE_SIZE;
       const query = searchBar.value.trim().toLowerCase();
       visibleGames = games.filter(game =>
         (!query || game.searchText.includes(query)) &&
@@ -429,8 +258,32 @@
       const card = document.createElement('article');
       card.className = 'game-card';
       card.tabIndex = 0;
-      card.setAttribute('role', 'button');
+      card.setAttribute('role', 'group');
       card.setAttribute('aria-label', 'Play ' + game.title);
+
+      const thumbnail = document.createElement('div');
+      thumbnail.className = 'game-thumbnail-wrap';
+      if (game.coverPath) {
+        const img = document.createElement('img');
+        img.className = 'game-thumbnail';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.alt = game.title + ' cover';
+        img.src = CDN_ROOT + encodePath(game.coverPath);
+        img.onerror = () => {
+          img.remove();
+          const fallback = document.createElement('div');
+          fallback.className = 'game-thumbnail-placeholder';
+          fallback.textContent = game.title.slice(0, 1).toUpperCase();
+          thumbnail.prepend(fallback);
+        };
+        thumbnail.appendChild(img);
+      } else {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'game-thumbnail-placeholder';
+        placeholder.textContent = game.title.slice(0, 1).toUpperCase();
+        thumbnail.appendChild(placeholder);
+      }
 
       const bookmarkButton = document.createElement('button');
       bookmarkButton.type = 'button';
@@ -441,24 +294,8 @@
         toggleBookmark(game, bookmarkButton);
       });
       updateBookmarkButton(bookmarkButton, game);
-      card.appendChild(bookmarkButton);
-
-      const img = document.createElement('img');
-      img.className = 'game-thumbnail';
-      img.loading = 'lazy';
-      img.alt = game.title + ' cover';
-      if (game.coverPath) {
-        img.src = CDN_ROOT + encodePath(game.coverPath);
-        img.onerror = () => {
-          img.onerror = null;
-          img.src = `https://github.com/${OWNER}.png?size=320`;
-          img.alt = 'No cover image available for ' + game.title;
-        };
-      } else {
-        img.src = `https://github.com/${OWNER}.png?size=320`;
-        img.alt = 'No cover image available for ' + game.title;
-      }
-      card.appendChild(img);
+      thumbnail.appendChild(bookmarkButton);
+      card.appendChild(thumbnail);
 
       const heading = document.createElement('h3');
       heading.textContent = game.title;
@@ -489,7 +326,7 @@
     function renderGames() {
       container.replaceChildren();
       const fragment = document.createDocumentFragment();
-      visibleGames.forEach(game => fragment.appendChild(makeCard(game)));
+      visibleGames.slice(0, currentLimit).forEach(game => fragment.appendChild(makeCard(game)));
       if (!visibleGames.length) {
         const empty = document.createElement('p');
         empty.id = 'gamesEmpty';
@@ -499,13 +336,103 @@
         fragment.appendChild(empty);
       }
       container.appendChild(fragment);
-      renderBookmarksShelf();
       updateTotals();
       if (!games.length) totalEl.textContent = '';
     }
 
     function setStatus(message) {
       statusEl.textContent = message;
+    }
+
+
+    let zipLibraryPromise = null;
+    function loadZipLibrary() {
+      if (window.JSZip) return Promise.resolve(window.JSZip);
+      if (!zipLibraryPromise) {
+        zipLibraryPromise = new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+          script.onload = () => window.JSZip ? resolve(window.JSZip) : reject(new Error('ZIP library did not initialize.'));
+          script.onerror = () => reject(new Error('Could not load the ZIP library. Check your connection and try again.'));
+          document.head.appendChild(script);
+        });
+      }
+      return zipLibraryPromise;
+    }
+
+    async function fetchGameFileList(game) {
+      const pending = [game.folder];
+      const files = [];
+      while (pending.length) {
+        const directory = pending.shift();
+        const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodePath(directory)}?ref=${encodeURIComponent(BRANCH)}`;
+        const response = await fetch(url, { headers: { Accept: 'application/vnd.github+json' } });
+        if (!response.ok) throw new Error(`Could not list ${directory} (HTTP ${response.status}).`);
+        const entries = await response.json();
+        if (!Array.isArray(entries)) throw new Error('GitHub returned an unexpected file list.');
+        for (const entry of entries) {
+          if (entry.type === 'file') files.push({ path: entry.path, size: entry.size || 0 });
+          else if (entry.type === 'dir') pending.push(entry.path);
+        }
+      }
+      return files;
+    }
+
+    async function downloadGame(game, button) {
+      const originalLabel = button.textContent;
+      button.disabled = true;
+      try {
+        if (!Array.isArray(game.files) || !game.files.length) game.files = await fetchGameFileList(game);
+        if (!game.files.length) throw new Error('No files were found in this game folder.');
+        const JSZip = await loadZipLibrary();
+        const zip = new JSZip();
+        const files = game.files.slice();
+        let completed = 0;
+        let next = 0;
+        let failed = [];
+        button.textContent = 'Preparing 0/' + files.length;
+        async function worker() {
+          while (next < files.length) {
+            const index = next++;
+            const item = files[index];
+            try {
+              const response = await fetch(CDN_ROOT + encodePath(item.path));
+              if (!response.ok) throw new Error('HTTP ' + response.status);
+              const data = await response.arrayBuffer();
+              const relativePath = item.path.slice(game.folder.length + 1);
+              zip.file(relativePath, data);
+            } catch (error) {
+              failed.push(item.path + ' (' + error.message + ')');
+            }
+            completed++;
+            button.textContent = 'Files ' + completed + '/' + files.length;
+          }
+        }
+        await Promise.all(Array.from({ length: Math.min(5, files.length) }, () => worker()));
+        if (failed.length) throw new Error(failed.length + ' file(s) could not be downloaded. First: ' + failed[0]);
+        button.textContent = 'Building ZIP…';
+        const blob = await zip.generateAsync(
+          { type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 3 } },
+          progress => { button.textContent = 'Zipping ' + Math.round(progress.percent) + '%'; }
+        );
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = game.folder.replace(/[^a-z0-9._-]+/gi, '-') + '.zip';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+        setStatus('Downloaded ' + game.title + ' (' + files.length + ' files).');
+      } catch (error) {
+        console.error('Game download failed:', error);
+        alert('Could not download ' + game.title + ': ' + error.message);
+      } finally {
+        // Do not retain this game's full file tree after the one-shot ZIP operation.
+        delete game.files;
+        button.disabled = false;
+        button.textContent = originalLabel;
+      }
     }
 
     async function loadGames(forceRefresh = false) {
@@ -538,7 +465,9 @@
         if (data.truncated) throw new Error('GitHub returned a truncated file tree, so the full game list could not be read.');
 
         games = makeCatalog(data.tree);
-        localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), games }));
+        const compactGames = games.map(({ files, ...game }) => game);
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), games: compactGames })); }
+        catch (cacheError) { console.warn('Game list loaded, but could not cache it:', cacheError); }
         applySearch();
         setStatus(`Found ${games.length} games from the GitHub folders.`);
       } catch (error) {
@@ -663,10 +592,17 @@
     }
 
     document.getElementById('refreshGames').addEventListener('click', () => loadGames(true));
+    loadMoreButton.addEventListener('click', () => {
+      currentLimit = Math.min(currentLimit + PAGE_SIZE, visibleGames.length);
+      renderGames();
+    });
     searchBar.addEventListener('input', applySearch);
     htmlSelector.addEventListener('change', loadActiveHtml);
     document.getElementById('closeGame').addEventListener('click', closeGame);
     document.getElementById('aboutBlankGame').addEventListener('click', openGameInAboutBlank);
+    document.getElementById('downloadActiveGame').addEventListener('click', event => {
+      if (activeGame) downloadGame(activeGame, event.currentTarget);
+    });
     bookmarkFilter.addEventListener('click', () => {
       showBookmarkedOnly = !showBookmarkedOnly;
       applySearch();
@@ -681,6 +617,5 @@
     loadGames(false);
   })();
   </script>
-  <script src="global-utils.js"></script>
 </body>
 </html>

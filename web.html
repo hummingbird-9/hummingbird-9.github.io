@@ -1,24 +1,20 @@
-
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HummingProxy</title>
-<style>
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#10291a}
-iframe{display:block;width:100%;height:100%;border:0;background:#10291a}
-</style>
-  <link rel="stylesheet" href="settings.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Search the HummingWeb</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body.web-page { display:block; padding:88px 12px 12px; overflow:hidden; }
+    .web-viewport { width:100%; height:calc(100vh - 100px); border:1px solid var(--panel-border); border-radius:var(--corner-radius); overflow:hidden; background:#10291a; }
+    .web-viewport iframe { display:block; width:100%; height:100%; border:0; background:#10291a; }
+  </style>
 </head>
-<body>
-<div class="utility-controls-container">
-<button class="utility-btn" onclick="toggleHardwareProfilerOverlay()">Hardware HUD</button>
-<button id="lightweightToggleBtn" class="utility-btn" onclick="toggleLightweightEngine()">Extreme Lightweight</button>
-<button id="themeToggleBtn" class="utility-btn" onclick="toggleTheme()">Theme Mode</button>
-</div>
-
-<iframe src="https://hummingproxy-saj5.onrender.com/" title="HummingProxy" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>
-<script src="global-utils.js"></script>
+<body class="web-page">
+  <main class="web-viewport">
+    <iframe src="https://hummingproxy-saj5.onrender.com/" title="HummingWeb search" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen loading="eager"></iframe>
+  </main>
+  <script src="global-utils.js"></script>
 </body>
 </html>

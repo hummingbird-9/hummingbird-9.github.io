@@ -1,51 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>HTML Gallery</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Applications and Projects — humming[bird]Tech</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="shortcut icon" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png">
-    <style>
-      /* 4-COLUMN ROW DYNAMICS: Shrinks the grid parameters down to align exactly 4 items per row */
-      .game-card {
-        flex-basis: calc(25% - 20px) !important;
-        max-width: 240px !important;
-        min-width: 180px !important;
-        padding: 12px !important;
-        box-sizing: border-box !important;
-      }
-      .game-thumbnail {
-        height: 115px !important;
-        margin-bottom: 8px !important;
-      }
-      .game-card h3 {
-        font-size: 1.05rem !important;
-        margin-bottom: 4px !important;
-      }
-      .game-card p {
-        font-size: 0.85rem !important;
-        line-height: 1.3 !important;
-      }
-    </style>
-    <link rel="stylesheet" href="settings.css">
 </head>
   <body class="gallery-body">
 
-    <div class="top-button-container">
-      <a href="index.html" class="open-page-btn back-btn">← Back Home</a>
-      <a href="https://github.com/hummingbird-9/hummingbird-9.github.io/issues" target="_blank" class="open-page-btn" style="border-color: rgba(255, 95, 86, 0.4);">Report An Issue</a>
-    </div>
-
-    <div class="utility-controls-container">
-      <button class="utility-btn" onclick="toggleHardwareProfilerOverlay()">Hardware HUD</button>
-      <button id="lightweightToggleBtn" class="utility-btn" onclick="toggleLightweightEngine()">Extreme Lightweight</button>
-      <button id="themeToggleBtn" class="utility-btn" onclick="toggleTheme()">Theme Mode</button>
-    </div>
-
-    <div class="logo-container gallery-logo-container">
-      <img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png" alt="Humming[bird]Tech Logo" class="brand-logo">
-    </div>
-
-    <p class="content"></p>
+    <main class="home-page-main">
+      <h1>Applications and projects</h1>
+      <p class="content">Explore the applications and projects in the collection.</p>
 
     <div class="search-container">
       <input type="text" id="gallerySearch" placeholder="Search applications..." class="search-bar">
@@ -70,6 +36,7 @@
       </div>
     </div>
 
+    </main>
     <script src="global-utils.js"></script>
     <script>
       const container = document.getElementById('galleryContainer');
@@ -170,7 +137,6 @@
       function renderGalleryExecutionBlocks(projects) {
         const fragment = document.createDocumentFragment();
         container.innerHTML = "";
-        const isExtremeLightweight = localStorage.getItem("extreme_lightweight") === "true";
 
         if (projects.length === 0) {
           container.innerHTML = `<p>No items match current filter criteria.</p>`;
@@ -188,6 +154,7 @@
           img.className = 'game-thumbnail';
           img.alt = `${project.name} thumbnail`;
           img.loading = 'lazy';
+          img.decoding = 'async';
           const thumbnailNames = ['cover.png', 'Cover.png', 'thumbnail.png', 'icon.png', 'assets/cover.png'];
           let thumbnailIndex = 0;
           img.onerror = () => {
