@@ -1901,3 +1901,33 @@ body.plain-background .site-settings-panel .settings-footer button {
   background:#fff !important;
   color:#202124 !important;
 }
+
+
+/* Let game cards sit quietly within the collection instead of reading as separate high-contrast tiles. */
+.game-card {
+  border-color:color-mix(in srgb,var(--panel-border) 68%,transparent);
+  background:color-mix(in srgb,var(--panel) 82%,transparent);
+  box-shadow:0 5px 18px rgba(0,0,0,.065);
+  backdrop-filter:saturate(125%) blur(var(--glass-blur));
+  -webkit-backdrop-filter:saturate(125%) blur(var(--glass-blur));
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.game-card:hover {
+  transform:translateY(-2px);
+  border-color:color-mix(in srgb,var(--panel-border) 92%,transparent);
+  background:color-mix(in srgb,var(--panel) 92%,transparent);
+  box-shadow:0 8px 22px rgba(0,0,0,.09);
+}
+.game-thumbnail-wrap {
+  background:linear-gradient(135deg,rgba(72,185,130,.10),rgba(72,185,130,.025));
+}
+body.theme-normal .game-card {
+  border-color:rgba(255,255,255,.12);
+  background:rgba(255,255,255,.035);
+  box-shadow:0 5px 20px rgba(0,0,0,.07);
+}
+body.theme-normal .game-card:hover {
+  border-color:rgba(255,255,255,.2);
+  background:rgba(255,255,255,.065);
+  box-shadow:0 8px 24px rgba(0,0,0,.1);
+}
