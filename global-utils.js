@@ -99,6 +99,7 @@
     clearHardRefreshMarker();
     applySettings();
     injectSiteHeader();
+    injectSiteFooter();
     injectSettingsDialog();
     bindHomeLogoRefresh();
     injectContextMenu();
@@ -190,7 +191,7 @@
 
   function accentColor(name) {
     return ({
-      green: '#48b982',
+      green: '#90e4c1',
       blue: '#718b91',
       violet: '#897d91',
       amber: '#b58b53',
@@ -222,6 +223,18 @@
     header.querySelectorAll('a.site-tab').forEach(link => {
       if (link.getAttribute('href') === current) link.classList.add('is-current');
     });
+  }
+
+
+  function injectSiteFooter() {
+    if (document.getElementById('siteLegalFooter')) return;
+    const footer = document.createElement('footer');
+    footer.id = 'siteLegalFooter';
+    footer.className = 'site-footer';
+    footer.innerHTML = `
+      <p>Copyright © 2026 humming[bird]Tech. No rights reserved beyond the MIT License terms.</p>
+      <p>Licensed under the <a href="LICENSE">MIT License</a>.</p>`;
+    document.body.appendChild(footer);
   }
 
   function updateHeaderLabels() {
