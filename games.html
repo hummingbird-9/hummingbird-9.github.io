@@ -327,8 +327,7 @@
       container.replaceChildren();
       const fragment = document.createDocumentFragment();
       const bookmarked = visibleGames.filter(game => bookmarks.has(game.folder));
-      const regular = visibleGames.filter(game => !bookmarks.has(game.folder));
-      const ordered = [...bookmarked, ...regular].slice(0, currentLimit);
+      const pageGames = visibleGames.slice(0, currentLimit);
 
       if (bookmarked.length) {
         const heading = document.createElement('h2');
@@ -337,14 +336,12 @@
         fragment.appendChild(heading);
         bookmarked.slice(0, currentLimit).forEach(game => fragment.appendChild(makeCard(game)));
       }
-      if (regular.length && ordered.length > bookmarked.length) {
-        if (bookmarked.length) {
-          const heading = document.createElement('h2');
-          heading.className = 'games-group-heading';
-          heading.textContent = 'All games';
-          fragment.appendChild(heading);
-        }
-        regular.slice(0, Math.max(0, currentLimit - bookmarked.length)).forEach(game => fragment.appendChild(makeCard(game)));
+      if (pageGames.length) {
+        const heading = document.createElement('h2');
+        heading.className = 'games-group-heading';
+        heading.textContent = 'All games';
+        fragment.appendChild(heading);
+        pageGames.forEach(game => fragment.appendChild(makeCard(game)));
       }
       if (!visibleGames.length) {
         const empty = document.createElement('p');

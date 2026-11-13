@@ -87,11 +87,56 @@
   }
 
   function initialize() {
+    clearHardRefreshMarker();
     applySettings();
     injectSiteHeader();
     injectSettingsDialog();
+    bindHomeLogoRefresh();
     injectContextMenu();
     bindGlobalKeys();
+  }
+
+  function clearHardRefreshMarker() {
+    const url = new URL(location.href);
+    if (!url.searchParams.has('__hbt_hard_refresh')) return;
+    url.searchParams.delete('__hbt_hard_refresh');
+    history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+  }
+
+  function bindHomeLogoRefresh() {
+    if (!document.body.classList.contains('home-page')) return;
+    document.querySelectorAll('.site-brand, .home-hero-logo').forEach(link => {
+      if (link.dataset.hardRefreshBound === 'true') return;
+      link.dataset.hardRefreshBound = 'true';
+      link.addEventListener('click', hardRefreshCurrentDocument);
+    });
+  }
+
+  async function hardRefreshCurrentDocument(event) {
+    event.preventDefault();
+    if (document.documentElement.dataset.hardRefreshing === 'true') return;
+    document.documentElement.dataset.hardRefreshing = 'true';
+    try {
+      if ('caches' in window) {
+        const paths = new Set([location.pathname, '/index.html', '/']);
+        for (const name of await caches.keys()) {
+          const cache = await caches.open(name);
+          for (const request of await cache.keys()) {
+            try {
+              const url = new URL(request.url);
+              if (url.origin === location.origin && paths.has(url.pathname)) {
+                await cache.delete(request);
+              }
+            } catch (_) {}
+          }
+        }
+      }
+    } catch (error) {
+      console.info('The browser did not allow the page cache to be cleared:', error);
+    }
+    const freshUrl = new URL(location.href);
+    freshUrl.searchParams.set('__hbt_hard_refresh', Date.now().toString(36));
+    location.replace(freshUrl.href);
   }
 
   function applySettings() {
@@ -139,9 +184,11 @@
     header.innerHTML = `
       <a class="site-brand" href="index.html" aria-label="HummingbirdTech home"><img src="${LOGO_URL}" alt="" width="34" height="34"><span>humming[bird]Tech</span></a>
       <nav class="site-header-actions" aria-label="Main navigation">
+        <a class="site-tab" href="index.html">Home</a>
         <a class="site-tab" href="gallery.html">View applications and projects</a>
         <a class="site-tab" href="games.html">Browse games</a>
         <a class="site-tab" href="web.html">Search the HummingWeb</a>
+        <a class="site-tab" href="chat.html">Chat</a>
         <button class="site-tab site-settings-tab" id="settingsOpenBtn" type="button" aria-expanded="false">Settings</button>
       </nav>`;
     document.body.prepend(header);
@@ -187,7 +234,8 @@
     panel.className = 'site-settings-panel';
     panel.hidden = true;
     panel.innerHTML = `
-      <div class="settings-panel-heading"><h2>Settings</h2><button id="settingsCloseBtn" type="button" class="settings-close">Close</button></div>
+      <div class="settings-panel-heading"><h2>Settings</h2></div>
+      <label class="settings-search"><span>Find a setting</span><input id="settingsSearch" type="search" placeholder="Search settings…" autocomplete="off"></label>
       <div class="settings-panel-grid">
         <section class="settings-section"><h3>Appearance</h3>
           <label class="settings-field"><span>Theme</span><select id="settingBrightness"><option value="normal">Normal</option><option value="dark">Dark</option><option value="light">Light</option></select></label>
@@ -210,10 +258,18 @@
           <label class="settings-check"><input id="settingContextMenu" type="checkbox"><span>Custom right-click menu</span></label>
         </section>
       </div>
-      <div class="settings-footer"><button class="settings-reset" id="settingsReset" type="button">Reset settings</button></div>`;
+      <div class="settings-footer">
+        <button id="settingsImport" type="button">Import settings</button>
+        <button id="settingsExport" type="button">Export settings</button>
+        <button class="settings-reset" id="settingsReset" type="button">Reset settings</button>
+        <input id="settingsImportFile" type="file" accept="application/json,.json" hidden>
+      </div>`;
     const header = document.getElementById('siteHeader');
     header.insertAdjacentElement('afterend', panel);
-    document.getElementById('settingsCloseBtn').addEventListener('click', closeSettings);
+    document.getElementById('settingsExport').addEventListener('click', exportSettings);
+    document.getElementById('settingsImport').addEventListener('click', () => document.getElementById('settingsImportFile').click());
+    document.getElementById('settingsImportFile').addEventListener('change', importSettingsFile);
+    document.getElementById('settingsSearch').addEventListener('input', event => filterSettingsSections(event.target.value));
     document.getElementById('settingsReset').addEventListener('click', () => {
       settings = { ...DEFAULTS };
       saveSettings();
@@ -242,10 +298,14 @@
     if (!panel) return;
     const shouldOpen = panel.hidden;
     panel.hidden = !shouldOpen;
+    document.body.classList.toggle('settings-open', shouldOpen);
     const button = document.getElementById('settingsOpenBtn');
     if (button) button.setAttribute('aria-expanded', String(shouldOpen));
     if (shouldOpen) {
       syncSettingsControls();
+      const search = document.getElementById('settingsSearch');
+      if (search) search.value = '';
+      filterSettingsSections('');
       panel.scrollIntoView({ behavior: settings.reducedMotion || settings.lightweight ? 'auto' : 'smooth', block: 'start' });
     }
   }
@@ -253,8 +313,63 @@
   function closeSettings() {
     const panel = document.getElementById('siteSettingsPanel');
     if (panel) panel.hidden = true;
+    document.body.classList.remove('settings-open');
     const button = document.getElementById('settingsOpenBtn');
     if (button) button.setAttribute('aria-expanded', 'false');
+  }
+
+  function filterSettingsSections(query) {
+    const panel = document.getElementById('siteSettingsPanel');
+    if (!panel) return;
+    const needle = String(query || '').trim().toLowerCase();
+    panel.querySelectorAll('.settings-section').forEach(section => {
+      let visible = 0;
+      section.querySelectorAll('.settings-field, .settings-range, .settings-check').forEach(row => {
+        const match = !needle || row.textContent.toLowerCase().includes(needle);
+        row.hidden = !match;
+        if (match) visible++;
+      });
+      section.hidden = visible === 0;
+    });
+  }
+
+  function exportSettings() {
+    const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'hummingbird-settings.json';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+  }
+
+  async function importSettingsFile(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    try {
+      const parsed = JSON.parse(await file.text());
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new Error('The selected file is not a settings object.');
+      }
+      const allowed = new Set(Object.keys(DEFAULTS));
+      const cleaned = {};
+      for (const [key, value] of Object.entries(parsed)) {
+        if (!allowed.has(key)) continue;
+        if (typeof value === typeof DEFAULTS[key]) cleaned[key] = value;
+      }
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(cleaned));
+      settings = readSettings();
+      saveSettings();
+      applySettings();
+      syncSettingsControls();
+      window.alert('Settings imported.');
+    } catch (error) {
+      window.alert('Could not import settings: ' + error.message);
+    } finally {
+      event.target.value = '';
+    }
   }
 
   function updateSettingFromControl(control, key) {
@@ -450,7 +565,10 @@
 
   function bindGlobalKeys() {
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') hideContextMenu();
+      if (event.key === 'Escape') {
+        hideContextMenu();
+        if (!document.getElementById('siteSettingsPanel')?.hidden) closeSettings();
+      }
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === ',') {
         event.preventDefault();
         openSettings();

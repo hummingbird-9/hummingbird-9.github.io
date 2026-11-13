@@ -456,3 +456,185 @@ body.lightweight-mode .site-settings-panel { backdrop-filter:none; }
   .site-tab { white-space:nowrap; padding:8px 10px; }
   body.gallery-body { padding-top:12px; }
 }
+
+
+/* Settings are a plain settings list, not a floating dialog or card. */
+body.settings-open {
+  justify-content: flex-start;
+  min-height: 100vh;
+}
+body.settings-open > :not(#siteHeader):not(#siteSettingsPanel):not(#customContextMenu):not(script):not(style) {
+  display: none !important;
+}
+.site-settings-panel {
+  display: block;
+  width: min(780px, 100%);
+  margin: 10px auto 42px;
+  padding: 0 14px 32px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.site-settings-panel[hidden] { display: none !important; }
+.settings-panel-heading {
+  display: block;
+  padding: 8px 0 16px;
+  margin: 0 0 14px;
+  border-bottom: 1px solid var(--panel-border);
+}
+.settings-panel-heading h2 { margin: 0; font-size: 1.7rem; font-weight: 700; }
+.settings-search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0 0 12px;
+  padding: 10px 0 15px;
+  border-bottom: 1px solid var(--panel-border);
+  color: var(--page-muted);
+}
+.settings-search input {
+  width: min(340px, 60%);
+  padding: 9px 11px;
+  color: var(--page-text);
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+}
+.settings-panel-grid { display: flex; flex-direction: column; gap: 0; }
+.site-settings-panel .settings-section {
+  display: block;
+  padding: 17px 0 12px;
+  border: 0;
+  border-bottom: 1px solid var(--panel-border);
+}
+.site-settings-panel .settings-section h3 {
+  margin: 0 0 8px;
+  padding: 0;
+  color: var(--page-text);
+  font-size: .95rem;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+.site-settings-panel .settings-field,
+.site-settings-panel .settings-range,
+.site-settings-panel .settings-check {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: 100%;
+  min-height: 43px;
+  margin: 0;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--panel-border) 65%, transparent);
+  color: var(--page-text);
+}
+.site-settings-panel .settings-section > :last-child { border-bottom: 0; }
+.site-settings-panel .settings-field select {
+  width: min(260px, 52%);
+  min-width: 140px;
+  padding: 8px 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  color: var(--page-text);
+  background: var(--panel);
+}
+.site-settings-panel .settings-field input[type="color"] {
+  width: 54px;
+  height: 32px;
+  padding: 2px;
+  border: 1px solid var(--panel-border);
+  border-radius: 7px;
+  background: transparent;
+}
+.site-settings-panel .settings-range { flex-wrap: wrap; }
+.site-settings-panel .settings-range span { display:flex; justify-content:space-between; width:100%; }
+.site-settings-panel .settings-range input[type="range"] { width:100%; accent-color:var(--accent); }
+.site-settings-panel .settings-check { justify-content:flex-start; }
+.site-settings-panel .settings-check input { width:17px; height:17px; margin:0; accent-color:var(--accent); }
+.site-settings-panel .settings-footer {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-start;
+  gap:8px;
+  padding:18px 0 0;
+}
+.site-settings-panel .settings-footer button {
+  min-width:0;
+  margin:0;
+  padding:8px 12px;
+  border-radius:8px;
+  background:transparent;
+  box-shadow:none;
+  border:1px solid var(--panel-border);
+  color:var(--page-text);
+}
+.site-settings-panel [hidden] { display:none !important; }
+.home-page { justify-content:flex-start; padding-top:16px; }
+.home-page-main {
+  display:flex;
+  flex:1;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  width:min(1100px,100%);
+  min-height:calc(100vh - 110px);
+}
+.home-hero-logo { display:block; width:min(480px,82vw); margin:0; }
+.home-hero-logo img { display:block; width:100%; height:auto; }
+.home-page-title {
+  margin:0;
+  color:var(--page-text);
+  font-size:clamp(1.5rem,3vw,2.2rem);
+  font-weight:700;
+  letter-spacing:-.035em;
+}
+.chat-page-main { width:min(1100px,100%); margin:0 auto; }
+.chat-page-main h1 { margin:16px 0 6px; text-align:left; }
+.chat-page-main > .content { margin:0 0 16px; text-align:left; }
+.chat-frame { height:min(72vh,760px); min-height:460px; }
+#gamesFilters { display:flex; align-items:center; justify-content:flex-start; margin:12px 0 16px; }
+#bookmarkFilter {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  min-height:42px;
+  padding:9px 17px;
+  border:1px solid rgba(255,255,255,.34);
+  border-radius:14px;
+  color:var(--page-text);
+  background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.07) 48%,rgba(255,255,255,.13));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42), inset 0 -1px 0 rgba(0,0,0,.08), 0 8px 22px rgba(0,0,0,.12);
+  backdrop-filter:blur(max(10px,var(--glass-blur))) saturate(175%);
+  -webkit-backdrop-filter:blur(max(10px,var(--glass-blur))) saturate(175%);
+  text-shadow:0 1px 1px rgba(0,0,0,.14);
+}
+#bookmarkFilter::before {
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(115deg,rgba(255,255,255,.22),transparent 42%,rgba(255,255,255,.06));
+  pointer-events:none;
+}
+#bookmarkFilter:hover { transform:translateY(-1px); border-color:rgba(255,255,255,.55); }
+body.theme-light #bookmarkFilter { color:#173222; border-color:rgba(24,75,45,.2); }
+body.no-glass #bookmarkFilter { background:var(--panel); box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; }
+body.lightweight-mode #bookmarkFilter { background:var(--panel); box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; }
+@media(max-width:760px) {
+  .site-settings-panel { padding-left:4px; padding-right:4px; }
+  .settings-search { align-items:stretch; flex-direction:column; gap:7px; }
+  .settings-search input { width:100%; }
+  .site-settings-panel .settings-field { align-items:flex-start; flex-direction:column; gap:6px; }
+  .site-settings-panel .settings-field select { width:100%; }
+  .home-page-main { min-height:calc(100vh - 135px); }
+  .chat-frame { min-height:420px; height:68vh; }
+}
