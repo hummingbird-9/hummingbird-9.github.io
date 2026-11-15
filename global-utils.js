@@ -447,14 +447,27 @@
     syncSettingsControls();
   }
 
+  function syncActiveHeaderTab(settingsIsOpen) {
+    const header = document.getElementById('siteHeader');
+    if (!header) return;
+    const currentPage = location.pathname.split('/').pop() || 'index.html';
+    header.querySelectorAll('a.site-tab').forEach(link => {
+      link.classList.toggle('is-current', !settingsIsOpen && link.getAttribute('href') === currentPage);
+    });
+    const settingsButton = document.getElementById('settingsOpenBtn');
+    if (settingsButton) {
+      settingsButton.classList.toggle('is-current', settingsIsOpen);
+      settingsButton.setAttribute('aria-expanded', String(settingsIsOpen));
+    }
+  }
+
   function openSettings() {
     const panel = document.getElementById('siteSettingsPanel');
     if (!panel) return;
     const shouldOpen = panel.hidden;
     panel.hidden = !shouldOpen;
     document.body.classList.toggle('settings-open', shouldOpen);
-    const button = document.getElementById('settingsOpenBtn');
-    if (button) button.setAttribute('aria-expanded', String(shouldOpen));
+    syncActiveHeaderTab(shouldOpen);
     if (shouldOpen) {
       syncSettingsControls();
       const search = document.getElementById('settingsSearch');
@@ -468,8 +481,7 @@
     const panel = document.getElementById('siteSettingsPanel');
     if (panel) panel.hidden = true;
     document.body.classList.remove('settings-open');
-    const button = document.getElementById('settingsOpenBtn');
-    if (button) button.setAttribute('aria-expanded', 'false');
+    syncActiveHeaderTab(false);
   }
 
   function filterSettingsSections(query) {
