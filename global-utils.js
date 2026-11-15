@@ -796,7 +796,7 @@
     const label = emergencyPresetDetails().title;
     return `
       <iframe class="emergency-overlay-frame" src="${escapeAttribute(url)}" title="${escapeAttribute(label)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      <button class="emergency-overlay-hint" type="button" aria-label="Hide screen overlay">Press Escape to hide screen overlay</button>`;
+      <button class="emergency-overlay-hint" type="button" aria-label="Hide screen overlay">Press Escape to hide overlay</button>`;
   }
 
   function enterEmergencyDisguise(preview) {
