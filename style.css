@@ -2009,7 +2009,7 @@ body.theme-normal .game-card:hover {
 
 .settings-preset-manager { margin-top: 14px; }
 
-/* Full-screen emergency cover. The visual is a local mockup or an uploaded screenshot. */
+/* Full-screen emergency website overlay. */
 .emergency-disguise-overlay {
   position: fixed;
   inset: 0;
@@ -2026,87 +2026,28 @@ body.theme-normal .game-card:hover {
 }
 .emergency-disguise-overlay.is-visible { display: block; }
 body.emergency-disguise-active { overflow: hidden !important; }
-.emergency-cover-image {
+.emergency-overlay-frame {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
-  user-select: none;
-  -webkit-user-drag: none;
+  border: 0;
+  background: #fff;
 }
-.emergency-cover-missing {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 24px;
-  background: #f8fafc;
-  color: #202124;
-  text-align: center;
-}
-.emergency-cover-missing[hidden] { display: none !important; }
-.emergency-cover-missing code { padding: 4px 7px; border-radius: 4px; background: #e8eaed; }
 .emergency-overlay-hint {
   position: absolute;
   right: 12px;
   bottom: 9px;
   z-index: 2;
-  padding: 4px 7px;
-  border-radius: 4px;
-  background: rgba(0,0,0,.54);
-  color: rgba(255,255,255,.8);
+  padding: 5px 8px;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 5px;
+  background: rgba(0,0,0,.62);
+  color: rgba(255,255,255,.92);
   font: 10px/1.3 Arial, Helvetica, sans-serif;
   letter-spacing: .1px;
-  pointer-events: none;
+  cursor: pointer;
 }
-.emergency-classroom { min-height: 100vh; background: #fff; color: #202124; }
-.emergency-classroom > header {
-  display: flex; align-items: center; gap: 18px; height: 64px; padding: 0 24px;
-  border-bottom: 1px solid #dadce0; color: #5f6368; font-size: 19px;
-}
-.emergency-classroom > header b { color: #1967d2; font-size: 28px; }
-.classroom-spacer { flex: 1; }
-.emergency-classroom > nav {
-  display: flex; flex-direction: column; gap: 22px; position: absolute; top: 84px; left: 25px;
-  width: 170px; color: #5f6368; font-size: 14px;
-}
-.emergency-classroom > main { margin: 38px 5vw 0 225px; }
-.emergency-classroom h1 { margin: 0 0 24px; font-size: 25px; font-weight: 400; }
-.classroom-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 18px; }
-.classroom-cards section { overflow: hidden; min-height: 190px; border: 1px solid #dadce0; border-radius: 9px; }
-.classroom-card-top { height: 72px; padding: 18px; background: #1967d2; color: white; font-size: 19px; }
-.classroom-cards h2, .classroom-cards p { margin: 16px 18px; font-size: 16px; }
-.classroom-cards p { color: #5f6368; font-size: 13px; }
-.emergency-docs { min-height: 100vh; padding: 0 24px; background: #f8f9fa; color: #202124; }
-.emergency-docs > header { display:flex; align-items:center; gap:12px; height:64px; font-size:18px; }
-.emergency-docs .docs-mark { color:#4285f4; font-size:28px; }
-.emergency-docs .docs-spacer { flex:1; }
-.emergency-docs button { border:0; border-radius:20px; padding:10px 24px; background:#c2e7ff; color:#001d35; font-weight:600; }
-.emergency-docs nav, .docs-toolbar { padding:12px 0; color:#5f6368; font-size:13px; }
-.docs-toolbar { padding:13px 18px; border:1px solid #dadce0; border-radius:8px; background:#edf2fa; }
-.emergency-docs article { width:min(850px,90%); min-height:70vh; margin:24px auto; padding:70px 80px; background:white; box-shadow:0 1px 4px #0002; }
-.emergency-docs article h1 { font-size:25px; font-weight:400; }
-.emergency-wiki { min-height:100vh; padding:24px clamp(18px,5vw,75px); background:#fff; color:#202122; font-family:Georgia,serif; }
-.emergency-wiki > header { display:flex; align-items:center; gap:16px; padding-bottom:18px; border-bottom:1px solid #a7d7f9; }
-.emergency-wiki > header b { font-size:27px; letter-spacing:2px; }
-.emergency-wiki > header span { color:#54595d; }
-.emergency-wiki nav { padding:18px 0; color:#36c; font:14px Arial,sans-serif; }
-.emergency-wiki main { display:grid; grid-template-columns:180px minmax(0,800px); gap:38px; margin-top:25px; }
-.emergency-wiki aside { color:#36c; font:13px Arial,sans-serif; line-height:1.8; }
-.emergency-wiki article h1 { margin:0; padding-bottom:9px; border-bottom:1px solid #a2a9b1; font-size:32px; font-weight:400; }
-.emergency-wiki article h2 { margin-top:28px; padding-bottom:5px; border-bottom:1px solid #a2a9b1; font-size:22px; font-weight:400; }
-.emergency-wiki article p { line-height:1.6; }
-@media (max-width: 600px) {
-  .settings-preset-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-  .emergency-classroom > nav { position: static; width:auto; flex-direction:row; flex-wrap:wrap; padding:18px 22px; }
-  .emergency-classroom > main { margin:20px 18px; }
-  .emergency-docs article { padding:32px 20px; }
-  .emergency-wiki main { grid-template-columns:1fr; gap:15px; }
-}
+.emergency-overlay-hint:hover { background: rgba(0,0,0,.82); }
 
 .submission-mode-panel[hidden] { display:none !important; }
 .submission-request-types { margin:14px 0 22px; }

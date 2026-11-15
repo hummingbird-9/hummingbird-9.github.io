@@ -98,7 +98,7 @@
       disguiseFaviconData: typeof source.disguiseFaviconData === 'string' && source.disguiseFaviconData.startsWith('data:image/') ? source.disguiseFaviconData : '',
       tabDisguiseActive: source.tabDisguiseActive === true,
       emergencyKey: typeof source.emergencyKey === 'string' && source.emergencyKey.length <= 12 ? source.emergencyKey : DEFAULTS.emergencyKey,
-      emergencyTemplate: ['classroom', 'khan', 'docs', 'youtube', 'wikipedia', 'desmos', 'quizlet', 'gmail', 'drive', 'canvas', 'custom'].includes(source.emergencyTemplate) ? source.emergencyTemplate : DEFAULTS.emergencyTemplate,
+      emergencyTemplate: ['classroom', 'khan', 'youtube', 'wikipedia', 'desmos', 'gmail'].includes(source.emergencyTemplate) ? source.emergencyTemplate : DEFAULTS.emergencyTemplate,
       disguiseOnLeave: source.disguiseOnLeave === true,
       stayDisguisedOnReturn: source.stayDisguisedOnReturn === true
     };
@@ -332,13 +332,13 @@
         </section>
 
         <section class="settings-section"><h3>Emergency disguise</h3>
-          <p class="settings-description">Show a full-screen picture and switch the browser tab to match. Press Escape to hide the picture and return to the page.</p>
+          <p class="settings-description">Load a live website in a full-screen iframe and switch the browser tab to match. Press Escape or use the corner control to hide it. Some websites block iframe display.</p>
           <div class="settings-action-row"><button id="settingEmergencyKeyButton" type="button">Change shortcut (F9)</button><button id="resetEmergencyKey" type="button">Reset shortcut</button></div>
           <p id="emergencyKeyHelp" class="settings-description">Choose one key. Browser shortcuts and keys pressed while typing are left alone.</p>
-          <label class="settings-field"><span>Cover image</span><select id="settingEmergencyTemplate">
-            <option value="classroom">Google Classroom</option><option value="khan">Khan Academy</option><option value="docs">Google Docs</option><option value="youtube">YouTube</option><option value="wikipedia">Wikipedia</option><option value="desmos">Desmos</option><option value="quizlet">Quizlet</option><option value="gmail">Gmail</option><option value="drive">Google Drive</option><option value="canvas">Canvas</option><option value="custom">Custom cover</option>
+          <label class="settings-field"><span>Website</span><select id="settingEmergencyTemplate">
+            <option value="classroom">Google Classroom</option><option value="khan">Khan Academy</option><option value="youtube">YouTube</option><option value="wikipedia">Wikipedia</option><option value="desmos">Desmos</option><option value="gmail">Gmail</option>
           </select></label>
-          <p class="settings-description">Cover pictures are loaded from the site’s <code>img/</code> folder. The folder README lists the exact filenames to add.</p>
+          <p class="settings-description">The selected website loads live inside the overlay. Sites may prevent embedding; if one appears blank, that site does not allow iframe display.</p>
           <label class="settings-check"><input id="settingDisguiseOnLeave" type="checkbox"><span>Turn on the disguise when I leave this tab</span></label>
           <label class="settings-check"><input id="settingStayDisguisedOnReturn" type="checkbox"><span>Keep the disguise on when I come back</span></label>
           <div class="settings-action-row"><button id="previewEmergencyDisguise" type="button">Preview emergency screen</button></div>
@@ -605,7 +605,7 @@
     const preset = BUILT_IN_TAB_PRESETS[key];
     if (!preset) return;
     settings.disguiseTitle = preset.title;
-    settings.emergencyTemplate = key;
+    if (['classroom', 'khan', 'youtube', 'wikipedia', 'desmos', 'gmail'].includes(key)) settings.emergencyTemplate = key;
     settings.disguiseFaviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(preset.domain)}&sz=64`;
     settings.disguiseFaviconData = '';
     syncSettingsControls();
@@ -776,36 +776,27 @@
     }
   }
 
-  const EMERGENCY_COVER_FILES = {
-    classroom: 'google-classroom',
-    khan: 'khan-academy',
-    docs: 'google-docs',
-    youtube: 'youtube',
-    wikipedia: 'wikipedia',
-    desmos: 'desmos',
-    quizlet: 'quizlet',
-    gmail: 'gmail',
-    drive: 'google-drive',
-    canvas: 'canvas',
-    custom: 'custom-cover'
+  const EMERGENCY_IFRAME_URLS = {
+    classroom: 'https://classroom.google.com/',
+    khan: 'https://www.khanacademy.org/',
+    youtube: 'https://www.youtube.com/',
+    wikipedia: 'https://en.wikipedia.org/wiki/Main_Page',
+    desmos: 'https://www.desmos.com/calculator',
+    gmail: 'https://mail.google.com/'
   };
 
   function emergencyPresetDetails() {
-    return BUILT_IN_TAB_PRESETS[settings.emergencyTemplate] || BUILT_IN_TAB_PRESETS.classroom;
+    const key = EMERGENCY_IFRAME_URLS[settings.emergencyTemplate] ? settings.emergencyTemplate : 'classroom';
+    return BUILT_IN_TAB_PRESETS[key] || BUILT_IN_TAB_PRESETS.classroom;
   }
 
   function emergencyScreenMarkup() {
-    const key = EMERGENCY_COVER_FILES[settings.emergencyTemplate] ? settings.emergencyTemplate : 'classroom';
-    const fileBase = EMERGENCY_COVER_FILES[key];
-    const file = `img/${fileBase}.png`;
+    const key = EMERGENCY_IFRAME_URLS[settings.emergencyTemplate] ? settings.emergencyTemplate : 'classroom';
+    const url = EMERGENCY_IFRAME_URLS[key];
     const label = emergencyPresetDetails().title;
     return `
-      <img class="emergency-cover-image" data-cover-base="${escapeAttribute(fileBase)}" src="${escapeAttribute(file)}" alt="${escapeAttribute(label)}" draggable="false">
-      <div class="emergency-cover-missing" hidden>
-        <strong>Emergency cover image not found</strong>
-        <span>Add <code>img/${escapeAttribute(fileBase)}.png</code> (or a JPG, WebP, or AVIF) to the site’s <code>img/</code> folder.</span>
-      </div>
-      <span class="emergency-overlay-hint">Press Escape to hide screen overlay</span>`;
+      <iframe class="emergency-overlay-frame" src="${escapeAttribute(url)}" title="${escapeAttribute(label)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <button class="emergency-overlay-hint" type="button" aria-label="Hide screen overlay">Press Escape to hide screen overlay</button>`;
   }
 
   function enterEmergencyDisguise(preview) {
@@ -820,21 +811,8 @@
       document.body.appendChild(overlay);
     }
     overlay.innerHTML = emergencyScreenMarkup();
-    const coverImage = overlay.querySelector('.emergency-cover-image');
-    const missingCover = overlay.querySelector('.emergency-cover-missing');
-    if (coverImage && missingCover) {
-      const extensions = ['png', 'jpg', 'jpeg', 'webp', 'avif'];
-      let extensionIndex = 0;
-      coverImage.addEventListener('error', () => {
-        extensionIndex += 1;
-        if (extensionIndex < extensions.length) {
-          coverImage.src = `img/${coverImage.dataset.coverBase}.${extensions[extensionIndex]}`;
-          return;
-        }
-        coverImage.hidden = true;
-        missingCover.hidden = false;
-      });
-    }
+    const hideButton = overlay.querySelector('.emergency-overlay-hint');
+    hideButton?.addEventListener('click', exitEmergencyDisguise);
     overlay.setAttribute('aria-hidden', 'false');
     overlay.classList.add('is-visible');
     document.body.classList.add('emergency-disguise-active');
