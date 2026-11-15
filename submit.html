@@ -3,22 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Submit a Game — humming[bird]Tech</title>
-  <link rel="stylesheet" href="style.css?v=20261112-game-loader-cards-13">
+  <title>Game Feedback — humming[bird]Tech</title>
+  <link rel="stylesheet" href="style.css?v=20261115-settings-disguise-1">
   <link rel="shortcut icon" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png">
 </head>
 <body class="gallery-body">
   <main class="home-page-main submit-page-main">
-    <h1>Submit a game</h1>
-    <p class="content">Send a game for review. It will only join the library after approval.</p>
+    <h1>Game feedback</h1>
+    <p class="content">Report something that is not working or suggest another game for the library.</p>
   <section id="gamesSubmitPanel" class="games-submit-panel">
     <div class="games-submit-intro">
-      <h2>Submit a game</h2>
-      <p>Send a game for review. Nothing is added to the library unless it is approved.</p>
+      <h2>What would you like to send?</h2>
+      <p>Choose a report or a game suggestion. Reports only need the game name and the problem you ran into.</p>
     </div>
-    <form id="gameSubmissionForm" class="game-submission-form">
+    <div class="submission-mode-buttons submission-request-types">
+      <button id="reportProblemMode" class="utility-btn" type="button" aria-pressed="false">Report a game problem</button>
+      <button id="suggestGameMode" class="utility-btn" type="button" aria-pressed="false">Suggest a game</button>
+    </div>
+
+    <form id="gameProblemForm" class="game-submission-form submission-mode-panel" hidden>
+      <div class="submission-fields">
+        <label class="submission-field" for="problemGameName">
+          <span>Which game is having trouble?</span>
+          <input id="problemGameName" name="problemGameName" type="text" list="knownGameNames" maxlength="100" required placeholder="Start typing a game name">
+          <datalist id="knownGameNames"></datalist>
+          <small class="submission-help">You can choose a game from the list or type its name.</small>
+        </label>
+        <label class="submission-field" for="gameProblemDetails">
+          <span>What error message or problem are you seeing?</span>
+          <textarea id="gameProblemDetails" name="gameProblemDetails" rows="5" maxlength="2000" required placeholder="Paste the error message or explain what went wrong"></textarea>
+        </label>
+      </div>
+      <div class="submission-notes"><p>No game files, screenshots, or separate description are needed for a problem report.</p></div>
+      <button id="sendGameProblem" class="utility-btn submission-primary-button" type="submit">Send problem report</button>
+      <p id="gameProblemStatus" class="game-submission-status" role="status" aria-live="polite"></p>
+      <a id="continueGameProblem" class="utility-btn continue-submission-button" href="#" target="_blank" rel="noopener noreferrer" hidden>Open report on GitHub</a>
+    </form>
+
+    <form id="gameSubmissionForm" class="game-submission-form submission-mode-panel" hidden>
       <fieldset class="submission-file-choice">
-        <legend>Game files</legend>
+        <legend>Game package</legend>
         <div class="submission-mode-buttons">
           <button id="folderModeButton" class="utility-btn is-selected" type="button" aria-pressed="true">Choose a folder</button>
           <button id="htmlModeButton" class="utility-btn" type="button" aria-pressed="false">Choose an HTML file</button>
@@ -37,11 +61,11 @@
       </fieldset>
       <div class="submission-fields">
         <label class="submission-field" for="submissionGameName">
-          <span>Game name</span>
+          <span>Suggested game name</span>
           <input id="submissionGameName" name="gameName" type="text" maxlength="80" required placeholder="Name shown in the games library">
         </label>
         <label class="submission-field" for="submissionGameDescription">
-          <span>Description</span>
+          <span>Short game description</span>
           <textarea id="submissionGameDescription" name="gameDescription" rows="3" maxlength="50" required placeholder="A short description (50 characters max)"></textarea>
           <small class="submission-description-count"><span id="submissionDescriptionCount">0</span>/50 characters</small>
         </label>
@@ -58,7 +82,7 @@
         <p>Your game folder (including every asset) and cover image are packaged together. The review issue opens automatically when the ZIP is ready.</p>
         <p>Attach the single ZIP to the prefilled GitHub issue and submit it. After that, the review and approval process is automatic.</p>
       </div>
-      <button id="prepareGameSubmission" class="utility-btn submission-primary-button" type="submit">Submit for review</button>
+      <button id="prepareGameSubmission" class="utility-btn submission-primary-button" type="submit">Prepare game suggestion</button>
       <p id="gameSubmissionStatus" class="game-submission-status" role="status" aria-live="polite"></p>
       <a id="continueGameSubmission" class="utility-btn continue-submission-button" href="#" target="_blank" rel="noopener noreferrer" hidden>Continue to GitHub</a>
     </form>
@@ -85,8 +109,91 @@
     const submitStatus = document.getElementById('gameSubmissionStatus');
     const prepareButton = document.getElementById('prepareGameSubmission');
     const continueLink = document.getElementById('continueGameSubmission');
+    const reportModeButton = document.getElementById('reportProblemMode');
+    const suggestModeButton = document.getElementById('suggestGameMode');
+    const problemForm = document.getElementById('gameProblemForm');
+    const problemStatus = document.getElementById('gameProblemStatus');
+    const problemContinueLink = document.getElementById('continueGameProblem');
+    const problemGameName = document.getElementById('problemGameName');
+    const problemDetails = document.getElementById('gameProblemDetails');
+    const knownGameNames = document.getElementById('knownGameNames');
     let selectedMode = 'folder';
     let coverObjectUrl = '';
+
+
+    function setRequestMode(mode) {
+      const showProblem = mode === 'problem';
+      const showSuggestion = mode === 'suggestion';
+      problemForm.hidden = !showProblem;
+      submitForm.hidden = !showSuggestion;
+      reportModeButton.classList.toggle('is-selected', showProblem);
+      suggestModeButton.classList.toggle('is-selected', showSuggestion);
+      reportModeButton.setAttribute('aria-pressed', String(showProblem));
+      suggestModeButton.setAttribute('aria-pressed', String(showSuggestion));
+      if (showProblem) problemGameName.focus();
+      if (showSuggestion) document.getElementById('submissionGameName').focus();
+    }
+    reportModeButton.addEventListener('click', () => setRequestMode('problem'));
+    suggestModeButton.addEventListener('click', () => setRequestMode('suggestion'));
+
+    async function loadKnownGameNames() {
+      try {
+        const response = await fetch('https://api.github.com/repos/hummingbird-9/games/git/trees/main?recursive=1', {
+          headers: { Accept: 'application/vnd.github+json' }
+        });
+        if (!response.ok) return;
+        const data = await response.json();
+        if (!Array.isArray(data.tree)) return;
+        const folders = new Set();
+        data.tree.forEach(entry => {
+          const match = typeof entry.path === 'string' && entry.path.match(/^([^/]+)\/index\.html$/i);
+          if (match && !match[1].startsWith('.')) folders.add(match[1]);
+        });
+        Array.from(folders).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })).forEach(folder => {
+          const option = document.createElement('option');
+          option.value = folder.replace(/[-_]+/g, ' ').replace(/\b[a-z]/g, letter => letter.toUpperCase());
+          knownGameNames.appendChild(option);
+        });
+      } catch (error) {
+        console.info('Could not load the optional game-name suggestions:', error);
+      }
+    }
+
+    function makeProblemIssueUrl(gameName, details) {
+      const title = 'Game problem: ' + gameName;
+      const body = [
+        '## Game',
+        gameName,
+        '',
+        '## What happened?',
+        details,
+        '',
+        'Submitted from the humming[bird]Tech game feedback page.'
+      ].join('\n');
+      const params = new URLSearchParams({ title, body });
+      return 'https://github.com/hummingbird-9/games/issues/new?' + params.toString();
+    }
+
+    problemForm.addEventListener('submit', event => {
+      event.preventDefault();
+      problemContinueLink.hidden = true;
+      const name = problemGameName.value.trim();
+      const details = problemDetails.value.trim();
+      if (!name || !details) {
+        problemStatus.textContent = 'Enter the game name and explain the error or issue.';
+        return;
+      }
+      const issueUrl = makeProblemIssueUrl(name, details);
+      const issueWindow = window.open(issueUrl, '_blank');
+      if (issueWindow) {
+        try { issueWindow.opener = null; } catch (_) {}
+        problemStatus.textContent = 'Your report is ready in GitHub. Review it and submit the issue.';
+      } else {
+        problemContinueLink.href = issueUrl;
+        problemContinueLink.hidden = false;
+        problemStatus.textContent = 'Your browser blocked the new tab. Use the link below to finish the report.';
+      }
+    });
 
     descriptionInput.addEventListener('input', () => {
       descriptionCount.textContent = String(descriptionInput.value.length);
@@ -239,7 +346,7 @@
         .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) || 'game';
     }
     function makeIssueUrl(name, description, zipName, coverFileName, entryMode) {
-      const title = 'Game submission: ' + name;
+      const title = 'Game suggestion: ' + name;
       const body = [
         '## Game details',
         '**Name:** ' + name,
@@ -248,7 +355,7 @@
         '',
         '## Files to attach',
         '- Attach the prepared game archive: ' + zipName + ' (ZIP, up to 25 MB).',
-        '- The cover image is already included inside the ZIP as community-cover.',
+        '- The cover image is included at the game folder root as cover.' + fileExtension(coverFileName) + '.',
         '- Game selection: ' + (entryMode === 'folder' ? 'complete folder and assets' : 'index.html only'),
         '',
         '## Review',
@@ -315,7 +422,7 @@
         }
         entries.push({ file: sourceFiles[0], path: 'index.html' });
       }
-      entries.push({ file: cover, path: 'community-cover.' + fileExtension(cover.name) });
+      entries.push({ file: cover, path: 'cover.' + fileExtension(cover.name) });
       const metadata = [
         'Game name: ' + name,
         'Description: ' + description,
@@ -358,15 +465,17 @@
         submitStatus.textContent = error && error.message ? error.message : 'Could not prepare the ZIP. Try a smaller folder.';
       } finally {
         prepareButton.disabled = false;
-        prepareButton.textContent = 'Submit for review';
+        prepareButton.textContent = 'Prepare game suggestion';
       }
     });
 
     setMode('folder');
+    setRequestMode('');
+    loadKnownGameNames();
   })();
   </script>
 
 
-  <script src="global-utils.js?v=20261112-settings-eruda-opacity-12"></script>
+  <script src="global-utils.js?v=20261115-settings-disguise-1"></script>
 </body>
 </html>

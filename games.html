@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Games — humming[bird]Tech</title>
-  <link rel="stylesheet" href="style.css?v=20261112-game-loader-cards-13">
+  <link rel="stylesheet" href="style.css?v=20261115-settings-disguise-1">
   <link rel="shortcut icon" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png">
 </head>
 <body class="gallery-body">
@@ -67,7 +67,7 @@
     <div id="gameFrameWrap" class="game-frame-wrap"></div>
   </section>
 
-  <script src="global-utils.js?v=20261112-settings-eruda-opacity-12"></script>
+  <script src="global-utils.js?v=20261115-settings-disguise-1"></script>
   <script>
   (() => {
     'use strict';
@@ -77,7 +77,7 @@
     const BRANCH = 'main';
     const TREE_API = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${BRANCH}?recursive=1`;
     const CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@${BRANCH}/`;
-    const CACHE_KEY = 'hummingbird-games-folder-catalog-v3';
+    const CACHE_KEY = 'hummingbird-games-folder-catalog-v4';
     const PAGE_SIZE = 100;
     const BOOKMARKS_KEY = 'hummingbird-games-bookmarks-v1';
     const RECENT_KEY = 'hummingbird-games-recent-v1';
@@ -162,27 +162,23 @@
     }
 
     function chooseCover(folder, imagePaths) {
-      if (!imagePaths.length) return '';
-      const direct = imagePaths.filter(path => !path.slice(folder.length + 1).includes('/'));
-      const candidates = direct.length ? direct : imagePaths;
-      const extensions = ['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif'];
-      const score = path => {
-        const file = path.split('/').pop().toLowerCase();
-        const ext = file.split('.').pop();
-        const rank = extensions.indexOf(ext);
-        if (file === 'community-cover.' + ext) return -10 + rank;
-        if (file === 'cover.' + ext) return rank;
-        if (file === 'thumbnail.' + ext || file === 'thumb.' + ext) return 10 + rank;
-        if (file === 'icon.' + ext || file === 'logo.' + ext) return 20 + rank;
-        if (file === folder.toLowerCase() + '.' + ext) return 30 + rank;
-        return 100 + rank;
-      };
-      return candidates.slice().sort((a, b) => score(a) - score(b) || a.localeCompare(b))[0];
+      // Only use an explicitly named cover image in the game's own folder.
+      // Random screenshots, logos, sprites, and images in asset subfolders are not covers.
+      const extensionPriority = ['webp', 'avif', 'png', 'jpg', 'jpeg', 'gif', 'bmp'];
+      const rootCovers = imagePaths.filter(path => {
+        const relativePath = path.slice(folder.length + 1);
+        return !relativePath.includes('/') && /^cover\.(png|jpe?g|avif|webp|gif|bmp)$/i.test(relativePath);
+      });
+      return rootCovers.sort((a, b) => {
+        const extA = a.split('.').pop().toLowerCase();
+        const extB = b.split('.').pop().toLowerCase();
+        return extensionPriority.indexOf(extA) - extensionPriority.indexOf(extB) || a.localeCompare(b);
+      })[0] || '';
     }
 
     function makeCatalog(treeEntries) {
       const byFolder = new Map();
-      const imagePattern = /\.(jpe?g|png|webp|avif|gif)$/i;
+      const imagePattern = /\.(jpe?g|png|webp|avif|gif|bmp)$/i;
       for (const entry of treeEntries) {
         if (!entry || entry.type !== 'blob' || typeof entry.path !== 'string') continue;
         const match = entry.path.match(/^([^/]+)\/(.+)$/);
