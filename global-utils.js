@@ -579,24 +579,48 @@
   }
 
   const BUILT_IN_TAB_PRESETS = {
-    classroom: { title: 'Google Classroom', domain: 'classroom.google.com' },
+    classroom: {
+      title: 'Google Classroom',
+      domain: 'classroom.google.com',
+      faviconUrl: 'https://knowledge.workspace.google.com/static/images/icons/product/classroom.svg'
+    },
     khan: { title: 'Khan Academy', domain: 'khanacademy.org' },
-    docs: { title: 'Google Docs', domain: 'docs.google.com' },
+    docs: {
+      title: 'Google Docs',
+      domain: 'docs.google.com',
+      faviconUrl: 'https://knowledge.workspace.google.com/static/images/icons/product/docs.svg'
+    },
     youtube: { title: 'YouTube', domain: 'youtube.com' },
     wikipedia: { title: 'Wikipedia', domain: 'wikipedia.org' },
     desmos: { title: 'Desmos', domain: 'desmos.com' },
     quizlet: { title: 'Quizlet', domain: 'quizlet.com' },
-    gmail: { title: 'Gmail', domain: 'mail.google.com' },
-    drive: { title: 'Google Drive', domain: 'drive.google.com' },
+    gmail: {
+      title: 'Gmail',
+      domain: 'mail.google.com',
+      faviconUrl: 'https://knowledge.workspace.google.com/static/images/icons/product/gmail.svg'
+    },
+    drive: {
+      title: 'Google Drive',
+      domain: 'drive.google.com',
+      faviconUrl: 'https://knowledge.workspace.google.com/static/images/icons/product/drive.svg'
+    },
     canvas: { title: 'Canvas', domain: 'instructure.com' }
   };
+
+  function getPresetFaviconUrl(preset) {
+    return preset.faviconUrl || `https://www.google.com/s2/favicons?domain=${encodeURIComponent(preset.domain)}&sz=64`;
+  }
+
+  function getBuiltInPresetForTitle(title) {
+    return Object.values(BUILT_IN_TAB_PRESETS).find(preset => preset.title === title) || null;
+  }
 
   function chooseBuiltInTabPreset(key) {
     const preset = BUILT_IN_TAB_PRESETS[key];
     if (!preset) return;
     settings.disguiseTitle = preset.title;
     if (['classroom', 'khan', 'youtube', 'wikipedia', 'desmos', 'gmail'].includes(key)) settings.emergencyTemplate = key;
-    settings.disguiseFaviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(preset.domain)}&sz=64`;
+    settings.disguiseFaviconUrl = getPresetFaviconUrl(preset);
     settings.disguiseFaviconData = '';
     syncSettingsControls();
     saveSettings();
@@ -685,7 +709,13 @@
     const link = getFaviconLink();
     if (settings.tabDisguiseActive) {
       document.title = settings.disguiseTitle || originalDocumentTitle;
-      link.href = settings.disguiseFaviconData || settings.disguiseFaviconUrl || originalFaviconHref || DEFAULT_FAVICON;
+      const preset = getBuiltInPresetForTitle(settings.disguiseTitle);
+      const savedUrl = settings.disguiseFaviconUrl || '';
+      // Existing saved presets may still hold Google's generic favicon-service URL.
+      const resolvedUrl = preset && savedUrl.includes('google.com/s2/favicons')
+        ? getPresetFaviconUrl(preset)
+        : savedUrl;
+      link.href = settings.disguiseFaviconData || resolvedUrl || originalFaviconHref || DEFAULT_FAVICON;
     } else {
       document.title = originalDocumentTitle;
       link.href = originalFaviconHref || DEFAULT_FAVICON;
@@ -827,7 +857,7 @@
     document.body.classList.add('emergency-disguise-active');
     const details = emergencyPresetDetails();
     document.title = details.title;
-    getFaviconLink().href = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(details.domain)}&sz=64`;
+    getFaviconLink().href = getPresetFaviconUrl(details);
   }
 
   function exitEmergencyDisguise() {
