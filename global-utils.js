@@ -13,7 +13,7 @@
     surfaceStyle: 'glass',
     customBackground: '#ffffff',
     cornerRadius: 9,
-    glassOpacity: 14,
+    glassOpacity: 0,
     glassBlur: 10,
     liquidGlass: true,
     accent: 'green',
@@ -78,7 +78,8 @@
       customBackground: /^#[0-9a-f]{6}$/i.test(source.customBackground || '') ? source.customBackground : DEFAULTS.customBackground,
       // Treat the old built-in 16px value as the previous default during migration.
       cornerRadius: source.cornerRadius == null || Number(source.cornerRadius) === 12 || Number(source.cornerRadius) === 16 ? DEFAULTS.cornerRadius : source.cornerRadius,
-      glassOpacity: source.glassOpacity ?? DEFAULTS.glassOpacity,
+      // Migrate the previous built-in 14% default to 0%; preserve other custom values.
+      glassOpacity: source.glassOpacity == null || Number(source.glassOpacity) === 14 ? DEFAULTS.glassOpacity : source.glassOpacity,
       glassBlur: source.glassBlur ?? DEFAULTS.glassBlur,
       liquidGlass: source.liquidGlass ?? source.glass ?? DEFAULTS.liquidGlass,
       accent,

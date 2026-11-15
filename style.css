@@ -1,7 +1,7 @@
 :root {
   color-scheme: dark;
   --corner-radius: 9px;
-  --glass-opacity: .14;
+  --glass-opacity: 0;
   --glass-blur: 10px;
   --accent: #90e4c1;
   --page-text: #f3faf5;
