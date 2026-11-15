@@ -410,6 +410,7 @@ body.gallery-body { padding-top: 18px; }
 }
 .site-tab.is-current { box-shadow: inset 0 -2px 0 var(--accent); }
 .site-settings-tab { box-shadow: none; }
+.site-settings-tab.is-current { box-shadow: inset 0 -2px 0 var(--accent); }
 .site-settings-panel {
   width: min(1120px,100%); margin: 0 auto 28px; padding: 20px;
   border: 1px solid var(--panel-border); border-radius: var(--corner-radius);
