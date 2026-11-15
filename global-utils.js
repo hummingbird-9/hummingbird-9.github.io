@@ -1146,7 +1146,15 @@
     }
     document.addEventListener('visibilitychange', handleAutomaticEmergencyDisguise);
     window.addEventListener('blur', () => {
-      if (settings.disguiseOnLeave && !emergencyOverlayActive) enterEmergencyDisguise(false);
+      // A cross-origin iframe takes focus away from the parent window.
+      // Defer the check until focus has settled, then ignore iframe focus:
+      // clicking or typing inside Padlet/HummingWeb is not leaving the site.
+      window.setTimeout(() => {
+        if (!settings.disguiseOnLeave || emergencyOverlayActive) return;
+        if (document.visibilityState === 'hidden') return; // visibilitychange handles actual tab switches
+        if (document.activeElement instanceof HTMLIFrameElement) return;
+        enterEmergencyDisguise(false);
+      }, 0);
     });
     window.addEventListener('focus', () => {
       if (emergencyOverlayActive && !settings.stayDisguisedOnReturn && document.visibilityState === 'visible') exitEmergencyDisguise();
