@@ -252,10 +252,9 @@
         <a class="site-tab" href="submit.html">Game feedback</a>
         <a class="site-tab" href="web.html">Search the HummingWeb</a>
         <a class="site-tab" href="chat.html">Chat</a>
-        <button class="site-tab site-settings-tab" id="settingsOpenBtn" type="button" aria-expanded="false">Settings</button>
+        <a class="site-tab site-settings-tab" href="settings.html">Settings</a>
       </nav>`;
     document.body.prepend(header);
-    document.getElementById('settingsOpenBtn').addEventListener('click', openSettings);
     injectSettingsDialog();
     const current = location.pathname.split('/').pop() || 'index.html';
     header.querySelectorAll('a.site-tab').forEach(link => {
@@ -303,11 +302,12 @@
   }
 
   function injectSettingsDialog() {
-    if (document.getElementById('siteSettingsPanel')) return;
+    const currentPage = location.pathname.split('/').pop() || 'index.html';
+    if (currentPage !== 'settings.html' || document.getElementById('siteSettingsPanel')) return;
     const panel = document.createElement('section');
     panel.id = 'siteSettingsPanel';
     panel.className = 'site-settings-panel';
-    panel.hidden = true;
+    panel.hidden = false;
     panel.innerHTML = `
       <div class="settings-panel-heading"><h2>Settings</h2></div>
       <label class="settings-search"><span>Find a setting</span><input id="settingsSearch" type="search" placeholder="Search settings…" autocomplete="off"></label>
@@ -389,6 +389,9 @@
         <button class="settings-reset" id="settingsReset" type="button">Reset preferences</button>
       </div>`;
     const header = document.getElementById('siteHeader');
+    if (!header) return;
+    document.body.classList.add('settings-page');
+    document.title = 'Settings | humming[bird]Tech';
     header.insertAdjacentElement('afterend', panel);
     document.getElementById('settingsExport').addEventListener('click', exportSiteData);
     document.getElementById('settingsImport').addEventListener('click', () => document.getElementById('settingsImportFile').click());
@@ -447,41 +450,16 @@
     syncSettingsControls();
   }
 
-  function syncActiveHeaderTab(settingsIsOpen) {
-    const header = document.getElementById('siteHeader');
-    if (!header) return;
-    const currentPage = location.pathname.split('/').pop() || 'index.html';
-    header.querySelectorAll('a.site-tab').forEach(link => {
-      link.classList.toggle('is-current', !settingsIsOpen && link.getAttribute('href') === currentPage);
-    });
-    const settingsButton = document.getElementById('settingsOpenBtn');
-    if (settingsButton) {
-      settingsButton.classList.toggle('is-current', settingsIsOpen);
-      settingsButton.setAttribute('aria-expanded', String(settingsIsOpen));
-    }
-  }
-
   function openSettings() {
-    const panel = document.getElementById('siteSettingsPanel');
-    if (!panel) return;
-    const shouldOpen = panel.hidden;
-    panel.hidden = !shouldOpen;
-    document.body.classList.toggle('settings-open', shouldOpen);
-    syncActiveHeaderTab(shouldOpen);
-    if (shouldOpen) {
-      syncSettingsControls();
-      const search = document.getElementById('settingsSearch');
-      if (search) search.value = '';
-      filterSettingsSections('');
-      panel.scrollIntoView({ behavior: settings.reducedMotion || settings.lightweight ? 'auto' : 'smooth', block: 'start' });
+    const settingsUrl = new URL('settings.html', location.href);
+    if (location.pathname.endsWith('/settings.html')) {
+      document.getElementById('siteSettingsPanel')?.scrollIntoView({
+        behavior: settings.reducedMotion || settings.lightweight ? 'auto' : 'smooth',
+        block: 'start'
+      });
+      return;
     }
-  }
-
-  function closeSettings() {
-    const panel = document.getElementById('siteSettingsPanel');
-    if (panel) panel.hidden = true;
-    document.body.classList.remove('settings-open');
-    syncActiveHeaderTab(false);
+    location.assign(settingsUrl.href);
   }
 
   function filterSettingsSections(query) {
@@ -1142,10 +1120,7 @@
       if (emergencyOverlayActive && !settings.stayDisguisedOnReturn && document.visibilityState === 'visible') exitEmergencyDisguise();
     });
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') {
-        hideContextMenu();
-        if (!document.getElementById('siteSettingsPanel')?.hidden) closeSettings();
-      }
+      if (event.key === 'Escape') hideContextMenu();
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === ',') {
         event.preventDefault();
         openSettings();

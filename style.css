@@ -459,13 +459,10 @@ body.lightweight-mode .site-settings-panel { backdrop-filter:none; }
 }
 
 
-/* Settings are a plain settings list, not a floating dialog or card. */
-body.settings-open {
+/* Settings uses its own page rather than hiding the current page underneath a panel. */
+body.settings-page {
   justify-content: flex-start;
   min-height: 100vh;
-}
-body.settings-open > :not(#siteHeader):not(#siteSettingsPanel):not(#customContextMenu):not(#emergencyDisguiseOverlay):not(script):not(style) {
-  display: none !important;
 }
 .site-settings-panel {
   display: block;
@@ -2090,20 +2087,3 @@ body.emergency-disguise-active { overflow: hidden !important; }
 }
 
 
-/* Make the selected navigation tab unmistakable, including the Settings panel state. */
-.site-header-actions .site-tab.is-current,
-.site-header-actions #settingsOpenBtn.is-current,
-body.settings-open .site-header-actions #settingsOpenBtn {
-  position: relative;
-  background: rgba(255,255,255,.20) !important;
-  color: var(--page-text) !important;
-  font-weight: 800 !important;
-  box-shadow: inset 0 -3px 0 var(--accent) !important;
-  border-radius: 8px 8px 0 0 !important;
-  opacity: 1 !important;
-}
-.site-header-actions .site-tab.is-current:hover,
-body.settings-open .site-header-actions #settingsOpenBtn:hover {
-  background: rgba(255,255,255,.24) !important;
-  box-shadow: inset 0 -3px 0 var(--accent) !important;
-}

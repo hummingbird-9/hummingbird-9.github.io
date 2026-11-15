@@ -162,6 +162,9 @@
     function makeProblemIssueUrl(gameName, details) {
       const title = 'Game problem: ' + gameName;
       const body = [
+        '## Type',
+        'Bug',
+        '',
         '## Game',
         gameName,
         '',
@@ -170,7 +173,7 @@
         '',
         'Submitted from the humming[bird]Tech game feedback page.'
       ].join('\n');
-      const params = new URLSearchParams({ title, body });
+      const params = new URLSearchParams({ title, body, labels: 'bug' });
       return 'https://github.com/hummingbird-9/games/issues/new?' + params.toString();
     }
 
@@ -348,6 +351,9 @@
     function makeIssueUrl(name, description, zipName, coverFileName, entryMode) {
       const title = 'Game suggestion: ' + name;
       const body = [
+        '## Type',
+        'Enhancement',
+        '',
         '## Game details',
         '**Name:** ' + name,
         '',
@@ -363,6 +369,7 @@
       ].join('\n');
       const params = new URLSearchParams();
       params.set('template', 'game-submission.md');
+      params.set('labels', 'enhancement');
       params.set('title', title);
       params.set('body', body);
       return 'https://github.com/hummingbird-9/games/issues/new?' + params.toString();
