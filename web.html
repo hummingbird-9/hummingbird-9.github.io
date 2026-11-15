@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Search the HummingWeb</title>
-  <link rel="stylesheet" href="style.css?v=20261115-chat-web-bigger-18">
+  <link rel="stylesheet" href="style.css?v=20261115-chat-web-wide-19">
   <link rel="shortcut icon" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png">
   <style>
     /* Give the remote proxy the widest and tallest practical browsing area. */
@@ -14,11 +14,12 @@
       align-items:stretch;
       justify-content:flex-start;
       width:100%;
-      height:100vh;
-      height:100dvh;
-      min-height:0;
-      padding:5px 6px 6px;
-      overflow:hidden;
+      height:auto;
+      min-height:100vh;
+      min-height:100dvh;
+      padding:92px 10px 12px;
+      overflow-x:hidden;
+      overflow-y:auto;
       text-align:left;
     }
     .web-controls {
@@ -36,11 +37,11 @@
     .web-controls button { min-height:30px; padding:5px 11px; }
     .web-viewport {
       position:relative;
-      flex:0 1 auto;
+      flex:0 0 auto;
       align-self:center;
-      width:min(100%, 1700px, calc((100dvh - 45px) * (1240 / 960)));
-      max-height:calc(100dvh - 45px);
-      aspect-ratio:1240 / 960;
+      width:min(100%, 1700px, calc((100dvh - 145px) * (16 / 9)));
+      max-height:calc(100dvh - 145px);
+      aspect-ratio:16 / 9;
       margin:0;
       overflow:hidden;
       border:1px solid var(--panel-border);
@@ -55,7 +56,7 @@
       left:0;
       display:block;
       width:1700px;
-      height:1316.13px;
+      height:956.25px;
       max-width:none;
       max-height:none;
       border:0;
@@ -89,10 +90,10 @@
       const viewport = document.getElementById('webViewport');
       const button = document.getElementById('webFullscreenBtn');
       const BASE_WIDTH = 1700;
-      const ASPECT_RATIO = 1240 / 960;
+      const ASPECT_RATIO = 16 / 9;
       
       function getMaximumWidth() {
-        const availableHeight = Math.max(200, window.innerHeight - 70);
+        const availableHeight = Math.max(200, window.innerHeight - 145);
         const availableWidth = Math.max(240, window.innerWidth - 24);
         return Math.min(BASE_WIDTH, availableWidth, availableHeight * ASPECT_RATIO);
       }
