@@ -889,8 +889,6 @@ body.surface-solid .site-header,body.surface-minimal .site-header,body.surface-f
 @media(max-width:900px) { .site-header { gap:8px; } .site-header-actions { gap:5px; } .site-tab { min-height:36px; padding:7px 9px; font-size:11px; } .games-toolbar { grid-template-columns:1fr; gap:15px; } .games-file-group { grid-column:auto; width:min(480px,100%); } }
 @media(max-width:540px) { .site-header { align-items:center; gap:6px; } .site-brand img { width:26px; height:26px; } .site-header-actions { gap:5px; } .site-tab { min-height:34px; padding:7px 8px; font-size:10.5px; } .games-actions-row { grid-template-columns:repeat(2,minmax(0,1fr)); } .games-search-controls { grid-template-columns:minmax(0,1fr) 38px 84px; } }
 body.web-page { display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start; height:100vh; height:100dvh; min-height:0; padding:8px 14px 12px; overflow:hidden; text-align:left; }
-body.web-page .site-header { width:min(1240px,100%); min-height:42px; margin:0 auto 7px; flex:0 0 auto; }
-body.web-page .site-header-actions { flex-wrap:nowrap; overflow-x:auto; }
 body.web-page .web-controls { width:min(1240px,100%); margin:0 auto 7px; }
 body.web-page .web-viewport { flex:1 1 auto; min-height:0; width:min(1240px,100%); margin:0 auto; }
 @media(max-width:760px) { body.web-page { padding:6px 8px 8px; } }
