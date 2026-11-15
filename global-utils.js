@@ -77,7 +77,7 @@
         : (source.liquidGlass === false || source.glass === false ? 'solid' : DEFAULTS.surfaceStyle),
       customBackground: /^#[0-9a-f]{6}$/i.test(source.customBackground || '') ? source.customBackground : DEFAULTS.customBackground,
       // Treat the old built-in 16px value as the previous default during migration.
-      cornerRadius: source.cornerRadius == null || Number(source.cornerRadius) === 16 ? DEFAULTS.cornerRadius : source.cornerRadius,
+      cornerRadius: source.cornerRadius == null || Number(source.cornerRadius) === 12 || Number(source.cornerRadius) === 16 ? DEFAULTS.cornerRadius : source.cornerRadius,
       glassOpacity: source.glassOpacity ?? DEFAULTS.glassOpacity,
       glassBlur: source.glassBlur ?? DEFAULTS.glassBlur,
       liquidGlass: source.liquidGlass ?? source.glass ?? DEFAULTS.liquidGlass,
