@@ -5,9 +5,6 @@
   const SETTINGS_KEY = 'hummingbird_site_preferences_v1';
   const LEGACY_SETTINGS_KEY = 'hummingbird-site-settings-v2';
   const LOGO_URL = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png';
-  const ACCOUNT_ID_KEY = 'hummingbird_account_id_v1';
-  const ACCOUNT_NAME_KEY = 'hummingbird_account_name_v1';
-  const ACCOUNT_TIER_KEY = 'hummingbird_account_tier_v1';
   const TAB_PRESETS_KEY = 'hummingbird_tab_disguise_presets_v1';
   const DEFAULT_FAVICON = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png';
   const DEFAULTS = {
@@ -15,7 +12,7 @@
     background: 'gradient',
     surfaceStyle: 'glass',
     customBackground: '#ffffff',
-    cornerRadius: 16,
+    cornerRadius: 9,
     glassOpacity: 14,
     glassBlur: 10,
     liquidGlass: true,
@@ -35,7 +32,6 @@
     tabDisguiseActive: false,
     emergencyKey: 'F9',
     emergencyTemplate: 'classroom',
-    emergencyScreenshot: '',
     disguiseOnLeave: false,
     stayDisguisedOnReturn: false
   };
@@ -80,7 +76,8 @@
         ? source.surfaceStyle
         : (source.liquidGlass === false || source.glass === false ? 'solid' : DEFAULTS.surfaceStyle),
       customBackground: /^#[0-9a-f]{6}$/i.test(source.customBackground || '') ? source.customBackground : DEFAULTS.customBackground,
-      cornerRadius: source.cornerRadius ?? DEFAULTS.cornerRadius,
+      // Treat the old built-in 16px value as the previous default during migration.
+      cornerRadius: source.cornerRadius == null || Number(source.cornerRadius) === 16 ? DEFAULTS.cornerRadius : source.cornerRadius,
       glassOpacity: source.glassOpacity ?? DEFAULTS.glassOpacity,
       glassBlur: source.glassBlur ?? DEFAULTS.glassBlur,
       liquidGlass: source.liquidGlass ?? source.glass ?? DEFAULTS.liquidGlass,
@@ -101,8 +98,7 @@
       disguiseFaviconData: typeof source.disguiseFaviconData === 'string' && source.disguiseFaviconData.startsWith('data:image/') ? source.disguiseFaviconData : '',
       tabDisguiseActive: source.tabDisguiseActive === true,
       emergencyKey: typeof source.emergencyKey === 'string' && source.emergencyKey.length <= 12 ? source.emergencyKey : DEFAULTS.emergencyKey,
-      emergencyTemplate: ['classroom', 'docs', 'wikipedia', 'custom'].includes(source.emergencyTemplate) ? source.emergencyTemplate : DEFAULTS.emergencyTemplate,
-      emergencyScreenshot: typeof source.emergencyScreenshot === 'string' && source.emergencyScreenshot.startsWith('data:image/') ? source.emergencyScreenshot : '',
+      emergencyTemplate: ['classroom', 'khan', 'docs', 'youtube', 'wikipedia', 'desmos', 'quizlet', 'gmail', 'drive', 'canvas', 'custom'].includes(source.emergencyTemplate) ? source.emergencyTemplate : DEFAULTS.emergencyTemplate,
       disguiseOnLeave: source.disguiseOnLeave === true,
       stayDisguisedOnReturn: source.stayDisguisedOnReturn === true
     };
@@ -132,6 +128,7 @@
   }
 
   function initialize() {
+    clearLegacyAccountData();
     clearHardRefreshMarker();
     originalDocumentTitle = document.title;
     const initialIcon = document.querySelector('link[rel~="icon"], link[rel="shortcut icon"]');
@@ -315,14 +312,6 @@
       <div class="settings-panel-heading"><h2>Settings</h2></div>
       <label class="settings-search"><span>Find a setting</span><input id="settingsSearch" type="search" placeholder="Search settings…" autocomplete="off"></label>
       <div class="settings-panel-grid">
-        <section class="settings-section"><h3>Account</h3>
-          <label class="settings-field"><span>Display name</span><input id="accountDisplayName" type="text" maxlength="32" autocomplete="nickname" placeholder="Choose a name"></label>
-          <div class="settings-action-row"><button id="saveAccountName" type="button">Save name</button></div>
-          <div class="settings-account-id"><span>Your account ID</span><code id="accountIdValue"></code><button id="copyAccountId" type="button">Copy ID</button></div>
-          <div class="settings-account-id"><span>Account tier</span><code id="accountTierValue">Not assigned</code></div>
-          <p class="settings-description">Your name and ID are saved in this browser. This version of the site does not yet have a shared account service for syncing names or admin-assigned tiers between visitors.</p>
-        </section>
-
         <section class="settings-section"><h3>Appearance</h3>
           <label class="settings-field"><span>Theme</span><select id="settingBrightness"><option value="normal">Automatic style</option><option value="dark">Dark mode</option><option value="light">Light mode</option><option value="contrast">High contrast</option></select></label>
           <label class="settings-field"><span>Background</span><select id="settingBackground"><option value="gradient">Original</option><option value="forest">Forest</option><option value="midnight">Midnight</option><option value="slate">Slate</option><option value="sunrise">Sunset</option><option value="ocean">Ocean</option><option value="charcoal">Charcoal</option><option value="lavender">Lavender</option><option value="sand">Sand</option><option value="paper">Paper</option><option value="plain">Plain white</option><option value="custom">Custom color</option></select></label>
@@ -334,8 +323,8 @@
         </section>
 
         <section class="settings-section"><h3>Backup &amp; restore</h3>
-          <p class="settings-description">Save this site’s local browser data, including settings, bookmarks, recently played games, your name, account ID, and game progress saved to this site’s localStorage. Storage kept separately by external game sites may not be included.</p>
-          <div class="settings-action-row"><button id="settingsExport" type="button">Export account data</button><button id="settingsImport" type="button">Import account data</button><input id="settingsImportFile" type="file" accept="application/json,.json" hidden></div>
+          <p class="settings-description">Save this site’s local browser data, including settings, bookmarks, recently played games, and game progress stored by this site. Storage kept separately by external game sites may not be included.</p>
+          <div class="settings-action-row"><button id="settingsExport" type="button">Export site data</button><button id="settingsImport" type="button">Import site data</button><input id="settingsImportFile" type="file" accept="application/json,.json" hidden></div>
         </section>
 
         <section class="settings-section"><h3>Display</h3>
@@ -343,11 +332,13 @@
         </section>
 
         <section class="settings-section"><h3>Emergency disguise</h3>
-          <p class="settings-description">Show a full-screen cover and switch the browser tab to match. Press your shortcut again to return to the page.</p>
+          <p class="settings-description">Show a full-screen picture and switch the browser tab to match. Press Escape to hide the picture and return to the page.</p>
           <div class="settings-action-row"><button id="settingEmergencyKeyButton" type="button">Change shortcut (F9)</button><button id="resetEmergencyKey" type="button">Reset shortcut</button></div>
           <p id="emergencyKeyHelp" class="settings-description">Choose one key. Browser shortcuts and keys pressed while typing are left alone.</p>
-          <label class="settings-field"><span>Cover screen</span><select id="settingEmergencyTemplate"><option value="classroom">Google Classroom</option><option value="docs">Google Docs</option><option value="wikipedia">Wikipedia</option><option value="custom">My uploaded screenshot</option></select></label>
-          <label class="settings-field"><span>Upload a cover screenshot</span><input id="settingEmergencyScreenshot" type="file" accept="image/png,image/jpeg,image/webp,image/avif"></label>
+          <label class="settings-field"><span>Cover image</span><select id="settingEmergencyTemplate">
+            <option value="classroom">Google Classroom</option><option value="khan">Khan Academy</option><option value="docs">Google Docs</option><option value="youtube">YouTube</option><option value="wikipedia">Wikipedia</option><option value="desmos">Desmos</option><option value="quizlet">Quizlet</option><option value="gmail">Gmail</option><option value="drive">Google Drive</option><option value="canvas">Canvas</option><option value="custom">Custom cover</option>
+          </select></label>
+          <p class="settings-description">Cover pictures are loaded from the site’s <code>img/</code> folder. The folder README lists the exact filenames to add.</p>
           <label class="settings-check"><input id="settingDisguiseOnLeave" type="checkbox"><span>Turn on the disguise when I leave this tab</span></label>
           <label class="settings-check"><input id="settingStayDisguisedOnReturn" type="checkbox"><span>Keep the disguise on when I come back</span></label>
           <div class="settings-action-row"><button id="previewEmergencyDisguise" type="button">Preview emergency screen</button></div>
@@ -358,7 +349,7 @@
         </section>
 
         <section class="settings-section"><h3>Interface</h3>
-          <label class="settings-range"><span>Corner roundness <output id="cornerRadiusValue">16px</output></span><input id="settingCornerRadius" type="range" min="0" max="32" step="1"></label>
+          <label class="settings-range"><span>Corner roundness <output id="cornerRadiusValue">9px</output></span><input id="settingCornerRadius" type="range" min="0" max="32" step="1"></label>
           <label class="settings-range"><span>Liquid glass opacity <output id="glassOpacityValue">14%</output></span><input id="settingGlassOpacity" type="range" min="0" max="90" step="1"></label>
           <label class="settings-range"><span>Glass blur <output id="glassBlurValue">10px</output></span><input id="settingGlassBlur" type="range" min="0" max="24" step="1"></label>
           <label class="settings-field"><span>Surface style</span><select id="settingSurfaceStyle"><option value="glass">Liquid glass</option><option value="solid">Solid</option><option value="minimal">Minimal</option><option value="flat">Flat</option></select></label>
@@ -399,9 +390,9 @@
       </div>`;
     const header = document.getElementById('siteHeader');
     header.insertAdjacentElement('afterend', panel);
-    document.getElementById('settingsExport').addEventListener('click', exportAccountData);
+    document.getElementById('settingsExport').addEventListener('click', exportSiteData);
     document.getElementById('settingsImport').addEventListener('click', () => document.getElementById('settingsImportFile').click());
-    document.getElementById('settingsImportFile').addEventListener('change', importAccountDataFile);
+    document.getElementById('settingsImportFile').addEventListener('change', importSiteDataFile);
     document.getElementById('settingsSearch').addEventListener('input', event => filterSettingsSections(event.target.value));
     document.getElementById('settingsReset').addEventListener('click', () => {
       settings = { ...DEFAULTS, pastAccentColors: [] };
@@ -410,12 +401,6 @@
       applySettings();
       syncSettingsControls();
     });
-    document.getElementById('saveAccountName').addEventListener('click', saveAccountName);
-    document.getElementById('copyAccountId').addEventListener('click', async () => {
-      try { await copyText(getOrCreateAccountId()); }
-      catch (error) { window.alert(error.message || 'Could not copy the account ID.'); }
-    });
-
     const bindings = {
       settingBrightness: 'brightness', settingBackground: 'background', settingAccent: 'accent',
       settingCustomBackground: 'customBackground', settingCustomAccent: 'customAccent',
@@ -445,7 +430,6 @@
       if (emergencyOverlayActive) exitEmergencyDisguise();
       else enterEmergencyDisguise(true);
     });
-    document.getElementById('settingEmergencyScreenshot').addEventListener('change', handleEmergencyScreenshotUpload);
     document.getElementById('settingDisguiseFaviconFile').addEventListener('change', handleFaviconUpload);
     document.querySelectorAll('[data-tab-preset]').forEach(button => {
       button.addEventListener('click', () => chooseBuiltInTabPreset(button.dataset.tabPreset));
@@ -459,7 +443,6 @@
     });
     document.getElementById('clearTabDisguise').addEventListener('click', clearTabDisguise);
 
-    fillAccountControls();
     renderTabPresetOptions();
     syncSettingsControls();
   }
@@ -495,7 +478,7 @@
     const needle = String(query || '').trim().toLowerCase();
     panel.querySelectorAll('.settings-section').forEach(section => {
       let visible = 0;
-      section.querySelectorAll('.settings-field, .settings-range, .settings-check, .settings-action-row, .settings-description, .settings-preset-grid, .settings-past-colors, .settings-preset-manager, .settings-account-id').forEach(row => {
+      section.querySelectorAll('.settings-field, .settings-range, .settings-check, .settings-action-row, .settings-description, .settings-preset-grid, .settings-past-colors, .settings-preset-manager').forEach(row => {
         const match = !needle || row.textContent.toLowerCase().includes(needle);
         row.hidden = !match;
         if (match) visible++;
@@ -504,15 +487,21 @@
     });
   }
 
-  function exportAccountData() {
+  function clearLegacyAccountData() {
+    // Remove values created by the old local-only account controls.
+    ['hummingbird_account_id_v1', 'hummingbird_account_name_v1', 'hummingbird_account_tier_v1'].forEach(key => {
+      try { localStorage.removeItem(key); } catch (_) {}
+    });
+  }
+
+  function exportSiteData() {
     const storage = {};
     for (let index = 0; index < localStorage.length; index++) {
       const key = localStorage.key(index);
-      if (key !== null) storage[key] = localStorage.getItem(key);
+      if (key !== null && !key.startsWith('hummingbird_account_')) storage[key] = localStorage.getItem(key);
     }
-    storage[ACCOUNT_ID_KEY] = getOrCreateAccountId();
     const backup = {
-      format: 'hummingbird-account-backup',
+      format: 'hummingbird-site-backup',
       version: 1,
       exportedAt: new Date().toISOString(),
       storage
@@ -521,25 +510,25 @@
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'hummingbird-account-backup.json';
+    link.download = 'hummingbird-site-backup.json';
     document.body.appendChild(link);
     link.click();
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 30000);
   }
 
-  async function importAccountDataFile(event) {
+  async function importSiteDataFile(event) {
     const file = event.target.files && event.target.files[0];
     if (!file) return;
     try {
       const parsed = JSON.parse(await file.text());
-      if (parsed && parsed.format === 'hummingbird-account-backup' && parsed.storage && typeof parsed.storage === 'object' && !Array.isArray(parsed.storage)) {
+      if (parsed && ['hummingbird-site-backup', 'hummingbird-account-backup'].includes(parsed.format) && parsed.storage && typeof parsed.storage === 'object' && !Array.isArray(parsed.storage)) {
         localStorage.clear();
         for (const [key, value] of Object.entries(parsed.storage)) {
-          if (typeof value === 'string') localStorage.setItem(key, value);
+          if (typeof value === 'string' && !key.startsWith('hummingbird_account_')) localStorage.setItem(key, value);
         }
       } else if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-        // Continue to accept older settings-only exports from earlier versions.
+        // Continue to accept older settings-only exports from previous versions.
         const allowed = new Set(Object.keys(DEFAULTS));
         const cleaned = {};
         for (const [key, value] of Object.entries(parsed)) {
@@ -547,54 +536,21 @@
         }
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(cleaned));
       } else {
-        throw new Error('This file is not a Hummingbird account backup.');
+        throw new Error('This file is not a Hummingbird site-data backup.');
       }
+      clearLegacyAccountData();
       settings = readSettings();
       if (emergencyOverlayActive) exitEmergencyDisguise();
       saveSettings();
       applySettings();
       syncSettingsControls();
-      fillAccountControls();
       renderTabPresetOptions();
-      window.alert('Account data restored. The page will reload so saved game data can be re-read.');
+      window.alert('Site data restored. The page will reload so saved game data can be re-read.');
       window.location.reload();
     } catch (error) {
-      window.alert('Could not restore account data: ' + error.message);
+      window.alert('Could not restore site data: ' + error.message);
     } finally {
       event.target.value = '';
-    }
-  }
-
-  function getOrCreateAccountId() {
-    let id = '';
-    try { id = localStorage.getItem(ACCOUNT_ID_KEY) || ''; } catch (_) {}
-    if (!id) {
-      id = window.crypto?.randomUUID ? window.crypto.randomUUID() : `hb-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
-      try { localStorage.setItem(ACCOUNT_ID_KEY, id); } catch (_) {}
-    }
-    return id;
-  }
-
-  function fillAccountControls() {
-    const nameInput = document.getElementById('accountDisplayName');
-    const idOutput = document.getElementById('accountIdValue');
-    if (nameInput) nameInput.value = localStorage.getItem(ACCOUNT_NAME_KEY) || '';
-    if (idOutput) idOutput.textContent = getOrCreateAccountId();
-    const tierOutput = document.getElementById('accountTierValue');
-    if (tierOutput) tierOutput.textContent = localStorage.getItem(ACCOUNT_TIER_KEY) || 'Not assigned';
-  }
-
-  function saveAccountName() {
-    const input = document.getElementById('accountDisplayName');
-    const name = String(input?.value || '').trim().replace(/\s+/g, ' ').slice(0, 32);
-    try { localStorage.setItem(ACCOUNT_NAME_KEY, name); }
-    catch (_) { window.alert('Could not save the name in this browser.'); return; }
-    if (input) input.value = name;
-    const button = document.getElementById('saveAccountName');
-    if (button) {
-      const previous = button.textContent;
-      button.textContent = 'Saved';
-      setTimeout(() => { button.textContent = previous; }, 1300);
     }
   }
 
@@ -649,6 +605,7 @@
     const preset = BUILT_IN_TAB_PRESETS[key];
     if (!preset) return;
     settings.disguiseTitle = preset.title;
+    settings.emergencyTemplate = key;
     settings.disguiseFaviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(preset.domain)}&sz=64`;
     settings.disguiseFaviconData = '';
     syncSettingsControls();
@@ -762,22 +719,6 @@
     }).catch(error => window.alert(error.message));
   }
 
-  function handleEmergencyScreenshotUpload(event) {
-    const file = event.target.files && event.target.files[0];
-    if (!file) return;
-    if (file.size > 1500 * 1024) {
-      window.alert('Please choose a screenshot smaller than 1.5 MB so it can be saved in browser storage.')
-      event.target.value = '';
-      return;
-    }
-    readImageFile(file).then(dataUrl => {
-      settings.emergencyScreenshot = dataUrl;
-      settings.emergencyTemplate = 'custom';
-      saveSettings();
-      syncSettingsControls();
-    }).catch(error => window.alert(error.message));
-  }
-
   function readImageFile(file) {
     return new Promise((resolve, reject) => {
       if (!file.type.startsWith('image/')) { reject(new Error('Choose a valid image file.')); return; }
@@ -792,7 +733,7 @@
     const button = document.getElementById('settingEmergencyKeyButton');
     const help = document.getElementById('emergencyKeyHelp');
     if (button) button.textContent = isCapturingEmergencyKey ? 'Press a key…' : `Change shortcut (${settings.emergencyKey})`;
-    if (help && !isCapturingEmergencyKey) help.textContent = 'Choose one key. Browser shortcuts and keys pressed while typing are left alone.';
+    if (help && !isCapturingEmergencyKey) help.textContent = 'Choose one key to show the cover. Press Escape at any time to hide it.';
   }
 
   function beginEmergencyKeyCapture() {
@@ -807,6 +748,12 @@
   }
 
   function handleEmergencyKeydown(event) {
+    if (event.key === 'Escape' && emergencyOverlayActive) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      exitEmergencyDisguise();
+      return;
+    }
     if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey || event.repeat) return;
     if (isCapturingEmergencyKey && !isEditableTarget(event.target)) {
       const key = event.key;
@@ -829,26 +776,36 @@
     }
   }
 
+  const EMERGENCY_COVER_FILES = {
+    classroom: 'google-classroom',
+    khan: 'khan-academy',
+    docs: 'google-docs',
+    youtube: 'youtube',
+    wikipedia: 'wikipedia',
+    desmos: 'desmos',
+    quizlet: 'quizlet',
+    gmail: 'gmail',
+    drive: 'google-drive',
+    canvas: 'canvas',
+    custom: 'custom-cover'
+  };
+
   function emergencyPresetDetails() {
-    const details = {
-      classroom: { title: 'Google Classroom', domain: 'classroom.google.com' },
-      docs: { title: 'Google Docs', domain: 'docs.google.com' },
-      wikipedia: { title: 'Wikipedia', domain: 'wikipedia.org' },
-      custom: { title: 'Google Classroom', domain: 'classroom.google.com' }
-    };
-    return details[settings.emergencyTemplate] || details.classroom;
+    return BUILT_IN_TAB_PRESETS[settings.emergencyTemplate] || BUILT_IN_TAB_PRESETS.classroom;
   }
 
   function emergencyScreenMarkup() {
-    if (settings.emergencyTemplate === 'custom' && settings.emergencyScreenshot) {
-      return `<img class="emergency-custom-screenshot" src="${escapeAttribute(settings.emergencyScreenshot)}" alt="Emergency disguise screen">`;
-    }
-    if (settings.emergencyTemplate === 'docs') return `
-      <div class="emergency-docs"><header><b class="docs-mark">▣</b><span>Untitled document</span><span class="docs-spacer"></span><button>Share</button></header><nav>File　Edit　View　Insert　Format　Tools　Extensions　Help</nav><div class="docs-toolbar">↶　↷　▤　100%　Normal text　Arial　−　12　＋　B　I　U　A</div><article><h1>Untitled document</h1><p></p></article></div>`;
-    if (settings.emergencyTemplate === 'wikipedia') return `
-      <div class="emergency-wiki"><header><b>WIKIPEDIA</b><span>The Free Encyclopedia</span></header><nav>Main page　Contents　Current events　Random article　About</nav><main><aside>Contents<br><br>Overview<br>History<br>References</aside><article><h1>Welcome to Wikipedia</h1><p>the free encyclopedia that anyone can edit</p><hr><h2>From today's featured article</h2><p>Explore articles, topics, and reference material from across the encyclopedia.</p><h2>In the news</h2><p>Recent events and notable updates from around the world.</p></article></main></div>`;
+    const key = EMERGENCY_COVER_FILES[settings.emergencyTemplate] ? settings.emergencyTemplate : 'classroom';
+    const fileBase = EMERGENCY_COVER_FILES[key];
+    const file = `img/${fileBase}.png`;
+    const label = emergencyPresetDetails().title;
     return `
-      <div class="emergency-classroom"><header><b>▦</b><span>Classroom</span><span class="classroom-spacer"></span><span>▦</span><span>●</span></header><nav><span>☰</span><span>▣　Classes</span><span>▤　Calendar</span><span>▣　Teaching</span></nav><main><h1>Classes</h1><div class="classroom-cards"><section><div class="classroom-card-top">Science</div><h2>Science</h2><p>Room 204</p></section><section><div class="classroom-card-top">Mathematics</div><h2>Mathematics</h2><p>Period 2</p></section><section><div class="classroom-card-top">History</div><h2>History</h2><p>Room 108</p></section></div></main></div>`;
+      <img class="emergency-cover-image" data-cover-base="${escapeAttribute(fileBase)}" src="${escapeAttribute(file)}" alt="${escapeAttribute(label)}" draggable="false">
+      <div class="emergency-cover-missing" hidden>
+        <strong>Emergency cover image not found</strong>
+        <span>Add <code>img/${escapeAttribute(fileBase)}.png</code> (or a JPG, WebP, or AVIF) to the site’s <code>img/</code> folder.</span>
+      </div>
+      <span class="emergency-overlay-hint">Press Escape to hide screen overlay</span>`;
   }
 
   function enterEmergencyDisguise(preview) {
@@ -863,6 +820,21 @@
       document.body.appendChild(overlay);
     }
     overlay.innerHTML = emergencyScreenMarkup();
+    const coverImage = overlay.querySelector('.emergency-cover-image');
+    const missingCover = overlay.querySelector('.emergency-cover-missing');
+    if (coverImage && missingCover) {
+      const extensions = ['png', 'jpg', 'jpeg', 'webp', 'avif'];
+      let extensionIndex = 0;
+      coverImage.addEventListener('error', () => {
+        extensionIndex += 1;
+        if (extensionIndex < extensions.length) {
+          coverImage.src = `img/${coverImage.dataset.coverBase}.${extensions[extensionIndex]}`;
+          return;
+        }
+        coverImage.hidden = true;
+        missingCover.hidden = false;
+      });
+    }
     overlay.setAttribute('aria-hidden', 'false');
     overlay.classList.add('is-visible');
     document.body.classList.add('emergency-disguise-active');
