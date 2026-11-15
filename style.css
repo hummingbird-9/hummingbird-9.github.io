@@ -2035,15 +2035,17 @@ body.emergency-disguise-active { overflow: hidden !important; }
 }
 .emergency-overlay-hint {
   position: absolute;
-  right: 12px;
-  bottom: 9px;
+  top: 12px;
+  left: 12px;
+  right: auto;
+  bottom: auto;
   z-index: 2;
   padding: 5px 8px;
   border: 1px solid rgba(255,255,255,.24);
   border-radius: 5px;
   background: rgba(0,0,0,.62);
   color: rgba(255,255,255,.92);
-  font: 10px/1.3 Arial, Helvetica, sans-serif;
+  font: 11px/1.35 Arial, Helvetica, sans-serif;
   letter-spacing: .1px;
   cursor: pointer;
 }
