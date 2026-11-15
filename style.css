@@ -2009,7 +2009,7 @@ body.theme-normal .game-card:hover {
 
 .settings-preset-manager { margin-top: 14px; }
 
-/* Full-screen emergency website overlay. */
+/* Full-screen local emergency cover image. */
 .emergency-disguise-overlay {
   position: fixed;
   inset: 0;
@@ -2026,12 +2026,33 @@ body.theme-normal .game-card:hover {
 }
 .emergency-disguise-overlay.is-visible { display: block; }
 body.emergency-disguise-active { overflow: hidden !important; }
-.emergency-overlay-frame {
+.emergency-cover-image {
   display: block;
   width: 100%;
   height: 100%;
-  border: 0;
-  background: #fff;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.emergency-cover-missing {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  background: #f8fafc;
+  color: #202124;
+  text-align: center;
+}
+.emergency-cover-missing[hidden] { display: none !important; }
+.emergency-cover-missing code {
+  padding: 4px 7px;
+  border-radius: 4px;
+  background: #e8eaed;
 }
 .emergency-overlay-hint {
   position: absolute;
@@ -2043,13 +2064,13 @@ body.emergency-disguise-active { overflow: hidden !important; }
   padding: 5px 8px;
   border: 1px solid rgba(255,255,255,.24);
   border-radius: 5px;
-  background: rgba(0,0,0,.62);
-  color: rgba(255,255,255,.92);
+  background: rgba(0,0,0,.68);
+  color: rgba(255,255,255,.96);
   font: 11px/1.35 Arial, Helvetica, sans-serif;
   letter-spacing: .1px;
   cursor: pointer;
 }
-.emergency-overlay-hint:hover { background: rgba(0,0,0,.82); }
+.emergency-overlay-hint:hover { background: rgba(0,0,0,.86); }
 
 .submission-mode-panel[hidden] { display:none !important; }
 .submission-request-types { margin:14px 0 22px; }
