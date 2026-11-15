@@ -213,7 +213,8 @@
     if (settings.hideGameThumbnails) body.classList.add('hide-game-thumbnails');
 
     body.style.setProperty('--corner-radius', `${clamp(settings.cornerRadius, 0, 32)}px`);
-    body.style.setProperty('--glass-opacity', `${clamp(settings.glassOpacity, 0, 90) / 100}`);
+    // --panel is defined on :root, so opacity must live there as well.
+    document.documentElement.style.setProperty('--glass-opacity', `${clamp(settings.glassOpacity, 0, 90) / 100}`);
     body.style.setProperty('--glass-blur', `${clamp(settings.glassBlur, 0, 24)}px`);
     body.style.setProperty('--accent', accentColor(settings.accent));
     body.style.setProperty('--custom-page-background', settings.customBackground);
