@@ -2088,3 +2088,22 @@ body.emergency-disguise-active { overflow: hidden !important; }
   .site-settings-panel .settings-field input:not([type="color"]):not([type="checkbox"]):not([type="range"]),
   .site-settings-panel .settings-field input[type="file"] { width:100%; min-width:0; }
 }
+
+
+/* Make the selected navigation tab unmistakable, including the Settings panel state. */
+.site-header-actions .site-tab.is-current,
+.site-header-actions #settingsOpenBtn.is-current,
+body.settings-open .site-header-actions #settingsOpenBtn {
+  position: relative;
+  background: rgba(255,255,255,.20) !important;
+  color: var(--page-text) !important;
+  font-weight: 800 !important;
+  box-shadow: inset 0 -3px 0 var(--accent) !important;
+  border-radius: 8px 8px 0 0 !important;
+  opacity: 1 !important;
+}
+.site-header-actions .site-tab.is-current:hover,
+body.settings-open .site-header-actions #settingsOpenBtn:hover {
+  background: rgba(255,255,255,.24) !important;
+  box-shadow: inset 0 -3px 0 var(--accent) !important;
+}
