@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Chat — humming[bird]Tech</title>
-  <link rel="stylesheet" href="style.css?v=20261115-shared-topbar-restore-15">
+  <link rel="stylesheet" href="style.css?v=20261115-chat-web-fit-resize-16">
   <link rel="shortcut icon" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png">
   <style>
     /* Let Padlet use the full available screen beneath the shared navigation. */
@@ -25,8 +25,9 @@
       display:flex;
       flex:1 1 auto;
       flex-direction:column;
+      align-self:center;
       min-height:0;
-      width:100%;
+      width:min(100%, calc((100dvh - 155px) * (1100 / 760)));
       max-width:none;
       margin:0;
       gap:3px;
@@ -36,16 +37,18 @@
       margin:0;
       font-size:1.15rem;
       line-height:1.25;
+      text-align:center;
     }
     .chat-page-main > .content {
       flex:0 0 auto;
       margin:0 0 5px;
+      text-align:center;
     }
     .chat-frame {
       display:block;
       flex:0 1 auto;
-      align-self:center;
-      width:min(100%, calc((100dvh - 155px) * (1100 / 760)));
+      align-self:stretch;
+      width:100%;
       max-height:calc(100dvh - 155px);
       height:auto;
       aspect-ratio:1100 / 760;

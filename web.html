@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Search the HummingWeb</title>
-  <link rel="stylesheet" href="style.css?v=20261115-shared-topbar-restore-15">
+  <link rel="stylesheet" href="style.css?v=20261115-chat-web-fit-resize-16">
   <link rel="shortcut icon" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png">
   <style>
     /* Give the remote proxy the widest and tallest practical browsing area. */
@@ -35,9 +35,10 @@
     }
     .web-controls button { min-height:30px; padding:5px 11px; }
     .web-viewport {
+      position:relative;
       flex:0 1 auto;
       align-self:center;
-      width:min(100%, calc((100dvh - 130px) * (1240 / 960)));
+      width:min(100%, 1500px, calc((100dvh - 130px) * (1240 / 960)));
       max-height:calc(100dvh - 130px);
       aspect-ratio:1240 / 960;
       margin:0;
@@ -45,15 +46,73 @@
       border:1px solid var(--panel-border);
       border-radius:var(--corner-radius);
       background:#10291a;
+      --web-frame-scale:.82;
     }
+    /* The proxy receives a larger virtual viewport, scaled down to show more at once. */
     .web-viewport iframe {
+      position:absolute;
+      top:0;
+      left:0;
       display:block;
-      width:100%;
-      height:100%;
+      width:1500px;
+      height:1161.29px;
+      max-width:none;
+      max-height:none;
       border:0;
       background:#10291a;
+      transform:scale(var(--web-frame-scale));
+      transform-origin:top left;
     }
-    .web-viewport:fullscreen { width:100%; height:100%; border:0; border-radius:0; }
+    body.web-page .web-viewport .web-resize-handle {
+      position:absolute !important;
+      z-index:5;
+      display:grid !important;
+      place-items:center;
+      width:22px !important;
+      height:22px !important;
+      min-width:22px !important;
+      min-height:22px !important;
+      margin:0 !important;
+      padding:0 !important;
+      border:1px solid rgba(255,255,255,.65) !important;
+      border-radius:6px !important;
+      background:rgba(12,28,20,.78) !important;
+      color:#fff !important;
+      box-shadow:0 1px 5px rgba(0,0,0,.28) !important;
+      cursor:nwse-resize;
+      touch-action:none;
+      user-select:none;
+      -webkit-user-select:none;
+    }
+    .web-resize-handle::before {
+      content:"";
+      display:block;
+      width:8px;
+      height:8px;
+      border:solid currentColor;
+      border-width:1.5px 0 0 1.5px;
+      opacity:.9;
+    }
+    .web-resize-handle.nw { top:3px; left:3px; cursor:nwse-resize; }
+    .web-resize-handle.ne { top:3px; right:3px; cursor:nesw-resize; }
+    .web-resize-handle.sw { bottom:3px; left:3px; cursor:nesw-resize; }
+    .web-resize-handle.se { bottom:3px; right:3px; cursor:nwse-resize; }
+    .web-resize-handle.ne::before { transform:rotate(90deg); }
+    .web-resize-handle.sw::before { transform:rotate(-90deg); }
+    .web-resize-handle.se::before { transform:rotate(180deg); }
+    body.web-page .web-viewport .web-resize-handle:hover { background:rgba(36,90,61,.95) !important; }
+    .web-resize-handle:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+    .web-viewport:fullscreen {
+      width:100% !important;
+      height:100% !important;
+      max-height:none;
+      aspect-ratio:auto;
+      border:0;
+      border-radius:0;
+    }
+    .web-viewport:fullscreen iframe { width:100%; height:100%; transform:none; }
+    .web-viewport:fullscreen .web-resize-handle { display:none !important; }
+    .web-resize-hint { color:var(--page-muted); font-size:.75rem; }
     @media(max-width:760px) {
       body.web-page { padding:4px 5px 5px; }
       .web-controls { margin-bottom:4px; }
@@ -61,15 +120,76 @@
   </style>
 </head>
 <body class="web-page">
-  <div class="web-controls"><span>HummingWeb</span><button id="webFullscreenBtn" class="utility-btn" type="button">Fullscreen</button></div>
+  <div class="web-controls"><span>HummingWeb</span><span class="web-resize-hint">Drag a corner to resize / zoom out</span><button id="webFullscreenBtn" class="utility-btn" type="button">Fullscreen</button></div>
   <main class="web-viewport" id="webViewport">
-    <iframe src="https://hummingproxy-saj5.onrender.com/" title="HummingWeb search" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen loading="eager"></iframe>
+    <iframe id="webProxyFrame" src="https://hummingproxy-saj5.onrender.com/" title="HummingWeb search" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen loading="eager"></iframe>
+    <button class="web-resize-handle nw" type="button" data-corner="nw" aria-label="Resize HummingWeb from top left"></button>
+    <button class="web-resize-handle ne" type="button" data-corner="ne" aria-label="Resize HummingWeb from top right"></button>
+    <button class="web-resize-handle sw" type="button" data-corner="sw" aria-label="Resize HummingWeb from bottom left"></button>
+    <button class="web-resize-handle se" type="button" data-corner="se" aria-label="Resize HummingWeb from bottom right"></button>
   </main>
   <script src="global-utils.js?v=20261115-glass-opacity-default-zero-12"></script>
   <script>
     (() => {
       const viewport = document.getElementById('webViewport');
       const button = document.getElementById('webFullscreenBtn');
+      const BASE_WIDTH = 1500;
+      const ASPECT_RATIO = 1240 / 960;
+      const MIN_WIDTH = 360;
+      let manuallyResized = false;
+
+      function getMaximumWidth() {
+        const availableHeight = Math.max(200, window.innerHeight - 130);
+        const availableWidth = Math.max(240, window.innerWidth - 24);
+        return Math.min(BASE_WIDTH, availableWidth, availableHeight * ASPECT_RATIO);
+      }
+
+      function applyFrameWidth(width) {
+        const maximum = getMaximumWidth();
+        const minimum = Math.min(MIN_WIDTH, maximum);
+        const clampedWidth = Math.max(minimum, Math.min(maximum, width));
+        viewport.style.width = clampedWidth + 'px';
+        viewport.style.setProperty('--web-frame-scale', String(clampedWidth / BASE_WIDTH));
+      }
+
+      // Start at the largest size that fits the available screen.
+      applyFrameWidth(getMaximumWidth());
+
+      viewport.querySelectorAll('.web-resize-handle').forEach(handle => {
+        handle.addEventListener('pointerdown', event => {
+          if (document.fullscreenElement) return;
+          event.preventDefault();
+          const corner = handle.dataset.corner || 'se';
+          const horizontalDirection = corner.endsWith('e') ? 1 : -1;
+          const verticalDirection = corner.startsWith('s') ? 1 : -1;
+          const startX = event.clientX;
+          const startY = event.clientY;
+          const startWidth = viewport.getBoundingClientRect().width;
+          handle.setPointerCapture?.(event.pointerId);
+
+          const move = moveEvent => {
+            const dx = (moveEvent.clientX - startX) * horizontalDirection;
+            const dy = (moveEvent.clientY - startY) * verticalDirection * ASPECT_RATIO;
+            const dominantDelta = Math.abs(dx) >= Math.abs(dy) ? dx : dy;
+            applyFrameWidth(startWidth + dominantDelta * 2);
+            manuallyResized = true;
+          };
+          const finish = () => {
+            handle.removeEventListener('pointermove', move);
+            handle.removeEventListener('pointerup', finish);
+            handle.removeEventListener('pointercancel', finish);
+          };
+          handle.addEventListener('pointermove', move);
+          handle.addEventListener('pointerup', finish, { once:true });
+          handle.addEventListener('pointercancel', finish, { once:true });
+        });
+      });
+
+      window.addEventListener('resize', () => {
+        const currentWidth = viewport.getBoundingClientRect().width;
+        applyFrameWidth(manuallyResized ? Math.min(currentWidth, getMaximumWidth()) : getMaximumWidth());
+      });
+
       async function toggleFullscreen() {
         try {
           if (document.fullscreenElement) await document.exitFullscreen();
