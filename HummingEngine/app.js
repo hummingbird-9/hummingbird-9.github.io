@@ -380,9 +380,34 @@ function ensureFrame(tab){
   if(tab.frame)return;
   if(runtimeEngine==='2'){
     const plugins=[];
-    const HttpCachePlugin=window.$scramjetUtils?.HttpCachePlugin;
+    const utils=window.$scramjetUtils;
+    const HttpCachePlugin=utils?.HttpCachePlugin;
     if(typeof HttpCachePlugin==='function')plugins.push(new HttpCachePlugin());
     else logDiagnostic('HTTP cache unavailable','Scramjet Utils did not expose HttpCachePlugin');
+    const ManagedPlugin=utils?.ManagedPlugin;
+    if(typeof ManagedPlugin==='function'){
+      class FirstDocumentRevealPlugin extends ManagedPlugin {
+        constructor(){super('hummingproxy-first-document-reveal',[]);}
+        install(frame){
+          super.install(frame);
+          this.tap(frame.hooks.init.post,context=>{
+            if(!context.isTopLevel||!tab.busy||tab.documentReady)return;
+            tab.documentReady=true;
+            const documentWaitMs=tab.requestSentAt?Math.round(performance.now()-tab.requestSentAt):null;
+            tab.lastDocumentWaitMs=documentWaitMs;
+            clearTimeout(tab.firstDocumentFallback);
+            logDiagnostic('first document ready',documentWaitMs===null?tab.url:`${tab.url} — ${(documentWaitMs/1000).toFixed(2)}s after request dispatch`);
+            tab.frame?.frame.classList.remove('frame-pending');
+            try{installPopupHandling(tab);monitorTabMetadata(tab);}catch(error){logDiagnostic('early frame setup',error?.message||error);}
+            if(current===tab.id){
+              loading(false);
+              status('Page is visible; remaining resources may still be loading.');
+            }
+          });
+        }
+      }
+      plugins.push(new FirstDocumentRevealPlugin());
+    }else logDiagnostic('early document reveal unavailable','Scramjet Utils ManagedPlugin was not available');
     const raw=v2Controller.createFrame(undefined,{plugins});
     tab.frame={frame:raw.element,go:url=>raw.go(url)};
   }else tab.frame=scramjet.createFrame();
@@ -396,16 +421,17 @@ function ensureFrame(tab){
     monitorTabMetadata(tab);
     if(!tab.busy){logDiagnostic('iframe bootstrap load','Initial frame document; no proxied navigation was in progress');return;}
     tab.busy=false;
+    clearTimeout(tab.firstDocumentFallback);
     const frameLoadMs=tab.navigationStartedAt?Math.round(performance.now()-tab.navigationStartedAt):null;
     const responseWaitMs=tab.requestSentAt?Math.round(performance.now()-tab.requestSentAt):null;
     tab.lastFrameLoadMs=frameLoadMs;
     tab.lastResponseWaitMs=responseWaitMs;
     logDiagnostic('iframe load',tab.url);
-    if(frameLoadMs!==null)logDiagnostic('navigation timing',`frame load ${(frameLoadMs/1000).toFixed(2)}s total; ${responseWaitMs===null?'request timing unavailable':(responseWaitMs/1000).toFixed(2)+'s since request dispatch'}`);
-    setLoadPhase(100,'Page response received (site rendering is not verified)');
+    if(frameLoadMs!==null)logDiagnostic('navigation timing',`first document ${Number.isFinite(tab.lastDocumentWaitMs)?(tab.lastDocumentWaitMs/1000).toFixed(2)+'s':'not reported'}; full iframe load ${(frameLoadMs/1000).toFixed(2)}s; ${responseWaitMs===null?'request timing unavailable':(responseWaitMs/1000).toFixed(2)+'s after request dispatch'}`);
+    setLoadPhase(100,'All iframe resources finished loading');
     requestAnimationFrame(()=>{
       tab.frame?.frame.classList.remove('frame-pending');
-      if(current===tab.id){status('Frame loaded (page rendering unverified)');clearTimeout(loadTimeout);loadTimeout=setTimeout(()=>loading(false),220);}
+      if(current===tab.id){status('Page fully loaded');clearTimeout(loadTimeout);loadTimeout=setTimeout(()=>loading(false),220);}
     });
     ads(tab);
   });
@@ -429,7 +455,14 @@ async function navigate(input,push=true){
   hideRecovery();loading(true,'Resolving address…');setLoadPhase(12,'Resolving address…');
   try{
     setLoadPhase(27,'Connecting proxy transport…');await switchTransport();setLoadPhase(43,'Preparing browser frame…');ensureFrame(tab);
-    tab.url=url;tab.title=shortTitle(url);tab.icon='';tab.busy=true;tab.navigationStartedAt=performance.now();tab.requestSentAt=0;tab.frame.frame.classList.add('frame-pending');
+    tab.url=url;tab.title=shortTitle(url);tab.icon='';tab.busy=true;tab.navigationStartedAt=performance.now();tab.requestSentAt=0;tab.documentReady=false;clearTimeout(tab.firstDocumentFallback);tab.frame.frame.classList.add('frame-pending');
+    const navigationId=tab.navigationId=(tab.navigationId||0)+1;
+    tab.firstDocumentFallback=setTimeout(()=>{
+      if(tab.navigationId!==navigationId||tab.documentReady)return;
+      tab.frame?.frame.classList.remove('frame-pending');
+      logDiagnostic('slow first-document fallback','Revealed the frame after 8 seconds; the destination document has not signalled init.post yet');
+      if(current===tab.id){loading(false);status('Still waiting for the page response; it will appear when received.');}
+    },8000);
     if(push&&settings.historyEnabled){tab.history=tab.history.slice(0,tab.index+1);tab.history.push(url);tab.index=tab.history.length-1;}else if(!settings.historyEnabled){tab.history=[];tab.index=-1;}
     if(settings.pathSearch){history.replaceState(null,'',searchRoutePath()+'?q='+encodeURIComponent(input.trim()));}
     $('home').classList.add('hidden');$('browser').classList.remove('hidden');$('emptyTab').classList.add('hidden');updateUI();saveData();
@@ -672,8 +705,9 @@ async function diagnosticsText(){
     'Frame dimensions: '+(rect?Math.round(rect.width)+'x'+Math.round(rect.height):'none'),
     'Frame src: '+(f?.getAttribute('src')||'none'),
     'Frame loading: '+Boolean(t?.busy),
-    'Last frame-load time: '+(Number.isFinite(t?.lastFrameLoadMs)?(t.lastFrameLoadMs/1000).toFixed(2)+'s':'not measured yet'),
-    'Time since request dispatch: '+(Number.isFinite(t?.lastResponseWaitMs)?(t.lastResponseWaitMs/1000).toFixed(2)+'s':'not measured yet'),
+    'Time to first proxied document: '+(Number.isFinite(t?.lastDocumentWaitMs)?(t.lastDocumentWaitMs/1000).toFixed(2)+'s':'not measured yet'),
+    'Time to full iframe load: '+(Number.isFinite(t?.lastFrameLoadMs)?(t.lastFrameLoadMs/1000).toFixed(2)+'s':'not measured yet'),
+    'Time from request dispatch to full iframe load: '+(Number.isFinite(t?.lastResponseWaitMs)?(t.lastResponseWaitMs/1000).toFixed(2)+'s':'not measured yet'),
     'Device hints: '+(navigator.hardwareConcurrency||'unknown')+' logical CPU cores; '+(navigator.deviceMemory? navigator.deviceMemory+' GB reported RAM':'RAM estimate unavailable'),
     'Frame presentation: '+frameNote,
     'Top-level service worker controller: '+(navigator.serviceWorker.controller?.scriptURL||'none'),
