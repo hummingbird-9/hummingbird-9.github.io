@@ -1,0 +1,120 @@
+name: Sync game files and deploy Pages
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "games.html"
+      - ".github/workflows/sync-and-deploy-games.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the website
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Check out the games repository
+        uses: actions/checkout@v4
+        with:
+          repository: hummingbird-9/games
+          ref: main
+          path: games-source
+          fetch-depth: 1
+
+      - name: Build the Pages site with runnable game documents
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+
+          workspace = Path.cwd()
+          source = workspace / "games-source"
+          output = workspace / "site-dist"
+          output.mkdir(parents=True, exist_ok=True)
+
+          excluded_root = {
+              ".git", ".github", "games-source", "site-dist",
+              "node_modules", ".next", "vendor"
+          }
+
+          for item in workspace.iterdir():
+              if item.name in excluded_root:
+                  continue
+              destination = output / item.name
+              if item.is_dir():
+                  shutil.copytree(item, destination, dirs_exist_ok=True,
+                                  ignore=shutil.ignore_patterns(".git", "node_modules"))
+              elif item.is_file():
+                  shutil.copy2(item, destination)
+
+          games_output = output / "games"
+          if games_output.exists():
+              shutil.rmtree(games_output)
+          games_output.mkdir(parents=True)
+
+          game_folders = sorted(
+              folder for folder in source.iterdir()
+              if folder.is_dir() and (folder / "index.html").is_file()
+          )
+
+          def ignore_game_assets(directory, names):
+              # _ext contains audit mirrors of remote URLs; live pages request
+              # those URLs directly. Do not duplicate hundreds of MB of caches.
+              return [name for name in names if name in {"_ext", ".git", "node_modules"}]
+
+          copied_files = 0
+          copied_bytes = 0
+          for folder in game_folders:
+              destination = games_output / folder.name
+              shutil.copytree(folder, destination, ignore=ignore_game_assets)
+              for file in destination.rglob("*"):
+                  if file.is_file():
+                      copied_files += 1
+                      copied_bytes += file.stat().st_size
+
+          (output / ".nojekyll").write_text("", encoding="utf-8")
+          mib = copied_bytes / (1024 * 1024)
+          print(f"Prepared {len(game_folders)} games, {copied_files} files, {mib:.1f} MiB.")
+          print(f"Game pages will be served from: /games/<game-folder>/index.html")
+          if copied_bytes > 900 * 1024 * 1024:
+              raise SystemExit("Game payload exceeds the 900 MiB safety threshold.")
+          if not game_folders:
+              raise SystemExit("No game folders containing index.html were found.")
+          PY
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site-dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-24.04
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
