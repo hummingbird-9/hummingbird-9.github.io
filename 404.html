@@ -7,9 +7,10 @@
   <title>HummingWeb</title>
   <script>
     (() => {
-      const path = window.location.pathname.replace(/\\/+$/, '') || '/';
+      let path = window.location.pathname;
+      while (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
       const params = new URLSearchParams(window.location.search);
-      if (/^\\/web\\.html\\/search$/.test(path)) {
+      if (path === '/web.html/search') {
         if (params.has('q')) {
           const target = new URL('https://hummingbird-9.github.io/HummingEngine/');
           for (const key of ['q', 'open', 'popup']) {
