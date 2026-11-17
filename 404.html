@@ -12,7 +12,7 @@
       const params = new URLSearchParams(window.location.search);
       if (path === '/web.html/search') {
         if (params.has('q')) {
-          const target = new URL('https://hummingproxy-saj5.onrender.com/');
+          const target = new URL('https://hummingbird-9.github.io/HummingEngine/');
           for (const key of ['q', 'open', 'popup']) {
             if (params.has(key)) target.searchParams.set(key, params.get(key) || '');
           }

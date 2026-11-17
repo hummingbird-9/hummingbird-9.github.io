@@ -8,7 +8,7 @@
     (() => {
       const incoming = new URLSearchParams(window.location.search);
       if (!incoming.has('q')) return;
-      const target = new URL('https://hummingproxy-saj5.onrender.com/');
+      const target = new URL('https://hummingbird-9.github.io/HummingEngine/');
       for (const key of ['q', 'open', 'popup']) {
         if (incoming.has(key)) target.searchParams.set(key, incoming.get(key) || '');
       }
@@ -93,7 +93,7 @@
 <body class="web-page">
   <div class="web-controls"><span>HummingWeb</span><button id="webFullscreenBtn" class="utility-btn" type="button">Fullscreen</button></div>
   <main class="web-viewport" id="webViewport">
-    <iframe id="webProxyFrame" src="https://hummingproxy-saj5.onrender.com/" title="HummingWeb search" allow="fullscreen; clipboard-read; clipboard-write" loading="eager"></iframe>
+    <iframe id="webProxyFrame" src="https://hummingbird-9.github.io/HummingEngine/" title="HummingWeb search" allow="fullscreen; clipboard-read; clipboard-write" loading="eager"></iframe>
   </main>
   <script src="global-utils.js?v=20261115-iframe-focus-disguise-fix-13"></script>
   <script>
@@ -124,7 +124,7 @@
         viewport.style.setProperty('--web-frame-scale', String(clampedWidth / BASE_WIDTH));
       }
 
-      // Keep the largest responsive size that fits, preserving the 1240:960 ratio.
+      // Keep the largest responsive size that fits, preserving the 16:9 ratio.
       applyFrameWidth(getMaximumWidth());
       window.addEventListener('resize', () => applyFrameWidth(getMaximumWidth()));
 
