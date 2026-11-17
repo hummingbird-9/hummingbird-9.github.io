@@ -123,30 +123,6 @@
       return CDN_ROOT + encodePath(game.folder + '/' + (htmlFile || 'index.html'));
     }
 
-    function folderUrl(game) {
-      return CDN_ROOT + encodePath(game.folder) + '/';
-    }
-
-    // The CDN can return HTML files with a plain-text MIME type. Fetch the
-    // source and assign it to srcdoc so the browser parses and runs it as HTML.
-    // The base URL keeps CSS, JS, images, and other relative game assets working.
-    function addGameBase(html, game) {
-      const baseTag = '<base href="' + folderUrl(game) + '">';
-      const withoutOldBase = html.replace(/<base\b[^>]*>/ig, '');
-      if (/<head\b[^>]*>/i.test(withoutOldBase)) {
-        return withoutOldBase.replace(/<head\b[^>]*>/i, match => match + baseTag);
-      }
-      return '<!doctype html><html><head><meta charset="utf-8">' + baseTag +
-        '</head><body>' + withoutOldBase + '</body></html>';
-    }
-
-    async function fetchGameHtml(game, htmlFile) {
-      const url = gameUrl(game, htmlFile);
-      const response = await fetch(url, { headers: { Accept: 'text/html,application/xhtml+xml' } });
-      if (!response.ok) throw new Error('Could not load ' + (htmlFile || 'index.html') + ' (HTTP ' + response.status + ').');
-      return addGameBase(await response.text(), game);
-    }
-
     function escapeHtml(value) {
       return String(value).replace(/[&<>"']/g, character => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -608,27 +584,18 @@
       return frame;
     }
 
-    async function loadActiveHtml() {
+    function loadActiveHtml() {
       if (!activeGame) return;
       const game = activeGame;
       activeHtml = htmlSelector.value || 'index.html';
-      if (activeGame) updateGameAddress(activeGame, activeHtml);
-      const htmlFile = activeHtml;
-      const requestToken = ++activeLoadToken;
+      updateGameAddress(game, activeHtml);
       const frame = createGameFrame();
-      frame.srcdoc = '<!doctype html><html><body style="margin:0;background:#111;color:#fff;font:16px sans-serif;display:grid;place-items:center;height:100vh"><p>Loading ' + escapeHtml(game.title) + '…</p></body></html>';
 
-      try {
-        const gameHtml = await fetchGameHtml(game, htmlFile);
-        if (activeGame === game && frame.isConnected && requestToken === activeLoadToken) {
-          frame.srcdoc = gameHtml;
-        }
-      } catch (error) {
-        console.error('Could not load game:', error);
-        if (activeGame === game && frame.isConnected && requestToken === activeLoadToken) {
-          frame.srcdoc = '<!doctype html><html><body style="margin:0;padding:2em;background:#111;color:#fff;font:16px sans-serif"><h2>Could not load this game</h2><p>' + escapeHtml(error.message) + '</p><p>Try Refresh or choose another HTML file.</p></body></html>';
-        }
-      }
+      // Load the game's real URL rather than injecting its source through srcdoc.
+      // Construct 3 and other games create workers relative to their document URL;
+      // srcdoc gives them an about:srcdoc origin and can turn worker paths into file:///.
+      // A direct URL also makes relative assets and service-worker scopes resolve normally.
+      frame.src = gameUrl(game, activeHtml);
     }
 
     function updateGameAddress(game, htmlFile) {
@@ -696,26 +663,14 @@
       htmlSelector.title = 'Choose a game first';
     }
 
-    async function openGameInAboutBlank() {
+    function openGameInAboutBlank() {
       if (!activeGame) return;
-      const game = activeGame;
       const file = htmlSelector.value || activeHtml || 'index.html';
-      // Open the tab synchronously within the click handler to avoid popup blockers.
-      const popup = window.open('about:blank', '_blank');
+      // Open the game URL directly. This uses the same document origin and
+      // relative-asset behavior as the in-page game iframe.
+      const popup = window.open(gameUrl(activeGame, file), '_blank');
       if (!popup) {
         alert('Your browser blocked the new tab. Allow pop-ups for this site and try again.');
-        return;
-      }
-      popup.document.open();
-      popup.document.write('<!doctype html><title>Loading game…</title><body style="font:16px sans-serif;padding:2em">Loading game…</body>');
-      popup.document.close();
-      try {
-        const gameHtml = await fetchGameHtml(game, file);
-        popup.document.open();
-        popup.document.write(gameHtml);
-        popup.document.close();
-      } catch (error) {
-        popup.document.body.textContent = 'Could not load this game: ' + error.message;
       }
     }
 
