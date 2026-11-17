@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a2e0a">
+<title>Storage Recovery | HummingProxy</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+body.recovery-page{min-height:100vh;padding:24px;text-align:left;display:block}
+.recovery-wrap{width:min(760px,100%);margin:clamp(16px,6vh,85px) auto 35px}
+.recovery-header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:25px}
+.recovery-identity{display:flex;align-items:center;gap:14px;min-width:0}
+.recovery-identity img{width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 0 12px #83edab88)}
+.recovery-identity strong{font-size:24px;font-weight:600;letter-spacing:.15px}
+.recovery-identity small{display:block;color:#d7f5da;font-size:12px;margin-top:4px}
+.recovery-home{color:#e5ffe6;text-decoration:none;font-size:13px;border:1px solid #ffffff55;border-radius:10px;padding:10px 14px;background:#ffffff13;white-space:nowrap}
+.recovery-home:hover{background:#ffffff27}
+.recovery-card{display:block;width:100%;min-height:auto;text-align:left;background:linear-gradient(145deg,#132b1df2,#183d26eb);border:1px solid #a7e3b78c;box-shadow:0 16px 50px #001b0c88,inset 0 1px #ffffff38;border-radius:19px;padding:clamp(20px,4vw,34px);backdrop-filter:blur(11px)}
+.recovery-card h1{font-size:clamp(25px,4vw,33px);margin:0 0 12px;line-height:1.25;text-shadow:none;font-weight:600}
+.recovery-intro{font-size:14px;line-height:1.75;color:#d1e8d7;margin:0 0 20px}
+.recovery-state{display:flex;align-items:flex-start;gap:12px;border:1px solid #acd7aa69;border-radius:12px;padding:15px;background:#163a2280;margin-bottom:18px}
+.recovery-state[data-tone="good"]{border-color:#7bd5a6;background:#123a29}
+.recovery-state[data-tone="warn"]{border-color:#f6c58a;background:#50371b80}
+.recovery-state[data-tone="bad"]{border-color:#f0a1a1;background:#54252280}
+.recovery-icon{flex:none;font-size:23px;line-height:1.1}
+#repairStatus{font-size:15px;font-weight:600;margin-bottom:7px}
+#repairDetail{font-size:13px;line-height:1.6;color:#e5f1e7;overflow-wrap:anywhere}
+.recovery-actions{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0 0}
+body.recovery-page button{margin:0;padding:10px 16px;min-width:0;font-size:13px;border-radius:10px}
+body.recovery-page button:hover{transform:none;background:#ffffff30}
+.recovery-secondary{background:#ffffff0b}
+.recovery-details{margin-top:21px;border-top:1px solid #ffffff26;padding-top:15px}
+.recovery-details summary{cursor:pointer;font-size:14px;font-weight:600}
+.recovery-details p,.recovery-details li{color:#d7eadb;font-size:13px;line-height:1.7}
+.recovery-details ol{padding-left:22px}
+.recovery-details code{background:#001f0e80;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}
+#repairLog{white-space:pre-wrap;word-break:break-word;background:#05170e95;border:1px solid #ffffff27;color:#dceee1;font-size:12px;line-height:1.7;max-height:220px;overflow:auto;padding:12px;border-radius:10px}
+.recovery-foot{font-size:12px;line-height:1.65;color:#d0e6d2;text-align:center;margin:22px auto}
+@media(max-width:500px){.recovery-header{align-items:flex-start}.recovery-identity img{width:50px;height:50px}.recovery-identity strong{font-size:19px}.recovery-home{font-size:11px;padding:8px}.recovery-card{padding:19px}}
+@media(prefers-reduced-motion:reduce){body.recovery-page{animation:none}}
+</style>
+</head>
+<body class="recovery-page">
+<div class="recovery-wrap">
+<header class="recovery-header">
+<div class="recovery-identity"><img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20%284%29.png" alt="" onerror="this.hidden=true"><div><strong>HummingProxy</strong><small>Storage recovery</small></div></div>
+<a class="recovery-home" href="/">← Back to proxy</a>
+</header>
+<main class="recovery-card">
+<h1>Get the hummingbirds flying again.</h1>
+<p class="recovery-intro">Scramjet couldn't access one of its saved database stores. This page checks Scramjet storage and can attempt to reset <strong>only Scramjet storage</strong>, without removing your locally saved tabs, bookmarks, or settings. It won't affect other websites or Chrome profiles.</p>
+<div class="recovery-state" id="state" data-tone="neutral" role="status" aria-live="polite"><span class="recovery-icon" id="stateIcon" aria-hidden="true">◌</span><div><div id="repairStatus">Checking proxy storage…</div><div id="repairDetail">Preparing a safe reset.</div></div></div>
+<div class="recovery-actions"><button id="retry" type="button">Retry reset</button><button id="inspect" class="recovery-secondary" type="button">Inspect database</button><button id="copy" class="recovery-secondary" type="button">Copy diagnostics</button><button id="instructions" class="recovery-secondary" type="button">Manual fix</button></div>
+<details id="manual" class="recovery-details"><summary>Manual recovery if a database stays blocked</summary><p>Chrome sometimes keeps a connection alive after a page or service worker is closed. A different Google account does not itself fix a damaged database in this browser profile.</p><ol><li>Close every tab on <code id="siteOrigin"></code> in this Chrome profile.</li><li>Open Chrome's site information icon beside the address bar, choose <strong>Site settings</strong>, and clear stored site data for <code id="siteOriginTwo"></code>. Or open <code>chrome://settings/content/all</code>, search for <code id="siteOriginThree"></code>, and delete its site data.</li><li>Return to the proxy and reload. Clearing site data also removes locally saved HummingProxy tabs, bookmarks, and settings.</li></ol><p>If the exact same missing-object-store error occurs on a brand-new Chrome profile, the problem may be HummingProxy/Scramjet initialization, not old stored data. In that case the site code needs a separate fix.</p></details>
+<details class="recovery-details" open><summary>Technical details</summary><pre id="repairLog">Beginning diagnostics…</pre></details>
+</main>
+<p class="recovery-foot">Do captchas slowly. The scramjets launching the birds are so fast, you might get stuck in a loop.</p>
+</div>
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const lines=[];for(const id of ['siteOrigin','siteOriginTwo','siteOriginThree'])$(id).textContent=location.host;
+const log=(message)=>{lines.push(new Date().toLocaleTimeString()+'  '+message);$('repairLog').textContent=lines.join('\n');};
+const state=(heading,detail,tone='neutral',symbol='◌')=>{$('repairStatus').textContent=heading;$('repairDetail').textContent=detail;$('state').dataset.tone=tone;$('stateIcon').textContent=symbol;log(heading+' — '+detail);};
+const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const timeout=(promise,ms,label)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(label+' timed out after '+Math.round(ms/1000)+' seconds')),ms))]);
+const erase=name=>new Promise((resolve,reject)=>{
+  let finished=false;
+  const req=indexedDB.deleteDatabase(name);
+  const finish=error=>{if(finished)return;finished=true;clearTimeout(timer);error?reject(error):resolve();};
+  const timer=setTimeout(()=>finish(new Error('Deletion blocked for '+name+'. A live browser context still has the database open.')),10000);
+  req.onblocked=()=>state('Waiting for a database connection…','The database is held open by a page or worker. The reset will stop after 10 seconds.','warn','!');
+  req.onerror=()=>finish(req.error||new Error('Could not delete '+name));
+  req.onsuccess=()=>finish();
+});
+const inspectOne=name=>new Promise(resolve=>{
+  let done=false;
+  let request;
+  const complete=value=>{if(done)return;done=true;clearTimeout(timer);resolve(value);};
+  const timer=setTimeout(()=>complete(name+': inspection timed out (possibly blocked)'),4500);
+  try{
+    request=indexedDB.open(name);
+    request.onupgradeneeded=()=>{const db=request.result;log(name+': opened a new database; no prior stores found');db.close();};
+    request.onsuccess=()=>{const db=request.result;const stores=[...db.objectStoreNames];log(name+': version '+db.version+', object stores: '+(stores.join(', ')||'(none)'));db.close();complete({name,stores,version:db.version});};
+    request.onerror=()=>complete(name+': inspection failed: '+(request.error?.message||'unknown'));
+    request.onblocked=()=>log(name+': schema inspection was blocked');
+  }catch(error){complete(name+': '+String(error));}
+});
+const listNames=async()=>{
+  if(typeof indexedDB.databases!=='function')throw Error('This browser cannot enumerate databases automatically.');
+  const all=await timeout(indexedDB.databases(),6000,'Database listing');
+  const names=[...new Set(all.map(db=>db.name).filter(name=>typeof name==='string'&&/scramjet/i.test(name)))];
+  log('Scramjet databases on '+location.origin+': '+(names.join(', ')||'(none)'));
+  return names;
+};
+let busy=false;
+async function inspect(){
+  if(busy)return;
+  busy=true;$('inspect').disabled=true;
+  try{
+    state('Inspecting IndexedDB…','Checking which Scramjet databases and object stores exist.');
+    const names=await listNames();
+    if(!names.length){state('No Scramjet database exists','If startup still fails, the application may not be creating its database correctly.','warn','!');return;}
+    for(const name of names)await inspectOne(name);
+    state('Inspection complete','Open Technical details to see the database versions and object-store names. This does not erase data.','good','✓');
+  }catch(error){state('Inspection failed',error.message||String(error),'bad','!');}
+  finally{busy=false;$('inspect').disabled=false;}
+}
+async function repair(){
+  if(busy)return;
+  busy=true;$('retry').disabled=true;$('inspect').disabled=true;
+  try{
+    if(!window.indexedDB)throw Error('IndexedDB is unavailable.');
+    state('Disconnecting proxy service workers…','Unregistering the service workers before attempting a storage reset.');
+    if('serviceWorker'in navigator){
+      const registrations=await timeout(navigator.serviceWorker.getRegistrations(),5000,'Worker lookup');
+      for(const reg of registrations){
+        if(new URL(reg.scope).origin!==location.origin)continue;
+        const done=await timeout(reg.unregister(),5000,'Worker unregister');log('Unregistered '+reg.scope+': '+done);
+      }
+    }
+    await delay(500);
+    const names=await listNames();
+    if(!names.length){state('No Scramjet database to reset','If you still see the missing-object-store error, the application may be creating a database with the wrong schema.','warn','!');return;}
+    for(const name of names){
+      state('Resetting '+name+'…','Trying to remove the damaged database.');
+      await erase(name);log('Deleted '+name);
+    }
+    const remaining=await listNames();
+    if(remaining.some(name=>names.includes(name)))throw Error('A removed database appeared again. Another script may have recreated it.');
+    state('Reset complete','Return to HummingProxy. If the identical error happens again, the application has a database initialization problem and deleting data is not a permanent fix.','good','✓');
+  }catch(error){
+    const message=error?.message||String(error);
+    state('Automatic repair could not finish',message+' Use Manual fix below. Browser cache clearing does not delete IndexedDB.','bad','!');$('manual').open=true;
+  }finally{busy=false;$('retry').disabled=false;$('inspect').disabled=false;}
+}
+$('retry').onclick=()=>repair();$('inspect').onclick=()=>inspect();
+$('instructions').onclick=()=>{$('manual').open=true;$('manual').scrollIntoView({behavior:'smooth',block:'nearest'});};
+$('copy').onclick=async()=>{const text='HummingProxy storage recovery\n'+location.origin+'\n'+lines.join('\n');try{await navigator.clipboard.writeText(text);$('copy').textContent='Copied diagnostics';}catch{$('copy').textContent='Copy unavailable';}setTimeout(()=>$('copy').textContent='Copy diagnostics',2000);};
+inspect();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0a2e0a">
+  <meta name="app-base" content="/HummingEngine/">
+  <meta name="app-host" content="github-pages">
+  <base href="/HummingEngine/">
+  <title>HummingProxy</title>
+  <link rel="stylesheet" href="style.css?v=scramjet2-epoxy-cache-4">
+  <script src="app.js?v=scramjet2-same-origin-cache-5" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="top-button-container">
+      <button type="button" id="homeBtnTop">Home</button>
+    </header>
+    <div class="utility-controls-container">
+      <span id="status" role="status">Starting proxy…</span>
+      <button type="button" id="diagnosticsBtn">Diagnostics</button>
+      <button type="button" id="settingsBtn">Settings</button>
+    </div>
+    <main>
+      <section id="home" class="home">
+        <div class="logo-container" id="logo">
+          <img class="brand-logo" id="brandLogo" alt="HummingbirdTech logo" src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20%284%29.png">
+          <span id="logoFallback" class="logo-fallback hidden">HummingProxy</span>
+        </div>
+        <h1>We launch hummingbirds out the back of a scramjet to search the web faster.</h1>
+        <form id="searchForm" class="search-container">
+          <input id="address" class="search-bar" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Search or enter a URL" aria-label="Search or URL">
+          <button id="go" type="submit">Search</button>
+        </form>
+        <p id="embeddedNotice" class="setup-error hidden">If you encounter a problem, try CTRL + SHIFT + R. If the problem persists, go to Site settings --> Usage --> and click delete data.</p>
+        <p id="setupError" class="setup-error hidden" role="alert"></p>
+        <button id="openTabs" type="button">Open tabs</button>
+        <button id="repairProxy" type="button" class="hidden">Repair proxy storage</button>
+      </section>
+      <section id="browser" class="browser hidden">
+        <div class="tabs-header"><div id="tabStrip" class="tab-strip" aria-label="Tabs"><button id="newTab" type="button" title="New tab">+</button></div><button id="closeBrowserWindow" type="button" title="Close browser window (return home)" aria-label="Close browser window">×</button></div>
+        <nav class="viewport-navbar" aria-label="Browser controls">
+          <div class="viewport-controls">
+            <button id="back" type="button" title="Back">←</button>
+            <button id="forward" type="button" title="Forward">→</button>
+            <button id="reload" type="button" title="Reload">↻</button>
+            <button id="homeBtn" type="button" title="Home">Home</button>
+          </div>
+          <form id="browserForm" class="browser-form">
+            <input id="browserAddress" type="text" autocomplete="off" spellcheck="false" aria-label="Browser address">
+            <button type="submit">Go</button>
+          </form>
+          <button id="browserSettings" type="button" title="Settings">⚙</button>
+          <button id="bookmarkToggle" type="button" title="Bookmark this page">☆</button>
+          <button id="expand" type="button" title="Fullscreen">⛶</button>
+        </nav>
+        <div id="bookmarkBar" class="bookmark-bar"><span class="bookmark-heading">Bookmarks</span><div id="bookmarkItems" class="bookmark-items"></div></div>
+        <div id="frameHost" class="iframe-sandbox-container">
+        <div id="emptyTab" class="empty-tab hidden">
+          <div class="empty-tab-content">
+            <h2>New tab</h2>
+            <form id="emptyTabForm" class="empty-tab-form">
+              <input id="emptyTabAddress" type="text" autocomplete="off" spellcheck="false" placeholder="Search Google or enter a URL" aria-label="Search in new tab">
+              <button type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+        </div>
+      </section>
+    </main>
+    <aside id="diagnosticsPanel" class="diagnostics-panel hidden" aria-label="Proxy diagnostics">
+      <div class="settings-head"><h2>Proxy diagnostics</h2><button id="closeDiagnostics" type="button">×</button></div>
+      <p>Reports browser and proxy state without developer tools. An iframe load event does not prove that its website rendered.</p>
+      <pre id="diagnosticsOutput"></pre>
+      <button type="button" id="refreshDiagnostics">Refresh</button>
+      <button type="button" id="copyDiagnostics">Copy diagnostics</button>
+    </aside>
+    <aside id="settings" class="settings-panel hidden">
+      <div class="settings-head"><h2>Settings</h2><button id="closeSettings" type="button">×</button></div>
+      <label class="toggle"><span>Use /search?q= in the browser address bar<small>Opt-in address-bar URL mode; off by default. Embedded pages also accept /search?q= on their current iframe entry path.</small></span><input id="pathSearch" type="checkbox"></label>
+      <label class="toggle"><span>Proxy-only mode<small>Hide the home screen, tabs, browser controls, bookmarks and page background. Keep Settings and Diagnostics available. The proxy content fills the window.</small></span><input id="proxyOnly" type="checkbox"></label>
+      <div class="custom-search-setting">
+        <label class="field">Chrome custom search URL<input id="customSearchUrl" type="text" readonly spellcheck="false"></label>
+        <button id="copySearchUrl" type="button">Copy search URL</button>
+        <label class="field">Iframe search URL<input id="iframeSearchUrl" type="text" readonly spellcheck="false"></label>
+        <button id="copyIframeSearchUrl" type="button">Copy iframe search URL</button>
+        <small>Use this URL for the iframe entry path currently hosting HummingProxy. The path is not tied to a particular filename: any iframe entry can accept /search?q=. The %s placeholder is replaced by your search. The hosting domain must serve or reverse-proxy HummingProxy.</small>
+        <small>In Chrome, open Settings → Search engine → Manage search engines → Add. Use HummingProxy as the name, hp as the shortcut, and paste the regular search URL.</small>
+      </div>
+      <label class="toggle"><span>Save in-app browsing history<small>Off by default. Enabling asks for confirmation. This only controls history stored by HummingProxy; it cannot control network or server logs.</small></span><input id="historyEnabled" type="checkbox"></label>
+      <label class="field">Browser tab title<input id="customTabTitle" type="text" maxlength="80" placeholder="HummingProxy"></label>
+      <label class="field">Browser tab favicon URL<input id="customFavicon" type="url" placeholder="https://example.com/favicon.ico"></label>
+      <label class="field">Search engine<select id="engine"><option value="duckduckgo">DuckDuckGo</option><option value="google" selected>Google</option><option value="firefox">Firefox (Google results)</option></select></label>
+      <label class="field">Scramjet version<select id="scramjetVersion"><option value="2">Scramjet 2.0.67-alpha.2 (Pages default; experimental)</option><option value="1">Scramjet 1.1.0 (stable fallback)</option><option value="static">Static Scramjet 1.10 (legacy)</option></select></label>
+      <label class="toggle"><span>Automatically fall back to the other Scramjet version if the selected one fails<small>Turn off to show the startup error without switching engines</small></span><input id="autoFallback" type="checkbox" checked></label>
+      <label class="field">Transport<select id="transport"><option value="epoxy">Epoxy (lighter; recommended)</option><option value="libcurl">libcurl (compatibility)</option></select><small>Epoxy is lighter on slower devices. Switch to libcurl if a site has compatibility problems.</small></label>
+      <label class="toggle"><span>Enable adblock<small>Basic page-element hiding only</small></span><input id="adblock" type="checkbox"></label>
+      <label class="toggle"><span>Enable Tor browsing<small id="torNote">Checking built-in Tor…</small></span><input id="tor" type="checkbox"></label>
+      <label class="toggle"><span>Show bookmark bar</span><input id="showBookmarks" type="checkbox" checked></label>
+      <details class="appearance-options" open><summary>Appearance and customization</summary>
+        <label class="field">Color preset<select id="theme"><option value="classic">Classic HummingProxy</option><option value="forest">Forest</option><option value="ocean">Ocean</option><option value="sunset">Sunset</option><option value="purple">Purple</option><option value="midnight">Midnight</option><option value="custom">Custom colors</option></select></label>
+        <div class="color-options"><label>Background A<input id="colorA" type="color"></label><label>Background B<input id="colorB" type="color"></label><label>Accent<input id="accent" type="color"></label></div>
+        <label class="field">New-tab background image URL<input id="newTabBackground" type="url" placeholder="https://example.com/wallpaper.jpg"></label>
+        <label class="field">Home background image URL<input id="pageBackground" type="url" placeholder="https://example.com/wallpaper.jpg"></label>
+        <label class="field">Background dimming <input id="wallpaperDim" type="range" min="0" max="90" step="5"></label>
+        <label class="field">Corner roundness<input id="rounding" type="range" min="0" max="30" step="1"></label>
+        <label class="field">Font<select id="font"><option value="Segoe UI">Segoe UI</option><option value="Arial">Arial</option><option value="Verdana">Verdana</option><option value="Georgia">Georgia</option><option value="Monospace">Monospace</option></select></label>
+        <label class="toggle"><span>Enable animations</span><input id="motion" type="checkbox" checked></label>
+        <div class="button-customizations">
+          <h3>Button customization</h3>
+          <div class="color-options"><label>Button color<input id="buttonColor" type="color"></label><label>Button text<input id="buttonTextColor" type="color"></label></div>
+          <label class="field">Button size<select id="buttonSize"><option value="compact">Compact</option><option value="normal">Normal</option><option value="large">Large</option></select></label>
+          <label class="field">Button style<select id="buttonStyle"><option value="glass">Glass</option><option value="solid">Solid</option><option value="outline">Outline</option></select></label>
+          <label class="toggle"><span>Button hover effects</span><input id="buttonHover" type="checkbox" checked></label>
+        </div>
+        <button id="resetAppearance" type="button" class="reset-appearance">Reset appearance</button>
+      </details>
+      <div class="storage-reset"><button type="button" id="clearSiteData">Clear HummingProxy site data</button><small>Use if HummingProxy stops working after Render sleeps or a deployment. Removes locally stored tabs, bookmarks, customizations, cache, IndexedDB, and proxy service workers. Does not clear other websites.</small><p id="clearSiteDataStatus" role="status" aria-live="polite"></p></div>
+      <p class="settings-note">Bookmarks are stored on this device. Tor requires the Docker backend and may start slowly.</p>
+    </aside>
+    <aside id="recoveryHelp" class="recovery-help hidden" role="alert" aria-live="polite">
+      <div class="recovery-head"><strong>HummingProxy is having trouble loading</strong><button id="recoveryDismiss" type="button" aria-label="Close recovery instructions">×</button></div>
+      <p id="recoveryReason"></p>
+      <p><b>Try first:</b> Wait for Render to wake up, then press Retry. If pages still fail after the site wakes, clear this site's data.</p>
+      <details><summary>How to clear site data in Chrome / Chromebook</summary>
+        <ol><li>Open HummingProxy directly in its own tab.</li><li>Click the icon to the left of the address bar, then <b>Site settings</b>.</li><li>Choose <b>Clear data</b> or <b>Delete data</b> for this site (wording varies), then reload HummingProxy.</li><li>If that option is missing, open Chrome Settings → Privacy and security → Site settings → View permissions and data stored across sites; find <b>hummingproxy-saj5.onrender.com</b> and delete its stored data.</li></ol>
+        <p><b>Warning:</b> Clearing site data may remove saved tabs, bookmarks, settings and appearance customizations. Clearing only cached images/files may not repair IndexedDB.</p>
+      </details>
+      <div class="recovery-actions"><button id="recoveryRetry" type="button">Retry / reload</button><a href="repair.html" target="_blank" rel="noopener">Storage diagnostics</a></div>
+    </aside>
+    <div class="loader hidden" id="loader" role="status" aria-live="polite">
+      <div class="loading-bird" aria-hidden="true"><img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20%285%29.png" alt=""></div>
+      <p>our hummingbird army is looking for relevant sites</p>
+      <progress id="loadProgress" class="load-progress" max="100" value="0" aria-label="Page loading progress"></progress>
+      <small id="loadDetail">Connecting…</small>
+      <button type="button" id="cancelLoad">Cancel</button>
+    </div>
+    <footer>Do captchas slowly. The scramjets launching the humminigbirds are so fast, you might get stuck in a loop.</footer>
+  </div>
+</body>
+</html>
