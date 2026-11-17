@@ -82,13 +82,22 @@
 <body class="web-page">
   <div class="web-controls"><span>HummingWeb</span><button id="webFullscreenBtn" class="utility-btn" type="button">Fullscreen</button></div>
   <main class="web-viewport" id="webViewport">
-    <iframe id="webProxyFrame" src="https://hummingproxy-saj5.onrender.com/" title="HummingWeb search" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen loading="eager"></iframe>
+    <iframe id="webProxyFrame" src="https://hummingbird-9.github.io/HummingEngine/" title="HummingWeb search" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen loading="eager"></iframe>
   </main>
   <script src="global-utils.js?v=20261115-iframe-focus-disguise-fix-13"></script>
   <script>
     (() => {
       const viewport = document.getElementById('webViewport');
       const button = document.getElementById('webFullscreenBtn');
+      const proxyFrame = document.getElementById('webProxyFrame');
+      const incoming = new URLSearchParams(window.location.search);
+      for (const key of ['q', 'open', 'popup']) {
+        if (incoming.has(key)) {
+          const target = new URL(proxyFrame.src);
+          target.searchParams.set(key, incoming.get(key) || '');
+          proxyFrame.src = target.href;
+        }
+      }
       const BASE_WIDTH = 1700;
       const ASPECT_RATIO = 16 / 9;
       
