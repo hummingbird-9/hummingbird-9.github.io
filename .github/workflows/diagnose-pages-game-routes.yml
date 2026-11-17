@@ -1,4 +1,4 @@
-name: Diagnose published game routes
+name: Verify published game routes
 
 on:
   workflow_dispatch:
@@ -9,40 +9,48 @@ on:
 
 permissions:
   contents: read
-  pages: write
 
 jobs:
-  diagnose:
+  verify:
     runs-on: ubuntu-24.04
     steps:
-      - name: Inspect the GitHub Pages publishing mode
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh api repos/hummingbird-9/hummingbird-9.github.io/pages --jq '{html_url, cname, build_type, source}'
-      - name: Probe Pages home and game document URLs
+      - name: Verify the public Precise Bowling page and required files
         shell: bash
         run: |
-          set -u
-          bases=(
-            "http://ghp.hummingbird.rf.gd"
-            "https://ghp.hummingbird.rf.gd"
-            "https://hummingbird-9.github.io"
-            "https://humming.bob.is-great.net"
-            "https://ghp.humming.html-5.me"
-            "https://ghp.humming.nichesite.org"
-            "https://ghp.humming.gt.tc"
-            "https://ghp.humming.page.gd"
-          )
-          for base in "${bases[@]}"; do
-            for suffix in "/" "/games/3D%20Bowling/index.html"; do
-              url="$base$suffix"
-              echo
-              echo "=== $url ==="
-              meta="$(curl --silent --show-error --location --max-time 15 --output /tmp/page-body --write-out '%{http_code}|%{content_type}|%{url_effective}' "$url" 2>&1)"
-              result=$?
-              echo "curl_exit=$result metadata=$meta"
-              head -c 500 /tmp/page-body 2>/dev/null | tr '\n' ' '
-              echo
-            done
+          set -euo pipefail
+          base="https://ghp.hummingbird.rf.gd"
+          page="$base/games/3D%20Bowling/index.html"
+
+          for attempt in $(seq 1 12); do
+            echo "Attempt $attempt: $page"
+            meta="$(curl --silent --show-error --location --max-time 20 \
+              --output /tmp/bowling-index.html \
+              --write-out '%{http_code}|%{content_type}|%{url_effective}' "$page" || true)"
+            status="${meta%%|*}"
+            rest="${meta#*|}"
+            content_type="${rest%%|*}"
+            echo "HTML response: ${status:-no status} | ${content_type:-no content type} | $meta"
+
+            if [[ "$status" == "200" && "$content_type" == text/html* ]] &&
+               grep -qi '<canvas id="canvas"' /tmp/bowling-index.html; then
+              echo "Precise Bowling HTML is served as an executable HTML document."
+              break
+            fi
+
+            if [[ "$attempt" == "12" ]]; then
+              echo "Precise Bowling HTML did not become available after the retries."
+              head -c 600 /tmp/bowling-index.html || true
+              exit 1
+            fi
+            sleep 10
           done
+
+          for asset in BowlingOnline2.js BowlingOnline2.data BowlingOnline2.wasm; do
+            url="$base/games/3D%20Bowling/$asset"
+            status="$(curl --silent --show-error --location --max-time 30 \
+              --output /dev/null --write-out '%{http_code}' "$url")"
+            echo "$asset -> HTTP $status"
+            test "$status" = "200"
+          done
+
+          echo "All tested game document and runtime asset routes returned successfully."
