@@ -76,7 +76,11 @@
     const REPO = 'games';
     const BRANCH = 'main';
     const TREE_API = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${BRANCH}?recursive=1`;
-    // Game HTML must come from GitHub Pages: jsDelivr serves .html as text/plain.\n    // The mirrored game folders preserve the original relative paths for scripts, data, workers, and media.\n    // Keep the CDN for cover images and ZIP downloads; it serves .html as text/plain.\n    const CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@${BRANCH}/`;\n    const GAME_PAGES_ROOT = window.location.origin + '/games/';
+    // Game HTML must come from GitHub Pages: jsDelivr serves .html as text/plain.
+    // The mirrored game folders preserve original relative paths for scripts, data, workers, and media.
+    // Keep jsDelivr for cover images and ZIP downloads.
+    const CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@${BRANCH}/`;
+    const GAME_PAGES_ROOT = window.location.origin + '/games/';
     const CACHE_KEY = 'hummingbird-games-folder-catalog-v4';
     const PAGE_SIZE = 100;
     const BOOKMARKS_KEY = 'hummingbird-games-bookmarks-v1';
