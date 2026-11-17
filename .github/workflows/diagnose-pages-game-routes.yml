@@ -54,3 +54,87 @@ jobs:
           done
 
           echo "All tested game document and runtime asset routes returned successfully."
+
+      - name: Install Chromium for runtime check
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Confirm Precise Bowling initializes its WebGL canvas
+        shell: bash
+        run: |
+          node --input-type=module <<'JS'
+          import { chromium } from 'playwright';
+
+          const url = 'https://ghp.hummingbird.rf.gd/games/3D%20Bowling/index.html';
+          const browser = await chromium.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-dev-shm-usage', '--enable-webgl',
+              '--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=swiftshader']
+          });
+          const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+          const page = await context.newPage();
+          const pageErrors = [];
+          const consoleErrors = [];
+          const failed = [];
+          page.on('pageerror', error => pageErrors.push(String(error.message || error)));
+          page.on('console', message => {
+            if (message.type() === 'error' && consoleErrors.length < 20) consoleErrors.push(message.text());
+          });
+          page.on('requestfailed', request => {
+            failed.push({ url: request.url(), error: request.failure()?.errorText || 'failed' });
+          });
+
+          try {
+            const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+            console.log('Game HTML status:', response?.status());
+            await page.waitForTimeout(12000);
+            const state = await page.evaluate(() => {
+              const canvas = document.querySelector('#canvas');
+              if (!canvas) return { canvasFound: false, title: document.title };
+              const rect = canvas.getBoundingClientRect();
+              const gl = canvas.getContext('webgl2') || canvas.getContext('webgl') ||
+                canvas.getContext('experimental-webgl');
+              const resources = performance.getEntriesByType('resource').map(entry => entry.name)
+                .filter(name => /BowlingOnline2\\.(?:js|data|wasm)(?:$|[?#])/i.test(name));
+              return {
+                canvasFound: true,
+                canvasWidth: canvas.width,
+                canvasHeight: canvas.height,
+                displayedWidth: Math.round(rect.width),
+                displayedHeight: Math.round(rect.height),
+                webglContextCreated: Boolean(gl),
+                loadedGameResources: resources,
+                title: document.title,
+                text: (document.body?.innerText || '').replace(/\\s+/g, ' ').slice(0, 180)
+              };
+            });
+            console.log('Runtime snapshot:', JSON.stringify(state));
+            console.log('Page errors:', JSON.stringify(pageErrors));
+            console.log('Console errors:', JSON.stringify(consoleErrors));
+            console.log('Failed requests:', JSON.stringify(failed.slice(0, 20)));
+            await page.screenshot({ path: '/tmp/precise-bowling-runtime.png', fullPage: true });
+
+            if (response?.status() !== 200 || !state.canvasFound ||
+                state.displayedWidth < 100 || state.displayedHeight < 100 ||
+                !state.webglContextCreated || state.loadedGameResources.length < 3) {
+              throw new Error('Precise Bowling did not initialize its visible WebGL canvas and all three game resources.');
+            }
+            if (pageErrors.length || consoleErrors.length) {
+              throw new Error('Browser reported runtime JavaScript errors; see the diagnostic output above.');
+            }
+            console.log('PASS: Precise Bowling created a visible WebGL canvas after loading its JS, data, and WASM files.');
+          } finally {
+            await context.close();
+            await browser.close();
+          }
+          JS
+
+      - name: Upload the runtime screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: precise-bowling-runtime-check
+          path: /tmp/precise-bowling-runtime.png
+          if-no-files-found: ignore
+          retention-days: 14
