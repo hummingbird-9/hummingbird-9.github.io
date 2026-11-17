@@ -8,6 +8,8 @@ on:
     branches: [main]
     paths:
       - "games.html"
+      - "web.html"
+      - "404.html"
       - ".github/workflows/sync-and-deploy-games.yml"
 
 permissions:
