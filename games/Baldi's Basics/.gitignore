@@ -1,9 +1,0 @@
-# OS junk
-.DS_Store
-Thumbs.db
-
-# logs
-*.log
-
-# local dev
-node_modules/
