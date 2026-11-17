@@ -127,3 +127,23 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Verify the published game HTML and assets
+        env:
+          PAGES_URL: ${{ steps.deployment.outputs.page_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${PAGES_URL%/}"
+          page="$base/games/3D%20Bowling/index.html"
+          content_type="$(curl --fail --silent --show-error --location --output /tmp/bowling-index.html --write-out '%{content_type}' "$page")"
+          echo "Precise Bowling HTML content type: $content_type"
+          case "$content_type" in
+            text/html*) ;;
+            *) echo "Game HTML is not being served as text/html"; exit 1 ;;
+          esac
+          grep -qi '<canvas id="canvas"' /tmp/bowling-index.html
+          for asset in BowlingOnline2.js BowlingOnline2.data BowlingOnline2.wasm; do
+            curl --fail --silent --show-error --location --output /dev/null "$base/games/3D%20Bowling/$asset"
+            echo "Verified $asset"
+          done
