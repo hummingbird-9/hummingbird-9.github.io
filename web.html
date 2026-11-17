@@ -4,6 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Search the HummingWeb</title>
+  <script>
+    (() => {
+      const incoming = new URLSearchParams(window.location.search);
+      if (!incoming.has('q')) return;
+      const target = new URL('https://hummingbird-9.github.io/HummingEngine/');
+      for (const key of ['q', 'open', 'popup']) {
+        if (incoming.has(key)) target.searchParams.set(key, incoming.get(key) || '');
+      }
+      window.location.replace(target.href);
+    })();
+  </script>
   <link rel="stylesheet" href="style.css?v=20261115-chat-web-topgap-match-home-21">
   <link rel="shortcut icon" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png">
   <style>
@@ -82,7 +93,7 @@
 <body class="web-page">
   <div class="web-controls"><span>HummingWeb</span><button id="webFullscreenBtn" class="utility-btn" type="button">Fullscreen</button></div>
   <main class="web-viewport" id="webViewport">
-    <iframe id="webProxyFrame" src="https://ghp.hummingbird.rf.gd/HummingEngine/" title="HummingWeb search" allow="fullscreen; clipboard-read; clipboard-write" loading="eager"></iframe>
+    <iframe id="webProxyFrame" src="https://hummingbird-9.github.io/HummingEngine/" title="HummingWeb search" allow="fullscreen; clipboard-read; clipboard-write" loading="eager"></iframe>
   </main>
   <script src="global-utils.js?v=20261115-iframe-focus-disguise-fix-13"></script>
   <script>
