@@ -32,6 +32,11 @@ if(isPagesHost&&!read('hummingproxy-pages-scramjet2-default',false)){
   try{localStorage.setItem('hummingproxy-pages-scramjet2-default','true');}catch{}
   persist();
 }
+if(isPagesHost&&!read('hummingproxy-pages-scramjet2-default-v2',false)){
+  settings.scramjetVersion='2';
+  try{localStorage.setItem('hummingproxy-pages-scramjet2-default-v2','true');}catch{}
+  persist();
+}
 const proxyOnlyMode = () => settings.proxyOnly===true || searchPresentation;
 document.documentElement.classList.toggle('proxy-only',proxyOnlyMode());
 const saveData = () => {try {localStorage.setItem('hummingproxy-bookmarks',JSON.stringify(bookmarks));localStorage.setItem('hummingproxy-tabs',JSON.stringify(tabs.map(t=>({id:t.id,url:t.url,title:t.title,icon:t.icon,history:settings.historyEnabled?t.history.slice(-25):[],index:settings.historyEnabled?t.index:-1}))));} catch {}};
