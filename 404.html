@@ -12,7 +12,7 @@
       const params = new URLSearchParams(window.location.search);
       if (path === '/web.html/search') {
         if (params.has('q')) {
-          const target = new URL('https://hummingbird-9.github.io/HummingEngine/');
+          const target = new URL('/HummingEngine/', window.location.origin);
           for (const key of ['q', 'open', 'popup']) {
             if (params.has(key)) target.searchParams.set(key, params.get(key) || '');
           }

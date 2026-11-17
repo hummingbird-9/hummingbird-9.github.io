@@ -45,6 +45,19 @@ jobs:
             !/*/_ext/**
           sparse-checkout-cone-mode: false
 
+      - name: Check out HummingEngine source
+        uses: actions/checkout@v4
+        with:
+          repository: hummingbird-9/HummingEngine
+          ref: main
+          path: hummingengine-source
+          fetch-depth: 1
+
+      - name: Set up Node.js for HummingEngine
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
       - name: Prepare game folders for branch-based Pages
         shell: bash
         run: |
@@ -94,13 +107,34 @@ jobs:
           print("Installed game folders in ./games for branch-based Pages publishing.")
           PY
 
+      - name: Build HummingEngine for same-origin GitHub Pages hosting
+        working-directory: hummingengine-source
+        env:
+          PAGES_BASE_PATH: /HummingEngine/
+        run: npm run build:pages
+
+      - name: Install HummingEngine under the main HTTPS site origin
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf HummingEngine
+          mkdir -p HummingEngine
+          cp -a hummingengine-source/_site/. HummingEngine/
+          test -s HummingEngine/index.html
+          test -s HummingEngine/sw-v2.js
+          test -s HummingEngine/v2-scram/scramjet.js
+          test -s HummingEngine/v2-controller/controller.api.js
+          test -s HummingEngine/v2-epoxy/index.mjs
+          grep -q '<meta name="app-base" content="/HummingEngine/">' HummingEngine/index.html
+          echo "Staged HummingEngine at /HummingEngine/ with its Pages subpath and Scramjet 2 assets."
+
       - name: Commit and push the game mirror
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A -- games .nojekyll
+          git add -A -- games HummingEngine .nojekyll
           if git diff --cached --quiet; then
             echo "The published game mirror is already up to date."
             exit 0
