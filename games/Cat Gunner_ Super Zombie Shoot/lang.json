@@ -1,0 +1,2510 @@
+{
+  "story": {
+    "skip": {
+      "en": ">>Skip",
+      "kr": ">>무시하다",
+      "vn": ">>Bỏ qua",
+      "br": ">>Pular",
+      "cn": ">>跳过"
+    }
+  },
+  "loading_first": {
+    "data_warning": {
+      "en": "Data will be lost if app is deleted.",
+      "kr": "앱을 삭제하면 데이터가 손실됩니다.",
+      "vn": "Dữ liệu sẽ bị mất nếu ứng dụng bị xóa",
+      "br": "Os dados serão perdidos se o aplicativo for excluído",
+      "cn": "如果删除游戏，数据将会被清除。"
+    },
+    "performance_warning": {
+      "en": "The game has not been fully optimized. Some low-end devices might experience performance issues.",
+      "kr": "게임이 완전히 최적화되지 않았습니다. 일부 저가 장치는 성능 문제가 발생할 수 있습니다.",
+      "vn": "Trò chơi vẫn chưa hoàn thiện. Một số dòng máy sẽ không trải nghiệm được chất lượng tốt nhất.",
+      "br": "O jogo não foi totalmente otimizado. Alguns dispositivos de baixo custo podem ter problemas de desempenho",
+      "cn": "友情提示：部分配置较低的设备可能会出现显示的问题。"
+    },
+    "hashtag": {
+      "en": "#Day137team",
+      "kr": "#Day137team",
+      "vn": "#Day137team",
+      "br": "#Day137team",
+      "cn": "#Day137team"
+    }
+  },
+  "loading_screen": {
+    "tip0": {
+      "en": "Tips: Rescue scientist by staying in the circle",
+      "kr": "도움말 : 서클에 머물면서 구조 과학자",
+      "vn": "Mẹo: Đứng trong vòng tròn để giải cứu con tin",
+      "br": "Dicas: Resgate cientista por ficar no círculo",
+      "cn": "友情提示：拯救被困住的猫咪科学家。"
+    },
+    "tip1": {
+      "en": "Tips: Shoot barrels to get powerups",
+      "kr": "팁 : 배럴을 쏴서 파워 업을 얻으십시오.",
+      "vn": "Mẹo: Bắn nổ thùng sắt sẽ rơi ra vật phẩm",
+      "br": "Dicas: Atire nos barris para obter powerups",
+      "cn": "友情提示：击毁油桶会有惊喜哦！"
+    },
+    "tip2": {
+      "en": "Tips: Scientists can find recipe for the zombie disaster",
+      "kr": "팁 : 과학자들은 좀비 재난에 대한 제조법을 찾을 수 있습니다.",
+      "vn": "Mẹo: Nhà khoa học có thể tìm thấy thuốc giải cho Zombie",
+      "br": "Dicas: Cientistas podem encontrar receita para o desastre de zumbis",
+      "cn": "友情提示：猫咪科学家们可以帮忙找到防御外星僵尸病毒的配方！"
+    },
+    "tip3": {
+      "en": "Tips: upgrade guns to kill enemies faster",
+      "kr": "팁 : 총을 업그레이드하여 적을 빨리 죽입니다.",
+      "vn": "Mẹo: Nâng cấp súng để tiêu diệt Zombie nhanh hơn",
+      "br": "Dicas: atualize as armas para matar os inimigos mais rapidamente",
+      "cn": "友情提示：猫咪科学家们可以帮忙找到防御外星僵尸病毒的配方！"
+    },
+    "tip4": {
+      "en": "Tips: Use items to survive hard levels",
+      "kr": "팁 : 어려운 레벨을 견뎌내려면 아이템을 사용하십시오.",
+      "vn": "Mẹo: Sử dụng vật phẩm để sống sót qua các màn khó.",
+      "br": "Dicas: Use itens para sobreviver a níveis difíceis",
+      "cn": "友情提示：可以使用补给品挑战高难度关卡"
+    },
+    "hacking_detected": {
+      "en": "HACKING DETECTED !",
+      "kr": "해킹이 감지되었습니다!",
+      "vn": "Phát Hiện Gian Lận!",
+      "br": "HACKING DETECTADO!",
+      "cn": "发现入侵者"
+    }
+  },
+  "main_menu": {
+    "change_name": {
+      "en": "Change your nickname:",
+      "kr": "닉네임을 변경하십시오",
+      "vn": "Chọn biệt hiệu của bạn:",
+      "br": "Altere seu apelido:",
+      "cn": "修改昵称"
+    },
+    "arena": {
+      "en": "ARENA",
+      "kr": "투기장",
+      "vn": "ĐẤU TRƯỜNG",
+      "br": "ARENA",
+      "cn": "竞技场"
+    },
+    "change_err1": {
+      "en": "Nickname cant be more then 20 letters",
+      "kr": "별명은 20자를 초과 할 수 없습니다.",
+      "vn": "Biệt hiệu của bạn không dài quá 20 ký tự",
+      "br": "O apelido não pode ter mais do que 20 letras",
+      "cn": "角色昵称不能超过20个字"
+    },
+    "change_err2": {
+      "en": "Nickname must be greater than 3 letters",
+      "kr": "닉네임은 3 자 이상이어야합니다.",
+      "vn": "Biệt danh phải có nhiều hơn 3 ký tự.",
+      "br": "Nickname must be greater than 3 letters",
+      "cn": "角色昵称至少需要3个字符"
+    },
+    "yourname": {
+      "en": "Your nickname",
+      "kr": "당신의 닉네임",
+      "vn": "Biệt hiệu của bạn",
+      "br": "Seu apelido",
+      "cn": "角色昵称"
+    },
+    "ok": {
+      "en": "OK",
+      "kr": "대다",
+      "vn": "Được",
+      "br": "Certo",
+      "cn": "好的"
+    },
+    "exit": {
+      "en": "EXIT",
+      "kr": "출구",
+      "vn": "THOÁT",
+      "br": "SAÍDA",
+      "cn": "退出"
+    },
+    "exit_cfm": {
+      "en": "DO YOU WANT TO QUIT?",
+      "kr": "네가 끝내고 싶어한다는 것을 알고 있니?",
+      "vn": "Bạn có thực sự muốn thoát khỏi màn chơi?",
+      "br": "VOCÊ QUER SAIR?",
+      "cn": "你确认要退出游戏吗？"
+    },
+    "rank": {
+      "next_reward": {
+        "en": "Next Reward:",
+        "kr": "다음 보상:",
+        "vn": "Thưởng tiếp:",
+        "br": "Prêmio:",
+        "cn": "好的"
+      },
+      "bronze": {
+        "en": "Bronze",
+        "kr": "청동",
+        "vn": "Đồng",
+        "br": "Bronze",
+        "cn": "热血青铜"
+      },
+      "silver": {
+        "en": "Silver",
+        "kr": "은",
+        "vn": "Bạc",
+        "br": "Prata",
+        "cn": "不屈白银"
+      },
+      "gold": {
+        "en": "Gold",
+        "kr": "금",
+        "vn": "Vàng",
+        "br": "Ouro",
+        "cn": "英勇黄金"
+      },
+      "rank": {
+        "en": "Rank",
+        "kr": "평점",
+        "vn": "Hạng",
+        "br": "Classificação",
+        "cn": "排名"
+      },
+      "ranking_season": {
+        "en": "Ranking Rewards",
+        "kr": "랭킹 시즌",
+        "vn": "Mùa giải",
+        "br": "Temporada",
+        "cn": "赛季排名"
+      },
+      "season": {
+        "en": "Season",
+        "kr": "시즌",
+        "vn": "Mùa",
+        "br": "Temporada",
+        "cn": "赛季"
+      },
+      "leaderboard": {
+        "zoo_xcape": {
+          "en": "Zoo Xcape",
+          "kr": "Zoo Xcape",
+          "vn": "Zoo Xcape",
+          "br": "Zoo Xcape",
+          "cn": "动物园大逃亡"
+        },
+        "donate_point": {
+          "en": "Donate Point",
+          "kr": "Donate Point",
+          "vn": "Cống Hiến",
+          "br": "Doe Point",
+          "cn": "Donate Point"
+        },
+        "your_rank": {
+          "en": "Your rank",
+          "kr": "당신의 계급",
+          "vn": "Hạng của bạn",
+          "br": "Your rank",
+          "cn": "你的排名"
+        },
+        "try_harder": {
+          "en": "Try harder",
+          "kr": "더 열심히 시도하십시오",
+          "vn": "Cố gắng thêm",
+          "br": "Tente mais",
+          "cn": "再加把劲儿！"
+        },
+        "login_failed": {
+          "en": "Login failed!",
+          "kr": "로그인 실패",
+          "vn": "Đăng nhập nhất bại!",
+          "br": "Falha na autenticação!",
+          "cn": "登录失败！"
+        }
+      },
+      "max_rank": {
+        "en": "MAX RANK",
+        "kr": "최대 순위",
+        "vn": "Hạng Tối Đa",
+        "br": "MAX RANK",
+        "cn": "最高排位"
+      },
+      "end": {
+        "en": "End ",
+        "kr": "종료 ",
+        "vn": "Kết Thúc ",
+        "br": "Fim ",
+        "cn": "结束"
+      }
+    },
+    "setting": {
+      "setting": {
+        "en": "Setting",
+        "kr": "환경",
+        "vn": "Cài Đặt",
+        "br": "Configuração",
+        "cn": "设置"
+      },
+      "on": {
+        "en": "ON",
+        "kr": "켜다",
+        "vn": "Mở",
+        "br": "EM",
+        "cn": "开"
+      },
+      "off": {
+        "en": "OFF",
+        "kr": "떨어져서",
+        "vn": "Tắt",
+        "br": "fora",
+        "cn": "关"
+      },
+      "exit_game": {
+        "en": "Exit Game",
+        "kr": "게임을 나가다",
+        "vn": "Thoát Game",
+        "br": "Exit Game",
+        "cn": "退出游戏"
+      },
+      "map_event": {
+        "en": "Map Event",
+        "kr": "게임을 나가다",
+        "vn": "Bản đồ sự kiện",
+        "br": "Evento de mapa",
+        "cn": "事件"
+      },
+      "en": {
+        "en": "ENGLISH",
+        "kr": "ENGLISH",
+        "vn": "ENGLISH",
+        "br": "ENGLISH",
+        "cn": "ENGLISH"
+      },
+      "kr": {
+        "en": "한국어",
+        "kr": "한국어",
+        "vn": "한국어",
+        "br": "한국어",
+        "cn": "한국어"
+      },
+      "br": {
+        "en": "PORTUGUÊS",
+        "kr": "PORTUGUÊS",
+        "vn": "PORTUGUÊS",
+        "br": "PORTUGUÊS",
+        "cn": "PORTUGUÊS"
+      },
+      "vn": {
+        "en": "TIẾNG VIỆT",
+        "kr": "TIẾNG VIỆT",
+        "vn": "TIẾNG VIỆT",
+        "br": "TIẾNG VIỆT",
+        "cn": "TIẾNG VIỆT"
+      },
+      "control": {
+        "en": "Control",
+        "kr": "제어",
+        "vn": "Điều khiển",
+        "br": "Controle",
+        "cn": "控制"
+      },
+      "type1": {
+        "en": "Pin",
+        "kr": "핀",
+        "vn": "Cố định",
+        "br": "Pin",
+        "cn": "固定"
+      },
+      "type2": {
+        "en": "Flexible",
+        "kr": "융통",
+        "vn": "Linh hoạt",
+        "br": "Flexível",
+        "cn": "灵活"
+      },
+      "type3": {
+        "en": "Move",
+        "kr": "움직임",
+        "vn": "Di chuyển",
+        "br": "Mover",
+        "cn": "移动"
+      },
+      "cn": {
+        "en": "中文",
+        "kr": "中文",
+        "vn": "中文",
+        "br": "中文",
+        "cn": "中文"
+      }
+    },
+    "social": {
+      "social": {
+        "en": "Social",
+        "kr": "사회적인",
+        "vn": "Kết nối",
+        "br": "Social",
+        "cn": "社交"
+      },
+      "free_gift": {
+        "en": "Social",
+        "kr": "사회적인",
+        "vn": "Cộng Đồng",
+        "br": "Social",
+        "cn": "社会"
+      },
+      "like": {
+        "en": "LIKE",
+        "kr": "LIKE",
+        "vn": "LIKE",
+        "br": "LIKE",
+        "cn": "点赞"
+      },
+      "join": {
+        "en": "JOIN",
+        "kr": "어울리다",
+        "vn": "Tham Gia",
+        "br": "JUNTE-SE",
+        "cn": "加入"
+      },
+      "follow": {
+        "en": "FOLLOW",
+        "kr": "따르다",
+        "vn": "FOLLOW",
+        "br": "SEGUE",
+        "cn": "关注"
+      },
+      "share": {
+        "en": "SHARE",
+        "kr": "몫",
+        "vn": "Chia Sẻ",
+        "br": "COMPARTILHAR",
+        "cn": "分享"
+      },
+      "rate": {
+        "en": "RATE",
+        "kr": "율",
+        "vn": "Bình Chọn",
+        "br": "TAXA",
+        "cn": "表决",
+        "tieude": {
+          "en": "Would you like to review Cat Gunner?",
+          "kr": "Cat Gunner를 평가 하시겠습니까?",
+          "vn": "Dành chút thời gian đánh giá Cat Gunner?",
+          "br": "Gostaria de avaliar Cat Gunner?",
+          "cn": "你想评价Cat Gunner吗？"
+        },
+        "earn": {
+          "en": "Earn 200",
+          "kr": "보상",
+          "vn": "Tặng 200",
+          "br": "Earn 200",
+          "cn": "获得200"
+        },
+        "noidung": {
+          "en": "Please write a review for us so we can keep bringing you great updates!",
+          "kr": "우리가 당신에게 큰 업데이 트를 계속 가져올 수 있도록 우리를 평가 해주세요!",
+          "vn": "Để chúng tôi có thể tiếp tục mang đến cho bạn những cập nhật tuyệt vời!",
+          "br": "Então, podemos continuar trazendo ótimas atualizações!",
+          "cn": "Please rate us so we can keep bringing you great updates!"
+        },
+        "not_now": {
+          "en": "Not now",
+          "kr": "아니요",
+          "vn": "Không",
+          "br": "Agora não",
+          "cn": "放弃"
+        },
+        "sure": {
+          "en": "Sure!",
+          "kr": "동의하다",
+          "vn": "Được",
+          "br": "Certo",
+          "cn": "好的"
+        }
+      },
+      "go": {
+        "en": "GO!",
+        "kr": "가기!",
+        "vn": "ĐI!",
+        "br": "VAI",
+        "cn": "冲啊！"
+      }
+    },
+    "buck": {
+      "en": "Buck",
+      "kr": "책임",
+      "vn": "Tiền",
+      "br": "Buck",
+      "cn": "点券"
+    },
+    "coin": {
+      "en": "Coin",
+      "kr": "동전",
+      "vn": "Vàng",
+      "br": "Coin",
+      "cn": "金币"
+    },
+    "shop": {
+      "items": {
+        "items": {
+          "en": "ITEMS",
+          "kr": "항목",
+          "vn": "Vật Phẩm",
+          "br": "ITEMS",
+          "cn": "补给"
+        },
+        "free_nade": {
+          "en": "Free Nade",
+          "kr": "무료 붐",
+          "vn": "Lựu Đạn",
+          "br": "Livre Nade",
+          "cn": "免费手榴弹"
+        },
+        "extra_life": {
+          "en": "Extra Life x3",
+          "kr": "부활 x3",
+          "vn": "Thêm Mạng x3",
+          "br": "Extra Life x3",
+          "cn": "额外生命 x3",
+          "price": {
+            "en": "$4.49",
+            "kr": "₩5.500",
+            "vn": "100.000 đ",
+            "br": "R$17.49",
+            "cn": "￥27"
+          }
+        },
+        "medkit": {
+          "en": "Medkit x5",
+          "kr": "피 x5",
+          "vn": "Hồi Máu x5",
+          "br": "Medkit x5",
+          "cn": "医疗包 x5",
+          "price": {
+            "en": "1000",
+            "kr": "1000",
+            "vn": "1000",
+            "br": "1000",
+            "cn": "1000"
+          }
+        },
+        "nade": {
+          "en": "Nade x5",
+          "kr": "폭탄 x5",
+          "vn": "Lựu Đạn x5",
+          "br": "Nade x5",
+          "cn": "手榴弹",
+          "price": {
+            "en": "2500",
+            "kr": "2500",
+            "vn": "2500",
+            "br": "2500",
+            "cn": "2500"
+          }
+        },
+        "atk_boost": {
+          "en": "ATK Boost x3",
+          "kr": "강장제 x3",
+          "vn": "Sát Thương x3",
+          "br": "ATK Boost x3",
+          "price": {
+            "en": "1000",
+            "kr": "1000",
+            "vn": "1000",
+            "br": "1000",
+            "cn": "1000"
+          }
+        }
+      },
+      "bucks": {
+        "bucks": {
+          "en": "BUCKS",
+          "kr": "책임",
+          "vn": "Tiền",
+          "br": "BUCKS",
+          "cn": "现钞"
+        },
+        "free_buck": {
+          "en": "Free Buck",
+          "kr": "무료 책임",
+          "vn": "Miễn Phí",
+          "br": "Free Buck",
+          "cn": "免费现钞"
+        },
+        "pack1": {
+          "en": "Pack 01",
+          "kr": "포장",
+          "vn": "Gói Nhỏ",
+          "br": "Pacote 01",
+          "cn": "补给箱 01",
+          "price": {
+            "en": "$0.99",
+            "kr": "₩1,300",
+            "vn": "25,000đ",
+            "br": "R$4.39",
+            "cn": "￥6.82 "
+          }
+        },
+        "pack2": {
+          "en": "Pack 02",
+          "kr": "포장",
+          "vn": "Gói Vừa",
+          "br": "Pacote 02",
+          "cn": "补给箱 02",
+          "price": {
+            "en": "$1.99",
+            "kr": "₩2,600",
+            "vn": "50,000đ",
+            "br": "R$8.99",
+            "cn": "￥13.70"
+          }
+        },
+        "pack3": {
+          "en": "Pack 03",
+          "kr": "포장",
+          "vn": "Gói Lớn",
+          "br": "Pacote 03",
+          "cn": "补给箱 03",
+          "price": {
+            "en": "$9.99",
+            "kr": "₩13,000",
+            "vn": "240,000đ",
+            "br": "R$41.99",
+            "cn": "￥68.78"
+          }
+        },
+        "pack4": {
+          "en": "Pack 04",
+          "kr": "포장",
+          "vn": "Gói VIP",
+          "br": "Pacote 04",
+          "cn": "补给箱 04",
+          "price": {
+            "en": "$19.99",
+            "kr": "₩25,000",
+            "vn": "475,000đ",
+            "br": "R$83.99",
+            "cn": "￥137.64"
+          }
+        }
+      },
+      "coins": {
+        "coins": {
+          "en": "COINS",
+          "kr": "동전",
+          "vn": "Vàng",
+          "br": "COINS",
+          "cn": "金币"
+        },
+        "free_coin": {
+          "en": "Free Coin",
+          "kr": "무료 동전",
+          "vn": "Miễn Phí",
+          "br": "livre Coin",
+          "cn": "免费金币"
+        },
+        "small": {
+          "en": "Small",
+          "kr": "작은",
+          "vn": "Gói Nhỏ",
+          "br": "Pequeno",
+          "cn": "金币宝箱 01",
+          "price": {
+            "en": "$1.99",
+            "kr": "₩2,700",
+            "vn": "50,000đ",
+            "br": "R$8.99",
+            "cn": "￥13.70"
+          }
+        },
+        "large": {
+          "en": "Large",
+          "kr": "큰",
+          "vn": "Gói Vừa",
+          "br": "Large",
+          "cn": "金币宝箱 02",
+          "price": {
+            "en": "$9.99",
+            "kr": "₩12,000",
+            "vn": "200,000đ",
+            "br": "R$40.99",
+            "cn": "￥68.78"
+          }
+        },
+        "guggee": {
+          "en": "Guggee",
+          "kr": "큰",
+          "vn": "Gói Lớn",
+          "br": "Hugeee",
+          "cn": "金币宝箱 03",
+          "price": {
+            "en": "$14.99",
+            "kr": "₩19,000",
+            "vn": "350,000đ",
+            "br": "R$62.99",
+            "cn": "￥103.21"
+          }
+        },
+        "super": {
+          "en": "Super",
+          "kr": "최고 수준",
+          "vn": "Gói VIP",
+          "br": "Super",
+          "cn": "金币宝箱 04",
+          "price": {
+            "en": "$24.49",
+            "kr": "₩30,000",
+            "vn": "500,000đ",
+            "br": "R$104.99",
+            "cn": "￥168.62"
+          }
+        }
+      },
+      "shop": {
+        "en": "Shop",
+        "kr": "가게",
+        "vn": "Cửa hàng",
+        "br": "Loja",
+        "cn": "商店"
+      },
+      "mount": {
+        "cat1": {
+          "en": "Hover",
+          "kr": "Hover",
+          "vn": "Hover",
+          "br": "Hover",
+          "cn": "火箭炮",
+          "price": {
+            "en": "$9.99",
+            "kr": "₩12,000",
+            "vn": "200,000đ",
+            "br": "R$40.99",
+            "cn": "￥68.78"
+          }
+        },
+        "cat2": {
+          "en": "Bike",
+          "kr": "Bike",
+          "vn": "Bike",
+          "br": "Bike",
+          "cn": "小摩托",
+          "price": {
+            "en": "$9.99",
+            "kr": "₩12,000",
+            "vn": "200,000đ",
+            "br": "R$40.99",
+            "cn": "￥68.78"
+          }
+        },
+        "cat3": {
+          "en": "T-rex",
+          "kr": "T-rex",
+          "vn": "T-rex",
+          "br": "T-rex",
+          "cn": "霸王龙坐骑",
+          "price": {
+            "en": "$9.99",
+            "kr": "₩12,000",
+            "vn": "200,000đ",
+            "br": "R$40.99",
+            "cn": "￥68.78"
+          }
+        },
+        "cat4": {
+          "en": "Jet",
+          "kr": "Jet",
+          "vn": "Jet",
+          "br": "Jet",
+          "cn": "喷射机",
+          "price": {
+            "en": "$9.99",
+            "kr": "₩12,000",
+            "vn": "200,000đ",
+            "br": "R$40.99",
+            "cn": "￥68.78"
+          }
+        },
+        "cat5": {
+          "en": "Whiz",
+          "kr": "Whiz",
+          "vn": "Whiz",
+          "br": "Whiz",
+          "cn": "山地车",
+          "price": {
+            "en": "$9.99",
+            "kr": "₩12,000",
+            "vn": "200,000đ",
+            "br": "R$40.99",
+            "cn": "￥68.78"
+          }
+        },
+        "mount": {
+          "en": "MOUNTS",
+          "kr": "MOUNTS",
+          "vn": "Xe",
+          "br": "MOUNTS",
+          "cn": "坐骑"
+        }
+      }
+    },
+    "weapon": {
+      "non_weapon": {
+        "en": "Non Weapon",
+        "kr": "기본 총",
+        "vn": "Chưa có",
+        "br": "Arma não",
+        "cn": "无武器"
+      },
+      "bizon": {
+        "description": {
+          "en": "Basic Gun",
+          "kr": "기본 총",
+          "vn": "Súng Cơ Bản",
+          "br": "Basic Gun",
+          "cn": "基本枪支"
+        },
+        "name": {
+          "en": "Bizon",
+          "kr": "Bizon",
+          "vn": "Bizon",
+          "br": "Bizon",
+          "cn": "野牛冲锋枪"
+        }
+      },
+      "ak": {
+        "description": {
+          "en": "3 bullets per shot",
+          "kr": "총알 3 개",
+          "vn": "Ba viên mỗi phát bắn",
+          "br": "3 balas por tiro",
+          "cn": "一发可连发3颗子弹"
+        },
+        "name": {
+          "en": "AK-47",
+          "kr": "AK-47",
+          "vn": "AK-47",
+          "br": "AK-47",
+          "cn": "AK-47"
+        }
+      },
+      "awp": {
+        "description": {
+          "en": "Piercing Zombies",
+          "kr": "피어싱 좀비",
+          "vn": "Đạn Xuyên Thấu",
+          "br": "Zumbis piercing",
+          "cn": "直接可穿透僵尸"
+        },
+        "name": {
+          "en": "AWP",
+          "kr": "AWP",
+          "vn": "AWP",
+          "br": "AWP",
+          "cn": "狙击枪AWP"
+        }
+      },
+      "desert_tiger": {
+        "description": {
+          "en": "Pro Cat use Pro Gun",
+          "kr": "프로 고양이 사용 프로건",
+          "vn": "Chỉ dành cho Pro",
+          "br": "Pro Cat use Pro Gun",
+          "cn": "职业猫战士的御用枪支"
+        },
+        "name": {
+          "en": "Desert Tiger",
+          "kr": "사막의 호랑이",
+          "vn": "Lục Bạc",
+          "br": "Tigre do deserto",
+          "cn": "猛虎手枪"
+        }
+      },
+      "shotgun": {
+        "description": {
+          "en": "Big AOE",
+          "kr": "빅 AOE",
+          "vn": "Đạn hoa cải",
+          "br": "Big AOE",
+          "cn": "Big AOE"
+        },
+        "name": {
+          "en": "Shotgun",
+          "kr": "Shotgun",
+          "vn": "Shotgun",
+          "br": "Shotgun",
+          "cn": "猎枪"
+        }
+      },
+      "minigun": {
+        "description": {
+          "en": "Gun of Super Rambo",
+          "kr": "슈퍼 람보 총",
+          "vn": "Súng của Siêu Rambo",
+          "br": "Gun of Super Rambo",
+          "cn": "超级兰博的御用枪"
+        },
+        "name": {
+          "en": "Minigun",
+          "kr": "Minigun",
+          "vn": "Minigun",
+          "br": "Minigun",
+          "cn": "加特林"
+        }
+      },
+      "rocket": {
+        "description": {
+          "en": "Auto Target Enemy",
+          "kr": "자동 대상 적",
+          "vn": "Tự động tìm kẻ địch",
+          "br": "Inimigo Alvo Automático",
+          "cn": "自动定位敌人"
+        },
+        "name": {
+          "en": "Rocket",
+          "kr": "Rocket",
+          "vn": "Rocket",
+          "br": "Rocket",
+          "cn": "导弹"
+        }
+      },
+      "flame": {
+        "description": {
+          "en": "Burn Enemy Per Second",
+          "kr": "적을 초당에 태우다",
+          "vn": "Đốt cháy kẻ địch",
+          "br": "Queime o inimigo por segundo",
+          "cn": "一秒歼灭敌人"
+        },
+        "name": {
+          "en": "Flame",
+          "kr": "Flame",
+          "vn": "Flame",
+          "br": "Flame",
+          "cn": "火焰枪"
+        }
+      },
+      "electric_gunner": {
+        "description": {
+          "en": "Shock Multi-enemy Damage",
+          "kr": "충격 다발 적 피해",
+          "vn": "Giật điện nhiều kẻ địch cạnh nhau",
+          "br": "Dano Multi-inimigo de Choque",
+          "cn": "同时击溃多个敌人"
+        },
+        "name": {
+          "en": "Electric Gunner",
+          "kr": "Electric Gunner",
+          "vn": "Súng Phóng Điện",
+          "br": "Elétrico Gunner",
+          "cn": "镭射枪"
+        }
+      },
+      "protonz": {
+        "description": {
+          "en": "Triple Proton Balls",
+          "kr": "트리플 프로톤 공",
+          "vn": "Phóng ba viên Proton",
+          "br": "Triple Proton Balls",
+          "cn": "同时发射3发质子炮"
+        },
+        "name": {
+          "en": "Protonz",
+          "kr": "Protonz",
+          "vn": "Protonz",
+          "br": "Protonz",
+          "cn": "质子炮"
+        }
+      },
+      "ice": {
+        "description": {
+          "en": "Triple Ice Balls",
+          "kr": "트리플 프로톤 공",
+          "vn": "Phóng ba viên Ice",
+          "br": "Triple Ice Balls",
+          "cn": "同时发射3发冷凝弹"
+        },
+        "name": {
+          "en": "Ice Beam",
+          "kr": "Ice Beam",
+          "vn": "Ice Beam",
+          "br": "Ice Feixe",
+          "cn": "冷凝枪"
+        },
+        "price": {
+          "en": "$3.99",
+          "kr": "₩4,800",
+          "vn": "90,000đ",
+          "br": "R$14.99",
+          "cn": "￥25"
+        }
+      },
+      "damage": {
+        "en": "Damage",
+        "kr": "손해",
+        "vn": "Sát Thương",
+        "br": "Danificar",
+        "cn": "杀伤力"
+      },
+      "fire_rate": {
+        "en": "Fire rate",
+        "kr": "화재 발생률",
+        "vn": "Tốc độ đạn",
+        "br": "Taxa de fogo",
+        "cn": "火力值"
+      },
+      "magazine": {
+        "en": "Magazine",
+        "kr": "잡지",
+        "vn": "Tổng đạn",
+        "br": "Revista",
+        "cn": "弹匣容量"
+      },
+      "weapon": {
+        "en": "Weapon",
+        "kr": "무기",
+        "vn": "Vũ khí",
+        "br": "Armas",
+        "cn": "武器"
+      },
+      "equip": {
+        "en": "Equip",
+        "kr": "주다",
+        "vn": "Trang bị",
+        "br": "EQUIPAR",
+        "cn": "装备"
+      },
+      "upgrade": {
+        "en": "Upgrade",
+        "kr": "업그레",
+        "vn": "Nâng cấp",
+        "br": "Upgrade",
+        "cn": "升级"
+      },
+      "buy": {
+        "en": "Buy",
+        "kr": "사다",
+        "vn": "Mua",
+        "br": "Comprar",
+        "cn": "购买"
+      },
+      "max_level": {
+        "en": "MAX LEVEL",
+        "kr": "최대 레벨",
+        "vn": "CẤP TỐI ĐA",
+        "br": "MAX LEVEL",
+        "cn": "最高等级"
+      },
+      "equipped": {
+        "en": "EQUIPPED",
+        "kr": "갖추어 준",
+        "vn": "ĐÃ DÙNG",
+        "br": "EQUIPAMENTOS",
+        "cn": "已装备"
+      },
+      "pick_gun": {
+        "en": "Pick a gun to equip",
+        "kr": "장비 할 총을 골라 라.",
+        "vn": "Chọn trang bị mang theo",
+        "br": "Escolha uma arma para equipar",
+        "cn": "挑选武器装备"
+      }
+    },
+    "hero": {
+      "hero": {
+        "en": "Hero",
+        "kr": "고양이",
+        "vn": "Nhân Vật",
+        "br": "Herói",
+        "cn": "猫战士"
+      },
+      "basic_cat": {
+        "description": {
+          "en": "Save the world\n +10% Pizon's Damage",
+          "kr": "세상을 구하라\n +10% Pizon's Damage",
+          "vn": "Sứ mệnh giải cứu thế giới\n Tăng 10% sát thương Pizon",
+          "br": "Salve o mundo\n +10% Pizon's Damage",
+          "cn": "拯救世界\n 增强冲锋枪的杀伤力10%"
+        },
+        "name": {
+          "en": "Basic Cat",
+          "kr": "Basic Cat",
+          "vn": "Mèo Cơ Bản",
+          "br": "Basic Cat",
+          "cn": "勇士猫"
+        }
+      },
+      "school_cat": {
+        "description": {
+          "en": "Unlock at Day6\n +25% Shotgun's Damage",
+          "kr": "Day6 에서 잠금 해제 \n + 25% 산탄 총 피해",
+          "vn": "Mở khóa ở Day6\n Tăng 25% sát thương Shotgun",
+          "br": "Desbloquear no Day6\n +25% Shotgun's Damage",
+          "cn": "需解锁关卡6\n 增强加特林的杀伤力25%"
+        },
+        "name": {
+          "en": "School Cat",
+          "kr": "School Cat",
+          "vn": "Học sinh ưu tú",
+          "br": "School Cat",
+          "cn": "学园猫"
+        }
+      },
+      "rambo_cat": {
+        "description": {
+          "en": "Unlock at Day 10\n Not knocked back",
+          "kr": "Day20 에서 잠금 해제 \n 다시 두드리지 않음",
+          "vn": "Mở khóa ở Day 10 \n Bắn súng không giật",
+          "br": "Desbloquear no Day 10\n Not knocked back",
+          "cn": "需解锁关卡10\n 能力不明"
+        },
+        "name": {
+          "en": "Rambo Cat",
+          "kr": "Rambo Cat",
+          "vn": "Rambo Cat",
+          "br": "Rambo Cat",
+          "cn": "硬汉猫"
+        }
+      },
+      "halo_cat": {
+        "description": {
+          "en": "Unlock at Day 14\n-50% AWP's Cooldown",
+          "kr": "Day14에서 잠금 해제 \n-50 %의 AWP 쿨 다운",
+          "vn": "Mở khóa ở Day 14 \n-50% AWP's Cooldown",
+          "br": "Desbloquear no Day 14\n-50% AWP's Cooldown",
+          "cn": "需解锁关卡14\n 能减少50%狙击枪的上膛时间"
+        },
+        "name": {
+          "en": "Halo Cat",
+          "kr": "Halo Cat",
+          "vn": "Halo Cat",
+          "br": "Halo Cat",
+          "cn": "机甲猫"
+        }
+      },
+      "super_cat": {
+        "description": {
+          "en": "Unlock at Day 14\n+100% Electric's Bullet",
+          "kr": "Day14 에서 잠금 해제 \n+100% 전기 총알",
+          "vn": "Mở khóa ở Day 14 \nTăng 100% đạn của Súng Điện",
+          "br": "Desbloquear no Day 14\n+100% Elétrico Bala",
+          "cn": "需解锁关卡14\n 能增加镭射枪一倍子能量弹"
+        },
+        "name": {
+          "en": "Super Cat",
+          "kr": "Super Cat",
+          "vn": "Siêu nhân mèo",
+          "br": "Super Cat",
+          "cn": "特种猫"
+        }
+      },
+      "captain_cat": {
+        "description": {
+          "en": "Unlock at Day 18\n +20% AK-47 Damage",
+          "kr": "Day18 에서 잠금 해제 \n 20 % 증가 AK-47 데미지",
+          "vn": "Mở khóa ở Day 18 \n Tăng 20% sát thương AK-47",
+          "br": "Desbloquear no Day 18\nDesbloquear em classificação evento\n +20% AK-47 Damage",
+          "cn": "需解锁关卡18\n 能增加AK-47杀伤力20%"
+        },
+        "name": {
+          "en": "Captain Cat",
+          "kr": "Captain Cat",
+          "vn": "Captain Cat",
+          "br": "Captain Cat",
+          "cn": "队长猫"
+        }
+      },
+      "equip": {
+        "en": "Equip",
+        "kr": "주다",
+        "vn": "Trang bị",
+        "br": "EQUIPAR",
+        "cn": "装备"
+      },
+      "upgrade": {
+        "en": "Upgrade",
+        "kr": "업그레이드",
+        "vn": "Nâng cấp",
+        "br": "Upgrade",
+        "cn": "升级"
+      },
+      "max_level": {
+        "en": "MAX LEVEL",
+        "kr": "최대 레벨",
+        "vn": "MẠNH NHẤT",
+        "br": "MAX LEVEL",
+        "cn": "最高等级"
+      },
+      "buy": {
+        "en": "Buy",
+        "kr": "사다",
+        "vn": "Mua",
+        "br": "COMPRAR",
+        "cn": "购买"
+      },
+      "equipped": {
+        "en": "EQUIPPED",
+        "kr": "갖추어 준",
+        "vn": "ĐANG DÙNG",
+        "br": "EQUIPAMENTOS",
+        "cn": "已装备"
+      },
+      "hp": {
+        "en": "Health",
+        "kr": "건강",
+        "vn": "Máu",
+        "br": "Sangue",
+        "cn": "生命值"
+      },
+      "speed": {
+        "en": "Speed",
+        "kr": "속도",
+        "vn": "Tốc Độ",
+        "br": "Rapidez",
+        "cn": "速度"
+      },
+      "damage": {
+        "en": "Damage",
+        "kr": "손해",
+        "vn": "Sát Thương",
+        "br": "Danificar",
+        "cn": "杀伤力"
+      },
+      "hat": {
+        "en": "Hat",
+        "kr": "모자",
+        "vn": "Mũ",
+        "br": "Chapéu",
+        "cn": "帽子"
+      },
+      "mount": {
+        "equip": {
+          "en": "EQUIP",
+          "kr": "장비",
+          "vn": "ĐEO",
+          "br": "EQUIPAR",
+          "cn": "装备"
+        },
+        "unequip": {
+          "en": "UNEQUIP",
+          "kr": "제거",
+          "vn": "BỎ ĐEO",
+          "br": "UNEQUIPAR",
+          "cn": "卸装备"
+        },
+        "upgrade": {
+          "en": "Upgrade",
+          "kr": "업그레이드",
+          "vn": "Nâng cấp",
+          "br": "UPGRADE",
+          "cn": "升级"
+        },
+        "unlock": {
+          "en": "Unlock",
+          "kr": "터놓다",
+          "vn": "Mở khóa",
+          "br": "ABRIR",
+          "cn": "解锁"
+        },
+        "noti1": {
+          "en": "Collect the fragments to unlock",
+          "kr": "조각을 수집하여 잠금 해제",
+          "vn": "Thu thập đủ mảnh để mở khóa",
+          "br": "Recolha os fragmentos para desbloquear",
+          "cn": "搜集物资去解锁"
+        },
+        "noti2": {
+          "en": "Collect the fragments to upgrade",
+          "kr": "조각을 수집하여 업그레이드하십시오",
+          "vn": "Thu thập đủ mảnh để nâng cấp",
+          "br": "Recolha os fragmentos para atualizar",
+          "cn": "收集资源来升级"
+        },
+        "upgrade_err1": {
+          "en": "Not unlocked, can't upgrade!",
+          "kr": "업그레이드 할 조각이 충분하지 않습니다!",
+          "vn": "Chưa mở khóa để nâng cấp!",
+          "br": "Não há peças suficientes para atualizar!",
+          "cn": "未解锁，无法升级"
+        },
+        "upgrade_err2": {
+          "en": "Not enough fragmentos, can't upgrade!",
+          "kr": "조각이 충분하지 않아 업그레이드 할 수 없습니다!",
+          "vn": "Chưa đủ mảnh để nâng cấp!",
+          "br": "Não há peças suficientes, não pode atualizar!",
+          "cn": "资源不够，无法升级"
+        },
+        "equip_err": {
+          "en": "Not unlocked, can't equip!",
+          "kr": "잠금을 해제하지 않고 장비 할 수 없습니다!",
+          "vn": "Chưa mở khóa, không thể đeo!",
+          "br": "Não desbloqueado, não pode equipar!",
+          "cn": "未解锁，无法装备"
+        },
+        "unlock_err": {
+          "en": "Not enough fragmentos, can't unlock!",
+          "kr": "조각 모음이 충분하지 않아 잠금을 해제 할 수 없습니다!",
+          "vn": "Chưa đủ mảnh, không thể mở khóa!",
+          "br": "Não há fragmentos suficientes, não pode desbloquear!",
+          "cn": "资源不够，无法解锁"
+        },
+        "mount": {
+          "en": "Mount",
+          "kr": "운송",
+          "vn": "Xe",
+          "br": "Montar",
+          "cn": "坐骑"
+        }
+      }
+    },
+    "pack": {
+      "special_offer": {
+        "name": {
+          "en": "SPECIAL OFFER",
+          "kr": "특별 메뉴",
+          "vn": "GÓI ĐẶC BIỆT",
+          "br": "SPECIAL OFFER",
+          "cn": "SPECIAL OFFER"
+        },
+        "coin_bonus": {
+          "en": "COIN BONUS",
+          "kr": "동전 보너스",
+          "vn": "TẶNG VÀNG",
+          "br": "COIN BÔNUS",
+          "cn": "COIN BONUS"
+        },
+        "coin": {
+          "en": "50.000",
+          "kr": "50.000",
+          "vn": "50.000",
+          "br": "50.000",
+          "cn": "50.000"
+        },
+        "total_value": {
+          "en": "Total Value",
+          "kr": "총 가치",
+          "vn": "Giá Trị",
+          "br": "Total Valỏ",
+          "cn": "总价值"
+        },
+        "total_value2": {
+          "en": "25 USD",
+          "kr": "₩28,000",
+          "vn": "580,000đ",
+          "br": "R$97.6",
+          "cn": "￥170"
+        },
+        "left": {
+          "en": " left",
+          "kr": " 왼쪽",
+          "vn": " kết thúc",
+          "br": " esquerda",
+          "cn": "向左"
+        },
+        "priceCat": {
+          "en": "PRICE: 4000",
+          "kr": "가격 : 4000",
+          "vn": "Giá : 4000",
+          "br": "4000",
+          "cn": "价格 4000"
+        },
+        "priceGun": {
+          "en": "PRICE: 4000",
+          "kr": "가격 : 4000",
+          "vn": "Giá : 4000",
+          "br": "4000",
+          "cn": "价格 4000"
+        },
+        "price": {
+          "en": "$6.99",
+          "kr": "₩8,500",
+          "vn": "150,000đ",
+          "br": "R$28.99",
+          "cn": "￥45"
+        }
+      },
+      "starter_pack": {
+        "gold": {
+          "en": "5000 Coin",
+          "kr": "5000 Coin",
+          "vn": "5000 Coin",
+          "br": "5000 Coin",
+          "cn": "5000 金币"
+        },
+        "buck": {
+          "en": "1000 Buck",
+          "kr": "1000 Buck",
+          "vn": "1000 Buck",
+          "br": "1000 Buck",
+          "cn": "1000 现钞"
+        },
+        "mota": {
+          "en": "BONUS 5 NADES + 2 MEDKITS",
+          "kr": "BONUS 5 NADES + 2 MEDKITS",
+          "vn": "Tặng thêm 5 NADES + 2 MEDKITS",
+          "br": "BONUS 5 NADES + 2 MEDKITS",
+          "cn": "5颗手榴弹+2个医疗包"
+        },
+        "price": {
+          "en": "$1.99",
+          "kr": "₩2,700",
+          "vn": "20,000đ",
+          "br": "$8.49",
+          "cn": "￥10"
+        }
+      },
+      "ice_pack": {
+        "mota1": {
+          "en": "XMAS HAT + ICE GUN",
+          "kr": "XMAS HAT + ICE GUN",
+          "vn": "XMAS HAT + ICE GUN",
+          "br": "XMAS Chapéu + ICE GUN",
+          "cn": "圣诞礼貌 + 冷凝枪"
+        },
+        "mota2": {
+          "en": "BONUS 5 NADES + 2 MEDKITS",
+          "kr": "BONUS 5 NADES + 2 MEDKITS",
+          "vn": "Tặng thêm 5 NADES + 2 MEDKITS",
+          "br": "BONUS 5 NADES + 2 MEDKITS",
+          "cn": "5颗手榴弹+2个医疗包"
+        },
+        "price": {
+          "en": "$4.99",
+          "kr": "₩6,500",
+          "vn": "100,000đ",
+          "br": "R$19.99",
+          "cn": "￥30"
+        }
+      },
+      "proton_pack": {
+        "mota1": {
+          "en": "SUPER CAT + PROTONZ GUN + JET",
+          "kr": "SUPER CAT + PROTONZ GUN + JET",
+          "vn": "SUPER CAT + PROTONZ GUN + JET",
+          "br": "SUPER CAT + PROTONZ GUN + JET",
+          "cn": "超级猫+质子炮+喷射机"
+        },
+        "mota2": {
+          "en": "BONUS: 5 NADES,1 EXTRALIFE, 10000 COIN, 500 BUCK.",
+          "kr": "BONUS: 5 NADES,1 EXTRALIFE, 10000 COIN, 500 BUCK.",
+          "vn": "BONUS: 5 NADES,1 EXTRALIFE, 10000 COIN, 500 BUCK.",
+          "br": "BONUS: 5 NADES,1 EXTRALIFE, 10000 COIN, 500 BUCK.",
+          "cn": "5颗手榴弹，1条生命，1000金币，500现钞"
+        },
+        "price": {
+          "en": "$14.99",
+          "kr": "₩6,500",
+          "vn": "340,000đ",
+          "br": "R$19.99",
+          "cn": "￥100"
+        },
+        "count": {
+          "nade": {
+            "en": "5",
+            "kr": "5",
+            "vn": "5",
+            "br": "5",
+            "cn": "5"
+          },
+          "extra_life": {
+            "en": "1",
+            "kr": "1",
+            "vn": "1",
+            "br": "1",
+            "cn": "1"
+          },
+          "coin": {
+            "en": "2000",
+            "kr": "2000",
+            "vn": "2000",
+            "br": "2000",
+            "cn": "2000"
+          },
+          "buck": {
+            "en": "500",
+            "kr": "500",
+            "vn": "500",
+            "br": "500",
+            "cn": "500"
+          }
+        },
+        "noti": {
+          "en": "Awesome!! Super Cat and Protonz Gun unlocked,5 nade,1 extralife,75 dp,10000 coin,500 buck!",
+          "kr": "굉장해 !! Super Cat 및 Protonz 잠금 해제, +75dp,10000 coin,500 buck!",
+          "vn": "Tuyệt vời!! Bạn nhận được Super Cat và Súng Protonz, 75 Cống Hiến,10000 coin,500 buck!",
+          "br": "Impressionante !! Super Cat e Protonz Gun desbloqueado,5 nade,1 extralife,75 dp,10000 coin,500 buck!",
+          "cn": "太棒了！你解锁了超级猫，质子炮 x1， 手榴弹 x5, 额外生命 x1，10000积分，500现钞！ "
+        }
+      }
+    },
+    "lucky_spin": {
+      "name": {
+        "en": "Lucky Spin",
+        "kr": "럭키 스핀",
+        "vn": "Vòng Quay May Mắn",
+        "br": "Lucky Spin",
+        "cn": "幸运大转盘"
+      },
+      "coin_win": {
+        "en": "Coin Win",
+        "kr": "동전 우승",
+        "vn": "Vàng",
+        "br": "Coin Win",
+        "cn": "获得金币"
+      },
+      "buck_win": {
+        "en": "Buck Win",
+        "kr": "벅 승",
+        "vn": "Tiền",
+        "br": "Buck Win",
+        "cn": "获得现钞"
+      },
+      "reset_after": {
+        "en": "Reset reward after: ",
+        "kr": "후에 재설정:",
+        "vn": "Làm mới sau:",
+        "br": "Atualizar depois:",
+        "cn": "剩余次数："
+      },
+      "spin": {
+        "en": "spin",
+        "kr": "회전",
+        "vn": "lượt",
+        "br": "voltas",
+        "cn": "次"
+      },
+      "win": {
+        "en": "YOU WIN: ",
+        "kr": "회전: ",
+        "vn": "Phần Thưởng: ",
+        "br": "YOU WIN: ",
+        "cn": "你获得："
+      },
+      "claimed": {
+        "en": "Claimed",
+        "kr": "청구 됨",
+        "vn": "Đã Nhận",
+        "br": "Recebido",
+        "cn": "已领取"
+      },
+      "price": {
+        "en": "$0.99",
+        "kr": "₩1,100",
+        "vn": "20,000đ",
+        "br": "R$3.19",
+        "cn": "￥6"
+      },
+      "ticket": {
+        "en": "5",
+        "kr": "5",
+        "vn": "5",
+        "br": "5",
+        "cn": "5"
+      },
+      "price2": {
+        "en": "$0.99",
+        "kr": "₩1,100",
+        "vn": "20,000đ",
+        "br": "R$3.19",
+        "cn": "￥6"
+      },
+      "reset": {
+        "en": "RESET",
+        "kr": "다시 놓기",
+        "vn": "LÀM MỚI",
+        "br": "RESTABELECER",
+        "cn": "重置次数："
+      },
+      "noti_ads": {
+        "en": "YOU HAVE 1 TIME TO RESET BY ADS. WATCH ADS TO RESET?",
+        "kr": "좋은 행운을 만들기 위해 광고를보고 싶습니까?",
+        "vn": "BẠN CÓ 1 LẦN LÀM MỚI VÒNG QUAY BẰNG QUẢNG CÁO. XEM ĐỂ LÀM MỚI?",
+        "br": "ASSISTA ADS PARA REINICIAR?",
+        "cn": "可以通过观看广告来重置一次，确定要观看广告吗？"
+      },
+      "noti_iap": {
+        "en": "DO YOU WANT TO BUY 5 TIME RESET SPIN?",
+        "kr": "5 시간 동안 행운을 사고 싶니?",
+        "vn": "BẠN CÓ MUỐN MUA 5 LẦN LÀM MỚI VÒNG QUAY?",
+        "br": "VOCÊ QUER COMPRAR 5 RESET SPIN?",
+        "cn": "你想购买5次转盘重置机会吗？"
+      }
+    },
+    "event": {
+      "name": {
+        "en": "EVENTS",
+        "kr": "행사",
+        "vn": "SỰ KIỆN",
+        "br": "EVENTOS",
+        "cn": "新挑战"
+      },
+      "reached": {
+        "en": "Reached",
+        "kr": "도달",
+        "vn": "Đạt được",
+        "br": "Alcançado",
+        "cn": "完成！"
+      },
+      "enter": {
+        "en": "ENTER",
+        "kr": "들어가다",
+        "vn": "THAM GIA",
+        "br": "ENTER",
+        "cn": "进入"
+      },
+      "zoo_xcape": {
+        "name": {
+          "en": "Zoo Xcape",
+          "kr": "Zoo Xcape",
+          "vn": "Công Viên",
+          "br": "Zoo Xcape",
+          "cn": "动物园大逃亡"
+        },
+        "new_record": {
+          "en": "New Record!!!",
+          "kr": "새로운 기록!!!",
+          "vn": "Kỷ lục mới",
+          "br": "Novo recorde",
+          "cn": "刷新了记录！"
+        },
+        "next_bonus": {
+          "en": "Next Bonus",
+          "kr": "다음 보너스",
+          "vn": "Mốc mới",
+          "br": "Próximo bônus",
+          "cn": "Next Bonus"
+        },
+        "watch_ads": {
+          "en": "Watch ads to open:",
+          "kr": "열려고하는 광고보기",
+          "vn": "Xem quảng cáo để mở",
+          "br": "Ver ads abrir",
+          "cn": "观看广告开启："
+        },
+        "next": {
+          "en": "NEXT",
+          "kr": "다음 것",
+          "vn": "TIẾP",
+          "br": "PRÓXIMO",
+          "cn": "下一关卡"
+        },
+        "not_rw": {
+          "en": "You are not rewarded, keep more than 1000m to get reward.",
+          "kr": "보상을받지 못하면 보상을 얻기 위해 1000m 이상을 유지하십시오.",
+          "vn": "Bạn phải chạy đủ 1000m để nhận thưởng",
+          "br": "Você não é recompensado, mantenha mais de 1000m para receber recompensa",
+          "cn": "你还没有"
+        },
+        "w_ads": {
+          "en": "Watch ads to open:",
+          "kr": "열려고하는 광고 시청 :",
+          "vn": "Xem quảng cáo để mở",
+          "br": "Ver ads abrir",
+          "cn": "观看广告开启："
+        }
+      },
+      "popup_err": {
+        "en": "Complete day 04 to unlock Events Mode",
+        "kr": "이벤트 모드의 잠금을 해제하려면 04 일을 완료하십시오.",
+        "vn": "Chiến thắng màn 4 để mở chức năng Sự Kiện",
+        "br": "Conclua o dia 04 para desbloquear o modo de eventos",
+        "cn": "完成关卡4的挑战，解锁新挑战。"
+      },
+      "popup_err2": {
+        "en": "Complete day 07 to unlock Events Mode",
+        "kr": "이벤트 모드의 잠금을 해제하려면 07 일을 완료하십시오.",
+        "vn": "Chiến thắng màn 7 để mở chức năng Sự Kiện",
+        "br": "Conclua o dia 07 para desbloquear o modo de eventos",
+        "cn": "完成关卡7挑战，解锁新挑战"
+      }
+    },
+    "no_ads": {
+      "en": "No Ads. Please Try Later!",
+      "kr": "광고 없음. 나중에 다시 시도 해주세요!",
+      "vn": "Không có quảng cáo. Thử lại sau!",
+      "br": "Sem anúncios. Por favor tente mais tarde",
+      "cn": "网络不稳定，稍后再试？"
+    },
+    "popup": {
+      "not_enough_coin": {
+        "en": "Not enough coins. Buy now?",
+        "kr": "광고가 없습니다. 다시 시도하십시오. 동전이 충분하지 않습니다. 지금 구입 하시겠습니까?",
+        "vn": "Không đủ vàng. Nạp ngay?",
+        "br": "Não o suficiente coins compre?",
+        "cn": "金币不够，现在购买吗？"
+      },
+      "not_enough_buck": {
+        "en": "Not enough buck. Buy now?",
+        "kr": "벅이 충분하지 않아. 지금 구입 하시겠습니까?",
+        "vn": "Không đủ tiền. Nạp ngay?",
+        "br": "Não o suficiente Bucks compre?",
+        "cn": "现钞不够，现在购买吗？"
+      },
+      "nope": {
+        "en": "Nope",
+        "kr": "아니요",
+        "vn": "Hủy",
+        "br": "Não",
+        "cn": "否"
+      },
+      "x2buck": {
+        "en": "Your buck reward has been increased",
+        "kr": "벅 보상이 증가했습니다",
+        "vn": "Tiền thưởng của bạn đã tăng lên",
+        "br": "Sua recompensa foi aumentada",
+        "cn": "你的现钞奖励增加了哟！"
+      },
+      "x2coin": {
+        "en": "Your coin reward has been increased",
+        "kr": "벅 보상이 증가했습니다.",
+        "vn": "Vàng thưởng của bạn đã tăng lên",
+        "br": "Sua recompensa em moeda foi aumentada",
+        "cn": "你的金币奖励增加了哟！"
+      },
+      "claim": {
+        "en": "Claim",
+        "kr": "청구",
+        "vn": "Nhận",
+        "br": "Obter",
+        "cn": "领取"
+      },
+      "special_pack": {
+        "en": "Awesome!! Halo Cat and Electric Gunner unlocked, +50.000 Coin, +35 dp!",
+        "kr": "굉장해 !! Halo Cat 및 Electric Gunner 잠금 해제, +50.000 코인, +35dp!",
+        "vn": "Tuyệt vời!! Bạn nhận được Halo Cat và Súng Điện, 50.000 Vàng, 35 Cống Hiến",
+        "br": "Impressionante !!Halo Cat e Electric Gunner desbloqueado, +50.000 Coin, +35 dp!",
+        "cn": "太棒了！你解锁了未来猫和镭射枪，并获得+50.000 金币以及积分 x35！"
+      },
+      "ice_pack": {
+        "en": "Awesome!! Xmas Hat and Ice Gun unlocked,+5 nade,+2 medkit, +25 dp!",
+        "kr": "굉장해 !! Halo Cat 및 Electric Gunner 잠금 해제, +50.000 코인, +35dp!",
+        "vn": "Tuyệt vời!! Bạn nhận được Halo Cat và Súng Điện, 50.000 Vàng, 35 Cống Hiến",
+        "br": "Impressionante !! Xmas Hat e Ice Gun desbloqueado,+5 nade,+2 medkit, +25 dp!",
+        "cn": "太棒了！你解锁了圣诞帽和冷凝枪，并获得手榴弹 x5，医疗包以 x2以及积分 x25！"
+      },
+      "starter_pack": {
+        "en": "Awesome!! +5000 coin,+1000 buck,+5 nade,+2 medkit, +10 dp!",
+        "kr": "굉장해 !! Halo Cat 및 Electric Gunner 잠금 해제, +50.000 코인, +35dp!",
+        "vn": "Tuyệt vời!! Bạn nhận được Halo Cat và Súng Điện, 50.000 Vàng, 35 Cống Hiến",
+        "br": "Impressionante !! +5000 coin,+1000 buck,+5 nade,+2 medkit, +10 dp!",
+        "cn": "恭喜！你获得了金币 x5000，现钞 x1000，手榴弹 x5，医疗包 x2以及积分 x10！"
+      },
+      "congratulations": {
+        "en": "Congratulations!",
+        "kr": "축하해!",
+        "vn": "Chúc mừng!!!",
+        "br": "Parabéns",
+        "cn": "恭喜！"
+      },
+      "popup_ask": {
+        "en": "WAIT A SECOND...",
+        "kr": "잠시만 요...",
+        "vn": "Xin chờ một chút...",
+        "br": "ESPERE UM SEGUNDO...",
+        "cn": "稍等一下……"
+      },
+      "popup_ask_bomb": {
+        "en": "U HAVE 0 GRENADES. BUY 2 MORE?",
+        "kr": "유년기에는 0 그레나다가 있습니다. 2 더 올리시겠습니까?",
+        "vn": "BẠN KHÔNG CÒN LỰU ĐẠN, MUA THÊM 2 QUẢ NHÉ?",
+        "br": "Você tem 0 Nade. COMPRAR 2 MAIS?",
+        "cn": "你的手榴弹已经使用完了，再购买2个？"
+      },
+      "popup_ask_medkit": {
+        "en": "U HAVE 0 MEDKIT. WATCH ADS TO +1 MORE?",
+        "kr": "메디는 0입니다. 1 더 많이 구입 하시겠습니까?",
+        "vn": "BẠN KHÔNG CÒN HỒI MÁU, MUA THÊM 1 BÌNH NHÉ?",
+        "br": "Você tem 0 MEDKIT. COMPRAR 1 MAIS?",
+        "cn": "你已经没有医疗包了，观看视频额外获得一个医疗包？"
+      },
+      "popup_ask_play": {
+        "en": "SKIP",
+        "kr": "건너 뛰다",
+        "vn": "BỎ QUA",
+        "br": "PULAR",
+        "cn": "跳过"
+      },
+      "popup_ask_buy": {
+        "en": "BUY",
+        "kr": "사다",
+        "vn": "MUA",
+        "br": "COMPRAR",
+        "cn": "购买"
+      },
+      "popup_ready": {
+        "en": "READY !",
+        "kr": "준비된",
+        "vn": "SẴN SÀNG",
+        "br": "PRONTO",
+        "cn": "准备完毕！"
+      },
+      "popup_addMedkit": {
+        "en": "+1 MEDKIT",
+        "kr": "+1 MEDKIT",
+        "vn": "+1 HỒI MÁU",
+        "br": "+1 MEDKIT",
+        "cn": "+1 医疗包"
+      },
+      "popup_addBomb": {
+        "en": "+2 GRENADES",
+        "kr": "+2 GRENADES",
+        "vn": "+2 LỰU ĐẠN",
+        "br": "+2 GRENADES",
+        "cn": "+2 手榴弹"
+      },
+      "popup_buyerr": {
+        "en": "Not enough buck to buy this item.",
+        "kr": "이 품목을 사기에는 충분하지 않습니다.",
+        "vn": "Không đủ tiền để mua vật phẩm này.",
+        "br": "Não há dinheiro suficiente para comprar este item.",
+        "cn": "现钞不够，无法购买。"
+      },
+      "comming": {
+        "en": "This feature is coming soon.",
+        "kr": "이 기능은 곧 제공 될 예정입니다.",
+        "vn": "Chức năng này đang phát triển.",
+        "br": "Esta funcionalidade estará disponível em breve.",
+        "cn": "这个新功能，请敬请期待哦！"
+      },
+      "get_bigRw": {
+        "en": "GET BIGGER REWARDS?",
+        "kr": "더 큰 보상을 얻으시겠습니까?",
+        "vn": "NHẬN PHẦN THƯỞNG LỚN HƠN?",
+        "br": "OBTENHA RECOMPENSAS MAIORES?",
+        "cn": "想要获得更多奖励？"
+      },
+      "use_extra": {
+        "en": "Use extra life?",
+        "kr": "여분의 생활을 사용합니까?",
+        "vn": "Dùng Thêm Mạng?",
+        "br": "Usar extra life?",
+        "cn": "使用额外生命？"
+      },
+      "donthv_extra": {
+        "en": "You don't have extra life. Watch an ad?",
+        "kr": "너는 여분의 생명이 없다. 광고보기?",
+        "vn": "Bạn không có Thêm Mạng. Xem quảng cáo để hồi sinh?",
+        "br": "Você não tem extra life. Ver Ad?",
+        "cn": "你已经没有额外生命，想要观看视频获得吗？"
+      },
+      "rank_reward": {
+        "en": "RANK REWARD",
+        "kr": "보상의 순위를 매기다",
+        "vn": "PHẦN THƯỞNG XẾP HẠNG",
+        "br": "RECOMPENSA DE CLASSIFICAÇÃO",
+        "cn": "排行奖励"
+      },
+      "new_gun": {
+        "en": "NEW GUN",
+        "kr": "새로운 총",
+        "vn": "SÚNG MỚI",
+        "br": "ARMA NOVA",
+        "cn": "解锁新枪支"
+      },
+      "new_cat": {
+        "en": "NEW CAT",
+        "kr": "새로운 고양이",
+        "vn": "NHÂN VẬT MỚI",
+        "br": "NOVO GATO",
+        "cn": "解锁新猫猫战士"
+      },
+      "gift_txt": {
+        "en": "YOU HAVE BEEN AWAY FOR: ",
+        "kr": "네가 돌아 가지 않는 시간:",
+        "vn": "BẠN ĐÃ RỜI ĐI TRONG: ",
+        "br": "Você saiu por",
+        "cn": "你已经离开："
+      },
+      "gift_hours": {
+        "en": "HOURS ",
+        "kr": "시간 ",
+        "vn": "GIỜ ",
+        "br": "HORAS ",
+        "cn": "小时"
+      },
+      "gift_minutes": {
+        "en": "MINUTES",
+        "kr": "의사록",
+        "vn": "PHÚT",
+        "br": "MINUTOS",
+        "cn": "分钟"
+      },
+      "gift_claim": {
+        "en": "Claim",
+        "kr": "청구",
+        "vn": "Nhận",
+        "br": "Afirmação",
+        "cn": "领取"
+      },
+      "gift_earned": {
+        "en": "YOUR EARNED:",
+        "kr": "귀하의 수입:",
+        "vn": "BẠN SẼ NHẬN ĐƯỢC:",
+        "br": "VOCÊ RECEBEU:",
+        "cn": "你已获得："
+      }
+    },
+    "story": {
+      "name": {
+        "en": "STORY",
+        "kr": "이야기",
+        "vn": "CỐT TRUYỆN",
+        "br": "HISTÓRIA",
+        "cn": "任务"
+      },
+      "easy": {
+        "en": "EASY",
+        "kr": "EASY",
+        "vn": "DỄ",
+        "br": "FÁCIL",
+        "cn": "简单"
+      },
+      "normal": {
+        "en": "NORMAL",
+        "kr": "쉬운",
+        "vn": "VỪA",
+        "br": "NORMAL",
+        "cn": "普通"
+      },
+      "hard": {
+        "en": "HARD",
+        "kr": "단단한",
+        "vn": "KHÓ",
+        "br": "DIFÍCIL",
+        "cn": "困难"
+      },
+      "play": {
+        "en": "PLAY",
+        "kr": "놀이",
+        "vn": "CHƠI",
+        "br": "TOQUE",
+        "cn": "开始游戏"
+      },
+      "street": {
+        "en": "STREET",
+        "kr": "거리",
+        "vn": "ĐƯỜNG PHỐ",
+        "br": "RUA",
+        "cn": "街道"
+      },
+      "warehouse": {
+        "en": "WAREHOUSE",
+        "kr": "창고",
+        "vn": "NHÀ KHO",
+        "br": "ARMAZÉM",
+        "cn": "仓库"
+      },
+      "station": {
+        "en": "STATION",
+        "kr": "역",
+        "vn": "NHÀ GA",
+        "br": "ESTAÇÃO",
+        "cn": "车站"
+      },
+      "park": {
+        "en": "PARK",
+        "kr": "공원",
+        "vn": "CÔNG VIÊN",
+        "br": "PARQUE",
+        "cn": "公园"
+      },
+      "popup_err": {
+        "en": "Please complete easy mode first",
+        "kr": "쉬운 모드를 먼저 완료하십시오.",
+        "vn": "Xin hãy hoàn thành chế độ DỄ trước.",
+        "br": "Por favor, complete o modo fácil primeiro.",
+        "cn": "请先完成简单模式的任务。"
+      },
+      "map_rw_title": {
+        "en": "First win rewards:",
+        "kr": "첫 번째 보상 획득 :",
+        "vn": "Thưởng qua màn:",
+        "br": "Primeiro ganhe recompensas:",
+        "cn": "首次获得奖励："
+      }
+    },
+    "no": {
+      "en": "NO",
+      "kr": "아니",
+      "vn": "HỦY",
+      "br": "NÃO",
+      "cn": "否"
+    },
+    "claim": {
+      "en": "Claim",
+      "kr": "모자",
+      "vn": "Nhận",
+      "br": "Recebido",
+      "cn": "领取"
+    },
+    "claimed": {
+      "en": "Claimed",
+      "kr": "모자",
+      "vn": "Đã nhận",
+      "br": "Foi recebido",
+      "cn": "已领取"
+    },
+    "hat_mota": {
+      "en": "Shoot the Xmas Tree  to find piece of xmas hat. \nReward: Xmas Hat\n   Collected(",
+      "kr": "모자 텔레비전을 찾기 위해 크리스마스 트리를 쏴라.\n\n 수집(",
+      "vn": "Bắn vào cây thông Noel để tìm mảnh mũ.\n\nPhần thưởng: Mũ noel\n   Đã nhận(",
+      "br": "Tiro Xmas Árvore encontrar peça Xmas chapéu.Recompensa: Xmas chapéu\n Coletado(",
+      "cn": "射击圣诞树来获得圣诞帽。 \n奖励： 圣诞帽\n   获得(",
+      "ask_ads": {
+        "en": "Do you want to watch a ads to open more lucky rewards?",
+        "kr": "행운의 보상을 받기 위해 광고를 보시겠습니까?",
+        "vn": "Bạn có muốn xem quảng cáo để mở thêm phần thưởng may mắn không?",
+        "br": "Você quer assistir a anúncios para abrir recompensas mais sortudas?",
+        "cn": "你想通过观看视频来获得更多的奖励吗？"
+      },
+      "ask_ads_end": {
+        "en": "Do you want to watch a ads to save this wave when you die?",
+        "kr": "당신이 죽을 때이 파도를 저장하기 위해 광고주를 보길 원하십니까??",
+        "vn": "Bạn có muốn xem một quảng cáo để lưu lại màn chơi này khi chết?",
+        "br": "Você gostaria de ver um anúncio para salvar este jogo quando morrer?",
+        "cn": "你愿意通过观看视频来存档该回合记录吗？"
+      }
+    }
+  },
+  "ingame": {
+    "ads": {
+      "low_view_videoads": {
+        "en": "5",
+        "kr": "5",
+        "vn": "5",
+        "br": "5",
+        "cn": "5"
+      },
+      "count_play": {
+        "en": "2",
+        "kr": "2",
+        "vn": "2",
+        "br": "2",
+        "cn": "2"
+      },
+      "level_qua": {
+        "en": "2",
+        "kr": "2",
+        "vn": "2",
+        "br": "2",
+        "cn": "2"
+      }
+    },
+    "mission": {
+      "mission1": {
+        "1": {
+          "en": "Kill all enemies (",
+          "kr": "모든 적을 죽이다 (",
+          "vn": "Tiêu diệt kẻ địch (",
+          "br": "Mate todos os inimigos (",
+          "cn": "歼灭所有敌人（"
+        },
+        "2": {
+          "en": "Rescue hostages (",
+          "kr": "인질 구출 (",
+          "vn": "Giải cứu con tin (",
+          "br": "Reféns de resgate (",
+          "cn": "拯救遇难者"
+        },
+        "3": {
+          "en": "Kill all enemies (",
+          "kr": "모든 적을 죽이다 (",
+          "vn": "Tiêu diệt kẻ địch (",
+          "br": "Mate todos os inimigos (",
+          "cn": "歼灭所有敌人（"
+        },
+        "4": {
+          "en": "Rescue school cat (",
+          "kr": "학교 고양이를 구출하십시오 (",
+          "vn": "Giải cứu nam sinh mèo (",
+          "br": "Resgate o gato da escola (",
+          "cn": "拯救学园猫（"
+        }
+      },
+      "mission2": {
+        "en": "Survive with ",
+        "kr": "생존하다 ",
+        "vn": "Sống sót với ",
+        "br": "Sobreviva com ",
+        "cn": "Survive with "
+      },
+      "mission3": {
+        "en": "Find the brains ",
+        "kr": "두뇌를 찾아라 ",
+        "vn": "Thu thập Não ",
+        "br": "Encontre os cérebros ",
+        "cn": "寻找智慧大脑"
+      },
+      "bonus_map": {
+        "en": "Time: ",
+        "kr": "보너스 스테이지: ",
+        "vn": "Thời gian: ",
+        "br": "Mapa de bónus:",
+        "cn": "用时："
+      }
+    },
+    "ui": {
+      "win": {
+        "next": {
+          "en": "NEXT",
+          "kr": "다음것",
+          "vn": "TIẾP",
+          "br": "PRÓXIMO",
+          "cn": "继续挑战"
+        },
+        "replay": {
+          "en": "REPLAY",
+          "kr": "다시",
+          "vn": "CHƠI LẠI",
+          "br": "NOVAMENTE",
+          "cn": "重新挑战"
+        }
+      },
+      "switch": {
+        "en": "Switch",
+        "kr": "스위치",
+        "vn": "Đổi",
+        "br": "Interruptor",
+        "cn": "更换"
+      },
+      "pause": {
+        "resume": {
+          "en": "RESUME",
+          "kr": "이력서",
+          "vn": "TIẾP TỤC",
+          "br": "CURRÍCULO",
+          "cn": "返回"
+        },
+        "setting": {
+          "en": "SETTINGS",
+          "kr": "설정",
+          "vn": "CÀI ĐẶT",
+          "br": "CONFIGURAÇÃO",
+          "cn": "设置"
+        },
+        "quit": {
+          "en": "QUIT",
+          "kr": "떠나다",
+          "vn": "THOÁT",
+          "br": "OUT",
+          "cn": "放弃挑战"
+        }
+      },
+      "enemy": {
+        "enemy1": {
+          "name": {
+            "en": "Meek",
+            "kr": "Meek",
+            "vn": "Meek",
+            "br": "Meek",
+            "cn": "呆头僵尸"
+          },
+          "description": {
+            "en": "Very slow & sad.",
+            "kr": "아주 천천히 그리고 슬픈.",
+            "vn": "Rất chậm & buồn bã",
+            "br": "Muito lento e triste",
+            "cn": "行动缓慢且笨拙"
+          }
+        },
+        "enemy2": {
+          "name": {
+            "en": "Happy",
+            "kr": "Happy",
+            "vn": "Happy",
+            "br": "Happy",
+            "cn": "自爆僵尸"
+          },
+          "description": {
+            "en": "Nothing to lose",
+            "kr": "잃을 게 없다.",
+            "vn": "Không còn gì để mất",
+            "br": "Nada a perder",
+            "cn": "无所畏惧！"
+          }
+        },
+        "enemy2_2": {
+          "name": {
+            "en": "Cold",
+            "kr": "Cold",
+            "vn": "Cold",
+            "br": "Cold",
+            "cn": "速冻僵尸"
+          },
+          "description": {
+            "en": "Free hug for everyone",
+            "kr": "모두를위한 무료 포옹",
+            "vn": "Cho ôm cái nào",
+            "br": "Abraço grátis para todos",
+            "cn": "见到谁都直接上去拥抱"
+          }
+        },
+        "enemy3": {
+          "name": {
+            "en": "Baboom",
+            "kr": "Baboom",
+            "vn": "Baboom",
+            "br": "Baboom",
+            "cn": "饥饿僵尸"
+          },
+          "description": {
+            "en": "I have butterflies in my stomach",
+            "kr": "배가 아파.",
+            "vn": "Trong bụng có gì đang bay",
+            "br": "Eu tenho borboletas no estômago",
+            "cn": "我非常饥饿！"
+          }
+        },
+        "enemy4": {
+          "name": {
+            "en": "Tough",
+            "kr": "Tough",
+            "vn": "Tough",
+            "br": "Tough",
+            "cn": "壮汉僵尸"
+          },
+          "description": {
+            "en": "Give me a gun",
+            "kr": "나에게 총을 줘.",
+            "vn": "Tôi muốn 1 khẩu súng",
+            "br": "Me da uma arma",
+            "cn": "给我一把枪"
+          }
+        },
+        "enemy6": {
+          "name": {
+            "en": "Blind",
+            "kr": "Blind",
+            "vn": "Blind",
+            "br": "Blind",
+            "cn": "盲猫僵尸"
+          },
+          "description": {
+            "en": "I can see you",
+            "kr": "나는 너를 볼 수있어.",
+            "vn": "Tôi có thể thấy",
+            "br": "Eu posso ver você",
+            "cn": "我还是能看见你哟"
+          }
+        },
+        "enemy7_boss": {
+          "name": {
+            "en": "Abcd",
+            "kr": "Abcd",
+            "vn": "Abcd",
+            "br": "Abcd",
+            "cn": "精神紊乱僵尸"
+          },
+          "description": {
+            "en": "Nommmmm",
+            "kr": "Nommmmm",
+            "vn": "Nommmmm",
+            "br": "Nommmmm",
+            "cn": "啊！！"
+          }
+        },
+        "boss1_sung": {
+          "name": {
+            "en": "Turret",
+            "kr": "Turret",
+            "vn": "Turret",
+            "br": "Turret",
+            "cn": "加特林"
+          },
+          "description": {
+            "en": "Pew pew pew",
+            "kr": "퓨 퓨치",
+            "vn": "Pew Pew Pew",
+            "br": "Pew pew pew",
+            "cn": "突！突！突"
+          }
+        },
+        "boss1_sung2": {
+          "name": {
+            "en": "Turret",
+            "kr": "Turret",
+            "vn": "Turret",
+            "br": "Turret",
+            "cn": "加特林"
+          },
+          "description": {
+            "en": "Pew pew pew",
+            "kr": "퓨 퓨치",
+            "vn": "Pew Pew Pew",
+            "br": "Pew pew pew",
+            "cn": "突！突！突！"
+          }
+        },
+        "enemy8": {
+          "name": {
+            "en": "Swim",
+            "kr": "Swim",
+            "vn": "Swim",
+            "br": "Swim",
+            "cn": "运动员僵尸"
+          },
+          "description": {
+            "en": "Mum mum mum",
+            "kr": "Mum mum mum",
+            "vn": "Mum mum mum",
+            "br": "Mum mum mum",
+            "cn": "喵喵喵？！"
+          }
+        },
+        "enemy9": {
+          "name": {
+            "en": "Farmer",
+            "kr": "Farmer",
+            "vn": "Farmer",
+            "br": "Farmer",
+            "cn": "被感染的猫"
+          },
+          "description": {
+            "en": "Protect nature",
+            "kr": "자연 보호",
+            "vn": "Bảo vệ môi trường",
+            "br": "Proteger a natureza",
+            "cn": "十分热爱自然"
+          }
+        },
+        "enemy11": {
+          "name": {
+            "en": "PUNCH PUNCH",
+            "kr": "탱크",
+            "vn": "TAY ĐẤM HẠNG NẶNG",
+            "br": "PUNCH PUNCH",
+            "cn": "雷拳"
+          },
+          "description": {
+            "en": "PUNCH PUNCH",
+            "kr": "PUNCH PUNCH",
+            "vn": "PUNCH PUNCH",
+            "br": "PUNCH PUNCH",
+            "cn": "PUNCH PUNCH"
+          }
+        },
+        "enemy12": {
+          "name": {
+            "en": "Turret",
+            "kr": "Turret",
+            "vn": "Turret",
+            "br": "Turret",
+            "cn": "加特林"
+          },
+          "description": {
+            "en": "Pew pew pew",
+            "kr": "퓨 퓨치",
+            "vn": "Pew Pew Pew",
+            "br": "Pew pew pew",
+            "cn": "突！突！突！"
+          }
+        },
+        "enemy14": {
+          "name": {
+            "en": "Mechanic",
+            "kr": "Mechanic",
+            "vn": "Mechanic",
+            "br": "Mechanic",
+            "cn": "被感染的猫技师"
+          },
+          "description": {
+            "en": "I will fix you",
+            "kr": "내가 너를 고칠거야.",
+            "vn": "Tao sẽ sửa mày",
+            "br": "Eu vou consertar você",
+            "cn": "我会把你修理好的，放心！"
+          }
+        }
+      }
+    },
+    "tut": {
+      "drag_to_move": {
+        "en": "DRAG TO MOVE",
+        "kr": "드래그하여 이동",
+        "vn": "KÉO ĐỂ DI CHUYỂN",
+        "br": "arraste para mover",
+        "cn": "拖动进行移动"
+      },
+      "shoot": {
+        "en": "SHOOT",
+        "kr": "사격",
+        "vn": "BẮN",
+        "br": "TIRO",
+        "cn": "射击"
+      },
+      "other_guns": {
+        "en": "OTHER GUNS",
+        "kr": "다른 총",
+        "vn": "ĐỔI SÚNG",
+        "br": "outra arma",
+        "cn": "其他枪支"
+      },
+      "boss_tut_left": {
+        "en": "CATCH ME IF YOU CAN!",
+        "kr": "잡을 수 있으면 잡아 봐!",
+        "vn": "ĐƯỢC LẮM! TA SẼ QUAY TRỞ LẠI!",
+        "br": "ME PEGUE SE FOR CAPAZ!",
+        "cn": "来抓我呀！"
+      },
+      "cap1": {
+        "en": "Hi! I have been waiting for you for a long time",
+        "kr": "안녕하세요! 나는 너를 오랫동안 기다렸다.",
+        "vn": "Xin chào, tôi đã đợi bạn khá lâu rồi đấy",
+        "br": "Oi! Eu estive esperando por você por um longo tempo",
+        "cn": "你终于出现了！我已经等了你很久了！"
+      },
+      "cap2": {
+        "en": "They are the most common zombies, fast but weak.",
+        "kr": "그들은 가장 일반적으로 좀비이지만 빠르지 만 약합니다.",
+        "vn": "Chúng là Zombie phổ biến, nhanh nhưng khá yếu",
+        "br": "Eles são os zumbis mais comuns, rápidos mas fracos",
+        "cn": "他们都是最普通的僵尸，行动敏捷但是很虚弱"
+      },
+      "cap3": {
+        "en": "Try to take them down!",
+        "kr": "그 (것)들을 아래로 가지고 가십시오!",
+        "vn": "Cố gắng hạ chúng!",
+        "br": "Tente derrubá-los",
+        "cn": "把他们都干掉！"
+      },
+      "cap4": {
+        "en": "Nice job, now take down the remaining zombies.",
+        "kr": "좋은 직장, 이제 나머지 좀비들을 내 줘라.",
+        "vn": "Tốt lắm, hãy tiêu diệt nốt đám còn lại.",
+        "br": "Bom trabalho, agora derrubar os zumbis restantes",
+        "cn": "干得漂亮！把剩下的僵尸都消灭掉吧！"
+      },
+      "cap5": {
+        "en": "Good luck!",
+        "kr": "행운을 빕니다!",
+        "vn": "Chúc may mắn!",
+        "br": "Boa sorte",
+        "cn": "祝你好运！"
+      },
+      "cap6": {
+        "en": "Three scientists were imprisoned ahead.",
+        "kr": "3 명의 과학자가 투옥되었다.",
+        "vn": "Ba nhà khoa học bị nhốt ở phía trước",
+        "br": "Três cientistas foram presos à frente",
+        "cn": "猫科学家们都被敌人囚禁了！"
+      },
+      "cap7": {
+        "en": "Save them, I will wait for you in Day 7",
+        "kr": "그들을 구하십시오. 나는 7 일째에 당신을 기다릴 것입니다.",
+        "vn": "Cứu họ nhé, tôi sẽ chờ ở Day 7",
+        "br": "Salvá-los, vou esperar por você no dia 7",
+        "cn": "拯救他们！我会在关卡7等你！"
+      },
+      "cap8": {
+        "en": "Three scientists were imprisoned ahead.",
+        "kr": "3 명의 과학자가 투옥되었다.",
+        "vn": "Ba nhà khoa học bị nhốt ở phía trước",
+        "br": "Três cientistas foram presos à frente",
+        "cn": "猫科学家们都被敌人囚禁了！"
+      },
+      "cap9": {
+        "en": "Three scientists were imprisoned ahead.",
+        "kr": "3 명의 과학자가 투옥되었다.",
+        "vn": "Ba nhà khoa học bị nhốt ở phía trước",
+        "br": "Três cientistas foram presos à frente",
+        "cn": "猫科学家们都被敌人囚禁了！"
+      },
+      "cap10": {
+        "en": "Three scientists were imprisoned ahead.",
+        "kr": "3 명의 과학자가 투옥되었다.",
+        "vn": "Ba nhà khoa học bị nhốt ở phía trước",
+        "br": "Três cientistas foram presos à frente",
+        "cn": "猫科学家们都被敌人囚禁了！"
+      },
+      "click": {
+        "en": "Use item",
+        "kr": "항목을 사용하려면 클릭하십시오.",
+        "vn": "Bấm đây để dùng vật phẩm",
+        "br": "Clique para usar o item",
+        "cn": "点击使用物品"
+      },
+      "join": {
+        "en": "JOIN",
+        "kr": "어울리다",
+        "vn": "Được",
+        "br": "JUNTE-SE",
+        "cn": "加入"
+      },
+      "num1": {
+        "en": "We need to find the Recipe. First number is ",
+        "kr": "레시피를 찾아야 해. 첫 번째 숫자는 ",
+        "vn": "Chúng ta phải tìm thấy công thức. Số thứ nhất là ",
+        "br": "Precisamos encontrar a receita. O primeiro número é ",
+        "cn": "我们需要配方。首数字是："
+      },
+      "num2": {
+        "en": "I saw a flying zombie. I saw the 3rd number is ",
+        "kr": "나는 좀비를 봤다. 세 번째 숫자가 봤어 ",
+        "vn": "Zombie biết bay AAAA. Số thứ ba là ",
+        "br": "Eu vi um zumbi voador. Eu vi o terceiro número é ",
+        "cn": "我看见了僵尸在天上飞，我看到第3个数字是"
+      },
+      "num3": {
+        "en": "Recipe is being held by Green Boss. 2nd number is ",
+        "kr": "레시피는 그린 보스 (Green Boss)가 진행 중입니다. 두 번째 숫자는 ",
+        "vn": "Công thức đang ở chỗ Green Boss. Số thứ hai là ",
+        "br": "Receita está sendo realizada por Green Boss. 2º número é ",
+        "cn": "配方被怪物拿走了。第2个数字是"
+      },
+      "num4": {
+        "en": ". But we need to rescue a Force member first.",
+        "kr": ". 하지만 우리는 포스 멤버를 먼저 구출해야합니다.",
+        "vn": ". Phải giải cứu thành viên của đội đã",
+        "br": "Mas precisamos resgatar um membro da Força primeiro",
+        "cn": "我们先拯救我们的一名战士吧。"
+      },
+      "num5": {
+        "en": "Dont you remember the numbers? 4th number is ",
+        "kr": "숫자 기억 안나? 네 번째 숫자는",
+        "vn": "Bạn còn nhớ mấy con số không? Số thứ 4 là ",
+        "br": "Você não se lembra dos números? O 4º número é",
+        "cn": "难道你没有把数字都记下来吗？第4个数字是"
+      },
+      "num6": {
+        "en": "Dont you remember the numbers? 5th number is ",
+        "kr": "숫자 기억 안나? 다섯 번째 숫자는",
+        "vn": "Hã cẩn thận. Số thứ 5 là ",
+        "br": "Você não se lembra dos números? O 5º número é",
+        "cn": "难道你没有把数字都记下来吗？第5个数字是"
+      },
+      "captaint_said": {
+        "en": "We might need more allies. Who's with us?",
+        "kr": "우리는 더 많은 동맹국이 필요할지도 모른다. 누가 우리 랑있어?",
+        "vn": "Không ổn rồi! Chúng ta cần thêm đồng minh. Có ai ở đây không?",
+        "br": "Podemos precisar de mais aliados. Quem está com a gente?",
+        "cn": "我们需要更多的战士加入！谁愿意加入我们呢？"
+      }
+    },
+    "boss": {
+      "boss1": {
+        "en": "BUFFY CAT",
+        "kr": "뚱뚱한 돼지",
+        "vn": "HEO Ú",
+        "br": "BUFFY CAT",
+        "cn": "猫"
+      },
+      "boss2": {
+        "en": "DOUBLE TURRET",
+        "kr": "이중 회선",
+        "vn": "NHỊ THẦN CÔNG",
+        "br": "DOUBLE TURRET",
+        "cn": "双响炮"
+      },
+      "boss3": {
+        "en": "TANK",
+        "kr": "탱크",
+        "vn": "LÃNG TỬ XAKER",
+        "br": "TANK",
+        "cn": "坦克"
+      },
+      "e11": {
+        "en": "PUNCH PUNCH",
+        "kr": "탱크",
+        "vn": "TAY ĐẤM HẠNG NẶNG",
+        "br": "TANK",
+        "cn": "雷拳"
+      }
+    }
+  }
+}

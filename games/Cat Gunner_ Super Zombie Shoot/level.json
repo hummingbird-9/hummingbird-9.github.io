@@ -1,0 +1,3210 @@
+{
+  "map0_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 5,
+          "level": 1,
+          "hat": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0
+        }
+      }
+    }
+  },
+  "map1_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 5,
+          "level": 1,
+          "hat": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0
+        }
+      }
+    }
+  },
+  "map2_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 3,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 3,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 4,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0
+        }
+      },
+      "4": {
+        "enemy11": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "map3_tut": {
+    "enemy1": {
+      "num": 3,
+      "level": 2,
+      "hat": 0
+    },
+    "enemy2": {
+      "num": 2,
+      "level": 2,
+      "hat": 0
+    },
+    "enemy2_2": {
+      "num": 1,
+      "level": 1,
+      "hat": 0
+    }
+  },
+  "map4_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 6,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 4,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 2,
+          "hat": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 7,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 1,
+          "level": 1,
+          "hat": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 2,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 1
+        },
+        "enemy4": {
+          "num": 1,
+          "level": 1,
+          "hat": 0
+        },
+        "enemy11": {
+          "num": 1,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "map5_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 5,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 2,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 2,
+          "hat": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 2,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 0
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 3,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 1,
+          "hat": 0
+        }
+      },
+      "5": {
+        "enemy1": {
+          "num": 3,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 0
+        }
+      },
+      "6": {
+        "enemy1": {
+          "num": 3,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 1,
+          "hat": 0
+        }
+      }
+    }
+  },
+  "map6_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 5,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 1,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 2,
+          "hat": 0
+        }
+      }
+    }
+  },
+  "map7_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 5,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy11": {
+          "num": 1,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "map8_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 1,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 2,
+          "hat": 0
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy6": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 1,
+          "level": 2,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "6": {
+        "enemy1": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 1,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map9_tut": {
+    "enemy1": {
+      "num": 3,
+      "level": 4,
+      "hat": 1
+    },
+    "enemy2": {
+      "num": 2,
+      "level": 4,
+      "hat": 1
+    },
+    "enemy2_2": {
+      "num": 1,
+      "level": 4,
+      "hat": 0
+    }
+  },
+  "map10_tut": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 4,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 5,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        }
+      }
+    }
+  },
+  "map11_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy11": {
+          "num": 1,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 1,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 3,
+          "hat": 0
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy6": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 1,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy8": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "6": {
+        "enemy1": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map12_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 3,
+          "hat": 0
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy6": {
+          "num": 3,
+          "level": 3,
+          "hat": 0
+        }
+      }
+    }
+  },
+  "map13_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 3,
+          "hat": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 4,
+          "hat": 0
+        },
+        "enemy6": {
+          "num": 1,
+          "level": 4,
+          "hat": 0
+        }
+      },
+      "boss2": {
+        "hp": 5000,
+        "damage": 20
+      }
+    }
+  },
+  "map14_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 4,
+          "hat": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 4,
+          "hat": 0
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 4,
+          "hat": 0
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 4,
+          "hat": 0
+        }
+      }
+    }
+  },
+  "map15_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy3": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map16_tut": {
+    "enemy1": {
+      "num": 3,
+      "level": 4,
+      "hat": 1
+    },
+    "enemy2": {
+      "num": 2,
+      "level": 4,
+      "hat": 1
+    },
+    "enemy3": {
+      "num": 1,
+      "level": 4,
+      "hat": 1
+    },
+    "enemy9": {
+      "num": 1,
+      "level": 4,
+      "hat": 1
+    }
+  },
+  "map17_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy12": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy14": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map18_tut": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 4,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map19_tut": {
+    "wave": {
+      "1": {
+        "enemy3": {
+          "num": 3,
+          "level": 4,
+          "hat": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 4,
+          "hat": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 4,
+          "hat": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 4,
+          "hat": 0
+        },
+        "enemy9": {
+          "num": 4,
+          "level": 4,
+          "hat": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 4,
+          "hat": 0
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 4,
+          "level": 4,
+          "hat": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 4,
+          "hat": 0
+        }
+      }
+    }
+  },
+  "map20_tut": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 4,
+          "hat": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 4,
+          "hat": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 4,
+          "hat": 0
+        },
+        "enemy9": {
+          "num": 3,
+          "level": 4,
+          "hat": 0
+        },
+        "enemy14": {
+          "num": 1,
+          "level": 4,
+          "hat": 0
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 4,
+          "hat": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 4,
+          "hat": 0
+        }
+      },
+      "boss3": {
+        "hp": 5,
+        "damage": 80
+      }
+    }
+  },
+  "map0_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 5,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map1_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 5,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map2_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 4,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 5,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy2_2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map3_normal": {
+    "enemy1": {
+      "num": 3,
+      "level": 0,
+      "hat": 1
+    },
+    "enemy2": {
+      "num": 2,
+      "level": 0,
+      "hat": 1
+    },
+    "enemy2_2": {
+      "num": 1,
+      "level": 0,
+      "hat": 1
+    }
+  },
+  "map4_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 6,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 4,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 7,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 5,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 1,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 6,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy1": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map5_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 5,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 5,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 5,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 5,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy1": {
+          "num": 5,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "6": {
+        "enemy1": {
+          "num": 5,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 1,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map6_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 5,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 1,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 5,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 1,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 7,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 1,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 6,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 1,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map7_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 5,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 4,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 6,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 5,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy6": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map8_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 5,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 4,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 4,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 5,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 5,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy6": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "6": {
+        "enemy1": {
+          "num": 5,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map9_normal": {
+    "enemy1": {
+      "num": 3,
+      "level": 0,
+      "hat": 1
+    },
+    "enemy2": {
+      "num": 2,
+      "level": 0,
+      "hat": 1
+    },
+    "enemy2_2": {
+      "num": 1,
+      "level": 0,
+      "hat": 1
+    }
+  },
+  "map10_normal": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 4,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 5,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 5,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy4": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 3,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy2_2": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map11_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 5,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 5,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 5,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy2_2": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 5,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 5,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy1": {
+          "num": 5,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 5,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 2,
+          "hat": 1
+        }
+      },
+      "6": {
+        "enemy1": {
+          "num": 5,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 5,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "enemy2_2": {
+        "num": 3,
+        "level": 1,
+        "hat": 1
+      },
+      "enemy6": {
+        "num": 5,
+        "level": 1,
+        "hat": 1
+      }
+    }
+  },
+  "map12_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 5,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy1": {
+          "num": 5,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map13_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy1": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "6": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "7": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "boss2": {
+        "hp": 5000,
+        "damage": 40
+      }
+    }
+  },
+  "map14_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map15_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy3": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map16_normal": {
+    "enemy1": {
+      "num": 3,
+      "level": 4,
+      "hat": 1
+    },
+    "enemy2": {
+      "num": 2,
+      "level": 4,
+      "hat": 1
+    },
+    "enemy3": {
+      "num": 1,
+      "level": 4,
+      "hat": 1
+    },
+    "enemy9": {
+      "num": 1,
+      "level": 3,
+      "hat": 1
+    }
+  },
+  "map17_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy12": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy14": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy14": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "6": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy14": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map18_normal": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 4,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "6": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map19_normal": {
+    "wave": {
+      "1": {
+        "enemy3": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 4,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy8": {
+          "num": 4,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy2": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 4,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy3": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      }
+    }
+  },
+  "map20_normal": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 3,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy14": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "4": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        }
+      },
+      "5": {
+        "enemy2": {
+          "num": 2,
+          "level": 4,
+          "hat": 1
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 3,
+          "hat": 1
+        }
+      },
+      "boss3": {
+        "hp": 10000,
+        "damage": 60
+      }
+    }
+  }
+}

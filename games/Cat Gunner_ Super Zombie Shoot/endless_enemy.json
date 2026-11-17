@@ -1,0 +1,4704 @@
+{
+  "1": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 6,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 8,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "2": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 6,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 8,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "3": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 6,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 8,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "4": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 6,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 8,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "5": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 6,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "6": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 6,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 8,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "7": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 6,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 8,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "8": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 6,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 8,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "9": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 6,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 8,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "10": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 8,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 8,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 10,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 10,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss3": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "11": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 6,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 2,
+          "level": 1,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 8,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "12": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 6,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 1,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 8,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "13": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 6,
+          "level": 2,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 8,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "14": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy3": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 1,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy6": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "15": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 6,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 1,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "16": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 6,
+          "level": 2,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2": {
+          "num": 8,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 3,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "17": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 6,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 1,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 8,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 3,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "18": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 6,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 8,
+          "level": 2,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 3,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "19": {
+    "wave": {
+      "1": {
+        "enemy1": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy1": {
+          "num": 6,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy1": {
+          "num": 8,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 1
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "20": {
+    "wave": {
+      "1": {
+        "enemy2": {
+          "num": 8,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 8,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2": {
+          "num": 10,
+          "level": 3,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 10,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 8,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss3": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "21": {
+    "wave": {
+      "1": {
+        "enemy3": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy3": {
+          "num": 6,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy3": {
+          "num": 8,
+          "level": 1,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "22": {
+    "wave": {
+      "1": {
+        "enemy3": {
+          "num": 4,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy3": {
+          "num": 6,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy3": {
+          "num": 8,
+          "level": 1,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "23": {
+    "wave": {
+      "1": {
+        "enemy3": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy3": {
+          "num": 6,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy3": {
+          "num": 8,
+          "level": 2,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "24": {
+    "wave": {
+      "1": {
+        "enemy3": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy6": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy14": {
+          "num": 4,
+          "level": 2,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "25": {
+    "wave": {
+      "1": {
+        "enemy3": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy3": {
+          "num": 6,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 1,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss2": {
+          "num": 1,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "26": {
+    "wave": {
+      "1": {
+        "enemy3": {
+          "num": 4,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy3": {
+          "num": 6,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy3": {
+          "num": 8,
+          "level": 3,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "27": {
+    "wave": {
+      "1": {
+        "enemy3": {
+          "num": 4,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy3": {
+          "num": 6,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy3": {
+          "num": 8,
+          "level": 3,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "28": {
+    "wave": {
+      "1": {
+        "enemy3": {
+          "num": 4,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy3": {
+          "num": 6,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy3": {
+          "num": 8,
+          "level": 3,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "29": {
+    "wave": {
+      "1": {
+        "enemy3": {
+          "num": 4,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy3": {
+          "num": 6,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 1,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy3": {
+          "num": 8,
+          "level": 3,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "30": {
+    "wave": {
+      "1": {
+        "enemy3": {
+          "num": 8,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 8,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2_2": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 1
+        },
+        "enemy2": {
+          "num": 10,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 8,
+          "level": 2,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss3": {
+          "num": 1,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "31": {
+    "wave": {
+      "1": {
+        "enemy6": {
+          "num": 4,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy6": {
+          "num": 6,
+          "level": 2,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy6": {
+          "num": 6,
+          "level": 4,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "32": {
+    "wave": {
+      "1": {
+        "enemy6": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy6": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy6": {
+          "num": 6,
+          "level": 4,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 2,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "33": {
+    "wave": {
+      "1": {
+        "enemy6": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 8,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy6": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 8,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy6": {
+          "num": 6,
+          "level": 4,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "34": {
+    "wave": {
+      "1": {
+        "enemy6": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy6": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy6": {
+          "num": 8,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 6,
+          "level": 3,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "35": {
+    "wave": {
+      "1": {
+        "enemy6": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy6": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 4,
+          "level": 3,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 1
+        }
+      },
+      "3": {
+        "boss2": {
+          "num": 1,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "36": {
+    "wave": {
+      "1": {
+        "enemy6": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy6": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy6": {
+          "num": 7,
+          "level": 3,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "37": {
+    "wave": {
+      "1": {
+        "enemy6": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy6": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy6": {
+          "num": 7,
+          "level": 3,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "38": {
+    "wave": {
+      "1": {
+        "enemy6": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy6": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy6": {
+          "num": 7,
+          "level": 3,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "39": {
+    "wave": {
+      "1": {
+        "enemy6": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy6": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy6": {
+          "num": 6,
+          "level": 4,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "40": {
+    "wave": {
+      "1": {
+        "enemy6": {
+          "num": 8,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy6": {
+          "num": 10,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 10,
+          "level": 5,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 3,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss3": {
+          "num": 1,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "41": {
+    "wave": {
+      "1": {
+        "enemy2_2": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2_2": {
+          "num": 8,
+          "level": 3,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2_2": {
+          "num": 8,
+          "level": 3,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "42": {
+    "wave": {
+      "1": {
+        "enemy2_2": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2_2": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 8,
+          "level": 5,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2_2": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "43": {
+    "wave": {
+      "1": {
+        "enemy2_2": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2_2": {
+          "num": 6,
+          "level": 4,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2_2": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 10,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "44": {
+    "wave": {
+      "1": {
+        "enemy2_2": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2_2": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 6,
+          "level": 3,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2_2": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 8,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "45": {
+    "wave": {
+      "1": {
+        "enemy2_2": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2_2": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 4,
+          "level": 4,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss2": {
+          "num": 1,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "46": {
+    "wave": {
+      "1": {
+        "enemy2_2": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2_2": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 4,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2_2": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "47": {
+    "wave": {
+      "1": {
+        "enemy2_2": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2_2": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 4,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2_2": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 3,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "48": {
+    "wave": {
+      "1": {
+        "enemy2_2": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2_2": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 4,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2_2": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "49": {
+    "wave": {
+      "1": {
+        "enemy2_2": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2_2": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 5,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy2_2": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "50": {
+    "wave": {
+      "1": {
+        "enemy2_2": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy2_2": {
+          "num": 10,
+          "level": 4,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 3,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss3": {
+          "num": 1,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "51": {
+    "wave": {
+      "1": {
+        "enemy8": {
+          "num": 4,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 1,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy8": {
+          "num": 6,
+          "level": 4,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy8": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 4,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "52": {
+    "wave": {
+      "1": {
+        "enemy8": {
+          "num": 4,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 4,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy8": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 6,
+          "level": 6,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy8": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 4,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "53": {
+    "wave": {
+      "1": {
+        "enemy8": {
+          "num": 4,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 4,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy8": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 4,
+          "level": 5,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy8": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "54": {
+    "wave": {
+      "1": {
+        "enemy8": {
+          "num": 4,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy8": {
+          "num": 6,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 5,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy8": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "55": {
+    "wave": {
+      "1": {
+        "enemy8": {
+          "num": 4,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy8": {
+          "num": 6,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 4,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss2": {
+          "num": 1,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "56": {
+    "wave": {
+      "1": {
+        "enemy8": {
+          "num": 4,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy8": {
+          "num": 6,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 5,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy8": {
+          "num": 8,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "57": {
+    "wave": {
+      "1": {
+        "enemy8": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy8": {
+          "num": 6,
+          "level": 5,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy8": {
+          "num": 8,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 2,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "58": {
+    "wave": {
+      "1": {
+        "enemy8": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 5,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy8": {
+          "num": 6,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 5,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy8": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 3,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "59": {
+    "wave": {
+      "1": {
+        "enemy8": {
+          "num": 8,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy8": {
+          "num": 10,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 3,
+          "level": 5,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy8": {
+          "num": 12,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 4,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "60": {
+    "wave": {
+      "1": {
+        "enemy8": {
+          "num": 10,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 6,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy8": {
+          "num": 10,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 6,
+          "level": 5,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 4,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss3": {
+          "num": 1,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "61": {
+    "wave": {
+      "1": {
+        "enemy14": {
+          "num": 2,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 5,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy14": {
+          "num": 6,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 6,
+          "level": 4,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy14": {
+          "num": 8,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "62": {
+    "wave": {
+      "1": {
+        "enemy14": {
+          "num": 3,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy14": {
+          "num": 5,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 6,
+          "level": 5,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy14": {
+          "num": 8,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 3,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "63": {
+    "wave": {
+      "1": {
+        "enemy14": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 6,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy14": {
+          "num": 6,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 6,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy14": {
+          "num": 8,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "64": {
+    "wave": {
+      "1": {
+        "enemy14": {
+          "num": 3,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy14": {
+          "num": 6,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 5,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy14": {
+          "num": 8,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 4,
+          "level": 5,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "65": {
+    "wave": {
+      "1": {
+        "enemy14": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy14": {
+          "num": 6,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 6,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss2": {
+          "num": 1,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "66": {
+    "wave": {
+      "1": {
+        "enemy14": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy14": {
+          "num": 6,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 6,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy14": {
+          "num": 8,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 3,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "67": {
+    "wave": {
+      "1": {
+        "enemy14": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy14": {
+          "num": 6,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 10,
+          "level": 7,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy14": {
+          "num": 8,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 2,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "68": {
+    "wave": {
+      "1": {
+        "enemy14": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy14": {
+          "num": 6,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 6,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy14": {
+          "num": 8,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 2,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "69": {
+    "wave": {
+      "1": {
+        "enemy14": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy14": {
+          "num": 6,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 3,
+          "level": 6,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy14": {
+          "num": 8,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "70": {
+    "wave": {
+      "1": {
+        "enemy14": {
+          "num": 8,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 6,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy14": {
+          "num": 10,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 6,
+          "level": 5,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 3,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss3": {
+          "num": 1,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "71": {
+    "wave": {
+      "1": {
+        "enemy9": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 5,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy9": {
+          "num": 6,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 7,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy9": {
+          "num": 8,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "72": {
+    "wave": {
+      "1": {
+        "enemy9": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 1,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy9": {
+          "num": 6,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 2,
+          "level": 7,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy9": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 3,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "73": {
+    "wave": {
+      "1": {
+        "enemy9": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 1,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy9": {
+          "num": 6,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 7,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy9": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "74": {
+    "wave": {
+      "1": {
+        "enemy9": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy9": {
+          "num": 6,
+          "level": 6,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy9": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "75": {
+    "wave": {
+      "1": {
+        "enemy9": {
+          "num": 8,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 5,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy9": {
+          "num": 10,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 3,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 7,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss2": {
+          "num": 1,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "76": {
+    "wave": {
+      "1": {
+        "enemy9": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 1,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy9": {
+          "num": 6,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 7,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy9": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 2,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "77": {
+    "wave": {
+      "1": {
+        "enemy9": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 1,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy9": {
+          "num": 6,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 10,
+          "level": 8,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy9": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 2,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "78": {
+    "wave": {
+      "1": {
+        "enemy9": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 1,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy9": {
+          "num": 6,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 7,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy9": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 3,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "79": {
+    "wave": {
+      "1": {
+        "enemy9": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy9": {
+          "num": 6,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 7,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy9": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "80": {
+    "wave": {
+      "1": {
+        "enemy9": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 6,
+          "level": 4,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy9": {
+          "num": 10,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 6,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 3,
+          "level": 6,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss3": {
+          "num": 1,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "81": {
+    "wave": {
+      "1": {
+        "enemy4": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 5,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy4": {
+          "num": 6,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 4,
+          "level": 8,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy4": {
+          "num": 8,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "82": {
+    "wave": {
+      "1": {
+        "enemy4": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 1,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy4": {
+          "num": 6,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 6,
+          "level": 7,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy4": {
+          "num": 8,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 3,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "83": {
+    "wave": {
+      "1": {
+        "enemy4": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 1,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy4": {
+          "num": 6,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 4,
+          "level": 7,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy4": {
+          "num": 8,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "84": {
+    "wave": {
+      "1": {
+        "enemy9": {
+          "num": 4,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 1,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy9": {
+          "num": 6,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 9,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy9": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 1,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "85": {
+    "wave": {
+      "1": {
+        "enemy4": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 5,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy4": {
+          "num": 5,
+          "level": 8,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 5,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss2": {
+          "num": 1,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "86": {
+    "wave": {
+      "1": {
+        "enemy4": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 1,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy4": {
+          "num": 6,
+          "level": 8,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy4": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "87": {
+    "wave": {
+      "1": {
+        "enemy4": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 1,
+          "level": 7,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy4": {
+          "num": 7,
+          "level": 8,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 10,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy4": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 2,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "88": {
+    "wave": {
+      "1": {
+        "enemy4": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 1,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy4": {
+          "num": 8,
+          "level": 8,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy9": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "89": {
+    "wave": {
+      "1": {
+        "enemy4": {
+          "num": 4,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy4": {
+          "num": 9,
+          "level": 8,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 3,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy4": {
+          "num": 8,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 2,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "90": {
+    "wave": {
+      "1": {
+        "enemy4": {
+          "num": 8,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 6,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy4": {
+          "num": 10,
+          "level": 8,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 6,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy12": {
+          "num": 3,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss3": {
+          "num": 1,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "91": {
+    "wave": {
+      "1": {
+        "enemy12": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 5,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy12": {
+          "num": 6,
+          "level": 8,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 2,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy12": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 3,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "92": {
+    "wave": {
+      "1": {
+        "enemy12": {
+          "num": 4,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 1,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy12": {
+          "num": 6,
+          "level": 8,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 2,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy12": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 3,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "93": {
+    "wave": {
+      "1": {
+        "enemy12": {
+          "num": 4,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 1,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy12": {
+          "num": 6,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 10,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy12": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy3": {
+          "num": 2,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 10
+        }
+      }
+    }
+  },
+  "94": {
+    "wave": {
+      "1": {
+        "enemy9": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 1,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy12": {
+          "num": 6,
+          "level": 8,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy12": {
+          "num": 4,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 3,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "95": {
+    "wave": {
+      "1": {
+        "enemy12": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 7,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy12": {
+          "num": 6,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 4,
+          "level": 9,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss2": {
+          "num": 1,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "96": {
+    "wave": {
+      "1": {
+        "enemy12": {
+          "num": 9,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 1,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy12": {
+          "num": 7,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 9,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy12": {
+          "num": 5,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2_2": {
+          "num": 3,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "97": {
+    "wave": {
+      "1": {
+        "enemy12": {
+          "num": 4,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 1,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy12": {
+          "num": 6,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy2": {
+          "num": 8,
+          "level": 10,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy12": {
+          "num": 6,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy1": {
+          "num": 4,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "98": {
+    "wave": {
+      "1": {
+        "enemy12": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 1,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy12": {
+          "num": 6,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 10,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy12": {
+          "num": 8,
+          "level": 8,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy8": {
+          "num": 2,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 1
+        }
+      }
+    }
+  },
+  "99": {
+    "wave": {
+      "1": {
+        "enemy12": {
+          "num": 4,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy6": {
+          "num": 2,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy12": {
+          "num": 6,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy9": {
+          "num": 3,
+          "level": 10,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "enemy12": {
+          "num": 8,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 2,
+          "level": 10,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  },
+  "100": {
+    "wave": {
+      "1": {
+        "enemy12": {
+          "num": 8,
+          "level": 8,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 8,
+          "level": 8,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "2": {
+        "enemy12": {
+          "num": 9,
+          "level": 9,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy14": {
+          "num": 9,
+          "level": 9,
+          "hat": 1,
+          "is_boss": 0
+        },
+        "enemy4": {
+          "num": 9,
+          "level": 9,
+          "hat": 1,
+          "is_boss": 0
+        }
+      },
+      "3": {
+        "boss3": {
+          "num": 1,
+          "level": 9,
+          "hat": 0,
+          "is_boss": 0
+        }
+      }
+    }
+  }
+}

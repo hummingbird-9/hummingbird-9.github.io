@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="/game-capture.js"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NSGFTGLR6S" type="b6e2dec5fdcd9f7aa614cf6f-text/javascript"></script>
+<script type="b6e2dec5fdcd9f7aa614cf6f-text/javascript">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-NSGFTGLR6S', {
+    'anonymize_ip': true,
+    'cookie_flags': 'max-age=7200;secure;samesite=none'
+});
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" type="b6e2dec5fdcd9f7aa614cf6f-text/javascript"></script> 
+<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js" type="b6e2dec5fdcd9f7aa614cf6f-text/javascript"></script> 
+<script type="b6e2dec5fdcd9f7aa614cf6f-text/javascript">
+							WebFont.load({
+									google: {
+											// Put your fonts to load here.
+											families: ["Roboto:400,500,600,700,800,900"]
+									}
+							});
+					</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<style>
+html {
+    /* Prevent scrollbars from causing a resize feedback loop. */
+    overflow: hidden;
+}
+html, body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    touch-action: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    image-rendering: crisp-edges;
+}
+#content {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    touch-action: none;
+    background-color: 0x255828;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    image-rendering: crisp-edges;
+}
+.no-mobile {
+    display: none;
+    touch-action: none;
+}
+
+/* On small devices, fill the entire screen and hide the rest of the page. */
+@media (max-device-width: 1in), (max-device-height: 1in) {
+html {
+    /* Prevent scrollbars from causing a resize feedback loop. */
+    overflow: hidden;
+}
+html, body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    touch-action: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    image-rendering: crisp-edges;
+}
+#content {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    touch-action: none;
+    background-color: 0x255828;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    image-rendering: crisp-edges;
+}
+.no-mobile {
+    display: none;
+    touch-action: none;
+}
+}
+#splash {
+    /* pointer-events: none; */
+    position: absolute;
+    top : 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+    overflow: auto;
+    border: 500px solid 0xffff00;
+    background-color: 0xff0000;
+}
+#turn {
+    /* pointer-events: none; */
+    position: absolute;
+    top : 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* max-width: 100%;
+						max-height: 100%; */
+    width: 100%;
+    margin: auto;
+    overflow: auto;
+    border: 500px solid 0xffff00;
+    background-color: 0xff0000;
+    -ms-transform: rotate(90deg); /* IE 9 */
+    -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
+    transform: rotate(90deg);
+}
+div.shadow {
+    position: absolute;
+    max-width: 45%;
+    max-height: 45%;
+    top: 50%;
+    left: 50%;
+    overflow: visible;
+}
+img.logo {
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+    margin-top: -50%;
+    margin-left: -50%;
+}
+#shadow {
+    color: 0xff0000;
+}
+</style>
+<title>GameBoss.com - Mahjong Classic</title>
+</head>
+<body>
+<!-- <div class="shadow"><img class="logo" id='splash' src="assets/SPLASH.png" /></div> --> 
+<!-- <img id='turn' src='assets/TURN.png' > -->
+<div id="shadow"> <img id='splash' src="assets/SPLASH.png"> </div>
+<!-- <img id='splash' src="assets/SPLASH.png" width="100%" height="auto" style="margin: 0" class="center-block"> -->
+<div id="content" onmouseover="if (!window.__cfRLUnblockHandlers) return false; mouseWithinGame();" onmouseout="if (!window.__cfRLUnblockHandlers) return false; mouseOutsideGame()" data-cf-modified-b6e2dec5fdcd9f7aa614cf6f-=""></div>
+<script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="b6e2dec5fdcd9f7aa614cf6f-|49" defer></script></body>
+<script type="b6e2dec5fdcd9f7aa614cf6f-text/javascript">
+		
+
+		var mouseIsWithinGame;
+		function mouseWithinGame()
+		{
+			mouseIsWithinGame =true;
+			// console.log("mouse within game")
+		}
+
+		function mouseOutsideGame()
+		{
+			mouseIsWithinGame = false;
+			// console.log("mouse outside of game")
+		}
+
+		console.log("load image")
+		function show_image(src, width, height, alt) {
+		
+		var img = document.createElement("img");
+    img.src = src;
+    img.width = width;
+    img.height = height;
+		img.alt = alt;
+		
+
+		// This next line will just add it to the <body> tag
+			document.getElementById('content').appendChild(img)
+			console.log("show image")
+    // document.body.appendChild(img);
+}
+		// show_image('assets/SPLASH.png', 440, 300, "gameboss.com")
+
+
+
+
+		</script>
+
+<link rel="stylesheet" type = "text/css" href = "Assets/Css/fontLoader.css">
+<script src="js/phaser.min.js" type="b6e2dec5fdcd9f7aa614cf6f-text/javascript"></script> 
+<script src="js/game.js" type="b6e2dec5fdcd9f7aa614cf6f-text/javascript"></script> 
+<script type="b6e2dec5fdcd9f7aa614cf6f-text/javascript">window.addEventListener("mouseup", function(e)
+		{
+			// console.log("mouse is unpressed outside")
+			
+		});</script>
+</html>

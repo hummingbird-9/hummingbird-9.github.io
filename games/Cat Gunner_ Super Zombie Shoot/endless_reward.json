@@ -1,0 +1,182 @@
+{
+  "5": {
+    "coin": 10,
+    "buck": 5,
+    "mount": {
+      "num": 5,
+      "type": 0
+    },
+    "fish": 5
+  },
+  "10": {
+    "coin": 15,
+    "buck": 6,
+    "mount": {
+      "num": 7,
+      "type": 1
+    },
+    "fish": 6
+  },
+  "15": {
+    "coin": 20,
+    "buck": 8,
+    "mount": {
+      "num": 8,
+      "type": 5
+    },
+    "fish": 7
+  },
+  "20": {
+    "coin": 25,
+    "buck": 10,
+    "mount": {
+      "num": 9,
+      "type": 0
+    },
+    "fish": 9
+  },
+  "25": {
+    "coin": 28,
+    "buck": 12,
+    "mount": {
+      "num": 10,
+      "type": 1
+    },
+    "fish": 10
+  },
+  "30": {
+    "coin": 32,
+    "buck": 15,
+    "mount": {
+      "num": 12,
+      "type": 5
+    },
+    "fish": 15
+  },
+  "35": {
+    "coin": 36,
+    "buck": 17,
+    "mount": {
+      "num": 14,
+      "type": 4
+    },
+    "fish": 17
+  },
+  "40": {
+    "coin": 40,
+    "buck": 20,
+    "mount": {
+      "num": 16,
+      "type": 3
+    },
+    "fish": 20
+  },
+  "45": {
+    "coin": 45,
+    "buck": 25,
+    "mount": {
+      "num": 18,
+      "type": 5
+    },
+    "fish": 22
+  },
+  "50": {
+    "coin": 48,
+    "buck": 28,
+    "mount": {
+      "num": 20,
+      "type": 0
+    },
+    "fish": 25
+  },
+  "55": {
+    "coin": 50,
+    "buck": 30,
+    "mount": {
+      "num": 22,
+      "type": 1
+    },
+    "fish": 27
+  },
+  "60": {
+    "coin": 55,
+    "buck": 35,
+    "mount": {
+      "num": 25,
+      "type": 4
+    },
+    "fish": 30
+  },
+  "65": {
+    "coin": 60,
+    "buck": 40,
+    "mount": {
+      "num": 30,
+      "type": 3
+    },
+    "fish": 35
+  },
+  "70": {
+    "coin": 65,
+    "buck": 45,
+    "mount": {
+      "num": 35,
+      "type": 0
+    },
+    "fish": 40
+  },
+  "75": {
+    "coin": 70,
+    "buck": 50,
+    "mount": {
+      "num": 40,
+      "type": 1
+    },
+    "fish": 45
+  },
+  "80": {
+    "coin": 75,
+    "buck": 55,
+    "mount": {
+      "num": 45,
+      "type": 5
+    },
+    "fish": 50
+  },
+  "85": {
+    "coin": 80,
+    "buck": 60,
+    "mount": {
+      "num": 50,
+      "type": 4
+    },
+    "fish": 55
+  },
+  "90": {
+    "coin": 85,
+    "buck": 65,
+    "mount": {
+      "num": 55,
+      "type": 3
+    },
+    "fish": 60
+  },
+  "95": {
+    "coin": 90,
+    "buck": 70,
+    "mount": {
+      "num": 60,
+      "type": 4
+    },
+    "fish": 65
+  },
+  "100": {
+    "coin": 100,
+    "buck": 100,
+    "mount": {
+      "num": 100,
+      "type": 3
+    },
+    "fish": 100
+  }
+}

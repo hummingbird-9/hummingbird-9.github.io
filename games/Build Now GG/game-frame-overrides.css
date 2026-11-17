@@ -1,0 +1,18 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#game-container {
+  /* The remaining blue strip is rendered inside Unity's canvas. Extend the
+     canvas just beyond the viewport so only that internal strip is clipped. */
+  bottom: clamp(-52px, -4.8vh, -34px) !important;
+  box-shadow: none !important;
+}
+
+.game-footer {
+  display: none !important;
+  height: 0 !important;
+}

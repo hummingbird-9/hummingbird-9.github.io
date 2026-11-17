@@ -1,0 +1,380 @@
+{
+  "0": {
+    "coin": 100,
+    "buck": 5,
+    "mount": {
+      "num": 5,
+      "type": 0
+    },
+    "fish": 5
+  },
+  "1": {
+    "coin": 150,
+    "buck": 6,
+    "mount": {
+      "num": 5,
+      "type": 0
+    },
+    "fish": 6
+  },
+  "2": {
+    "coin": 200,
+    "buck": 8,
+    "mount": {
+      "num": 6,
+      "type": 0
+    },
+    "fish": 7
+  },
+  "3": {
+    "coin": 250,
+    "buck": 10,
+    "mount": {
+      "num": 5,
+      "type": 1
+    },
+    "fish": 9
+  },
+  "4": {
+    "coin": 280,
+    "buck": 12,
+    "mount": {
+      "num": 7,
+      "type": 0
+    },
+    "fish": 10
+  },
+  "5": {
+    "coin": 320,
+    "buck": 15,
+    "mount": {
+      "num": 6,
+      "type": 1
+    },
+    "fish": 15
+  },
+  "6": {
+    "coin": 360,
+    "buck": 17,
+    "mount": {
+      "num": 8,
+      "type": 0
+    },
+    "fish": 17
+  },
+  "7": {
+    "coin": 400,
+    "buck": 20,
+    "mount": {
+      "num": 8,
+      "type": 0
+    },
+    "fish": 20
+  },
+  "8": {
+    "coin": 450,
+    "buck": 25,
+    "mount": {
+      "num": 8,
+      "type": 1
+    },
+    "fish": 22
+  },
+  "9": {
+    "coin": 480,
+    "buck": 28,
+    "mount": {
+      "num": 10,
+      "type": 1
+    },
+    "fish": 25
+  },
+  "10": {
+    "coin": 500,
+    "buck": 30,
+    "mount": {
+      "num": 10,
+      "type": 0
+    },
+    "fish": 27
+  },
+  "11": {
+    "coin": 550,
+    "buck": 35,
+    "mount": {
+      "num": 10,
+      "type": 2
+    },
+    "fish": 30
+  },
+  "12": {
+    "coin": 600,
+    "buck": 40,
+    "mount": {
+      "num": 10,
+      "type": 3
+    },
+    "fish": 35
+  },
+  "13": {
+    "coin": 650,
+    "buck": 45,
+    "mount": {
+      "num": 10,
+      "type": 2
+    },
+    "fish": 40
+  },
+  "14": {
+    "coin": 700,
+    "buck": 50,
+    "mount": {
+      "num": 10,
+      "type": 3
+    },
+    "fish": 45
+  },
+  "15": {
+    "coin": 750,
+    "buck": 50,
+    "mount": {
+      "num": 10,
+      "type": 0
+    },
+    "fish": 50
+  },
+  "16": {
+    "coin": 800,
+    "buck": 50,
+    "mount": {
+      "num": 10,
+      "type": 1
+    },
+    "fish": 55
+  },
+  "17": {
+    "coin": 850,
+    "buck": 50,
+    "mount": {
+      "num": 10,
+      "type": 2
+    },
+    "fish": 60
+  },
+  "18": {
+    "coin": 900,
+    "buck": 50,
+    "mount": {
+      "num": 10,
+      "type": 3
+    },
+    "fish": 65
+  },
+  "19": {
+    "coin": 1000,
+    "buck": 50,
+    "mount": {
+      "num": 10,
+      "type": 1
+    },
+    "fish": 50
+  },
+  "20": {
+    "coin": 1000,
+    "buck": 50,
+    "mount": {
+      "num": 10,
+      "type": 0
+    },
+    "fish": 100
+  },
+  "n0": {
+    "coin": 100,
+    "buck": 5,
+    "mount": {
+      "num": 5,
+      "type": 0
+    },
+    "fish": 5
+  },
+  "n1": {
+    "coin": 150,
+    "buck": 6,
+    "mount": {
+      "num": 7,
+      "type": 1
+    },
+    "fish": 6
+  },
+  "n2": {
+    "coin": 200,
+    "buck": 8,
+    "mount": {
+      "num": 8,
+      "type": 4
+    },
+    "fish": 7
+  },
+  "n3": {
+    "coin": 250,
+    "buck": 10,
+    "mount": {
+      "num": 9,
+      "type": 0
+    },
+    "fish": 9
+  },
+  "n4": {
+    "coin": 280,
+    "buck": 12,
+    "mount": {
+      "num": 10,
+      "type": 1
+    },
+    "fish": 10
+  },
+  "n5": {
+    "coin": 320,
+    "buck": 15,
+    "mount": {
+      "num": 10,
+      "type": 4
+    },
+    "fish": 15
+  },
+  "n6": {
+    "coin": 360,
+    "buck": 17,
+    "mount": {
+      "num": 10,
+      "type": 4
+    },
+    "fish": 17
+  },
+  "n7": {
+    "coin": 400,
+    "buck": 20,
+    "mount": {
+      "num": 10,
+      "type": 3
+    },
+    "fish": 20
+  },
+  "n8": {
+    "coin": 450,
+    "buck": 25,
+    "mount": {
+      "num": 10,
+      "type": 4
+    },
+    "fish": 22
+  },
+  "n9": {
+    "coin": 480,
+    "buck": 28,
+    "mount": {
+      "num": 10,
+      "type": 0
+    },
+    "fish": 25
+  },
+  "n10": {
+    "coin": 500,
+    "buck": 30,
+    "mount": {
+      "num": 10,
+      "type": 1
+    },
+    "fish": 27
+  },
+  "n11": {
+    "coin": 550,
+    "buck": 35,
+    "mount": {
+      "num": 10,
+      "type": 4
+    },
+    "fish": 30
+  },
+  "n12": {
+    "coin": 600,
+    "buck": 40,
+    "mount": {
+      "num": 10,
+      "type": 3
+    },
+    "fish": 35
+  },
+  "n13": {
+    "coin": 650,
+    "buck": 45,
+    "mount": {
+      "num": 10,
+      "type": 0
+    },
+    "fish": 40
+  },
+  "n14": {
+    "coin": 700,
+    "buck": 50,
+    "mount": {
+      "num": 12,
+      "type": 1
+    },
+    "fish": 45
+  },
+  "n15": {
+    "coin": 750,
+    "buck": 55,
+    "mount": {
+      "num": 12,
+      "type": 4
+    },
+    "fish": 50
+  },
+  "n16": {
+    "coin": 800,
+    "buck": 50,
+    "mount": {
+      "num": 12,
+      "type": 4
+    },
+    "fish": 55
+  },
+  "n17": {
+    "coin": 850,
+    "buck": 50,
+    "mount": {
+      "num": 12,
+      "type": 3
+    },
+    "fish": 60
+  },
+  "n18": {
+    "coin": 900,
+    "buck": 50,
+    "mount": {
+      "num": 12,
+      "type": 4
+    },
+    "fish": 65
+  },
+  "n19": {
+    "coin": 1000,
+    "buck": 50,
+    "mount": {
+      "num": 12,
+      "type": 3
+    },
+    "fish": 100
+  },
+  "n20": {
+    "coin": 1000,
+    "buck": 50,
+    "mount": {
+      "num": 12,
+      "type": 3
+    },
+    "fish": 100
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "hp_normal": 2,
+  "damage_normal": 1.5,
+  "enemy_reward": 1.5,
+  "win_reward_coin": 100,
+  "win_reward_buck": 20,
+  "win_reward_coin_n": 175,
+  "win_reward_buck_n": 35,
+  "lost_reward_coin": 100,
+  "lost_reward_buck": 20,
+  "lost_reward_coin_n": 1.5,
+  "lost_reward_buck_n": 1.5
+}

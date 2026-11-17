@@ -1,0 +1,60 @@
+<!DOCTYPE html><script nonce="lVgO1H_FWL0PBnEr4z1Bug">(function(){'use strict';function f(a){var b=0;return function(){return b<a.length?{done:!1,value:a[b++]}:{done:!0}}}function q(a){var b=typeof Symbol!="undefined"&&Symbol.iterator&&a[Symbol.iterator];if(b)return b.call(a);if(typeof a.length=="number")return{next:f(a)};throw Error(String(a)+" is not an iterable or ArrayLike");}var t=typeof Object.defineProperties=="function"?Object.defineProperty:function(a,b,d){if(a==Array.prototype||a==Object.prototype)return a;a[b]=d.value;return a};
+function u(a){a=["object"==typeof globalThis&&globalThis,a,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var b=0;b<a.length;++b){var d=a[b];if(d&&d.Math==Math)return d}throw Error("Cannot find global object");}var v=u(this);function w(a,b){if(b)a:{var d=v;a=a.split(".");for(var g=0;g<a.length-1;g++){var k=a[g];if(!(k in d))break a;d=d[k]}a=a[a.length-1];g=d[a];b=b(g);b!=g&&b!=null&&t(d,a,{configurable:!0,writable:!0,value:b})}}
+function x(a){if(!(a instanceof Object))throw new TypeError("Iterator result "+a+" is not an object");}function y(){this.A=!1;this.j=null;this.u=void 0;this.h=1;this.l=this.m=0;this.C=this.i=null}function z(a){if(a.A)throw new TypeError("Generator is already running");a.A=!0}y.prototype.B=function(a){this.u=a};function A(a,b){a.i={K:b,L:!0};a.h=a.m||a.l}y.prototype.getNextAddressJsc=function(){return this.h};y.prototype.getYieldResultJsc=function(){return this.u};
+y.prototype.return=function(a){this.i={return:a};this.h=this.l};y.prototype["return"]=y.prototype.return;y.prototype.M=function(a){this.i={v:a};this.l<a?(this.h=a,this.i=null):this.h=this.l};y.prototype.jumpThroughFinallyBlocks=y.prototype.M;y.prototype.o=function(a,b){this.h=b;return{value:a}};y.prototype.yield=y.prototype.o;y.prototype.R=function(a,b){a=q(a);var d=a.next();x(d);if(d.done)this.u=d.value,this.h=b;else return this.j=a,this.o(d.value,b)};y.prototype.yieldAll=y.prototype.R;
+y.prototype.v=function(a){this.h=a};y.prototype.jumpTo=y.prototype.v;y.prototype.N=function(){this.h=0};y.prototype.jumpToEnd=y.prototype.N;y.prototype.P=function(a,b){this.m=a;b!=void 0&&(this.l=b)};y.prototype.setCatchFinallyBlocks=y.prototype.P;y.prototype.G=function(a){this.m=0;this.l=a||0};y.prototype.setFinallyBlock=y.prototype.G;y.prototype.O=function(a,b){this.h=a;this.m=b||0};y.prototype.leaveTryBlock=y.prototype.O;y.prototype.I=function(a){this.m=a||0;a=this.i.K;this.i=null;return a};
+y.prototype.enterCatchBlock=y.prototype.I;y.prototype.D=function(a,b,d){d?this.C[d]=this.i:this.C=[this.i];this.m=a||0;this.l=b||0;this.i=null};y.prototype.enterFinallyBlock=y.prototype.D;y.prototype.F=function(a,b){b=this.C.splice(b||0)[0];(b=this.i=this.i||b)?b.L?this.h=this.m||this.l:b.v!=void 0&&this.l<b.v?(this.h=b.v,this.i=null):this.h=this.l:this.h=a};y.prototype.leaveFinallyBlock=y.prototype.F;y.prototype.J=function(a){return new B(a)};y.prototype.forIn=y.prototype.J;
+function B(a){this.j=a;this.h=[];for(var b in a)this.h.push(b);this.h.reverse()}B.prototype.i=function(){for(;this.h.length>0;){var a=this.h.pop();if(a in this.j)return a}return null};B.prototype.getNext=B.prototype.i;function F(a){this.h=new y;this.i=a}function G(a,b){z(a.h);var d=a.h.j;if(d)return H(a,"return"in d?d["return"]:function(g){return{value:g,done:!0}},b,a.h.return);a.h.return(b);return I(a)}
+function H(a,b,d,g){try{var k=b.call(a.h.j,d);x(k);if(!k.done)return a.h.A=!1,k;var m=k.value}catch(c){return a.h.j=null,A(a.h,c),I(a)}a.h.j=null;g.call(a.h,m);return I(a)}function I(a){for(;a.h.h;)try{var b=a.i(a.h);if(b)return a.h.A=!1,{value:b.value,done:!1}}catch(d){a.h.u=void 0,A(a.h,d)}a.h.A=!1;if(a.h.i){b=a.h.i;a.h.i=null;if(b.L)throw b.K;return{value:b.return,done:!0}}return{value:void 0,done:!0}}
+function J(a){this.next=function(b){z(a.h);a.h.j?b=H(a,a.h.j.next,b,a.h.B):(a.h.B(b),b=I(a));return b};this.throw=function(b){z(a.h);if(a.h.j){var d=a.h.j["throw"];if(d)var g=H(a,d,b,a.h.B);else{b=a.h.j;a.h.j=null;try{b["return"]&&(g=b["return"](),x(g)),A(a.h,new TypeError("The iterator does not provide a 'throw' method."))}catch(k){A(a.h,k)}g=I(a)}}else A(a.h,b),g=I(a);return g};this.return=function(b){return G(a,b)};this[Symbol.iterator]=function(){return this}}
+function K(a){function b(g){return a.next(g)}function d(g){return a.throw(g)}return new Promise(function(g,k){function m(c){c.done?g(c.value):Promise.resolve(c.value).then(b,d).then(m,k)}m(a.next())})}
+w("Symbol",function(a){function b(m){if(this instanceof b)throw new TypeError("Symbol is not a constructor");return new d(g+(m||"")+"_"+k++,m)}function d(m,c){this.h=m;t(this,"description",{configurable:!0,writable:!0,value:c})}if(a)return a;d.prototype.toString=function(){return this.h};var g="jscomp_symbol_"+(Math.random()*1E9>>>0)+"_",k=0;return b});
+w("Symbol.iterator",function(a){if(a)return a;a=Symbol("Symbol.iterator");t(Array.prototype,a,{configurable:!0,writable:!0,value:function(){return L(f(this))}});return a});function L(a){a={next:a};a[Symbol.iterator]=function(){return this};return a}
+w("Promise",function(a){function b(c){this.i=0;this.j=void 0;this.h=[];this.u=!1;var e=this.l();try{c(e.resolve,e.reject)}catch(h){e.reject(h)}}function d(){this.h=null}function g(c){return c instanceof b?c:new b(function(e){e(c)})}if(a)return a;d.prototype.i=function(c){if(this.h==null){this.h=[];var e=this;this.j(function(){e.m()})}this.h.push(c)};var k=v.setTimeout;d.prototype.j=function(c){k(c,0)};d.prototype.m=function(){for(;this.h&&this.h.length;){var c=this.h;this.h=[];for(var e=0;e<c.length;++e){var h=
+c[e];c[e]=null;try{h()}catch(l){this.l(l)}}}this.h=null};d.prototype.l=function(c){this.j(function(){throw c;})};b.prototype.l=function(){function c(l){return function(n){h||(h=!0,l.call(e,n))}}var e=this,h=!1;return{resolve:c(this.F),reject:c(this.m)}};b.prototype.F=function(c){if(c===this)this.m(new TypeError("A Promise cannot resolve to itself"));else if(c instanceof b)this.I(c);else{a:switch(typeof c){case "object":var e=c!=null;break a;case "function":e=!0;break a;default:e=!1}e?this.D(c):this.o(c)}};
+b.prototype.D=function(c){var e=void 0;try{e=c.then}catch(h){this.m(h);return}typeof e=="function"?this.J(e,c):this.o(c)};b.prototype.m=function(c){this.A(2,c)};b.prototype.o=function(c){this.A(1,c)};b.prototype.A=function(c,e){if(this.i!=0)throw Error("Cannot settle("+c+", "+e+"): Promise already settled in state"+this.i);this.i=c;this.j=e;this.i===2&&this.G();this.B()};b.prototype.G=function(){var c=this;k(function(){if(c.C()){var e=v.console;typeof e!=="undefined"&&e.error(c.j)}},1)};b.prototype.C=
+function(){if(this.u)return!1;var c=v.CustomEvent,e=v.Event,h=v.dispatchEvent;if(typeof h==="undefined")return!0;typeof c==="function"?c=new c("unhandledrejection",{cancelable:!0}):typeof e==="function"?c=new e("unhandledrejection",{cancelable:!0}):(c=v.document.createEvent("CustomEvent"),c.initCustomEvent("unhandledrejection",!1,!0,c));c.promise=this;c.reason=this.j;return h(c)};b.prototype.B=function(){if(this.h!=null){for(var c=0;c<this.h.length;++c)m.i(this.h[c]);this.h=null}};var m=new d;b.prototype.I=
+function(c){var e=this.l();c.H(e.resolve,e.reject)};b.prototype.J=function(c,e){var h=this.l();try{c.call(e,h.resolve,h.reject)}catch(l){h.reject(l)}};b.prototype.then=function(c,e){function h(p,r){return typeof p=="function"?function(C){try{l(p(C))}catch(D){n(D)}}:r}var l,n,E=new b(function(p,r){l=p;n=r});this.H(h(c,l),h(e,n));return E};b.prototype.catch=function(c){return this.then(void 0,c)};b.prototype.H=function(c,e){function h(){switch(l.i){case 1:c(l.j);break;case 2:e(l.j);break;default:throw Error("Unexpected state: "+
+l.i);}}var l=this;this.h==null?m.i(h):this.h.push(h);this.u=!0};b.resolve=g;b.reject=function(c){return new b(function(e,h){h(c)})};b.race=function(c){return new b(function(e,h){for(var l=q(c),n=l.next();!n.done;n=l.next())g(n.value).H(e,h)})};b.all=function(c){var e=q(c),h=e.next();return h.done?g([]):new b(function(l,n){function E(C){return function(D){p[C]=D;r--;r==0&&l(p)}}var p=[],r=0;do p.push(void 0),r++,g(h.value).H(E(p.length-1),n),h=e.next();while(!h.done)})};return b});
+function M(a,b){a instanceof String&&(a+="");var d=0,g=!1,k={next:function(){if(!g&&d<a.length){var m=d++;return{value:b(m,a[m]),done:!1}}g=!0;return{done:!0,value:void 0}}};k[Symbol.iterator]=function(){return k};return k}w("Array.prototype.keys",function(a){return a?a:function(){return M(this,function(b){return b})}});(function(){var a,b,d,g,k,m;return K(new J(new F(function(c){switch(c.h){case 1:if(!("serviceWorker"in navigator)){c.v(0);break}return c.o(navigator.serviceWorker.getRegistration("../.."),3);case 3:return(a=c.u)?c.o(a.unregister(),4):c.return();case 4:return window.caches==null?c.return():c.o(window.caches.keys(),5);case 5:b=c.u,d=q(b),g=d.next(),c.G(6);case 8:if(g.done){c.v(6);break}m=g.value;return c.o(window.caches.delete(m),9);case 9:g=d.next();c.v(8);break;case 6:c.D(),g&&!g.done&&(k=d.return)&&
+k.call(d),c.F(0)}})))})();}).call(this);
+</script><script src="https://sdks.gamesnacks.com/developer/v2/index.js" data-target-origin="https://gamesnacks.com" data-user-activity-metrics data-run-slotcar-ads-in-game-center data-game-center-monetized data-rewarded-monetizable data-interstitial-monetizable data-level-complete-monetizable data-game-over-monetizable nonce="lVgO1H_FWL0PBnEr4z1Bug"></script><meta name="robots" content="noindex, nofollow"><link rel="shortcut icon" href="#"> <!--favicon.ico 403 (Forbidden) 파비콘 에러 막기용 -->
+    <meta charset="utf-8" name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Dalgona</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        body {
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+    </style><body>
+    <script src="/game-capture.js"></script><!--    <script src="https://sdks.gamesnacks.com/developer/v2/index.js" data-target-origin="https://gamesnacks.com" data-user-activity-metrics data-interstitial-monetizable data-game-over-monetizable nonce="cH41pKbpVKMaWAJIcLxVfQ"></script>-->
+    <script src="assets/MoviSoftSDK.js"></script>
+    <script src="assets/movilib.js"></script>
+    <script src="assets/movisrc.js"></script>
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.3.4/vconsole.min.js"></script>-->
+<!--    <script>var VConsole = new VConsole({disableLogScrolling:false});</script>-->
+
+    <script>
+    //   var PopconGame = force_create_popcon();
+    //var adsInit= function (){};
+    //var ShowAD = function(a, b, cb){if(cb)cb()};
+    </script>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+  <language name="en">
+    <tiles_left>Tiles left: </tiles_left>
+    <open_matches>Open matches: </open_matches>
+	<time_played>Time: </time_played>
+    <restart>Play again?</restart>
+    <youwongame>You won this game in:</youwongame>
+    <best_time>Your best game:</best_time>
+    <nomoremoves>No more moves.</nomoremoves>    
+    <nomoremoves_long>You run out of valid moves, hit the button to shuffle remaining pieces</nomoremoves_long>
+    <shuffle>Shuffle</shuffle>
+  </language>
+  
+  <language name="nl">
+    <tiles_left>STENEN OVER: </tiles_left>
+    <open_matches>COMBINATIES: </open_matches>
+	<time_played>TIJD: </time_played>
+    <restart>Nogmaals?</restart>
+    <youwongame>Je hebt gewonnen in:</youwongame>
+    <best_time>Jouw beste tijd:</best_time>
+    <nomoremoves>Geen geldige zetten meer mogelijk.</nomoremoves>    
+    <nomoremoves_long>Er zijn geen geldige zetten meer mogelijk, druk op de knop om te mixen.</nomoremoves_long>
+    <shuffle>Mix</shuffle>
+  </language>
+  
+  <language name="fr">
+    <tiles_left>TUILES RESTANTES : </tiles_left>
+    <open_matches>COMBINAISONS : </open_matches>
+	<time_played>TEMPS : </time_played>
+    <restart>Nouveau jeu ?</restart>
+    <youwongame>Vous avec gagné en :</youwongame>
+    <best_time>Votre meilleur temps :</best_time>
+    <nomoremoves>Plus de coups possibles.</nomoremoves>    
+    <nomoremoves_long>Il n'y a plus de coups possibles, appuyez sur le bouton pour mélanger les tuiles.</nomoremoves_long>
+    <shuffle>Mélanger</shuffle>
+  </language>
+  
+    <language name="ro">
+    <tiles_left>PIESE RĂMASE: </tiles_left>
+    <open_matches>COMBINAȚII: </open_matches>
+	<time_played>TIMP: </time_played>
+    <restart>Din nou</restart>
+    <youwongame>Ați câștigat în: </youwongame>
+    <best_time>Cel mai bun timp al dumneavoastră:</best_time>
+    <nomoremoves>Mai multe mișcări posibile.</nomoremoves>    
+    <nomoremoves_long>Nu mai există mișcări, apăsați butonul, pentru a amesteca piesele.</nomoremoves_long>
+    <shuffle>Amestecare</shuffle>
+  </language>
+  
+  <language name="de">
+    <tiles_left>ÜBRIGE STEINE: </tiles_left>
+    <open_matches>KOMBINATIONEN: </open_matches>
+	<time_played>ZEIT: </time_played>
+    <restart>Noch einmal?</restart>
+    <youwongame>Du hast gewonnen innerhalb von:</youwongame>
+    <best_time>Deine beste Zeit:</best_time>
+    <nomoremoves>Es gibt keine Möglichkeiten mehr.</nomoremoves>    
+    <nomoremoves_long>Es sind keine gültigen Spielzüge mehr möglich. Drücke auf den Knopf, um zu mischen.</nomoremoves_long>
+    <shuffle>Mischen</shuffle>
+  </language>
+  
+  <language name="it">
+    <tiles_left>Tessere rimaste: </tiles_left>
+    <open_matches>Combinazioni: </open_matches>
+	<time_played>Tempo: </time_played>
+    <restart>Ancora?</restart>
+    <youwongame>Hai vinto in:</youwongame>
+    <best_time>Il tuo miglior tempo:</best_time>
+    <nomoremoves>Non è più possibile fare delle mosse valide.</nomoremoves>    
+    <nomoremoves_long>Non ci sono più mosse valide da fare, premi il pulsante per mischiare le tessere.</nomoremoves_long>
+    <shuffle>Mischiare</shuffle>
+  </language>
+  
+  <language name="es">
+    <tiles_left>Tiles left: </tiles_left>
+    <open_matches>Open matches: </open_matches>
+	<time_played>Time: </time_played>
+    <restart>Play again?</restart>
+    <youwongame>You won this game in:</youwongame>
+    <best_time>Your best game:</best_time>
+    <nomoremoves>No more moves.</nomoremoves>    
+    <nomoremoves_long>You run out of valid moves, hit the button to shuffle remaining pieces</nomoremoves_long>
+    <shuffle>Shuffle</shuffle>
+  </language>
+  
+  <language name="pt">
+    <tiles_left>Tiles left: </tiles_left>
+    <open_matches>Open matches: </open_matches>
+	<time_played>Time: </time_played>
+    <restart>Play again?</restart>
+    <youwongame>You won this game in:</youwongame>
+    <best_time>Your best game:</best_time>
+    <nomoremoves>No more moves.</nomoremoves>    
+    <nomoremoves_long>You run out of valid moves, hit the button to shuffle remaining pieces</nomoremoves_long>
+    <shuffle>Shuffle</shuffle>
+  </language>
+  
+  <language name="pl">
+    <tiles_left>Tiles left: </tiles_left>
+    <open_matches>Open matches: </open_matches>
+	<time_played>Time: </time_played>
+    <restart>Play again?</restart>
+    <youwongame>You won this game in:</youwongame>
+    <best_time>Your best game:</best_time>
+    <nomoremoves>No more moves.</nomoremoves>    
+    <nomoremoves_long>You run out of valid moves, hit the button to shuffle remaining pieces</nomoremoves_long>
+    <shuffle>Shuffle</shuffle>
+  </language>
+  
+  <language name="no">
+    <tiles_left>Tiles left: </tiles_left>
+    <open_matches>Open matches: </open_matches>
+	<time_played>Time: </time_played>
+    <restart>Play again?</restart>
+    <youwongame>You won this game in:</youwongame>
+    <best_time>Your best game:</best_time>
+    <nomoremoves>No more moves.</nomoremoves>    
+    <nomoremoves_long>You run out of valid moves, hit the button to shuffle remaining pieces</nomoremoves_long>
+    <shuffle>Shuffle</shuffle>
+  </language>
+  
+  <language name="se">
+    <tiles_left>Tiles left: </tiles_left>
+    <open_matches>Open matches: </open_matches>
+	<time_played>Time: </time_played>
+    <restart>Play again?</restart>
+    <youwongame>You won this game in:</youwongame>
+    <best_time>Your best game:</best_time>
+    <nomoremoves>No more moves.</nomoremoves>    
+    <nomoremoves_long>You run out of valid moves, hit the button to shuffle remaining pieces</nomoremoves_long>
+    <shuffle>Shuffle</shuffle>
+  </language>
+  
+  <language name="ru">
+    <tiles_left>Tiles left: </tiles_left>
+    <open_matches>Open matches: </open_matches>
+	<time_played>Time: </time_played>
+    <restart>Play again?</restart>
+    <youwongame>You won this game in:</youwongame>
+    <best_time>Your best game:</best_time>
+    <nomoremoves>No more moves.</nomoremoves>    
+    <nomoremoves_long>You run out of valid moves, hit the button to shuffle remaining pieces</nomoremoves_long>
+    <shuffle>Shuffle</shuffle>
+  </language>
+  
+  <language name="hr">
+    <tiles_left>Broj plocica:</tiles_left>
+    <open_matches>Otvoreni parovi:</open_matches>
+    <restart>Igraj ponovo?</restart>
+    <youwongame>Ostvarili ste pobjedu u:</youwongame>
+    <best_time>Vasa najbolja partija:</best_time>
+    <nomoremoves>Nema vise poteza.</nomoremoves>
+    <time_played>Vrijeme igre:</time_played>
+    <nomoremoves_long>Nema vise poteza, pritisnite 'Izmijesaj' da bi promjesali preostale plocice</nomoremoves_long>
+    <shuffle>Izmijesaj</shuffle>
+  </language>
+</data>

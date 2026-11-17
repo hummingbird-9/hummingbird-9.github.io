@@ -1,0 +1,1921 @@
+{
+  "1": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "2": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [
+      {
+        "x": 595,
+        "y": 530
+      },
+      {
+        "x": 685,
+        "y": 635
+      },
+      {
+        "x": 660,
+        "y": 530
+      },
+      {
+        "x": 750,
+        "y": 635
+      },
+      {
+        "x": 658,
+        "y": 580
+      },
+      {
+        "x": 732,
+        "y": 580
+      }
+    ],
+    "trap_spike": []
+  },
+  "3": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": [
+      {
+        "x": 700,
+        "y": 580
+      },
+      {
+        "x": 720,
+        "y": 580
+      },
+      {
+        "x": 740,
+        "y": 580
+      },
+      {
+        "x": 740,
+        "y": 540
+      },
+      {
+        "x": 720,
+        "y": 540
+      },
+      {
+        "x": 700,
+        "y": 540
+      },
+      {
+        "x": 700,
+        "y": 560
+      },
+      {
+        "x": 720,
+        "y": 560
+      },
+      {
+        "x": 740,
+        "y": 560
+      }
+    ]
+  },
+  "4": {
+    "trap_shield": [],
+    "trap_electric": [
+      {
+        "x": 740,
+        "y": 540
+      },
+      {
+        "x": 740,
+        "y": 580
+      }
+    ],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "5": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "6": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "7": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "8": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "9": {
+    "trap_shield": [
+      {
+        "x": 460,
+        "y": 0
+      }
+    ],
+    "trap_electric": [
+      {
+        "x": 815,
+        "y": 535
+      },
+      {
+        "x": 922,
+        "y": 644
+      }
+    ],
+    "trap_poison": [
+      {
+        "x": 690,
+        "y": 520
+      },
+      {
+        "x": 750,
+        "y": 580
+      },
+      {
+        "x": 815,
+        "y": 650
+      }
+    ],
+    "trap_strike": [
+      {
+        "x": 770,
+        "y": 535
+      },
+      {
+        "x": 879,
+        "y": 644
+      }
+    ]
+  },
+  "10": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "11": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "12": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "13": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "14": {
+    "trap_shield": [
+      {
+        "x": 460,
+        "y": 0
+      }
+    ],
+    "trap_electric": [
+      {
+        "x": 1000,
+        "y": 575
+      },
+      {
+        "x": 1100,
+        "y": 575
+      }
+    ],
+    "trap_poison": [],
+    "trap_strike": [
+      {
+        "x": 960,
+        "y": 575
+      },
+      {
+        "x": 1055,
+        "y": 575
+      }
+    ]
+  },
+  "15": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "16": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "17": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "18": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "19": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [
+      {
+        "x": 250,
+        "y": 520
+      },
+      {
+        "x": 350,
+        "y": 520
+      },
+      {
+        "x": 450,
+        "y": 520
+      },
+      {
+        "x": 550,
+        "y": 520
+      },
+      {
+        "x": 650,
+        "y": 520
+      },
+      {
+        "x": 750,
+        "y": 520
+      },
+      {
+        "x": 850,
+        "y": 520
+      },
+      {
+        "x": 950,
+        "y": 520
+      },
+      {
+        "x": 1050,
+        "y": 520
+      },
+      {
+        "x": 250,
+        "y": 560
+      },
+      {
+        "x": 350,
+        "y": 560
+      },
+      {
+        "x": 450,
+        "y": 560
+      },
+      {
+        "x": 550,
+        "y": 560
+      },
+      {
+        "x": 650,
+        "y": 560
+      },
+      {
+        "x": 750,
+        "y": 560
+      },
+      {
+        "x": 850,
+        "y": 560
+      },
+      {
+        "x": 950,
+        "y": 560
+      },
+      {
+        "x": 1050,
+        "y": 560
+      },
+      {
+        "x": 250,
+        "y": 600
+      },
+      {
+        "x": 350,
+        "y": 600
+      },
+      {
+        "x": 450,
+        "y": 600
+      },
+      {
+        "x": 550,
+        "y": 600
+      },
+      {
+        "x": 650,
+        "y": 600
+      },
+      {
+        "x": 750,
+        "y": 600
+      },
+      {
+        "x": 850,
+        "y": 600
+      },
+      {
+        "x": 950,
+        "y": 600
+      },
+      {
+        "x": 1050,
+        "y": 600
+      },
+      {
+        "x": 250,
+        "y": 640
+      },
+      {
+        "x": 350,
+        "y": 640
+      },
+      {
+        "x": 450,
+        "y": 640
+      },
+      {
+        "x": 550,
+        "y": 640
+      },
+      {
+        "x": 650,
+        "y": 640
+      },
+      {
+        "x": 750,
+        "y": 640
+      },
+      {
+        "x": 850,
+        "y": 640
+      },
+      {
+        "x": 950,
+        "y": 640
+      },
+      {
+        "x": 1050,
+        "y": 640
+      }
+    ],
+    "trap_spike": []
+  },
+  "20": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "21": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "22": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "23": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "24": {
+    "trap_shield": [
+      {
+        "x": 600,
+        "y": 0
+      }
+    ],
+    "trap_electric": [
+      {
+        "x": 860,
+        "y": 575
+      },
+      {
+        "x": 950,
+        "y": 575
+      },
+      {
+        "x": 1050,
+        "y": 575
+      }
+    ],
+    "trap_poison": [],
+    "trap_skike": [
+      {
+        "x": 815,
+        "y": 575
+      },
+      {
+        "x": 905,
+        "y": 575
+      },
+      {
+        "x": 1000,
+        "y": 575
+      }
+    ]
+  },
+  "25": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "26": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "27": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "28": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "29": {
+    "trap_shield": [
+      {
+        "x": 460,
+        "y": 0
+      }
+    ],
+    "trap_electric": [
+      {
+        "x": 815,
+        "y": 535
+      },
+      {
+        "x": 922,
+        "y": 644
+      }
+    ],
+    "trap_poison": [
+      {
+        "x": 690,
+        "y": 520
+      },
+      {
+        "x": 750,
+        "y": 580
+      },
+      {
+        "x": 815,
+        "y": 650
+      }
+    ],
+    "trap_strike": [
+      {
+        "x": 770,
+        "y": 535
+      },
+      {
+        "x": 879,
+        "y": 644
+      }
+    ]
+  },
+  "30": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "31": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "32": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "33": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "34": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": [
+      {
+        "x": 1087,
+        "y": 520
+      },
+      {
+        "x": 1100,
+        "y": 535
+      },
+      {
+        "x": 1140,
+        "y": 535
+      }
+    ]
+  },
+  "35": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "36": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "37": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "38": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "39": {
+    "trap_shield": [],
+    "trap_electric": [
+      {
+        "x": 815,
+        "y": 535
+      },
+      {
+        "x": 865,
+        "y": 90
+      },
+      {
+        "x": 920,
+        "y": 645
+      }
+    ],
+    "trap_poison": [],
+    "trap_spike": [
+      {
+        "x": 615,
+        "y": 520
+      },
+      {
+        "x": 655,
+        "y": 520
+      },
+      {
+        "x": 630,
+        "y": 535
+      },
+      {
+        "x": 670,
+        "y": 535
+      },
+      {
+        "x": 645,
+        "y": 550
+      },
+      {
+        "x": 685,
+        "y": 550
+      },
+      {
+        "x": 660,
+        "y": 565
+      },
+      {
+        "x": 690,
+        "y": 565
+      },
+      {
+        "x": 675,
+        "y": 580
+      },
+      {
+        "x": 705,
+        "y": 580
+      },
+      {
+        "x": 690,
+        "y": 595
+      },
+      {
+        "x": 720,
+        "y": 595
+      },
+      {
+        "x": 705,
+        "y": 610
+      },
+      {
+        "x": 735,
+        "y": 610
+      },
+      {
+        "x": 720,
+        "y": 625
+      },
+      {
+        "x": 750,
+        "y": 625
+      },
+      {
+        "x": 735,
+        "y": 640
+      },
+      {
+        "x": 765,
+        "y": 640
+      }
+    ]
+  },
+  "40": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "41": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "42": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "43": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "44": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": [
+      {
+        "x": 80,
+        "y": 530
+      },
+      {
+        "x": 160,
+        "y": 530
+      },
+      {
+        "x": 240,
+        "y": 530
+      },
+      {
+        "x": 320,
+        "y": 530
+      },
+      {
+        "x": 400,
+        "y": 530
+      },
+      {
+        "x": 480,
+        "y": 530
+      },
+      {
+        "x": 560,
+        "y": 530
+      },
+      {
+        "x": 640,
+        "y": 530
+      },
+      {
+        "x": 720,
+        "y": 530
+      },
+      {
+        "x": 800,
+        "y": 530
+      },
+      {
+        "x": 880,
+        "y": 530
+      },
+      {
+        "x": 960,
+        "y": 530
+      },
+      {
+        "x": 1040,
+        "y": 530
+      },
+      {
+        "x": 80,
+        "y": 640
+      },
+      {
+        "x": 160,
+        "y": 640
+      },
+      {
+        "x": 240,
+        "y": 640
+      },
+      {
+        "x": 320,
+        "y": 640
+      },
+      {
+        "x": 400,
+        "y": 640
+      },
+      {
+        "x": 480,
+        "y": 640
+      },
+      {
+        "x": 560,
+        "y": 640
+      },
+      {
+        "x": 640,
+        "y": 640
+      },
+      {
+        "x": 720,
+        "y": 640
+      },
+      {
+        "x": 800,
+        "y": 640
+      },
+      {
+        "x": 880,
+        "y": 640
+      },
+      {
+        "x": 960,
+        "y": 640
+      },
+      {
+        "x": 1040,
+        "y": 640
+      }
+    ]
+  },
+  "45": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "46": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "47": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "48": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "49": {
+    "trap_shield": [],
+    "trap_electric": [
+      {
+        "x": 950,
+        "y": 600
+      },
+      {
+        "x": 1050,
+        "y": 600
+      },
+      {
+        "x": 950,
+        "y": 500
+      },
+      {
+        "x": 1050,
+        "y": 500
+      }
+    ],
+    "trap_poison": [
+      {
+        "x": 250,
+        "y": 520
+      },
+      {
+        "x": 350,
+        "y": 520
+      },
+      {
+        "x": 450,
+        "y": 520
+      },
+      {
+        "x": 550,
+        "y": 520
+      },
+      {
+        "x": 650,
+        "y": 520
+      },
+      {
+        "x": 750,
+        "y": 520
+      },
+      {
+        "x": 850,
+        "y": 520
+      },
+      {
+        "x": 950,
+        "y": 520
+      },
+      {
+        "x": 1050,
+        "y": 520
+      },
+      {
+        "x": 250,
+        "y": 560
+      },
+      {
+        "x": 350,
+        "y": 560
+      },
+      {
+        "x": 450,
+        "y": 560
+      },
+      {
+        "x": 550,
+        "y": 560
+      },
+      {
+        "x": 650,
+        "y": 560
+      },
+      {
+        "x": 750,
+        "y": 560
+      },
+      {
+        "x": 850,
+        "y": 560
+      },
+      {
+        "x": 250,
+        "y": 600
+      },
+      {
+        "x": 350,
+        "y": 600
+      },
+      {
+        "x": 450,
+        "y": 600
+      },
+      {
+        "x": 550,
+        "y": 600
+      },
+      {
+        "x": 650,
+        "y": 600
+      },
+      {
+        "x": 750,
+        "y": 600
+      },
+      {
+        "x": 850,
+        "y": 600
+      },
+      {
+        "x": 250,
+        "y": 640
+      },
+      {
+        "x": 350,
+        "y": 640
+      },
+      {
+        "x": 450,
+        "y": 640
+      },
+      {
+        "x": 550,
+        "y": 640
+      },
+      {
+        "x": 650,
+        "y": 640
+      },
+      {
+        "x": 750,
+        "y": 640
+      },
+      {
+        "x": 850,
+        "y": 640
+      },
+      {
+        "x": 950,
+        "y": 640
+      },
+      {
+        "x": 1050,
+        "y": 640
+      }
+    ],
+    "trap_spike": []
+  },
+  "50": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "51": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "52": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "53": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "54": {
+    "trap_shield": [],
+    "trap_electric": [
+      {
+        "x": 350,
+        "y": 595
+      },
+      {
+        "x": 650,
+        "y": 595
+      },
+      {
+        "x": 950,
+        "y": 595
+      }
+    ],
+    "trap_poison": [],
+    "trap_spike": [
+      {
+        "x": 80,
+        "y": 530
+      },
+      {
+        "x": 160,
+        "y": 530
+      },
+      {
+        "x": 240,
+        "y": 530
+      },
+      {
+        "x": 320,
+        "y": 530
+      },
+      {
+        "x": 400,
+        "y": 530
+      },
+      {
+        "x": 480,
+        "y": 530
+      },
+      {
+        "x": 560,
+        "y": 530
+      },
+      {
+        "x": 640,
+        "y": 530
+      },
+      {
+        "x": 720,
+        "y": 530
+      },
+      {
+        "x": 800,
+        "y": 530
+      },
+      {
+        "x": 880,
+        "y": 530
+      },
+      {
+        "x": 960,
+        "y": 530
+      },
+      {
+        "x": 1040,
+        "y": 530
+      },
+      {
+        "x": 80,
+        "y": 640
+      },
+      {
+        "x": 160,
+        "y": 640
+      },
+      {
+        "x": 240,
+        "y": 640
+      },
+      {
+        "x": 320,
+        "y": 640
+      },
+      {
+        "x": 400,
+        "y": 640
+      },
+      {
+        "x": 480,
+        "y": 640
+      },
+      {
+        "x": 560,
+        "y": 640
+      },
+      {
+        "x": 640,
+        "y": 640
+      },
+      {
+        "x": 720,
+        "y": 640
+      },
+      {
+        "x": 800,
+        "y": 640
+      },
+      {
+        "x": 880,
+        "y": 640
+      },
+      {
+        "x": 960,
+        "y": 640
+      },
+      {
+        "x": 1040,
+        "y": 640
+      }
+    ]
+  },
+  "55": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "56": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "57": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "58": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "59": {
+    "trap_shield": [],
+    "trap_electric": [
+      {
+        "x": 815,
+        "y": 535
+      },
+      {
+        "x": 865,
+        "y": 590
+      },
+      {
+        "x": 920,
+        "y": 645
+      },
+      {
+        "x": 1000,
+        "y": 590
+      },
+      {
+        "x": 1150,
+        "y": 590
+      }
+    ],
+    "trap_poison": [],
+    "trap_spike": [
+      {
+        "x": 615,
+        "y": 520
+      },
+      {
+        "x": 655,
+        "y": 520
+      },
+      {
+        "x": 630,
+        "y": 535
+      },
+      {
+        "x": 670,
+        "y": 535
+      },
+      {
+        "x": 645,
+        "y": 550
+      },
+      {
+        "x": 685,
+        "y": 550
+      },
+      {
+        "x": 660,
+        "y": 565
+      },
+      {
+        "x": 690,
+        "y": 565
+      },
+      {
+        "x": 675,
+        "y": 580
+      },
+      {
+        "x": 705,
+        "y": 580
+      },
+      {
+        "x": 690,
+        "y": 595
+      },
+      {
+        "x": 720,
+        "y": 595
+      },
+      {
+        "x": 705,
+        "y": 610
+      },
+      {
+        "x": 735,
+        "y": 610
+      },
+      {
+        "x": 720,
+        "y": 625
+      },
+      {
+        "x": 750,
+        "y": 625
+      },
+      {
+        "x": 735,
+        "y": 640
+      },
+      {
+        "x": 765,
+        "y": 640
+      }
+    ]
+  },
+  "60": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "61": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "62": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "63": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "64": {
+    "trap_shield": [],
+    "trap_electric": [
+      {
+        "x": 625,
+        "y": 645
+      },
+      {
+        "x": 690,
+        "y": 645
+      },
+      {
+        "x": 925,
+        "y": 530
+      },
+      {
+        "x": 990,
+        "y": 530
+      }
+    ],
+    "trap_poison": [],
+    "trap_spike": [
+      {
+        "x": 500,
+        "y": 525
+      },
+      {
+        "x": 545,
+        "y": 525
+      },
+      {
+        "x": 520,
+        "y": 545
+      },
+      {
+        "x": 565,
+        "y": 545
+      },
+      {
+        "x": 1030,
+        "y": 630
+      },
+      {
+        "x": 1075,
+        "y": 630
+      },
+      {
+        "x": 1050,
+        "y": 655
+      },
+      {
+        "x": 1095,
+        "y": 655
+      }
+    ]
+  },
+  "65": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "66": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "67": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "68": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "69": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": [
+      {
+        "x": 80,
+        "y": 530
+      },
+      {
+        "x": 160,
+        "y": 530
+      },
+      {
+        "x": 240,
+        "y": 530
+      },
+      {
+        "x": 320,
+        "y": 530
+      },
+      {
+        "x": 400,
+        "y": 530
+      },
+      {
+        "x": 480,
+        "y": 530
+      },
+      {
+        "x": 560,
+        "y": 530
+      },
+      {
+        "x": 640,
+        "y": 530
+      },
+      {
+        "x": 720,
+        "y": 530
+      },
+      {
+        "x": 800,
+        "y": 530
+      },
+      {
+        "x": 880,
+        "y": 530
+      },
+      {
+        "x": 960,
+        "y": 530
+      },
+      {
+        "x": 1040,
+        "y": 530
+      },
+      {
+        "x": 80,
+        "y": 640
+      },
+      {
+        "x": 160,
+        "y": 640
+      },
+      {
+        "x": 240,
+        "y": 640
+      },
+      {
+        "x": 320,
+        "y": 640
+      },
+      {
+        "x": 400,
+        "y": 640
+      },
+      {
+        "x": 480,
+        "y": 640
+      },
+      {
+        "x": 560,
+        "y": 640
+      },
+      {
+        "x": 640,
+        "y": 640
+      },
+      {
+        "x": 720,
+        "y": 640
+      },
+      {
+        "x": 800,
+        "y": 640
+      },
+      {
+        "x": 880,
+        "y": 640
+      },
+      {
+        "x": 960,
+        "y": 640
+      },
+      {
+        "x": 1040,
+        "y": 640
+      }
+    ]
+  },
+  "70": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "71": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "72": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "73": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "74": {
+    "trap_shield": [
+      {
+        "x": 600,
+        "y": 0
+      }
+    ],
+    "trap_electric": [
+      {
+        "x": 860,
+        "y": 575
+      },
+      {
+        "x": 950,
+        "y": 575
+      },
+      {
+        "x": 1050,
+        "y": 575
+      }
+    ],
+    "trap_poison": [],
+    "trap_skike": [
+      {
+        "x": 815,
+        "y": 575
+      },
+      {
+        "x": 905,
+        "y": 575
+      },
+      {
+        "x": 1000,
+        "y": 575
+      }
+    ]
+  },
+  "75": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "76": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "77": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "78": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "79": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_strike": [
+      {
+        "x": 250,
+        "y": 520
+      },
+      {
+        "x": 350,
+        "y": 520
+      },
+      {
+        "x": 450,
+        "y": 520
+      },
+      {
+        "x": 550,
+        "y": 520
+      },
+      {
+        "x": 650,
+        "y": 520
+      },
+      {
+        "x": 750,
+        "y": 520
+      },
+      {
+        "x": 850,
+        "y": 520
+      },
+      {
+        "x": 950,
+        "y": 520
+      },
+      {
+        "x": 1050,
+        "y": 520
+      },
+      {
+        "x": 250,
+        "y": 560
+      },
+      {
+        "x": 350,
+        "y": 560
+      },
+      {
+        "x": 450,
+        "y": 560
+      },
+      {
+        "x": 550,
+        "y": 560
+      },
+      {
+        "x": 650,
+        "y": 560
+      },
+      {
+        "x": 750,
+        "y": 560
+      },
+      {
+        "x": 850,
+        "y": 560
+      },
+      {
+        "x": 950,
+        "y": 560
+      },
+      {
+        "x": 1050,
+        "y": 560
+      },
+      {
+        "x": 250,
+        "y": 600
+      },
+      {
+        "x": 350,
+        "y": 600
+      },
+      {
+        "x": 450,
+        "y": 600
+      },
+      {
+        "x": 550,
+        "y": 600
+      },
+      {
+        "x": 650,
+        "y": 600
+      },
+      {
+        "x": 750,
+        "y": 600
+      },
+      {
+        "x": 850,
+        "y": 600
+      },
+      {
+        "x": 950,
+        "y": 600
+      },
+      {
+        "x": 1050,
+        "y": 600
+      },
+      {
+        "x": 250,
+        "y": 640
+      },
+      {
+        "x": 350,
+        "y": 640
+      },
+      {
+        "x": 450,
+        "y": 640
+      },
+      {
+        "x": 550,
+        "y": 640
+      },
+      {
+        "x": 650,
+        "y": 640
+      },
+      {
+        "x": 750,
+        "y": 640
+      },
+      {
+        "x": 850,
+        "y": 640
+      },
+      {
+        "x": 950,
+        "y": 640
+      },
+      {
+        "x": 1050,
+        "y": 640
+      }
+    ]
+  },
+  "80": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "81": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "82": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "83": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "84": {
+    "trap_shield": [
+      {
+        "x": 300,
+        "y": 0
+      },
+      {
+        "x": 600,
+        "y": 0
+      }
+    ],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "85": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "86": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "87": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "88": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "89": {
+    "trap_shield": [
+      {
+        "x": 300,
+        "y": 0
+      },
+      {
+        "x": 600,
+        "y": 0
+      },
+      {
+        "x": 950,
+        "y": 0
+      }
+    ],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "90": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "91": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "92": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "93": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "94": {
+    "trap_shield": [],
+    "trap_electric": [
+      {
+        "x": 300,
+        "y": 590
+      },
+      {
+        "x": 600,
+        "y": 590
+      },
+      {
+        "x": 950,
+        "y": 590
+      }
+    ],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "95": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "96": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "97": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "98": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "99": {
+    "trap_shield": [
+      {
+        "x": 600,
+        "y": 0
+      }
+    ],
+    "trap_electric": [
+      {
+        "x": 860,
+        "y": 575
+      },
+      {
+        "x": 950,
+        "y": 575
+      },
+      {
+        "x": 1050,
+        "y": 575
+      }
+    ],
+    "trap_poison": [],
+    "trap_skike": [
+      {
+        "x": 815,
+        "y": 575
+      },
+      {
+        "x": 905,
+        "y": 575
+      },
+      {
+        "x": 1000,
+        "y": 575
+      }
+    ]
+  },
+  "100": {
+    "trap_shield": [],
+    "trap_electric": [],
+    "trap_poison": [],
+    "trap_spike": []
+  },
+  "info_base": {
+    "trap_shield": {
+      "hp": 100
+    },
+    "trap_electric": {
+      "hp": 100,
+      "damage": 3
+    },
+    "trap_poison": {
+      "hp": 50,
+      "damage": 15
+    },
+    "trap_spike": {
+      "damage": 15
+    },
+    "damage_add": 0.1,
+    "hp_add": 0.1
+  }
+}

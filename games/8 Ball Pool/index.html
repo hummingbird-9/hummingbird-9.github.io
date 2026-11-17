@@ -1,0 +1,2153 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pool 2026</title>
+<style>
+  :root{
+    --bg-deep:#0b0620;
+    --bg-panel:#160b33;
+    --panel-border:#3a2a7a;
+    --neon-cyan:#28f0ff;
+    --neon-magenta:#ff2fd0;
+    --gold:#e9c46a;
+    --text:#e8e6ff;
+    --felt:#8a9094;
+    --felt-dark:#5c6266;
+    --felt-light:#a4aaae;
+    --rail:#c9a869;
+    --rail-edge:#7a5a2e;
+    --rail-light:#ecdcae;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;height:100%;width:100%;overflow:hidden;
+    background-color:#0b1329;
+    background-image:
+      linear-gradient(135deg, rgba(255,255,255,.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.05) 75%),
+      linear-gradient(45deg, rgba(255,255,255,.05) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.05) 75%),
+      radial-gradient(circle at 50% 0%, #16274d, #0b1329 70%);
+    background-size:46px 46px, 46px 46px, 100% 100%;
+    background-position:0 0, 23px 23px, 0 0;
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    position:relative;
+  }
+  button{font-family:inherit;}
+
+  /* ---------- screen system: the app is 4 full-viewport states, only one
+     visible at a time; JS toggles the .active class between them ---------- */
+  .screen{
+    position:fixed; inset:0; display:none;
+    flex-direction:column; align-items:center;
+    overflow-y:auto; overflow-x:hidden;
+    padding:16px 3vw 24px;
+  }
+  .screen.active{ display:flex; }
+  .gear-btn{
+    width:40px;height:40px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(180deg,var(--bg-panel),#0f0726);
+    border:1px solid var(--panel-border); display:flex;align-items:center;justify-content:center;
+    font-size:18px; cursor:pointer; box-shadow:0 0 10px rgba(0,0,0,.4);
+  }
+  .gear-btn:hover{ filter:brightness(1.2); }
+
+  /* ================= SCREEN 1: MAIN MENU ================= */
+  .topbar{
+    width:100%; max-width:1200px;
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    background:linear-gradient(to right, #1d1248, #2a1b6d);
+    border:1px solid var(--panel-border); border-radius:16px;
+    padding:10px 16px; box-shadow:0 4px 18px rgba(0,0,0,.4);
+  }
+  .topbar-left{ display:flex; align-items:center; gap:10px; }
+  .topbar-info .name{ font-weight:700; font-size:14px; }
+  .topbar-stats{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .stat-pill{
+    display:flex; align-items:center; gap:5px;
+    background:rgba(0,0,0,.28); border:1px solid var(--panel-border); border-radius:20px;
+    padding:6px 12px; font-size:12.5px; font-weight:700; color:#fff;
+  }
+  .menu-title{
+    margin:22px 0 6px; font-size:26px; letter-spacing:3px;
+    color:var(--neon-cyan); text-shadow:0 0 10px rgba(40,240,255,.6);
+  }
+  .mode-grid{
+    flex:1; width:100%; max-width:900px;
+    display:grid; grid-template-columns:1fr 1fr; gap:16px;
+    align-content:center; margin:18px 0;
+  }
+  .mode-card{
+    background:linear-gradient(160deg,var(--bg-panel),#0f0726);
+    border:2px solid var(--panel-border); border-radius:18px;
+    padding:26px 16px; text-align:center; cursor:pointer;
+    box-shadow:0 0 18px rgba(0,0,0,.35);
+    transition:transform .15s, border-color .15s, box-shadow .15s;
+  }
+  .mode-card:hover{ transform:translateY(-3px); border-color:var(--neon-cyan); box-shadow:0 0 20px rgba(40,240,255,.35); }
+  .mode-icon{ font-size:34px; margin-bottom:10px; }
+  .mode-label{ font-weight:700; font-size:14.5px; }
+  .bottom-nav{
+    width:100%; max-width:1200px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:linear-gradient(180deg,var(--bg-panel),#0f0726);
+    border:1px solid var(--panel-border); border-radius:16px;
+    padding:10px 16px; flex-wrap:wrap;
+  }
+  .nav-item{
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    font-size:10.5px; opacity:.8; cursor:pointer; min-width:52px;
+  }
+  .nav-item span{ font-weight:600; }
+  .shop-btn{
+    background:linear-gradient(180deg,#ffd43b,#e0a412);
+    border:none; color:#3a2400; padding:10px 20px; border-radius:20px;
+    font-size:13px; font-weight:800; cursor:pointer;
+    box-shadow:0 0 14px rgba(255,212,59,.6);
+  }
+
+  /* ================= SCREEN 2: LOBBY ================= */
+  .lobby-header{
+    width:100%; max-width:1200px; display:flex; align-items:center; gap:14px; margin-bottom:22px;
+  }
+  .back-btn{
+    background:linear-gradient(180deg,var(--bg-panel),#0f0726);
+    border:1px solid var(--panel-border); color:var(--text);
+    border-radius:10px; padding:8px 14px; font-size:13px; font-weight:700; cursor:pointer;
+  }
+  .lobby-header h2{ margin:0; font-size:19px; color:var(--neon-cyan); }
+  .city-carousel{
+    flex:1; width:100%; max-width:1200px;
+    display:flex; gap:18px; overflow-x:auto; padding:8px 4px 20px; align-items:stretch;
+    scroll-snap-type:x proximity;
+  }
+  .city-card{
+    scroll-snap-align:start; flex:0 0 260px; min-height:320px;
+    border-radius:18px; padding:16px; cursor:pointer; position:relative; overflow:hidden;
+    display:flex; flex-direction:column; justify-content:flex-end; gap:8px;
+    border:2px solid var(--panel-border); box-shadow:0 8px 24px rgba(0,0,0,.5);
+    transition:transform .15s, border-color .15s;
+  }
+  .city-card:hover{ transform:translateY(-4px); border-color:var(--neon-cyan); }
+  .city-card .city-name{ font-weight:800; font-size:17px; text-shadow:0 2px 6px rgba(0,0,0,.7); }
+  .city-badges{ display:flex; flex-wrap:wrap; gap:6px; }
+  .badge{
+    font-size:11px; font-weight:700; padding:4px 10px; border-radius:14px;
+    background:rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.15);
+  }
+  .badge.reward{ background:linear-gradient(180deg,#ff3d81,#a3134f); border:none; box-shadow:0 0 10px rgba(255,61,129,.5); }
+  .badge.trophy{ background:linear-gradient(180deg,#ffd43b,#c98f0a); color:#3a2400; border:none; }
+  .badge.entry{ background:rgba(40,240,255,.15); border:1px solid rgba(40,240,255,.4); }
+
+  /* ================= SCREEN: CUES (QUEUES) ================= */
+  .cues-grid{
+    flex:1; width:100%; max-width:1200px;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:18px;
+    padding:8px 4px 24px;
+  }
+  .cue-card{
+    border-radius:18px; padding:18px; position:relative; overflow:hidden;
+    display:flex; flex-direction:column; gap:12px;
+    border:2px solid var(--panel-border); background:linear-gradient(160deg,var(--bg-panel),#0f0726);
+    box-shadow:0 8px 24px rgba(0,0,0,.5); transition:transform .15s, border-color .15s;
+  }
+  .cue-card:hover{ transform:translateY(-4px); border-color:var(--neon-cyan); }
+  .cue-card.equipped{ border-color:var(--gold); box-shadow:0 0 18px rgba(233,196,106,.5); }
+  .cue-visual{ width:100%; height:70px; border-radius:10px; transform:rotate(-6deg); box-shadow:0 4px 12px rgba(0,0,0,.4); }
+  .cue-card-name{ font-weight:800; font-size:15px; }
+  .cue-card-rarity{ font-size:11px; opacity:.75; font-weight:600; margin-top:2px; }
+  .cue-card-stats{ display:flex; flex-direction:column; gap:6px; }
+  .cue-card-stat-row{ display:flex; align-items:center; gap:6px; font-size:11px; }
+  .cue-card-stat-row .label{ width:38px; opacity:.75; flex-shrink:0; }
+  .cue-card-stat-bar{ flex:1; height:6px; border-radius:3px; background:rgba(255,255,255,.1); overflow:hidden; }
+  .cue-card-stat-bar .fill{ height:100%; background:linear-gradient(90deg,var(--neon-cyan),var(--neon-magenta)); box-shadow:0 0 4px rgba(40,240,255,.6); }
+  .cue-card-btn{
+    margin-top:auto; border:none; border-radius:12px; padding:9px; font-weight:800; font-size:12.5px; cursor:pointer;
+    background:linear-gradient(180deg,var(--neon-cyan),#0a8a99); color:#052226;
+  }
+  .cue-card.equipped .cue-card-btn{ background:linear-gradient(180deg,#ffd43b,#c98f0a); color:#3a2400; cursor:default; }
+
+  /* ================= SCREEN 3: MATCHMAKING ================= */
+  #screenMatch{ justify-content:center; align-items:center; }
+  .match-spinner{ display:flex; flex-direction:column; align-items:center; gap:16px; }
+  .spinner{
+    width:56px; height:56px; border-radius:50%;
+    border:5px solid rgba(40,240,255,.2); border-top-color:var(--neon-cyan);
+    animation:spin 0.9s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .match-text{ font-size:14px; font-weight:600; opacity:.85; letter-spacing:.5px; }
+  .vs-banner{
+    display:flex; align-items:center; justify-content:center; gap:26px;
+    background:linear-gradient(160deg,var(--bg-panel),#0f0726);
+    border:1px solid var(--panel-border); border-radius:20px;
+    padding:26px 34px; box-shadow:0 10px 40px rgba(0,0,0,.6);
+  }
+  .vs-card{ display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .vs-name{ font-weight:700; font-size:14px; }
+  .vs-mid{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .vs-label{ font-size:20px; font-weight:900; color:var(--neon-magenta); text-shadow:0 0 10px rgba(255,47,208,.6); }
+  .vs-coin{
+    background:linear-gradient(180deg,#ff3d81,#a3134f); border-radius:16px; padding:6px 14px;
+    font-weight:800; font-size:13px; box-shadow:0 0 14px rgba(255,61,129,.6);
+  }
+  .go-banner{
+    position:fixed; top:44%; left:50%; transform:translate(-50%,-50%) scale(0.8);
+    font-size:32px; font-weight:900; letter-spacing:2px; color:var(--gold);
+    text-shadow:0 0 18px rgba(233,196,106,.8); opacity:0; transition:opacity .25s, transform .25s;
+    pointer-events:none;
+  }
+  .go-banner.show{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+
+  /* ================= SCREEN 4: GAMEPLAY ================= */
+  #screenGame{ justify-content:flex-start; }
+  .game-inner{ width:100%; max-width:1500px; display:flex; flex-direction:column; align-items:center; }
+  .turn-banner{
+    position:fixed; top:18%; left:50%; transform:translate(-50%,-14px);
+    background:linear-gradient(180deg,var(--bg-panel),#0f0726);
+    border:1px solid var(--neon-cyan); border-radius:14px;
+    padding:10px 22px; font-weight:700; font-size:14px; color:var(--neon-cyan);
+    box-shadow:0 0 18px rgba(40,240,255,.4);
+    opacity:0; pointer-events:none; transition:opacity .25s, transform .25s;
+    z-index:30;
+  }
+  .turn-banner.show{ opacity:1; transform:translate(-50%,0); }
+  .hud{
+    display:flex;justify-content:space-between;align-items:center;
+    background:linear-gradient(to right, #1d1248, #2a1b6d);
+    border:1px solid var(--panel-border);
+    border-radius:0 0 20px 20px;
+    padding:10px 18px;
+    margin-bottom:10px;
+    width:100%; max-width:1100px;
+    box-shadow:0 0 18px rgba(255,47,208,.15) inset, 0 4px 18px rgba(0,0,0,.4);
+    gap:12px;flex-wrap:wrap;
+  }
+  .rating{
+    font-size:10.5px; font-weight:700; color:var(--neon-cyan); opacity:.85;
+    background:rgba(40,240,255,.1); border-radius:8px; padding:0 6px; display:inline-block; width:fit-content;
+  }
+  .player{
+    display:flex;align-items:center;gap:10px;min-width:190px;
+  }
+  .avatar-wrap{ position:relative; width:46px; height:46px; flex-shrink:0; filter:drop-shadow(0 0 6px rgba(40,240,255,.35)); }
+  .avatar-wrap.small{ width:38px; height:38px; }
+  .avatar{
+    width:46px;height:46px;border-radius:50%;
+    background:linear-gradient(160deg,#2a1a55,#160b33);
+    border:3px solid var(--p-ring, var(--neon-magenta));
+    display:flex;align-items:center;justify-content:center;font-size:22px;
+    box-shadow:0 0 10px rgba(0,0,0,.4);
+  }
+  .avatar-wrap.small .avatar{ width:38px; height:38px; font-size:18px; }
+  #p1box .avatar{ --p-ring: var(--neon-magenta); }
+  #p2box .avatar{ --p-ring: var(--neon-cyan); }
+  .flag-badge{
+    position:absolute; bottom:-2px; right:-2px;
+    width:18px;height:18px;border-radius:50%;
+    background:var(--bg-panel); border:1px solid var(--panel-border);
+    display:flex;align-items:center;justify-content:center;font-size:10px;
+  }
+  #p2box{ flex-direction:row-reverse; }
+  #p2box .gear-btn{ margin-left:4px; }
+  .player-info{ display:flex; flex-direction:column; gap:1px; }
+  #p2box .player-info{ align-items:flex-end; }
+  .player .name{font-weight:600;font-size:14px;}
+  .player .group{font-size:11px;opacity:.75;}
+  .player .coins{font-size:11.5px;color:var(--gold);font-weight:600;}
+  .score-center{ display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .score-row{ display:flex; align-items:center; gap:0; background:rgba(0,0,0,.25); border-radius:20px; overflow:hidden; border:1px solid var(--panel-border); }
+  .score-num{
+    font-size:16px; font-weight:800; color:#fff; min-width:34px; text-align:center;
+    padding:6px 12px;
+  }
+  #p1score{ background:linear-gradient(180deg,#2c6fe0,#1a4a9e); box-shadow:0 0 10px rgba(44,111,224,.6) inset; }
+  #p2score{ background:linear-gradient(180deg,#e0362c,#a31e17); box-shadow:0 0 10px rgba(224,54,44,.6) inset; }
+  .pot-badge{
+    display:flex;align-items:center;gap:6px;justify-content:center;
+    font-size:13px;font-weight:800;color:#fff;
+    background:linear-gradient(180deg,#ff3d81,#a3134f);
+    padding:6px 14px; border-radius:20px;
+    box-shadow:0 0 14px rgba(255,61,129,.65), 0 0 12px rgba(255,61,129,.35) inset;
+  }
+  .pot-badge .dice{ filter:drop-shadow(0 0 4px rgba(255,220,120,.9)); font-size:15px; }
+  .balls-left{display:flex;gap:4px;flex-wrap:wrap;max-width:170px;}
+  #p2box .balls-left{ justify-content:flex-end; }
+  .mini-ball{width:16px;height:16px;border-radius:50%;border:1px solid rgba(0,0,0,.4);}
+  .center-status{
+    text-align:center;font-size:13.5px;font-weight:600;
+    color:var(--gold);
+    min-width:180px;
+  }
+  #restartBtn{
+    background:linear-gradient(180deg,var(--neon-magenta),#a3157e);
+    border:none;color:#fff;padding:7px 14px;border-radius:8px;
+    font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px;
+    box-shadow:0 0 10px rgba(255,47,208,.6);
+  }
+  #restartBtn:hover{filter:brightness(1.15);}
+  .table-row{
+    display:flex; gap:14px; align-items:stretch; justify-content:center;
+    width:100%; flex-wrap:wrap;
+  }
+  .cue-rack{
+    /* positioned outside table-shell's own border (same technique as the
+       power slider / shoot button / spin widget on the right), so it never
+       consumes layout width in .table-row — that's what keeps the canvas
+       itself centered in the viewport regardless of the rack's presence */
+    position:absolute; left:-102px; top:0; bottom:0; width:88px;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    background:linear-gradient(180deg,var(--bg-panel),#0f0726);
+    border:1px solid var(--panel-border); border-radius:14px;
+    padding:12px 10px;
+    box-shadow:0 0 18px rgba(0,0,0,.35), 0 0 16px rgba(40,240,255,.25);
+  }
+  .rack-title{ font-size:10.5px; letter-spacing:1px; opacity:.7; font-weight:700; }
+  .rack-cue-preview{
+    position:relative; width:22px; flex:1; min-height:140px; border-radius:11px; overflow:hidden;
+    box-shadow:0 0 10px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.08);
+  }
+  .rack-cue-preview{ transform:rotate(-18deg); }
+  .rack-cue-bar{ position:absolute; inset:0; }
+  .rack-cue-ring{ position:absolute; left:0; right:0; height:4px; }
+  .rack-cue-name{ font-size:9.5px; text-align:center; opacity:.85; max-width:80px; line-height:1.25; }
+  .rack-stats{ width:100%; display:flex; flex-direction:column; gap:5px; }
+  .rack-stat-row{ display:flex; align-items:center; gap:4px; font-size:9px; }
+  .rack-stat-row .label{ width:14px; opacity:.75; flex-shrink:0; }
+  .rack-stat-bar{ flex:1; height:5px; border-radius:3px; background:rgba(255,255,255,.1); overflow:hidden; }
+  .rack-stat-bar .fill{ height:100%; background:linear-gradient(90deg,var(--neon-cyan),var(--neon-magenta)); box-shadow:0 0 4px rgba(40,240,255,.6); }
+  .rack-thumbs{ display:flex; flex-direction:column; gap:6px; width:100%; margin-top:2px; }
+  .rack-thumb{
+    height:30px; border-radius:8px; cursor:pointer; border:2px solid transparent;
+    position:relative; overflow:hidden; transition:border-color .15s, transform .15s;
+    transform:rotate(-18deg);
+  }
+  .rack-thumb:hover{ transform:rotate(-18deg) translateY(-1px); }
+  .rack-thumb.selected{ border-color:var(--neon-cyan); box-shadow:0 0 8px rgba(40,240,255,.5); }
+  .table-shell{
+    position:relative;
+    border-radius:14px;
+    padding:8px;
+    background:var(--rail-edge);
+    box-shadow:0 0 0 2px rgba(233,196,106,.35), 0 10px 40px rgba(0,0,0,.6);
+    width:85vw; max-width:1180px;
+  }
+  canvas{
+    display:block;
+    border-radius:8px;
+    background:linear-gradient(160deg,var(--rail-light),var(--rail) 55%,var(--rail-edge));
+    cursor:crosshair;
+    width:100%;
+    height:auto;
+  }
+  .power-wrap{
+    position:absolute;
+    right:-34px;top:40px;bottom:60px;
+    width:26px;
+    /* the true force gradient lives on the track itself (green = low,
+       red = full power); #powerFill is a dark mask on top of it that
+       shrinks from the top as power increases, revealing color only up to
+       the current level — so the bar always reads "how much", not just
+       "which color the whole thing happens to be right now" */
+    background-image:
+      repeating-linear-gradient(180deg, rgba(255,255,255,.35) 0 1px, transparent 1px 7px),
+      linear-gradient(0deg, #2ecc71 0%, #f1c40f 55%, #e74c3c 100%);
+    border-radius:8px;
+    border:2px solid #d8d8d8;
+    box-shadow:0 0 10px rgba(0,0,0,.5);
+    cursor:ns-resize;
+    touch-action:none; /* the drag is ours; don't let the browser scroll/zoom on it */
+  }
+  /* invisible grab zone: the bar reads as 26px wide but is ~48px to grab,
+     since a 26px target is far too thin for a thumb. It only widens away
+     from the table (8px in, 14px out) so it can never swallow an aim drag
+     that belongs to the canvas. */
+  .power-wrap::after{
+    content:'';
+    position:absolute; top:0; bottom:0; left:-8px; right:-14px;
+  }
+  .power-wrap:focus-visible{
+    outline:2px solid var(--neon-cyan);
+    outline-offset:3px;
+  }
+  #powerFill{
+    position:absolute;top:0;left:0;right:0;height:100%;
+    background:#0d0a1c;
+    border-radius:7px 7px 0 0;
+  }
+  .power-arrow{
+    position:absolute; left:50%; bottom:0%;
+    width:34px; height:14px;
+    transform:translate(-50%, 50%);
+    background:linear-gradient(180deg,#ffffff,#c7cbd3 55%,#9aa0aa);
+    border:2px solid rgba(0,0,0,.4);
+    border-radius:7px;
+    box-shadow:0 2px 6px rgba(0,0,0,.6), 0 0 8px rgba(255,255,255,.35);
+    pointer-events:none;
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+  .power-arrow::before{
+    content:'';
+    position:absolute; left:50%; top:50%; width:16px; height:2px;
+    background:rgba(0,0,0,.4);
+    transform:translate(-50%,-50%);
+    box-shadow:0 -4px 0 rgba(0,0,0,.4), 0 4px 0 rgba(0,0,0,.4);
+  }
+  /* grabbed: the thumb swells so it stays readable under a fingertip */
+  .power-wrap.dragging .power-arrow{
+    transform:translate(-50%,50%) scale(1.18);
+    box-shadow:0 2px 10px rgba(0,0,0,.7), 0 0 14px rgba(255,255,255,.85);
+  }
+  .power-wrap.max .power-arrow{
+    border-color:#e74c3c;
+    animation:powerPulse .5s ease-in-out infinite alternate;
+  }
+  @keyframes powerPulse{
+    from{ box-shadow:0 2px 8px rgba(0,0,0,.6), 0 0 10px rgba(231,76,60,.75); }
+    to{ box-shadow:0 2px 8px rgba(0,0,0,.6), 0 0 22px rgba(231,76,60,1); }
+  }
+  /* live force readout, parked above the track so it never covers the felt
+     and never runs off the right edge of the viewport */
+  .power-label{
+    position:absolute; left:50%; top:-27px;
+    transform:translateX(-50%);
+    font-size:11px; font-weight:800; letter-spacing:.5px;
+    color:#fff; white-space:nowrap;
+    background:rgba(8,6,16,.88);
+    border:1px solid var(--panel-border);
+    border-radius:8px;
+    padding:3px 7px;
+    opacity:0; transition:opacity .15s;
+    pointer-events:none;
+  }
+  .power-wrap.charged .power-label,
+  .power-wrap.dragging .power-label{ opacity:1; }
+  .power-wrap.max .power-label{ color:#ff7d6e; border-color:#e74c3c; }
+  .shoot-btn{
+    position:absolute; right:-44px; bottom:20px;
+    width:46px;height:46px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #ffffff, #cfd3da 75%);
+    border:2px solid rgba(0,0,0,.25);
+    cursor:pointer;
+    box-shadow:0 3px 8px rgba(0,0,0,.5);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .shoot-btn span{
+    width:9px;height:9px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #ff8a7a, #c8281a);
+  }
+  .shoot-btn:hover{ filter:brightness(1.05); }
+  .shoot-btn:active{ transform:scale(0.94); }
+  .shoot-btn:disabled{ opacity:.4; cursor:default; }
+  .spin-wrap{
+    position:absolute; right:-44px; bottom:-42px;
+    width:46px;height:46px;
+    cursor:pointer;
+  }
+  .spin-ball{
+    position:relative; width:100%; height:100%; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #ffffff, #d7dae0 70%, #a9adb6 100%);
+    border:2px solid rgba(0,0,0,.3);
+    box-shadow:0 0 10px rgba(40,240,255,.4), 0 3px 8px rgba(0,0,0,.5);
+    overflow:hidden;
+  }
+  .spin-cross{
+    position:absolute; inset:0;
+    background:
+      linear-gradient(to right, transparent 48%, rgba(0,0,0,.15) 48%, rgba(0,0,0,.15) 52%, transparent 52%),
+      linear-gradient(to bottom, transparent 48%, rgba(0,0,0,.15) 48%, rgba(0,0,0,.15) 52%, transparent 52%);
+  }
+  .spin-dot{
+    position:absolute; width:10px;height:10px;border-radius:50%;
+    background:#e0362c;
+    box-shadow:0 0 6px rgba(224,54,44,.85);
+    left:50%; top:50%; transform:translate(-50%,-50%);
+    pointer-events:none;
+  }
+  .footer-msg{
+    text-align:center;margin-top:12px;font-size:12.5px;opacity:.7;
+  }
+  .overlay{
+    position:fixed;inset:0;background:rgba(5,2,15,.82);
+    display:none;align-items:center;justify-content:center;flex-direction:column;
+    z-index:40;gap:14px;
+  }
+  .overlay.show{display:flex;}
+  .overlay h2{
+    font-size:30px;color:var(--gold);text-shadow:0 0 14px rgba(233,196,106,.7);
+    margin:0;
+  }
+  @media (max-width:640px){
+    .cue-rack{ width:64px; left:-78px; padding:8px 6px; }
+    .mode-grid{ grid-template-columns:1fr; }
+    .table-shell{ width:90vw; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ SCREEN 1: MAIN MENU ============ -->
+  <div class="screen active" id="screenMenu">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="avatar-wrap small"><div class="avatar">🧑</div></div>
+        <div class="topbar-info">
+          <div class="name">Chacal243</div>
+          <div class="rating">1578</div>
+        </div>
+      </div>
+      <div class="topbar-stats">
+        <div class="stat-pill">🏆 <span id="statTrophies">340</span></div>
+        <div class="stat-pill">🪙 <span id="statCoins">529,971</span></div>
+        <div class="stat-pill">💵 <span id="statCash">1,131</span></div>
+      </div>
+      <button class="gear-btn" id="menuGearBtn" title="Réglages">⚙️</button>
+    </div>
+
+    <h1 class="menu-title">◆ 8 POOL ◆</h1>
+
+    <div class="mode-grid" id="modeGrid">
+      <div class="mode-card" data-mode="1v1"><div class="mode-icon">🎱</div><div class="mode-label">Jouer 1 contre 1</div></div>
+      <div class="mode-card" data-mode="friends"><div class="mode-icon">🤝</div><div class="mode-label">Jouer avec des amis</div></div>
+      <div class="mode-card" data-mode="bot"><div class="mode-icon">🤖</div><div class="mode-label">Jouer contre un bot</div></div>
+      <div class="mode-card" data-mode="training"><div class="mode-icon">🎯</div><div class="mode-label">Entraînement</div></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item">🗺️<span>Quête</span></div>
+      <div class="nav-item" id="navQueuesBtn">⏳<span>Queues</span></div>
+      <div class="nav-item">🏅<span>Classement</span></div>
+      <div class="nav-item">🎒<span>Inventaire</span></div>
+      <button class="shop-btn">🛒 Boutique</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN: CUES (QUEUES) ============ -->
+  <div class="screen" id="screenCues">
+    <div class="lobby-header">
+      <button class="back-btn" id="cuesBackBtn">← Retour</button>
+      <h2>Vos queues de billard</h2>
+    </div>
+    <div class="cues-grid" id="cuesGrid"></div>
+  </div>
+
+  <!-- ============ SCREEN 2: LOBBY / CITY SELECTION ============ -->
+  <div class="screen" id="screenLobby">
+    <div class="lobby-header">
+      <button class="back-btn" id="lobbyBackBtn">← Retour</button>
+      <h2>Choisissez une salle</h2>
+    </div>
+    <div class="city-carousel" id="cityCarousel"></div>
+  </div>
+
+  <!-- ============ SCREEN 3: MATCHMAKING ============ -->
+  <div class="screen" id="screenMatch">
+    <div class="match-spinner" id="matchSpinner">
+      <div class="spinner"></div>
+      <div class="match-text">Recherche d'adversaire...</div>
+    </div>
+    <div class="vs-banner" id="vsBanner" hidden>
+      <div class="vs-card">
+        <div class="avatar-wrap"><div class="avatar">🧑</div><div class="flag-badge">🇺🇦</div></div>
+        <div class="vs-name">Chacal243</div>
+      </div>
+      <div class="vs-mid">
+        <div class="vs-label">VS</div>
+        <div class="vs-coin" id="vsCoin">🪙 0</div>
+      </div>
+      <div class="vs-card">
+        <div class="avatar-wrap"><div class="avatar">🧑</div><div class="flag-badge" id="vsOpponentFlag">🇺🇸</div></div>
+        <div class="vs-name" id="vsOpponentName">Okuneva</div>
+      </div>
+    </div>
+    <div class="go-banner" id="goBanner">C'est parti !</div>
+  </div>
+
+  <!-- ============ SCREEN 4: GAMEPLAY ============ -->
+  <div class="screen" id="screenGame">
+    <div class="turn-banner" id="turnBanner"></div>
+    <div class="game-inner">
+      <div class="hud">
+        <div class="player" id="p1box">
+          <div class="avatar-wrap">
+            <div class="avatar">🧑</div>
+            <div class="flag-badge">🇺🇦</div>
+          </div>
+          <div class="player-info">
+            <div class="name" id="p1name">Chacal243</div>
+            <div class="rating">1571</div>
+            <div class="coins" id="p1coins">🪙 1500</div>
+            <div class="group" id="p1group">Group: —</div>
+            <div class="balls-left" id="p1balls"></div>
+          </div>
+        </div>
+
+        <div class="score-center">
+          <div class="score-row">
+            <span class="score-num" id="p1score">0</span>
+            <div class="pot-badge"><span class="dice">🎲</span><span id="potAmount">150</span></div>
+            <span class="score-num" id="p2score">0</span>
+          </div>
+          <div class="center-status" id="statusMsg">Player 1's turn — break!</div>
+        </div>
+
+        <div class="player" id="p2box">
+          <div class="avatar-wrap">
+            <div class="avatar">🧑</div>
+            <div class="flag-badge" id="p2flag">🇺🇸</div>
+          </div>
+          <div class="player-info">
+            <div class="name" id="p2name">Okuneva</div>
+            <div class="rating" id="p2rating">1495</div>
+            <div class="coins" id="p2coins">🪙 1500</div>
+            <div class="group" id="p2group">Group: —</div>
+            <div class="balls-left" id="p2balls"></div>
+          </div>
+          <button class="gear-btn" id="gameGearBtn" title="Réglages">⚙️</button>
+        </div>
+      </div>
+
+      <div class="table-row">
+        <div class="table-shell">
+          <div class="cue-rack" id="cueRack">
+            <div class="rack-title">CUE</div>
+            <div class="rack-cue-preview" id="rackCuePreview">
+              <div class="rack-cue-bar" id="rackCueBar"></div>
+              <div class="rack-cue-ring" id="rackRing1"></div>
+              <div class="rack-cue-ring" id="rackRing2"></div>
+            </div>
+            <div class="rack-cue-name" id="rackCueName">Emerald Gold</div>
+            <div class="rack-stats" id="rackStats">
+              <div class="rack-stat-row"><span class="label">P</span><div class="rack-stat-bar"><div class="fill" id="rackPowerFill"></div></div></div>
+              <div class="rack-stat-row"><span class="label">A</span><div class="rack-stat-bar"><div class="fill" id="rackAimFill"></div></div></div>
+              <div class="rack-stat-row"><span class="label">S</span><div class="rack-stat-bar"><div class="fill" id="rackSpinFill"></div></div></div>
+            </div>
+            <div class="rack-thumbs" id="rackThumbs"></div>
+          </div>
+
+          <canvas id="table" width="1000" height="520"></canvas>
+          <div class="power-wrap" id="powerWrap" tabindex="0" role="slider"
+               aria-label="Shot power" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+               title="Drag to set shot power — release to shoot (arrow keys work too)">
+            <div id="powerFill"></div>
+            <div class="power-label" id="powerLabel">0%</div>
+            <div class="power-arrow" id="powerArrow"></div>
+          </div>
+          <button class="shoot-btn" id="shootBtn" title="Shoot"><span></span></button>
+          <div class="spin-wrap" id="spinWrap" title="Cue ball spin — drag off-center for follow/draw and side english">
+            <div class="spin-ball">
+              <div class="spin-cross"></div>
+              <div class="spin-dot" id="spinDot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-msg" id="aimHint">Drag anywhere on the table to aim, drag the white dot in the lower-right for spin, then pull back on the power slider on the right (or the cue in the rack) and release to shoot (or press the shoot button).</div>
+      <div id="ballInHandBar" style="display:none;text-align:center;margin-top:8px;">
+        <span style="color:var(--neon-cyan);font-size:13px;font-weight:600;">Ball in hand — drag the white ball anywhere on the table, then confirm.</span>
+        <button id="confirmPlaceBtn" style="margin-left:10px;background:linear-gradient(180deg,var(--neon-cyan),#1382a8);border:none;color:#04222b;padding:6px 16px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;">CONFIRM ▶</button>
+      </div>
+      <button id="restartBtn">RESTART</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <h2 id="overlayText">Player 1 wins!</h2>
+    <div id="overlayPayout" style="color:var(--gold);font-size:15px;font-weight:600;"></div>
+    <button id="restartBtn2">REMATCH</button>
+  </div>
+
+<script>
+(function(){
+  // ---------- screen navigation ----------
+  function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s=> s.classList.toggle('active', s.id===id));
+  }
+
+  const cities = [
+    {id:'vienna', name:'Vienna Romantic Bar', reward:95000, trophies:120, entry:150,
+      rule:'8-Ball · Race to 3', bg:'linear-gradient(160deg,#3a1f4d,#1a0d2b)'},
+    {id:'barcelona', name:'Barcelona Beach Club', reward:150000, trophies:200, entry:300,
+      rule:'8-Ball · Race to 5', bg:'linear-gradient(160deg,#0d3b4d,#08202b)'},
+    {id:'amsterdam', name:'Amsterdam Mansion', reward:220000, trophies:300, entry:500,
+      rule:'9-Ball · Race to 3', bg:'linear-gradient(160deg,#3b2a0d,#211708)'},
+  ];
+
+  function formatK(n){ return n>=1000 ? Math.round(n/1000)+'k' : String(n); }
+
+  // ---------- persistent profile (coins/trophies survive a reload via
+  // localStorage; "cash" has no in-game mechanic driving it yet, so it's
+  // just carried through unchanged) ----------
+  const PROFILE_KEY = 'pool2026_profile';
+  function loadProfile(){
+    try{
+      const raw = localStorage.getItem(PROFILE_KEY);
+      if(raw){
+        const p = JSON.parse(raw);
+        if(typeof p.coins==='number' && typeof p.trophies==='number' && typeof p.cash==='number') return p;
+      }
+    } catch(e){}
+    return { coins:1500, trophies:340, cash:1131 };
+  }
+  function saveProfile(){
+    try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); } catch(e){}
+  }
+  let profile = loadProfile();
+  function renderProfileStats(){
+    document.getElementById('statTrophies').textContent = profile.trophies.toLocaleString();
+    document.getElementById('statCoins').textContent = profile.coins.toLocaleString();
+    document.getElementById('statCash').textContent = profile.cash.toLocaleString();
+  }
+
+  function renderCityCarousel(){
+    const el = document.getElementById('cityCarousel');
+    el.innerHTML = '';
+    cities.forEach(city=>{
+      const card = document.createElement('div');
+      card.className = 'city-card';
+      card.style.background = city.bg;
+      card.innerHTML = `
+        <div class="city-badges">
+          <span class="badge reward">Récompense: ${formatK(city.reward)}</span>
+        </div>
+        <div class="city-name">${city.name}</div>
+        <div class="city-badges">
+          <span class="badge trophy">🏆 ${city.trophies}</span>
+          <span class="badge entry">🪙 ${city.entry}</span>
+          <span class="badge">${city.rule}</span>
+        </div>
+      `;
+      card.addEventListener('click', ()=> startMatchmaking(city));
+      el.appendChild(card);
+    });
+  }
+
+  let pendingOpponent = { name:'Okuneva', flag:'🇺🇸', rating:1495 };
+  let pendingMode = '1v1';
+
+  function startMatchmaking(city){
+    state.wager = city.entry;
+    state.vsBot = (pendingMode === 'bot');
+    state.botPlayer = 2;
+    pendingOpponent = state.vsBot
+      ? { name:'CPU Bot', flag:'🤖', rating:1400 }
+      : { name:'Okuneva', flag:'🇺🇸', rating:1495 };
+    showScreen('screenMatch');
+    document.getElementById('matchSpinner').style.display = 'flex';
+    document.getElementById('vsBanner').hidden = true;
+    document.getElementById('goBanner').classList.remove('show');
+
+    setTimeout(()=>{
+      document.getElementById('matchSpinner').style.display = 'none';
+      document.getElementById('vsBanner').hidden = false;
+      document.getElementById('vsOpponentName').textContent = pendingOpponent.name;
+      document.getElementById('vsOpponentFlag').textContent = pendingOpponent.flag;
+      const coinEl = document.getElementById('vsCoin');
+      const target = city.entry*2;
+      let shown = 0;
+      const step = Math.max(1, Math.round(target/20));
+      const timer = setInterval(()=>{
+        shown = Math.min(target, shown+step);
+        coinEl.textContent = '🪙 ' + shown;
+        if(shown>=target) clearInterval(timer);
+      }, 30);
+    }, 1400);
+
+    setTimeout(()=>{
+      document.getElementById('goBanner').classList.add('show');
+    }, 2800);
+
+    setTimeout(()=>{
+      startMatch(city);
+    }, 3800);
+  }
+
+  function startMatch(city){
+    document.getElementById('p2name').textContent = pendingOpponent.name;
+    document.getElementById('p2flag').textContent = pendingOpponent.flag;
+    document.getElementById('p2rating').textContent = pendingOpponent.rating;
+    restartGame();
+    showScreen('screenGame');
+    updateEquippedCueMsg();
+    showTurnBanner("C'est à vous de break !");
+  }
+
+  document.getElementById('modeGrid').addEventListener('click', e=>{
+    const card = e.target.closest('.mode-card');
+    if(!card) return;
+    pendingMode = card.dataset.mode;
+    renderCityCarousel();
+    showScreen('screenLobby');
+  });
+  document.getElementById('lobbyBackBtn').addEventListener('click', ()=> showScreen('screenMenu'));
+  document.getElementById('navQueuesBtn').addEventListener('click', ()=>{
+    renderCuesScreen();
+    showScreen('screenCues');
+  });
+  document.getElementById('cuesBackBtn').addEventListener('click', ()=> showScreen('screenMenu'));
+  document.getElementById('menuGearBtn').addEventListener('click', ()=>{
+    alert('Réglages indisponibles dans cette démo.');
+  });
+  document.getElementById('gameGearBtn').addEventListener('click', ()=>{
+    if(confirm('Restart the match?')) restartGame();
+  });
+
+  function showTurnBanner(text){
+    const el = document.getElementById('turnBanner');
+    el.textContent = text;
+    el.classList.add('show');
+    clearTimeout(showTurnBanner._t);
+    showTurnBanner._t = setTimeout(()=> el.classList.remove('show'), 1800);
+  }
+
+  // ---------- pool game engine (unchanged physics/rules) ----------
+  const canvas = document.getElementById('table');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  const RAIL = 52;
+  const PLAY = { left:RAIL, top:RAIL, right:W-RAIL, bottom:H-RAIL };
+  const BALL_R = 11;
+  const POCKET_R = 22;
+  const FRICTION = 0.9885;
+  const STOP_SPEED = 0.06;
+
+  const pockets = [
+    {x:PLAY.left, y:PLAY.top},
+    {x:W/2, y:PLAY.top-4},
+    {x:PLAY.right, y:PLAY.top},
+    {x:PLAY.left, y:PLAY.bottom},
+    {x:W/2, y:PLAY.bottom+4},
+    {x:PLAY.right, y:PLAY.bottom},
+  ];
+
+  const SOLID = 'solid', STRIPE = 'stripe', EIGHT='eight', CUE='cue';
+
+  const ballDefs = [
+    {n:1,color:'#e8c93a',type:SOLID},
+    {n:2,color:'#2c6fe0',type:SOLID},
+    {n:3,color:'#e0362c',type:SOLID},
+    {n:4,color:'#8a3ce0',type:SOLID},
+    {n:5,color:'#e8792a',type:SOLID},
+    {n:6,color:'#2ca85a',type:SOLID},
+    {n:7,color:'#8a3b2a',type:SOLID},
+    {n:8,color:'#111111',type:EIGHT},
+    {n:9,color:'#e8c93a',type:STRIPE},
+    {n:10,color:'#2c6fe0',type:STRIPE},
+    {n:11,color:'#e0362c',type:STRIPE},
+    {n:12,color:'#8a3ce0',type:STRIPE},
+    {n:13,color:'#e8792a',type:STRIPE},
+    {n:14,color:'#2ca85a',type:STRIPE},
+    {n:15,color:'#8a3b2a',type:STRIPE},
+  ];
+
+  let balls = [];
+
+  // lighten/darken a #rrggbb color by fraction f (-1..1) for glossy shading
+  function shade(hex, f){
+    const n = parseInt(hex.slice(1),16);
+    let r=(n>>16)&255, g=(n>>8)&255, b=n&255;
+    const mix = f>0 ? 255 : 0;
+    const amt = Math.abs(f);
+    r = Math.round(r + (mix-r)*amt);
+    g = Math.round(g + (mix-g)*amt);
+    b = Math.round(b + (mix-b)*amt);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  function rackPositions(){
+    // apex near right third, cue ball near left third (like reference layout, mirrored to taste)
+    const apexX = PLAY.left + (PLAY.right-PLAY.left)*0.72;
+    const apexY = (PLAY.top+PLAY.bottom)/2;
+    const dx = BALL_R*1.75;
+    const dy = BALL_R*2.02;
+    // build triangle rows (1,2,3,4,5)
+    let positions = [];
+    for(let row=0; row<5; row++){
+      for(let col=0; col<=row; col++){
+        const x = apexX + row*dx;
+        const y = apexY - row*(dy/2) + col*dy;
+        positions.push({x,y});
+      }
+    }
+    return positions;
+  }
+
+  function setupBalls(){
+    balls = [];
+    balls.push({id:'cue',x:PLAY.left+(PLAY.right-PLAY.left)*0.22,y:(PLAY.top+PLAY.bottom)/2,
+      vx:0,vy:0,r:BALL_R,color:'#f5f3ea',type:CUE,n:0,potted:false,angle:0});
+    const pos = rackPositions();
+    const order = [1,9,2,10,8,3,11,4,12,5,13,6,14,7,15];
+    order.forEach((n,i)=>{
+      const def = ballDefs.find(b=>b.n===n);
+      balls.push({id:'b'+n,x:pos[i].x,y:pos[i].y,vx:0,vy:0,r:BALL_R,
+        color:def.color,type:def.type,n:n,potted:false,angle:0});
+    });
+  }
+
+  let state = {
+    currentPlayer:1,
+    groups:{1:null,2:null}, // 'solid' | 'stripe'
+    gameOver:false,
+    winner:null,
+    aimAngle:null, // direction the cue points, set only by dragging the ruler
+    inMotion:false,
+    shotContacts:null, // set during a shot: {firstHitType, potted:[], cueScratched}
+    firstBreak:true,
+    ballInHand:true,
+    placingBall:false,
+    balance:{1:profile.coins, 2:1500},
+    wager:150,
+    vsBot:false,
+    botPlayer:2,
+    power:0, // 0..1, set via the rack cue pull or the power slider, fired by the shoot button
+    striking:false, // true from the moment a shot is committed until the impulse lands — locks input even before the cue ball's speed clears STOP_SPEED
+    rackDragging:false,
+    rackDragStartY:0,
+    rackStartPower:0,
+    rulerDragging:false,
+    spin:{x:0, y:0}, // -1..1, set by dragging the spin widget: x = left/right english, y = top(-1, follow)/bottom(+1, draw)
+  };
+
+  const MAX_DRAG = 140;
+  const BASE_MAX_POWER = 14;
+  const SPIN_FOLLOW_STRENGTH = 0.55; // fraction of shot speed added/removed along the cue ball's heading on first contact
+  const SPIN_RAIL_STRENGTH = 0.5; // fraction of rail-parallel speed kicked sideways ("english") off a cushion
+  const SPIN_RAIL_DECAY = 0.45; // how much side-spin survives each cushion contact
+
+  // ---------- cue selection ----------
+  // Realistic cue art: dark wood/gold butt, lighter mid-wrap, pale leather tip,
+  // plus two gold/accent joint rings drawn near the tip — styled after
+  // classic billiards cues instead of flat neon bars.
+  const cues = [
+    {id:'oak', name:'Classic Oak', rarity:'Common · Lv 0', power:5, aim:7, spin:4,
+      buttColor:'#241206', midColor:'#7a4a1e', tipColor:'#f0e2c8', ringColor:'#d4af37'},
+    {id:'emerald', name:'Emerald Gold', rarity:'Rare · Lv 2', power:7, aim:8, spin:6,
+      buttColor:'#0a2418', midColor:'#1f6b3a', tipColor:'#f0ead6', ringColor:'#e9c46a'},
+    {id:'vortex', name:'Neon Vortex Cue', rarity:'Epic · Lv 3', power:10, aim:8, spin:9,
+      buttColor:'#0a0620', midColor:'#8a2ce0', tipColor:'#28f0ff', ringColor:'#28f0ff'},
+  ];
+  let selectedCueId = 'emerald';
+
+  function currentCue(){ return cues.find(c=>c.id===selectedCueId); }
+  function maxPowerForCue(){ return BASE_MAX_POWER * (currentCue().power/7); }
+  function maxSpinForCue(){ return currentCue().spin/10; }
+
+  function cueStickGradientCSS(c, angleDeg){
+    return `linear-gradient(${angleDeg}deg, ${c.tipColor} 0%, ${c.midColor} 22%, ${c.buttColor} 100%)`;
+  }
+
+  function renderCueRack(){
+    const c = currentCue();
+    document.getElementById('rackCueBar').style.background = cueStickGradientCSS(c,180);
+    document.getElementById('rackRing1').style.top = '16%';
+    document.getElementById('rackRing1').style.background = c.ringColor;
+    document.getElementById('rackRing2').style.top = '27%';
+    document.getElementById('rackRing2').style.background = c.ringColor;
+    document.getElementById('rackCueName').textContent = c.name;
+    document.getElementById('rackPowerFill').style.width = (c.power*10)+'%';
+    document.getElementById('rackAimFill').style.width = (c.aim*10)+'%';
+    document.getElementById('rackSpinFill').style.width = (c.spin*10)+'%';
+
+    const thumbs = document.getElementById('rackThumbs');
+    thumbs.innerHTML = '';
+    cues.forEach(cue=>{
+      const t = document.createElement('div');
+      t.className = 'rack-thumb' + (cue.id===selectedCueId ? ' selected':'');
+      t.style.background = cueStickGradientCSS(cue,90);
+      t.title = cue.name;
+      t.addEventListener('click', ()=>{ if(!controlsLocked()) setSelectedCue(cue.id); });
+      thumbs.appendChild(t);
+    });
+  }
+
+  function setSelectedCue(id){
+    selectedCueId = id;
+    renderCueRack();
+    updateEquippedCueMsg();
+  }
+
+  function renderCuesScreen(){
+    const el = document.getElementById('cuesGrid');
+    el.innerHTML = '';
+    cues.forEach(cue=>{
+      const equipped = cue.id === selectedCueId;
+      const card = document.createElement('div');
+      card.className = 'cue-card' + (equipped ? ' equipped' : '');
+      card.innerHTML = `
+        <div class="cue-visual" style="background:${cueStickGradientCSS(cue,90)}"></div>
+        <div>
+          <div class="cue-card-name">${cue.name}</div>
+          <div class="cue-card-rarity">${cue.rarity}</div>
+        </div>
+        <div class="cue-card-stats">
+          <div class="cue-card-stat-row"><span class="label">Power</span><div class="cue-card-stat-bar"><div class="fill" style="width:${cue.power*10}%"></div></div></div>
+          <div class="cue-card-stat-row"><span class="label">Aim</span><div class="cue-card-stat-bar"><div class="fill" style="width:${cue.aim*10}%"></div></div></div>
+          <div class="cue-card-stat-row"><span class="label">Spin</span><div class="cue-card-stat-bar"><div class="fill" style="width:${cue.spin*10}%"></div></div></div>
+        </div>
+        <button class="cue-card-btn"${equipped ? ' disabled' : ''}>${equipped ? '✓ Équipée' : 'Équiper'}</button>
+      `;
+      if(!equipped){
+        card.querySelector('.cue-card-btn').addEventListener('click', ()=>{
+          setSelectedCue(cue.id);
+          renderCuesScreen();
+        });
+      }
+      el.appendChild(card);
+    });
+  }
+
+  function ballsMoving(){
+    return balls.some(b=>!b.potted && (Math.abs(b.vx)>STOP_SPEED || Math.abs(b.vy)>STOP_SPEED));
+  }
+
+  // every aiming/power/spin control checks this before accepting input: it
+  // covers not just "balls currently rolling" but the strike animation
+  // itself, so input locks the instant a shot is committed rather than
+  // waiting for the cue ball's speed to clear STOP_SPEED next frame
+  function controlsLocked(){
+    return state.gameOver || state.striking || ballsMoving();
+  }
+
+  function resetShotTracking(){
+    state.shotContacts = {firstHitType:null, potted:[], cueScratched:false};
+  }
+
+  // shared by every way to fire: releasing the power slider, releasing the
+  // rack-cue pull, or pressing the shoot button — always uses the aim angle
+  // set by dragging the table. Locks input immediately, plays a quick
+  // forward strike animation (the stick rushes from its pulled-back position
+  // to the ball), then hands off to applyShotImpulse once the tip "lands".
+  function fireShot(angle, powerFrac){
+    if(state.striking) return;
+    state.striking = true;
+    const startPower = powerFrac;
+    const duration = 110; // ms — fast enough to read as a strike, not a slider animation
+    const startTime = performance.now();
+    (function animate(now){
+      const t = Math.min(1, (now-startTime)/duration);
+      const eased = 1 - Math.pow(1-t, 2); // ease-out: quick, decelerating toward contact
+      state.power = startPower * (1-eased);
+      updateRackVisual(state.power);
+      updateRulerVisual(state.power);
+      drawTable();
+      if(t < 1) requestAnimationFrame(animate);
+      else applyShotImpulse(angle, startPower);
+    })(startTime);
+  }
+
+  function applyShotImpulse(angle, powerFrac){
+    const cue = balls.find(b=>b.id==='cue');
+    const power = powerFrac*maxPowerForCue();
+    cue.vx = Math.cos(angle)*power;
+    cue.vy = Math.sin(angle)*power;
+    resetShotTracking();
+    // spin is captured once at the moment of firing: the cue ball travels in
+    // a straight line (no curve) until its first contact, so the heading it
+    // fires along doubles as the direction "follow"/"draw" pushes along
+    state.shotContacts.cueDir = {x:Math.cos(angle), y:Math.sin(angle)};
+    state.shotContacts.spinY = state.spin.y;
+    state.shotContacts.spinApplied = false;
+    state.shotContacts.railSpinRemaining = state.spin.x;
+    state.shotContacts.shotSpeed = power;
+    state.inMotion = true;
+    state.striking = false;
+    state.power = 0;
+    updateRackVisual(0);
+    updateRulerVisual(0);
+    setSpin(0, 0);
+    loop();
+  }
+
+  // LEFT (shoot power): slides the rack cue back in its slot as it's pulled
+  function updateRackVisual(frac){
+    document.getElementById('rackCuePreview').style.transform =
+      `rotate(-18deg) translateY(${frac*26}px)`;
+  }
+
+  // RIGHT (power): moves the slider's mask+thumb to match the current pull
+  // strength, in lockstep with whatever last set state.power (the slider
+  // itself, or pulling the rack cue back). The mask shrinks from the top as
+  // power rises, uncovering the green-to-red track beneath it; the thumb
+  // sits right on that boundary, centered on it via its own CSS transform.
+  function updateRulerVisual(frac){
+    const wrap = document.getElementById('powerWrap');
+    const pct = Math.round(frac*100);
+    document.getElementById('powerFill').style.height = ((1-frac)*100)+'%';
+    document.getElementById('powerArrow').style.bottom = (frac*100)+'%';
+    document.getElementById('powerLabel').textContent = pct + '%';
+    wrap.setAttribute('aria-valuenow', pct);
+    wrap.classList.toggle('charged', frac > 0.005);
+    wrap.classList.toggle('max', frac >= 0.97);
+  }
+
+  // ---------- physics ----------
+  // Collisions are resolved in fixed-size substeps rather than once per
+  // animation frame: at max cue power a ball can travel well over its own
+  // diameter in a single frame, which would let it tunnel straight through
+  // another ball (most noticeably on the break) or skip clean over a pocket
+  // mouth without ever being detected inside it. Capping how far any ball
+  // can move per substep guarantees two balls can't fully cross paths
+  // between checks.
+  const SUBSTEP_DIST = BALL_R*0.5;
+
+  // side spin ("english") bleeds a sideways kick into the cue ball each time
+  // it bounces off a cushion, and fades with each successive rail contact —
+  // tangentAxis is the axis parallel to the rail that was hit ('y' for the
+  // left/right rails, 'x' for the top/bottom rails)
+  function applyRailSpin(b, tangentAxis){
+    if(b.id!=='cue' || !state.shotContacts) return;
+    const remaining = state.shotContacts.railSpinRemaining;
+    if(!remaining) return;
+    const speed = Math.hypot(b.vx,b.vy);
+    const kick = remaining*maxSpinForCue()*speed*SPIN_RAIL_STRENGTH;
+    if(tangentAxis==='y') b.vy += kick; else b.vx += kick;
+    state.shotContacts.railSpinRemaining *= SPIN_RAIL_DECAY;
+  }
+
+  function step(){
+    let maxSpeed = 0;
+    balls.forEach(b=>{
+      if(b.potted) return;
+      maxSpeed = Math.max(maxSpeed, Math.hypot(b.vx,b.vy));
+    });
+    const subSteps = Math.max(1, Math.ceil(maxSpeed/SUBSTEP_DIST));
+
+    for(let s=0; s<subSteps; s++){
+      // integrate
+      balls.forEach(b=>{
+        if(b.potted) return;
+        const dist = Math.hypot(b.vx, b.vy)/subSteps;
+        b.x += b.vx/subSteps;
+        b.y += b.vy/subSteps;
+        // roll: spin proportional to distance traveled this substep (arc
+        // length / radius), so the ball visibly tumbles along its path
+        // instead of sliding.
+        if(dist > 0) b.angle += dist / b.r;
+      });
+
+      // cushions
+      balls.forEach(b=>{
+        if(b.potted) return;
+        if(b.x - b.r < PLAY.left){ b.x = PLAY.left + b.r; b.vx = -b.vx*0.92; applyRailSpin(b,'y'); }
+        if(b.x + b.r > PLAY.right){ b.x = PLAY.right - b.r; b.vx = -b.vx*0.92; applyRailSpin(b,'y'); }
+        if(b.y - b.r < PLAY.top){ b.y = PLAY.top + b.r; b.vy = -b.vy*0.92; applyRailSpin(b,'x'); }
+        if(b.y + b.r > PLAY.bottom){ b.y = PLAY.bottom - b.r; b.vy = -b.vy*0.92; applyRailSpin(b,'x'); }
+      });
+
+      // ball-ball collisions
+      for(let i=0;i<balls.length;i++){
+        const a = balls[i];
+        if(a.potted) continue;
+        for(let j=i+1;j<balls.length;j++){
+          const b = balls[j];
+          if(b.potted) continue;
+          const dx = b.x-a.x, dy = b.y-a.y;
+          const dist = Math.hypot(dx,dy);
+          const minDist = a.r+b.r;
+          if(dist < minDist && dist > 0){
+            const nx = dx/dist, ny = dy/dist;
+            const overlap = (minDist-dist)/2;
+            a.x -= nx*overlap; a.y -= ny*overlap;
+            b.x += nx*overlap; b.y += ny*overlap;
+            const rvx = a.vx-b.vx, rvy = a.vy-b.vy;
+            const rvn = rvx*nx + rvy*ny;
+            if(rvn > 0){
+              a.vx -= rvn*nx; a.vy -= rvn*ny;
+              b.vx += rvn*nx; b.vy += rvn*ny;
+            }
+            // record first contact type for cue ball's shot
+            if(state.shotContacts && !state.shotContacts.firstHitType){
+              if(a.id==='cue' && b.type!==CUE) state.shotContacts.firstHitType = b.type;
+              else if(b.id==='cue' && a.type!==CUE) state.shotContacts.firstHitType = a.type;
+            }
+            // follow/draw: top or bottom spin doesn't change the cue ball's
+            // path before contact, but pushes it forward (follow) or
+            // backward (draw) along its original heading right as it hits
+            // the first object ball — applied once per shot
+            if(state.shotContacts && !state.shotContacts.spinApplied){
+              const cueBall = a.id==='cue' ? a : (b.id==='cue' ? b : null);
+              const otherBall = cueBall===a ? b : a;
+              if(cueBall && otherBall.type!==CUE){
+                state.shotContacts.spinApplied = true;
+                const followMag = -state.shotContacts.spinY*maxSpinForCue()*state.shotContacts.shotSpeed*SPIN_FOLLOW_STRENGTH;
+                const dir = state.shotContacts.cueDir;
+                cueBall.vx += dir.x*followMag;
+                cueBall.vy += dir.y*followMag;
+              }
+            }
+          }
+        }
+      }
+
+      // pockets
+      balls.forEach(b=>{
+        if(b.potted) return;
+        for(const p of pockets){
+          if(Math.hypot(b.x-p.x, b.y-p.y) < POCKET_R){
+            b.potted = true;
+            b.vx = 0; b.vy = 0;
+            if(state.shotContacts){
+              if(b.id==='cue') state.shotContacts.cueScratched = true;
+              else state.shotContacts.potted.push(b);
+            }
+            break;
+          }
+        }
+      });
+    }
+
+    // friction applied once per full frame, independent of substep count
+    balls.forEach(b=>{
+      if(b.potted) return;
+      b.vx *= FRICTION;
+      b.vy *= FRICTION;
+      if(Math.abs(b.vx) < STOP_SPEED) b.vx = 0;
+      if(Math.abs(b.vy) < STOP_SPEED) b.vy = 0;
+    });
+  }
+
+  // ---------- turn resolution ----------
+  function ballsRemaining(group){
+    return balls.filter(b=> !b.potted && b.type===group).length;
+  }
+
+  function ballsPotted(group){
+    return group ? balls.filter(b=>b.type===group && b.potted).length : 0;
+  }
+
+  function updateHUD(){
+    function label(g){ return g===SOLID? 'Solids (1-7)' : 'Stripes (9-15)'; }
+    document.getElementById('p1group').textContent = 'Group: ' + (state.groups[1] ? label(state.groups[1]) : '—');
+    document.getElementById('p2group').textContent = 'Group: ' + (state.groups[2] ? label(state.groups[2]) : '—');
+    renderMiniBalls('p1balls', state.groups[1]);
+    renderMiniBalls('p2balls', state.groups[2]);
+    document.getElementById('p1box').style.opacity = state.currentPlayer===1?1:.55;
+    document.getElementById('p2box').style.opacity = state.currentPlayer===2?1:.55;
+    document.getElementById('p1coins').textContent = '🪙 ' + state.balance[1];
+    document.getElementById('p2coins').textContent = '🪙 ' + state.balance[2];
+    document.getElementById('potAmount').textContent = state.wager*2;
+    document.getElementById('p1score').textContent = ballsPotted(state.groups[1]);
+    document.getElementById('p2score').textContent = ballsPotted(state.groups[2]);
+  }
+
+  function renderMiniBalls(elId, group){
+    const el = document.getElementById(elId);
+    el.innerHTML = '';
+    if(!group) return;
+    balls.filter(b=>b.type===group).forEach(b=>{
+      const d = document.createElement('div');
+      d.className='mini-ball';
+      d.style.background = b.potted ? 'transparent' : b.color;
+      d.style.border = b.potted ? '1px dashed #555' : '1px solid rgba(0,0,0,.4)';
+      el.appendChild(d);
+    });
+  }
+
+  function setStatus(msg){
+    document.getElementById('statusMsg').textContent = msg;
+  }
+
+  function endGame(winner, reason){
+    state.gameOver = true;
+    state.winner = winner;
+    const loser = winner===1?2:1;
+    const pot = state.wager*2;
+    state.balance[winner] += state.wager;
+    state.balance[loser] -= state.wager;
+
+    // player 1 (Chacal243) is the persisted account across every mode;
+    // sync the running match balance back into the saved profile so it
+    // survives a reload, and count a win toward the trophy total
+    if(winner===1) profile.trophies += 1;
+    profile.coins = state.balance[1];
+    saveProfile();
+    renderProfileStats();
+
+    updateHUD();
+
+    document.getElementById('overlayText').textContent =
+      '🏆 Player '+winner+' wins! ' + reason;
+    document.getElementById('overlayPayout').textContent =
+      'Takes the pot of '+pot+' 🪙 — now '+state.balance[winner]+
+      ' (Player '+loser+': '+state.balance[loser]+')';
+    document.getElementById('restartBtn2').textContent = 'REMATCH FOR ' + state.wager + ' 🎲';
+    document.getElementById('overlay').classList.add('show');
+  }
+
+  function resolveShot(){
+    const sc = state.shotContacts;
+    const cp = state.currentPlayer;
+    const other = cp===1?2:1;
+    const eightPotted = sc.potted.some(b=>b.type===EIGHT);
+
+    if(eightPotted){
+      const hadClearedGroup = state.groups[cp] && ballsRemaining(state.groups[cp])===0;
+      if(hadClearedGroup && !sc.cueScratched){
+        endGame(cp, 'Legally sank the 8-ball after clearing the table.');
+      } else {
+        endGame(other, sc.cueScratched ? 'Scratched while sinking the 8-ball.' : 'Sank the 8-ball too early.');
+      }
+      spotCueIfNeeded();
+      updateHUD();
+      return;
+    }
+
+    // assign groups on first legally potted object ball
+    if(!state.groups[1] && !state.groups[2] && sc.potted.length>0){
+      const firstType = sc.potted[0].type;
+      if(firstType===SOLID || firstType===STRIPE){
+        state.groups[cp] = firstType;
+        state.groups[other] = firstType===SOLID?STRIPE:SOLID;
+      }
+    }
+
+    const myGroup = state.groups[cp];
+    const pottedOwn = myGroup ? sc.potted.some(b=>b.type===myGroup) : sc.potted.length>0 && state.firstBreak;
+    const pottedOpponent = myGroup ? sc.potted.some(b=>b.type!==myGroup && b.type!==EIGHT) : false;
+
+    let foul = false;
+    let reason = '';
+    if(sc.cueScratched){ foul=true; reason='Scratch — cue ball is back in play.'; }
+    else if(myGroup && sc.firstHitType && sc.firstHitType!==myGroup){ foul=true; reason='Hit the wrong group first.'; }
+    else if(myGroup && !sc.firstHitType){ foul=true; reason='No ball contacted.'; }
+
+    state.firstBreak = false;
+
+    if(sc.cueScratched){
+      // bring the potted cue ball back onto the table as a starting point for placement
+      spotCueIfNeeded();
+    }
+
+    if(foul){
+      setStatus('Foul — ' + reason + ' Player '+other+' has ball in hand.');
+      state.currentPlayer = other;
+      setBallInHand(true);
+    } else if(pottedOwn && !pottedOpponent){
+      setStatus('Player '+cp+' potted a ball — shoot again!');
+      // same player continues
+    } else if(pottedOwn && pottedOpponent){
+      setStatus('Mixed pot — Player '+other+"'s turn.");
+      state.currentPlayer = other;
+    } else {
+      setStatus("No ball potted — Player "+other+"'s turn.");
+      state.currentPlayer = other;
+    }
+    if(state.currentPlayer !== cp) showTurnBanner("C'est votre tour");
+    updateHUD();
+    if(!state.ballInHand) drawTable();
+    if(state.vsBot && state.currentPlayer===state.botPlayer && !state.gameOver){
+      setTimeout(botTakeTurn, 900);
+    }
+  }
+
+  function spotCueIfNeeded(){
+    const cue = balls.find(b=>b.id==='cue');
+    cue.potted = false;
+    cue.vx = 0; cue.vy = 0;
+    let x = PLAY.left + (PLAY.right-PLAY.left)*0.22;
+    let y = (PLAY.top+PLAY.bottom)/2;
+    // nudge if overlapping another ball
+    let tries=0;
+    while(tries<40 && balls.some(b=>b!==cue && !b.potted && Math.hypot(b.x-x,b.y-y) < b.r+cue.r+2)){
+      y += 14; if(y>PLAY.bottom-20){ y = PLAY.top+20; x += 20; }
+      tries++;
+    }
+    cue.x = x; cue.y = y;
+  }
+
+  // corner scroll ornament (carved-gold look), drawn in the wood rail band —
+  // shape occupies the (0,0)-(size,size) quadrant and is rotated per corner
+  // so it always curls inward, toward the table
+  function drawCornerFlourish(x,y,angle,size){
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(angle);
+    const g = ctx.createLinearGradient(0,0,size,size);
+    g.addColorStop(0,'#fff3cf');
+    g.addColorStop(0.55,'#e0b04a');
+    g.addColorStop(1,'#8a5a12');
+    ctx.fillStyle = g;
+    ctx.strokeStyle = 'rgba(50,30,5,.8)';
+    ctx.lineWidth = 1.4;
+
+    // primary scroll leaf
+    ctx.beginPath();
+    ctx.moveTo(2,2);
+    ctx.bezierCurveTo(-2, size*0.65, size*0.65, -2, size, 2);
+    ctx.bezierCurveTo(size*0.62, size*0.22, size*0.22, size*0.62, 2, 2);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+
+    // nested highlight curl for a carved/relief look
+    ctx.beginPath();
+    ctx.moveTo(6,6);
+    ctx.bezierCurveTo(4, size*0.38, size*0.38, 4, size*0.62, 7);
+    ctx.bezierCurveTo(size*0.36, 10, 10, size*0.36, 6, 6);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255,255,255,.4)';
+    ctx.fill();
+
+    // tip gem
+    ctx.beginPath();
+    ctx.arc(size-4, 4, 3.6, 0, Math.PI*2);
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // ---------- rendering ----------
+  function drawTable(){
+    ctx.clearRect(0,0,W,H);
+
+    // wood rail bevel: a bright inner lip where the cushion meets the rail,
+    // and a dark outer edge, so the wood reads as a raised frame
+    ctx.strokeStyle = 'rgba(255,255,255,.3)';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(PLAY.left-12, PLAY.top-12, (PLAY.right-PLAY.left)+24, (PLAY.bottom-PLAY.top)+24);
+    ctx.strokeStyle = 'rgba(0,0,0,.35)';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(2,2,W-4,H-4);
+
+    // gold scroll flourishes anchored right at each canvas corner, curling
+    // inward across the wood rail band toward the table
+    const fSize = 42, fInset = 4;
+    drawCornerFlourish(fInset, fInset, 0, fSize);
+    drawCornerFlourish(W-fInset, fInset, Math.PI/2, fSize);
+    drawCornerFlourish(W-fInset, H-fInset, Math.PI, fSize);
+    drawCornerFlourish(fInset, H-fInset, -Math.PI/2, fSize);
+
+    // felt cushion — filled explicitly so the wood rail (canvas background)
+    // shows only in the band outside this rectangle
+    const feltPad = 8;
+    const feltGrad = ctx.createRadialGradient(W/2,H*0.32,40, W/2,H/2, W*0.62);
+    feltGrad.addColorStop(0, '#a4aaae');
+    feltGrad.addColorStop(0.6, '#8a9094');
+    feltGrad.addColorStop(1, '#5c6266');
+    ctx.fillStyle = feltGrad;
+    ctx.fillRect(PLAY.left-feltPad, PLAY.top-feltPad,
+      (PLAY.right-PLAY.left)+feltPad*2, (PLAY.bottom-PLAY.top)+feltPad*2);
+
+    // dark grey border framing the cloth, distinct from the wood rail outside it
+    ctx.strokeStyle = 'rgba(40,44,48,.9)';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(PLAY.left-feltPad, PLAY.top-feltPad,
+      (PLAY.right-PLAY.left)+feltPad*2, (PLAY.bottom-PLAY.top)+feltPad*2);
+
+    // subtle centered watermark — a city skyline with a cathedral silhouette,
+    // woven translucently into the cloth
+    ctx.save();
+    ctx.globalAlpha = 0.08;
+    ctx.translate(W/2, H/2);
+    ctx.beginPath();
+    ctx.arc(0, 0, 52, 0, Math.PI*2);
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = '#fff';
+    const groundY = 20;
+    [ {x:-46,w:14,h:20}, {x:-30,w:11,h:30}, {x:-17,w:12,h:16},
+      {x:5,w:12,h:16}, {x:17,w:11,h:27}, {x:30,w:14,h:19} ]
+      .forEach(b=> ctx.fillRect(b.x, groundY-b.h, b.w, b.h));
+
+    // cathedral body, pointed roof/spire, and a small rose window
+    ctx.fillRect(-10, -6, 20, groundY+6);
+    ctx.beginPath();
+    ctx.moveTo(-10,-6); ctx.lineTo(0,-25); ctx.lineTo(10,-6); ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(0, 3, 4, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+
+    // diamond markers on rails
+    ctx.fillStyle = 'rgba(255,240,200,.85)';
+    for(let i=1;i<8;i++){
+      const x = PLAY.left + (PLAY.right-PLAY.left)*i/8;
+      ctx.beginPath(); ctx.arc(x, PLAY.top-26, 2.6,0,7); ctx.fill();
+      ctx.beginPath(); ctx.arc(x, PLAY.bottom+26, 2.6,0,7); ctx.fill();
+    }
+    for(let i=1;i<4;i++){
+      const y = PLAY.top + (PLAY.bottom-PLAY.top)*i/4;
+      ctx.beginPath(); ctx.arc(PLAY.left-26, y, 2.6,0,7); ctx.fill();
+      ctx.beginPath(); ctx.arc(PLAY.right+26, y, 2.6,0,7); ctx.fill();
+    }
+
+    // pockets — smooth metallic trim ring around a dark, gently lit mouth
+    pockets.forEach(p=>{
+      const mouthGrad = ctx.createRadialGradient(p.x-6,p.y-6,2, p.x,p.y,POCKET_R);
+      mouthGrad.addColorStop(0, '#3c3c3c');
+      mouthGrad.addColorStop(0.55, '#161616');
+      mouthGrad.addColorStop(1, '#000');
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,POCKET_R,0,Math.PI*2);
+      ctx.fillStyle = mouthGrad;
+      ctx.fill();
+
+      const rimGrad = ctx.createLinearGradient(p.x-POCKET_R,p.y-POCKET_R,p.x+POCKET_R,p.y+POCKET_R);
+      rimGrad.addColorStop(0, '#f2f4f7');
+      rimGrad.addColorStop(0.5, '#9aa0aa');
+      rimGrad.addColorStop(1, '#5a5f68');
+      ctx.strokeStyle = rimGrad;
+      ctx.lineWidth = 3.5;
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(233,196,106,.55)';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    });
+
+    // subtle red "hit area" target rings around the four corner pockets
+    // (indices 0,2,3,5 — the two side pockets at index 1 and 4 are excluded)
+    [0,2,3,5].forEach(i=>{
+      const p = pockets[i];
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, POCKET_R+9, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(224,54,44,.35)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3,4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    // aim line — direction comes from dragging anywhere on the table, which
+    // rotates the cue stick around the cue ball; the stick visually pulls
+    // back with state.power, set by the power slider or by pulling the rack
+    // cue directly.
+    const canShowCue = !ballsMoving() && !state.gameOver && !state.ballInHand && state.aimAngle!==null;
+    if(canShowCue){
+      const cue = balls.find(b=>b.id==='cue');
+      const angle = state.aimAngle;
+      const dragDist = state.power*MAX_DRAG;
+      const dirX = Math.cos(angle), dirY = Math.sin(angle);
+
+      // distance to the rail along a ray from (px,py) in direction (dx,dy) —
+      // caps the guide line at the cushion so it reads as one long line
+      // spanning the table, matching the reference (no bend, no fixed length)
+      function railDist(px,py,dx,dy){
+        let dist = Infinity;
+        if(dx>0) dist = Math.min(dist,(PLAY.right-px)/dx);
+        if(dx<0) dist = Math.min(dist,(PLAY.left-px)/dx);
+        if(dy>0) dist = Math.min(dist,(PLAY.bottom-py)/dy);
+        if(dy<0) dist = Math.min(dist,(PLAY.top-py)/dy);
+        return dist;
+      }
+
+      // same as railDist, but also reports which axis's rail was the
+      // limiting one — needed to mirror a direction off that cushion for the
+      // bounce-prediction line
+      function railHit(px,py,dx,dy){
+        let dist = Infinity, axis = null;
+        if(dx>0){ const d=(PLAY.right-px)/dx; if(d<dist){ dist=d; axis='x'; } }
+        if(dx<0){ const d=(PLAY.left-px)/dx; if(d<dist){ dist=d; axis='x'; } }
+        if(dy>0){ const d=(PLAY.bottom-py)/dy; if(d<dist){ dist=d; axis='y'; } }
+        if(dy<0){ const d=(PLAY.top-py)/dy; if(d<dist){ dist=d; axis='y'; } }
+        return {dist, axis};
+      }
+
+      const mainLen = railDist(cue.x,cue.y,dirX,dirY);
+      ctx.beginPath();
+      ctx.moveTo(cue.x, cue.y);
+      ctx.lineTo(cue.x + dirX*mainLen, cue.y + dirY*mainLen);
+      ctx.strokeStyle = 'rgba(255,255,255,.55)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([6,6]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // crosshair on the cue ball itself, marking the shot's origin point
+      ctx.beginPath();
+      ctx.arc(cue.x, cue.y, cue.r+5, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(255,255,255,.6)';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+      const ccs = 5;
+      ctx.beginPath();
+      ctx.moveTo(cue.x-ccs, cue.y); ctx.lineTo(cue.x+ccs, cue.y);
+      ctx.moveTo(cue.x, cue.y-ccs); ctx.lineTo(cue.x, cue.y+ccs);
+      ctx.strokeStyle = 'rgba(255,255,255,.75)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // crosshair — marks the first object ball this aim would actually
+      // strike (ghost-ball contact point), found by walking the aim ray
+      // out from the cue ball and testing each candidate ball's distance
+      // from that ray against the two balls' combined radius
+      let target = null, targetDist = Infinity, hitBall = null;
+      balls.forEach(ob=>{
+        if(ob.potted || ob.id==='cue') return;
+        const fx = ob.x-cue.x, fy = ob.y-cue.y;
+        const proj = fx*dirX + fy*dirY;
+        if(proj <= 0) return;
+        const closeX = cue.x+dirX*proj, closeY = cue.y+dirY*proj;
+        const offDist = Math.hypot(ob.x-closeX, ob.y-closeY);
+        const combined = ob.r+cue.r;
+        if(offDist < combined){
+          const backOff = Math.sqrt(Math.max(0, combined*combined - offDist*offDist));
+          const t = proj - backOff;
+          if(t > 0 && t < targetDist){
+            targetDist = t;
+            target = {x:cue.x+dirX*t, y:cue.y+dirY*t};
+            hitBall = ob;
+          }
+        }
+      });
+      if(target){
+        ctx.beginPath();
+        ctx.arc(target.x, target.y, BALL_R+3, 0, Math.PI*2);
+        ctx.strokeStyle = 'rgba(40,240,255,.85)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        const cs = 7;
+        ctx.beginPath();
+        ctx.moveTo(target.x-cs, target.y); ctx.lineTo(target.x+cs, target.y);
+        ctx.moveTo(target.x, target.y-cs); ctx.lineTo(target.x, target.y+cs);
+        ctx.strokeStyle = 'rgba(255,255,255,.9)';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        // collision prediction: the line of centers (contact point -> object
+        // ball) is the object ball's outgoing path; the cue ball's own
+        // post-contact path (assuming a plain stun shot, no spin) is what's
+        // left of its incoming velocity after removing the component along
+        // that same line of centers — i.e. the perpendicular "tangent" line.
+        // Both are cut at the rail so they read as one continuous prediction,
+        // same as the aim line.
+        const objDx = hitBall.x-target.x, objDy = hitBall.y-target.y;
+        const objDist = Math.hypot(objDx,objDy) || 1;
+        const objDirX = objDx/objDist, objDirY = objDy/objDist;
+        const objLen = railDist(hitBall.x, hitBall.y, objDirX, objDirY);
+        ctx.beginPath();
+        ctx.moveTo(hitBall.x, hitBall.y);
+        ctx.lineTo(hitBall.x+objDirX*objLen, hitBall.y+objDirY*objLen);
+        ctx.strokeStyle = 'rgba(255,212,59,.75)';
+        ctx.lineWidth = 1.3;
+        ctx.setLineDash([4,5]);
+        ctx.stroke();
+
+        const vinDotN = dirX*objDirX + dirY*objDirY;
+        let tanX = dirX - vinDotN*objDirX, tanY = dirY - vinDotN*objDirY;
+        const tanMag = Math.hypot(tanX,tanY);
+        if(tanMag > 0.001){
+          tanX /= tanMag; tanY /= tanMag;
+          const tanLen = railDist(target.x, target.y, tanX, tanY);
+          ctx.beginPath();
+          ctx.moveTo(target.x, target.y);
+          ctx.lineTo(target.x+tanX*tanLen, target.y+tanY*tanLen);
+          ctx.strokeStyle = 'rgba(255,47,208,.7)';
+          ctx.lineWidth = 1.3;
+          ctx.setLineDash([4,5]);
+          ctx.stroke();
+        }
+        ctx.setLineDash([]);
+      } else {
+        // aim doesn't reach any ball before a cushion — preview the bank:
+        // mirror the direction across whichever rail is hit first and draw a
+        // second dashed segment continuing from there, so a rail-bank shot
+        // can be lined up the same way a direct hit can.
+        const hit = railHit(cue.x, cue.y, dirX, dirY);
+        if(isFinite(hit.dist)){
+          const bx = cue.x+dirX*hit.dist, by = cue.y+dirY*hit.dist;
+          const bounceDirX = hit.axis==='x' ? -dirX : dirX;
+          const bounceDirY = hit.axis==='y' ? -dirY : dirY;
+          const bounceLen = railDist(bx, by, bounceDirX, bounceDirY);
+          ctx.beginPath();
+          ctx.moveTo(bx, by);
+          ctx.lineTo(bx+bounceDirX*bounceLen, by+bounceDirY*bounceLen);
+          ctx.strokeStyle = 'rgba(255,255,255,.35)';
+          ctx.lineWidth = 1.3;
+          ctx.setLineDash([4,5]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+
+      // cue stick — tip rests against the ball, butt pulls back with power.
+      // A real cue tapers (thin tip, thick butt), so it's drawn as a filled
+      // quadrilateral along the aim axis rather than a constant-width line.
+      const c = currentCue();
+      const tipGap = 2.5;
+      const stickLen = 340 + dragDist*1.4;
+      const tipX = cue.x - dirX*(cue.r+tipGap), tipY = cue.y - dirY*(cue.r+tipGap);
+      const buttX = tipX - dirX*stickLen, buttY = tipY - dirY*stickLen;
+      const grad = ctx.createLinearGradient(tipX,tipY,buttX,buttY);
+      grad.addColorStop(0, c.tipColor);
+      grad.addColorStop(0.08, c.tipColor);
+      grad.addColorStop(0.2, c.midColor);
+      grad.addColorStop(1, c.buttColor);
+
+      const nx = -dirY, ny = dirX; // perpendicular to the cue's axis
+      const tipHalf = 2, buttHalf = 7.5;
+
+      // clip the stick itself to the felt (the playing surface, inside the
+      // wood rail) so a long pull-back at high power tucks behind the rail
+      // cushion instead of reading as if it pokes off the edge of the canvas
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(PLAY.left, PLAY.top, PLAY.right-PLAY.left, PLAY.bottom-PLAY.top);
+      ctx.clip();
+
+      ctx.beginPath();
+      ctx.moveTo(tipX+nx*tipHalf, tipY+ny*tipHalf);
+      ctx.lineTo(buttX+nx*buttHalf, buttY+ny*buttHalf);
+      ctx.lineTo(buttX-nx*buttHalf, buttY-ny*buttHalf);
+      ctx.lineTo(tipX-nx*tipHalf, tipY-ny*tipHalf);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,.4)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      [tipGap+26, tipGap+46].forEach(off=>{
+        const rx = cue.x - dirX*off, ry = cue.y - dirY*off;
+        const ringHalf = tipHalf + (buttHalf-tipHalf)*Math.min(off/stickLen,1);
+        ctx.beginPath();
+        ctx.moveTo(rx+nx*(ringHalf+1.5), ry+ny*(ringHalf+1.5));
+        ctx.lineTo(rx-nx*(ringHalf+1.5), ry-ny*(ringHalf+1.5));
+        ctx.strokeStyle = c.ringColor;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      });
+
+      ctx.restore();
+    }
+    updateRackVisual(state.power);
+    document.getElementById('shootBtn').disabled = controlsLocked() || state.ballInHand;
+
+    // balls — every ball (solids, stripes, and the 8-ball) shows its color
+    // plus a white number circle, matching the reference art
+    balls.forEach(b=>{
+      if(b.potted) return;
+      // soft drop shadow on the felt — light source is upper-left, so the
+      // shadow falls to the lower-right, grounding the ball on the cloth
+      ctx.beginPath();
+      ctx.ellipse(b.x+3, b.y+4, b.r*0.9, b.r*0.55, 0, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(0,0,0,.28)';
+      ctx.fill();
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+      // glossy 3D shading: bright highlight near upper-left, true color at
+      // mid-radius, darker toward the rim — instead of a flat color fill
+      const glossGrad = ctx.createRadialGradient(
+        b.x-b.r*0.42, b.y-b.r*0.42, b.r*0.08,
+        b.x, b.y, b.r*1.05
+      );
+      glossGrad.addColorStop(0, shade(b.color,0.55));
+      glossGrad.addColorStop(0.45, b.color);
+      glossGrad.addColorStop(1, shade(b.color,-0.35));
+      ctx.fillStyle = glossGrad;
+      ctx.fill();
+      ctx.lineWidth=1;
+      ctx.strokeStyle='rgba(0,0,0,.35)';
+      ctx.stroke();
+
+      ctx.translate(b.x, b.y);
+
+      // sharp specular glint (light source doesn't move with the ball)
+      ctx.beginPath();
+      ctx.arc(-b.r*0.4, -b.r*0.4, b.r*0.18, 0, Math.PI*2);
+      ctx.fillStyle='rgba(255,255,255,.75)';
+      ctx.fill();
+
+      // surface markings spin with the ball's rotation angle so it reads as
+      // rolling along its path rather than sliding from point to point
+      if(b.type!==CUE){
+        ctx.rotate(b.angle || 0);
+        ctx.beginPath();
+        ctx.arc(0,0,b.r*0.55,0,Math.PI*2);
+        ctx.fillStyle = '#f5f3ea';
+        ctx.fill();
+        ctx.fillStyle = '#111';
+        ctx.font = 'bold 9px sans-serif';
+        ctx.textAlign='center';
+        ctx.textBaseline='middle';
+        ctx.fillText(b.n, 0, 0.5);
+      }
+      ctx.restore();
+    });
+
+    // ball-in-hand placement handle
+    if(state.ballInHand && !ballsMoving() && !state.gameOver){
+      const cue = balls.find(b=>b.id==='cue');
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cue.x, cue.y, cue.r+9, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(40,240,255,.9)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4,4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = 'rgba(40,240,255,.9)';
+      const arrow = (dx,dy)=>{
+        const bx = cue.x+dx*(cue.r+19), by = cue.y+dy*(cue.r+19);
+        ctx.beginPath();
+        if(dx!==0){
+          ctx.moveTo(bx+dx*6,by); ctx.lineTo(bx-dx*4,by-5); ctx.lineTo(bx-dx*4,by+5);
+        } else {
+          ctx.moveTo(bx,by+dy*6); ctx.lineTo(bx-5,by-dy*4); ctx.lineTo(bx+5,by-dy*4);
+        }
+        ctx.closePath();
+        ctx.fill();
+      };
+      arrow(1,0); arrow(-1,0); arrow(0,1); arrow(0,-1);
+      ctx.restore();
+    }
+  }
+
+  function loop(){
+    if(ballsMoving()){
+      step();
+      drawTable();
+      requestAnimationFrame(loop);
+    } else {
+      drawTable();
+      if(state.inMotion){
+        state.inMotion = false;
+        resolveShot();
+      }
+    }
+  }
+
+  // ---------- input ----------
+  // every drag control below is wired for both mouse and touch: each
+  // start/move/end trio is a named function registered for its mouse event
+  // *and* the matching touch event, rather than two parallel copies of the
+  // same logic. touchmove/touchstart listen with {passive:false} so
+  // preventDefault() can actually stop the page from scrolling while a drag
+  // is in progress — but only once a drag is confirmed active, so an idle
+  // touchmove elsewhere on the page (e.g. scrolling a menu) is untouched.
+  function clientXY(evt){
+    if(evt.touches && evt.touches.length) return {x:evt.touches[0].clientX, y:evt.touches[0].clientY};
+    if(evt.changedTouches && evt.changedTouches.length) return {x:evt.changedTouches[0].clientX, y:evt.changedTouches[0].clientY};
+    return {x:evt.clientX, y:evt.clientY};
+  }
+
+  function canvasPoint(evt){
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = W/rect.width, scaleY = H/rect.height;
+    const {x:clientX, y:clientY} = clientXY(evt);
+    return { x:(clientX-rect.left)*scaleX, y:(clientY-rect.top)*scaleY };
+  }
+
+  // the table itself is dual-purpose: during ball-in-hand it places the cue
+  // ball; otherwise, dragging anywhere on it rotates the cue stick around
+  // the cue ball to set the aim trajectory line. Both are locked out while
+  // any ball is moving or the game has ended.
+  let aimDragging = false;
+  function updateAimFromPoint(pt){
+    const cue = balls.find(b=>b.id==='cue');
+    state.aimAngle = Math.atan2(pt.y-cue.y, pt.x-cue.x);
+    drawTable();
+  }
+  function handleCanvasStart(e){
+    if(controlsLocked()) return;
+    e.preventDefault();
+    const pt = canvasPoint(e);
+    if(state.ballInHand){
+      state.placingBall = true;
+      placeCueBallAt(pt);
+      drawTable();
+      return;
+    }
+    aimDragging = true;
+    updateAimFromPoint(pt);
+  }
+  function handleCanvasMove(e){
+    if(state.placingBall){
+      e.preventDefault();
+      placeCueBallAt(canvasPoint(e));
+      drawTable();
+    } else if(aimDragging){
+      e.preventDefault();
+      updateAimFromPoint(canvasPoint(e));
+    }
+  }
+  function handleCanvasEnd(){
+    state.placingBall = false;
+    aimDragging = false;
+  }
+  canvas.addEventListener('mousedown', handleCanvasStart);
+  canvas.addEventListener('touchstart', handleCanvasStart, {passive:false});
+  window.addEventListener('mousemove', handleCanvasMove);
+  window.addEventListener('touchmove', handleCanvasMove, {passive:false});
+  window.addEventListener('mouseup', handleCanvasEnd);
+  window.addEventListener('touchend', handleCanvasEnd);
+  window.addEventListener('touchcancel', handleCanvasEnd);
+
+  // LEFT control: drag the rack cue itself downward to pull it back and set
+  // power; releasing fires the shot — this is the shoot gesture.
+  const rackCuePreviewEl = document.getElementById('rackCuePreview');
+  function handleRackStart(e){
+    if(controlsLocked() || state.ballInHand || state.aimAngle===null) return;
+    state.rackDragging = true;
+    state.rackDragStartY = clientXY(e).y;
+    state.rackStartPower = state.power;
+    e.preventDefault();
+  }
+  function handleRackMove(e){
+    if(!state.rackDragging) return;
+    e.preventDefault();
+    const dy = clientXY(e).y - state.rackDragStartY;
+    state.power = Math.max(0, Math.min(1, state.rackStartPower + dy/110));
+    updateRackVisual(state.power);
+    updateRulerVisual(state.power);
+    drawTable();
+  }
+  function handleRackEnd(){
+    if(!state.rackDragging) return;
+    state.rackDragging = false;
+    if(state.power > 0.04){
+      fireShot(state.aimAngle, state.power);
+    } else {
+      state.power = 0;
+      updateRackVisual(0);
+      updateRulerVisual(0);
+    }
+  }
+  rackCuePreviewEl.addEventListener('mousedown', handleRackStart);
+  rackCuePreviewEl.addEventListener('touchstart', handleRackStart, {passive:false});
+  window.addEventListener('mousemove', handleRackMove);
+  window.addEventListener('touchmove', handleRackMove, {passive:false});
+  window.addEventListener('mouseup', handleRackEnd);
+  window.addEventListener('touchend', handleRackEnd);
+  window.addEventListener('touchcancel', handleRackEnd);
+
+  // RIGHT control: the power gauge. Dragging it up/down sets shot strength
+  // (0..1) smoothly; releasing transfers that power, at the current aim
+  // angle, straight to the cue ball as an impulse — the same release-to-shoot
+  // path the rack cue's pull-back uses.
+  const powerWrapEl = document.getElementById('powerWrap');
+  function setPowerFromSliderEvent(e){
+    const rect = powerWrapEl.getBoundingClientRect();
+    const frac = Math.max(0, Math.min(1, 1 - (clientXY(e).y-rect.top)/rect.height));
+    state.power = frac;
+    updateRulerVisual(frac);
+    updateRackVisual(frac);
+    drawTable();
+  }
+  function handlePowerStart(e){
+    if(controlsLocked() || state.ballInHand || state.aimAngle===null) return;
+    state.rulerDragging = true;
+    powerWrapEl.classList.add('dragging');
+    setPowerFromSliderEvent(e);
+    e.preventDefault();
+  }
+  function handlePowerMove(e){
+    if(!state.rulerDragging) return;
+    e.preventDefault();
+    setPowerFromSliderEvent(e);
+  }
+  function handlePowerEnd(){
+    if(!state.rulerDragging) return;
+    state.rulerDragging = false;
+    powerWrapEl.classList.remove('dragging');
+    if(state.power > 0.04){
+      fireShot(state.aimAngle, state.power);
+    } else {
+      state.power = 0;
+      updateRulerVisual(0);
+      updateRackVisual(0);
+    }
+  }
+  // keyboard path, so the gauge works as a real slider: arrows nudge,
+  // PageUp/Down jump, Home/End bottom out, Enter/Space takes the shot
+  function handlePowerKey(e){
+    if(controlsLocked() || state.ballInHand || state.aimAngle===null) return;
+    if(e.key==='Enter' || e.key===' '){
+      e.preventDefault();
+      if(state.power > 0.04) fireShot(state.aimAngle, state.power);
+      return;
+    }
+    const steps = {ArrowUp:0.05, ArrowRight:0.05, ArrowDown:-0.05, ArrowLeft:-0.05, PageUp:0.2, PageDown:-0.2};
+    let next;
+    if(e.key in steps) next = state.power + steps[e.key];
+    else if(e.key==='Home') next = 0;
+    else if(e.key==='End') next = 1;
+    else return;
+    e.preventDefault();
+    state.power = Math.max(0, Math.min(1, next));
+    updateRulerVisual(state.power);
+    updateRackVisual(state.power);
+    drawTable();
+  }
+  powerWrapEl.addEventListener('mousedown', handlePowerStart);
+  powerWrapEl.addEventListener('touchstart', handlePowerStart, {passive:false});
+  powerWrapEl.addEventListener('keydown', handlePowerKey);
+  window.addEventListener('mousemove', handlePowerMove);
+  window.addEventListener('touchmove', handlePowerMove, {passive:false});
+  window.addEventListener('mouseup', handlePowerEnd);
+  window.addEventListener('touchend', handlePowerEnd);
+  window.addEventListener('touchcancel', handlePowerEnd);
+
+  // LOWER-RIGHT control: drag the white dot within the spin-ball widget to
+  // set english — where you strike the cue ball off-center.
+  const spinWrapEl = document.getElementById('spinWrap');
+  const spinDotEl = document.getElementById('spinDot');
+  let spinDragging = false;
+
+  function setSpin(x, y){
+    state.spin.x = x; state.spin.y = y;
+    spinDotEl.style.left = (50 + x*38) + '%';
+    spinDotEl.style.top = (50 + y*38) + '%';
+  }
+
+  function setSpinFromEvent(e){
+    const rect = spinWrapEl.getBoundingClientRect();
+    const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+    const {x:clientX, y:clientY} = clientXY(e);
+    let dx = (clientX-cx)/(rect.width/2);
+    let dy = (clientY-cy)/(rect.height/2);
+    const mag = Math.hypot(dx,dy);
+    if(mag > 1){ dx /= mag; dy /= mag; }
+    setSpin(dx, dy);
+  }
+
+  function handleSpinStart(e){
+    if(controlsLocked() || state.ballInHand) return;
+    spinDragging = true;
+    setSpinFromEvent(e);
+    e.preventDefault();
+  }
+  function handleSpinMove(e){
+    if(!spinDragging) return;
+    e.preventDefault();
+    setSpinFromEvent(e);
+  }
+  function handleSpinEnd(){
+    spinDragging = false;
+  }
+  spinWrapEl.addEventListener('mousedown', handleSpinStart);
+  spinWrapEl.addEventListener('touchstart', handleSpinStart, {passive:false});
+  window.addEventListener('mousemove', handleSpinMove);
+  window.addEventListener('touchmove', handleSpinMove, {passive:false});
+  window.addEventListener('mouseup', handleSpinEnd);
+  window.addEventListener('touchend', handleSpinEnd);
+  window.addEventListener('touchcancel', handleSpinEnd);
+
+  document.getElementById('shootBtn').addEventListener('click', ()=>{
+    if(controlsLocked() || state.ballInHand) return;
+    if(state.power<=0.02 || state.aimAngle===null) return;
+    fireShot(state.aimAngle, state.power);
+  });
+
+  document.getElementById('restartBtn').addEventListener('click', restartGame);
+  document.getElementById('restartBtn2').addEventListener('click', restartGame);
+
+  function updateEquippedCueMsg(){
+    const c = currentCue();
+    document.getElementById('aimHint').textContent =
+      'Equipped: '+c.name+' — drag anywhere on the table to aim, drag the spin dot for english, then pull back on the power slider (or the rack cue) and release to shoot.';
+  }
+
+  function placeCueBallAt(pt){
+    const cue = balls.find(b=>b.id==='cue');
+    let x = Math.max(PLAY.left+cue.r, Math.min(PLAY.right-cue.r, pt.x));
+    let y = Math.max(PLAY.top+cue.r, Math.min(PLAY.bottom-cue.r, pt.y));
+    const overlaps = balls.some(b=>b!==cue && !b.potted && Math.hypot(b.x-x,b.y-y) < b.r+cue.r+1);
+    if(!overlaps){
+      cue.x = x; cue.y = y;
+      cue.potted = false; cue.vx = 0; cue.vy = 0;
+    }
+  }
+
+  function setBallInHand(on){
+    state.ballInHand = on;
+    document.getElementById('ballInHandBar').style.display = on ? 'block' : 'none';
+    document.getElementById('aimHint').style.display = on ? 'none' : 'block';
+  }
+
+  function defaultAimAngle(){
+    const cue = balls.find(b=>b.id==='cue');
+    return Math.atan2((PLAY.top+PLAY.bottom)/2 - cue.y, (PLAY.left+PLAY.right)/2 - cue.x);
+  }
+
+  document.getElementById('confirmPlaceBtn').addEventListener('click', ()=>{
+    setBallInHand(false);
+    state.aimAngle = defaultAimAngle();
+    drawTable();
+  });
+
+  // ---------- bot opponent ----------
+  // A casual heuristic, not a solver: pick one of the bot's own legal object
+  // balls at random, aim at the ghost-ball point that would send it toward
+  // whichever pocket it's closest to, and fire with a somewhat random power
+  // so the bot isn't unrealistically precise.
+  function pickBotAimAngle(){
+    const cue = balls.find(b=>b.id==='cue');
+    const group = state.groups[state.botPlayer];
+    let candidates = balls.filter(b=>!b.potted && b.type!==CUE && b.type!==EIGHT);
+    if(group) candidates = candidates.filter(b=>b.type===group);
+    if(candidates.length===0) candidates = balls.filter(b=>!b.potted && b.type!==CUE);
+    if(candidates.length===0) return null;
+    const target = candidates[Math.floor(Math.random()*candidates.length)];
+
+    let bestPocket = pockets[0], bestDist = Infinity;
+    pockets.forEach(p=>{
+      const d = Math.hypot(target.x-p.x, target.y-p.y);
+      if(d < bestDist){ bestDist = d; bestPocket = p; }
+    });
+    const dx = target.x-bestPocket.x, dy = target.y-bestPocket.y;
+    const dist = Math.hypot(dx,dy) || 1;
+    const ghostX = target.x + (dx/dist)*(BALL_R*2);
+    const ghostY = target.y + (dy/dist)*(BALL_R*2);
+    return Math.atan2(ghostY-cue.y, ghostX-cue.x);
+  }
+
+  function botTakeTurn(){
+    if(controlsLocked() || state.currentPlayer!==state.botPlayer) return;
+    if(state.ballInHand){
+      placeCueBallAt({x:PLAY.left+(PLAY.right-PLAY.left)*0.25, y:(PLAY.top+PLAY.bottom)/2});
+      setBallInHand(false);
+      state.aimAngle = defaultAimAngle();
+      drawTable();
+      setTimeout(botTakeTurn, 500);
+      return;
+    }
+    const angle = pickBotAimAngle();
+    if(angle===null) return;
+    state.aimAngle = angle;
+    drawTable();
+    const power = 0.45 + Math.random()*0.35;
+    setTimeout(()=>{
+      state.power = power;
+      updateRulerVisual(power);
+      updateRackVisual(power);
+      drawTable();
+      setTimeout(()=> fireShot(angle, power), 350);
+    }, 600);
+  }
+
+  function restartGame(){
+    setupBalls();
+    state.currentPlayer = 1;
+    state.groups = {1:null,2:null};
+    state.gameOver = false;
+    state.winner = null;
+    state.firstBreak = true;
+    state.power = 0;
+    updateRackVisual(0);
+    setSpin(0, 0);
+    document.getElementById('overlay').classList.remove('show');
+    setStatus("Player 1's turn — break!");
+    setBallInHand(true);
+    updateHUD();
+    drawTable();
+  }
+
+  setupBalls();
+  updateHUD();
+  setBallInHand(true);
+  drawTable();
+  renderCueRack();
+  renderProfileStats();
+})();
+</script>
+</body>
+</html>

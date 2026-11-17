@@ -1,0 +1,67 @@
+{
+  "1": {
+    "id": 1,
+    "name": "Hover",
+    "rate": "B",
+    "description": "Hover",
+    "speed": 0.05,
+	"speed_per_level": 0.001,
+    "hp": 100,
+	"hp_per_level": 2,
+    "price": 10000,
+	"fragment":25,
+	"fragment_upgrade":20
+  },
+  "2": {
+    "id": 1,
+    "name": "Bike",
+    "rate": "A",
+    "description": "Bike",
+    "speed": 0.1,
+	"speed_per_level": 0.002,
+    "hp": 150,
+	"hp_per_level": 5,
+    "price": 10000,
+	"fragment":40,
+	"fragment_upgrade":30
+  },
+  "3": {
+    "id": 1,
+    "name": "T-rex",
+    "rate": "S",
+    "description": "rex",
+    "speed": 0.05,
+	"speed_per_level": 0.001,
+    "hp": 180,
+	"hp_per_level": 10,
+    "price": 10000,
+	"fragment":50,
+	"fragment_upgrade":40
+  },
+  "4": {
+    "id": 1,
+    "name": "Jet",
+    "rate": "S",
+    "description": "Jet",
+    "speed": 0.08,
+	"speed_per_level": 0.008,
+    "hp": 180,
+	"hp_per_level": 8,
+    "price": 10000,
+	"fragment":60,
+	"fragment_upgrade":30
+  },
+  "5": {
+    "id": 1,
+    "name": "Whiz",
+    "rate": "S",
+    "description": "Whiz",
+    "speed": 0.05,
+	"speed_per_level": 0.006,
+    "hp": 100,
+	"hp_per_level": 5,
+    "price": 10000,
+	"fragment":40,
+	"fragment_upgrade":20
+  }
+}
