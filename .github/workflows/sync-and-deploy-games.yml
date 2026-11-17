@@ -17,7 +17,7 @@ permissions:
 
 concurrency:
   group: github-pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -35,6 +35,15 @@ jobs:
           ref: main
           path: games-source
           fetch-depth: 1
+          sparse-checkout: |
+            /*
+            !/scripts/
+            !/repair-reports/
+            !/third-party-licenses/
+            !/.github/
+            !/*/_ext/
+            !/*/_ext/**
+          sparse-checkout-cone-mode: false
 
       - name: Build the Pages site with runnable game documents
         shell: bash
