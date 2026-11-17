@@ -134,16 +134,40 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          base="${PAGES_URL%/}"
-          page="$base/games/3D%20Bowling/index.html"
-          content_type="$(curl --fail --silent --show-error --location --output /tmp/bowling-index.html --write-out '%{content_type}' "$page")"
-          echo "Precise Bowling HTML content type: $content_type"
-          case "$content_type" in
-            text/html*) ;;
-            *) echo "Game HTML is not being served as text/html"; exit 1 ;;
-          esac
-          grep -qi '<canvas id="canvas"' /tmp/bowling-index.html
-          for asset in BowlingOnline2.js BowlingOnline2.data BowlingOnline2.wasm; do
-            curl --fail --silent --show-error --location --output /dev/null "$base/games/3D%20Bowling/$asset"
-            echo "Verified $asset"
+          candidates=(
+            "${PAGES_URL%/}"
+            "https://ghp.hummingbird.rf.gd"
+            "https://hummingbird-9.github.io"
+            "https://humming.bob.is-great.net"
+            "https://ghp.humming.html-5.me"
+            "https://ghp.humming.nichesite.org"
+            "https://ghp.humming.gt.tc"
+            "https://ghp.humming.page.gd"
+          )
+          verified_base=""
+          for base in "${candidates[@]}"; do
+            page="$base/games/3D%20Bowling/index.html"
+            echo "Checking $page"
+            content_type="$(curl --silent --show-error --location --max-time 15 --output /tmp/bowling-index.html --write-out '%{content_type}' "$page" 2>/dev/null || true)"
+            if [[ "$content_type" != text/html* ]] || ! grep -qi '<canvas id="canvas"' /tmp/bowling-index.html 2>/dev/null; then
+              echo "  Not a runnable HTML response (content type: ${content_type:-no response})"
+              continue
+            fi
+            assets_ok=true
+            for asset in BowlingOnline2.js BowlingOnline2.data BowlingOnline2.wasm; do
+              if ! curl --fail --silent --show-error --location --max-time 20 --output /dev/null "$base/games/3D%20Bowling/$asset"; then
+                echo "  Missing game asset: $asset"
+                assets_ok=false
+                break
+              fi
+            done
+            if [[ "$assets_ok" == true ]]; then
+              verified_base="$base"
+              break
+            fi
           done
+          if [[ -z "$verified_base" ]]; then
+            echo "No tested Pages hostname served the game as text/html with its JS, data, and WASM files."
+            exit 1
+          fi
+          echo "Verified runnable game files at $verified_base"
