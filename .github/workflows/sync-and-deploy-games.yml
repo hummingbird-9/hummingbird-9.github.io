@@ -1,4 +1,4 @@
-name: Sync game files and deploy Pages
+name: Sync games into the GitHub Pages branch
 
 on:
   schedule:
@@ -11,22 +11,22 @@ on:
       - ".github/workflows/sync-and-deploy-games.yml"
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: github-pages
-  cancel-in-progress: true
+  group: sync-games-to-pages-branch
+  cancel-in-progress: false
 
 jobs:
-  build:
+  sync:
     runs-on: ubuntu-24.04
+    timeout-minutes: 45
     steps:
-      - name: Check out the website
+      - name: Check out the website branch
         uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 1
 
       - name: Check out the games repository
         uses: actions/checkout@v4
@@ -45,129 +45,74 @@ jobs:
             !/*/_ext/**
           sparse-checkout-cone-mode: false
 
-      - name: Build the Pages site with runnable game documents
+      - name: Prepare game folders for branch-based Pages
         shell: bash
         run: |
+          set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
           import shutil
 
-          workspace = Path.cwd()
-          source = workspace / "games-source"
-          output = workspace / "site-dist"
-          output.mkdir(parents=True, exist_ok=True)
+          root = Path.cwd()
+          source = root / "games-source"
+          stage = root / "games-stage"
+          target = root / "games"
 
-          excluded_root = {
-              ".git", ".github", "games-source", "site-dist",
-              "node_modules", ".next", "vendor"
-          }
+          if stage.exists():
+              shutil.rmtree(stage)
+          stage.mkdir()
 
-          for item in workspace.iterdir():
-              if item.name in excluded_root:
-                  continue
-              destination = output / item.name
-              if item.is_dir():
-                  shutil.copytree(item, destination, dirs_exist_ok=True,
-                                  ignore=shutil.ignore_patterns(".git", "node_modules"))
-              elif item.is_file():
-                  shutil.copy2(item, destination)
-
-          games_output = output / "games"
-          if games_output.exists():
-              shutil.rmtree(games_output)
-          games_output.mkdir(parents=True)
-
-          game_folders = sorted(
+          folders = sorted(
               folder for folder in source.iterdir()
               if folder.is_dir() and (folder / "index.html").is_file()
           )
+          if not folders:
+              raise SystemExit("No game folders with index.html were found.")
 
-          def ignore_game_assets(directory, names):
-              # _ext contains audit mirrors of remote URLs; live pages request
-              # those URLs directly. Do not duplicate hundreds of MB of caches.
+          def ignore_assets(directory, names):
               return [name for name in names if name in {"_ext", ".git", "node_modules"}]
 
-          copied_files = 0
-          copied_bytes = 0
-          for folder in game_folders:
-              destination = games_output / folder.name
-              shutil.copytree(folder, destination, ignore=ignore_game_assets)
+          file_count = 0
+          total_bytes = 0
+          for folder in folders:
+              destination = stage / folder.name
+              shutil.copytree(folder, destination, ignore=ignore_assets)
               for file in destination.rglob("*"):
                   if file.is_file():
-                      copied_files += 1
-                      copied_bytes += file.stat().st_size
+                      file_count += 1
+                      total_bytes += file.stat().st_size
 
-          (output / ".nojekyll").write_text("", encoding="utf-8")
-          mib = copied_bytes / (1024 * 1024)
-          print(f"Prepared {len(game_folders)} games, {copied_files} files, {mib:.1f} MiB.")
-          print(f"Game pages will be served from: /games/<game-folder>/index.html")
-          if copied_bytes > 900 * 1024 * 1024:
-              raise SystemExit("Game payload exceeds the 900 MiB safety threshold.")
-          if not game_folders:
-              raise SystemExit("No game folders containing index.html were found.")
+          mib = total_bytes / (1024 * 1024)
+          print(f"Prepared {len(folders)} games, {file_count} files, {mib:.1f} MiB.")
+          if total_bytes > 900 * 1024 * 1024:
+              raise SystemExit("Game mirror exceeds the 900 MiB GitHub Pages safety threshold.")
+
+          if target.exists():
+              shutil.rmtree(target)
+          stage.rename(target)
+          (root / ".nojekyll").write_text("", encoding="utf-8")
+          print("Installed game folders in ./games for branch-based Pages publishing.")
           PY
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site-dist
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-24.04
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
-      - name: Verify the published game HTML and assets
-        env:
-          PAGES_URL: ${{ steps.deployment.outputs.page_url }}
+      - name: Commit and push the game mirror
         shell: bash
         run: |
           set -euo pipefail
-          candidates=(
-            "${PAGES_URL%/}"
-            "https://ghp.hummingbird.rf.gd"
-            "https://hummingbird-9.github.io"
-            "https://humming.bob.is-great.net"
-            "https://ghp.humming.html-5.me"
-            "https://ghp.humming.nichesite.org"
-            "https://ghp.humming.gt.tc"
-            "https://ghp.humming.page.gd"
-          )
-          verified_base=""
-          for base in "${candidates[@]}"; do
-            page="$base/games/3D%20Bowling/index.html"
-            echo "Checking $page"
-            content_type="$(curl --silent --show-error --location --max-time 15 --output /tmp/bowling-index.html --write-out '%{content_type}' "$page" 2>/dev/null || true)"
-            if [[ "$content_type" != text/html* ]] || ! grep -qi '<canvas id="canvas"' /tmp/bowling-index.html 2>/dev/null; then
-              echo "  Not a runnable HTML response (content type: ${content_type:-no response})"
-              continue
-            fi
-            assets_ok=true
-            for asset in BowlingOnline2.js BowlingOnline2.data BowlingOnline2.wasm; do
-              if ! curl --fail --silent --show-error --location --max-time 20 --output /dev/null "$base/games/3D%20Bowling/$asset"; then
-                echo "  Missing game asset: $asset"
-                assets_ok=false
-                break
-              fi
-            done
-            if [[ "$assets_ok" == true ]]; then
-              verified_base="$base"
-              break
-            fi
-          done
-          if [[ -z "$verified_base" ]]; then
-            echo "No tested Pages hostname served the game as text/html with its JS, data, and WASM files."
-            exit 1
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- games .nojekyll
+          if git diff --cached --quiet; then
+            echo "The published game mirror is already up to date."
+            exit 0
           fi
-          echo "Verified runnable game files at $verified_base"
+          git commit -m "Sync playable game files for GitHub Pages"
+          git push origin HEAD:main
+
+      - name: Verify the branch contains Precise Bowling
+        shell: bash
+        run: |
+          test -s "games/3D Bowling/index.html"
+          test -s "games/3D Bowling/BowlingOnline2.js"
+          test -s "games/3D Bowling/BowlingOnline2.data"
+          test -s "games/3D Bowling/BowlingOnline2.wasm"
+          echo "Precise Bowling HTML, JavaScript, data, and WASM are committed to the Pages branch."
