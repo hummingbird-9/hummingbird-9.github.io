@@ -9,11 +9,17 @@ on:
 
 permissions:
   contents: read
+  pages: write
 
 jobs:
   diagnose:
     runs-on: ubuntu-24.04
     steps:
+      - name: Inspect the GitHub Pages publishing mode
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/hummingbird-9/hummingbird-9.github.io/pages --jq '{html_url, cname, build_type, source}'
       - name: Probe Pages home and game document URLs
         shell: bash
         run: |
