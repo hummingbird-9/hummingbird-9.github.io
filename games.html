@@ -76,7 +76,7 @@
     const REPO = 'games';
     const BRANCH = 'main';
     const TREE_API = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${BRANCH}?recursive=1`;
-    const CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@${BRANCH}/`;
+    // Game HTML must come from GitHub Pages: jsDelivr serves .html as text/plain.\n    // The mirrored game folders preserve the original relative paths for scripts, data, workers, and media.\n    const GAME_PAGES_ROOT = 'https://hummingbird-9.github.io/games/';
     const CACHE_KEY = 'hummingbird-games-folder-catalog-v4';
     const PAGE_SIZE = 100;
     const BOOKMARKS_KEY = 'hummingbird-games-bookmarks-v1';
@@ -120,7 +120,7 @@
     }
 
     function gameUrl(game, htmlFile) {
-      return CDN_ROOT + encodePath(game.folder + '/' + (htmlFile || 'index.html'));
+      return GAME_PAGES_ROOT + encodePath(game.folder + '/' + (htmlFile || 'index.html'));
     }
 
     function escapeHtml(value) {
