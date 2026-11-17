@@ -1,0 +1,42 @@
+name: Diagnose published game routes
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/diagnose-pages-game-routes.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Probe Pages home and game document URLs
+        shell: bash
+        run: |
+          set -u
+          bases=(
+            "http://ghp.hummingbird.rf.gd"
+            "https://ghp.hummingbird.rf.gd"
+            "https://hummingbird-9.github.io"
+            "https://humming.bob.is-great.net"
+            "https://ghp.humming.html-5.me"
+            "https://ghp.humming.nichesite.org"
+            "https://ghp.humming.gt.tc"
+            "https://ghp.humming.page.gd"
+          )
+          for base in "${bases[@]}"; do
+            for suffix in "/" "/games/3D%20Bowling/index.html"; do
+              url="$base$suffix"
+              echo
+              echo "=== $url ==="
+              meta="$(curl --silent --show-error --location --max-time 15 --output /tmp/page-body --write-out '%{http_code}|%{content_type}|%{url_effective}' "$url" 2>&1)"
+              result=$?
+              echo "curl_exit=$result metadata=$meta"
+              head -c 500 /tmp/page-body 2>/dev/null | tr '\n' ' '
+              echo
+            done
+          done
