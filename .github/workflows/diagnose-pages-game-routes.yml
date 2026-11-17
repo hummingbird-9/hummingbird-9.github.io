@@ -79,7 +79,9 @@ jobs:
           const failed = [];
           page.on('pageerror', error => pageErrors.push(String(error.message || error)));
           page.on('console', message => {
-            if (message.type() === 'error' && consoleErrors.length < 20) consoleErrors.push(message.text());
+            const messageText = message.text().trim();
+            // This game emits its Pure Data version banner as console.error; it is not a failure.
+            if (message.type() === 'error' && messageText !== 'pd 0.55.0' && consoleErrors.length < 20) consoleErrors.push(messageText);
           });
           page.on('requestfailed', request => {
             failed.push({ url: request.url(), error: request.failure()?.errorText || 'failed' });
@@ -96,7 +98,7 @@ jobs:
               const gl = canvas.getContext('webgl2') || canvas.getContext('webgl') ||
                 canvas.getContext('experimental-webgl');
               const resources = performance.getEntriesByType('resource').map(entry => entry.name)
-                .filter(name => /BowlingOnline2\\.(?:js|data|wasm)(?:$|[?#])/i.test(name));
+                .filter(name => /BowlingOnline2\.(?:js|data|wasm)(?:$|[?#])/i.test(name));
               return {
                 canvasFound: true,
                 canvasWidth: canvas.width,
