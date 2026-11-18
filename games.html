@@ -75,13 +75,14 @@
     const OWNER = 'hummingbird-9';
     const REPO = 'games';
     const BRANCH = 'main';
-    const TREE_API = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${BRANCH}?recursive=1`;
-    // Game HTML must come from GitHub Pages: jsDelivr serves .html as text/plain.
-    // The mirrored game folders preserve original relative paths for scripts, data, workers, and media.
+    // Read the small repository-root listing instead of the recursive tree.
+    // The recursive tree is truncated because the separate games repository is very large.
+    const ROOT_API = `https://api.github.com/repos/${OWNER}/${REPO}/contents/?ref=${encodeURIComponent(BRANCH)}`;
+    // StaticDelivr serves GitHub HTML with an HTML content type and preserves relative asset paths.
+    const GAME_PAGES_ROOT = `https://cdn.staticdelivr.com/gh/${OWNER}/${REPO}/${BRANCH}/`;
     // Keep jsDelivr for cover images and ZIP downloads.
     const CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@${BRANCH}/`;
-    const GAME_PAGES_ROOT = window.location.origin + '/games/';
-    const CACHE_KEY = 'hummingbird-games-folder-catalog-v4';
+    const CACHE_KEY = 'hummingbird-games-folder-catalog-v5';
     const PAGE_SIZE = 100;
     const BOOKMARKS_KEY = 'hummingbird-games-bookmarks-v1';
     const RECENT_KEY = 'hummingbird-games-recent-v1';
@@ -156,40 +157,29 @@
       })[0] || '';
     }
 
-    function makeCatalog(treeEntries) {
-      const byFolder = new Map();
-      const imagePattern = /\.(jpe?g|png|webp|avif|gif|bmp)$/i;
-      for (const entry of treeEntries) {
-        if (!entry || entry.type !== 'blob' || typeof entry.path !== 'string') continue;
-        const match = entry.path.match(/^([^/]+)\/(.+)$/);
-        if (!match) continue;
-        const folder = match[1];
-        const relativePath = match[2];
-        if (folder.startsWith('.')) continue;
-        if (!byFolder.has(folder)) byFolder.set(folder, { htmlFiles: [], imagePaths: [] });
-        const record = byFolder.get(folder);
-        if (/\.html?$/i.test(relativePath) && !relativePath.includes('/')) record.htmlFiles.push(relativePath);
-        if (imagePattern.test(relativePath)) record.imagePaths.push(entry.path);
-      }
-
+    function makeCatalog(rootEntries) {
+      // These are repository-support directories, not game folders.
+      const excludedFolders = new Set(['.github', 'repair-reports', 'scripts', 'third-party-licenses']);
       const result = [];
-      for (const [folder, record] of byFolder) {
-        const htmlFiles = record.htmlFiles.sort((a, b) => {
-          if (a.toLowerCase() === 'index.html') return -1;
-          if (b.toLowerCase() === 'index.html') return 1;
-          return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-        });
-        if (!htmlFiles.some(file => file.toLowerCase() === 'index.html')) continue;
-        const coverPath = chooseCover(folder, record.imagePaths);
+
+      for (const entry of rootEntries) {
+        if (!entry || entry.type !== 'dir' || typeof entry.name !== 'string') continue;
+        const folder = entry.name;
+        if (!folder || folder.startsWith('.') || excludedFolders.has(folder)) continue;
+
+        const title = humanizeFolder(folder);
         result.push({
           folder,
-          title: humanizeFolder(folder),
-          htmlFiles,
-          coverPath,
-          searchText: (folder + ' ' + humanizeFolder(folder)).toLowerCase()
+          title,
+          htmlFiles: ['index.html'],
+          coverPath: '',
+          searchText: (folder + ' ' + title).toLowerCase()
         });
       }
-      return result.sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' }));
+
+      return result.sort((a, b) =>
+        a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' })
+      );
     }
 
     function updateSearchUrl() {
@@ -308,27 +298,38 @@
 
       const thumbnail = document.createElement('div');
       thumbnail.className = 'game-thumbnail-wrap';
-      if (game.coverPath) {
-        const img = document.createElement('img');
-        img.className = 'game-thumbnail';
-        img.loading = 'lazy';
-        img.decoding = 'async';
-        img.alt = game.title + ' cover';
-        img.src = CDN_ROOT + encodePath(game.coverPath);
-        img.onerror = () => {
-          img.remove();
-          const fallback = document.createElement('div');
-          fallback.className = 'game-thumbnail-placeholder';
-          fallback.textContent = game.title.slice(0, 1).toUpperCase();
-          thumbnail.prepend(fallback);
-        };
-        thumbnail.appendChild(img);
-      } else {
-        const placeholder = document.createElement('div');
-        placeholder.className = 'game-thumbnail-placeholder';
-        placeholder.textContent = game.title.slice(0, 1).toUpperCase();
-        thumbnail.appendChild(placeholder);
-      }
+      const addCoverPlaceholder = () => {
+        if (thumbnail.querySelector('.game-thumbnail-placeholder')) return;
+        const fallback = document.createElement('div');
+        fallback.className = 'game-thumbnail-placeholder';
+        fallback.textContent = game.title.slice(0, 1).toUpperCase();
+        thumbnail.prepend(fallback);
+      };
+
+      // The root API response lists directories only, so probe only explicitly named
+      // cover files in the game folder. Never use random in-game screenshots as covers.
+      const coverExtensions = ['webp', 'avif', 'png', 'jpg', 'jpeg', 'gif', 'bmp'];
+      const coverCandidates = game.coverPath
+        ? [game.coverPath]
+        : coverExtensions.map(extension => `${game.folder}/cover.${extension}`);
+
+      const img = document.createElement('img');
+      img.className = 'game-thumbnail';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = game.title + ' cover';
+      let coverIndex = 0;
+      img.onerror = () => {
+        coverIndex += 1;
+        if (coverIndex < coverCandidates.length) {
+          img.src = CDN_ROOT + encodePath(coverCandidates[coverIndex]);
+          return;
+        }
+        img.remove();
+        addCoverPlaceholder();
+      };
+      thumbnail.appendChild(img);
+      img.src = CDN_ROOT + encodePath(coverCandidates[0]);
 
       const bookmarkButton = document.createElement('button');
       bookmarkButton.type = 'button';
@@ -526,17 +527,16 @@
       setStatus('Fetching game folders from hummingbird-9/games…');
       totalEl.textContent = 'Loading…';
       try {
-        const response = await fetch(TREE_API, { headers: { Accept: 'application/vnd.github+json' } });
+        const response = await fetch(ROOT_API, { headers: { Accept: 'application/vnd.github+json' } });
         if (!response.ok) {
           if (response.status === 403) throw new Error('GitHub API rate limit reached. Try Refresh again later.');
           if (response.status === 404) throw new Error('The games repository or main branch could not be found.');
           throw new Error('GitHub returned HTTP ' + response.status + '.');
         }
         const data = await response.json();
-        if (!Array.isArray(data.tree)) throw new Error('GitHub returned an unexpected repository tree.');
-        if (data.truncated) throw new Error('GitHub returned a truncated file tree, so the full game list could not be read.');
+        if (!Array.isArray(data)) throw new Error('GitHub returned an unexpected repository directory listing.');
 
-        games = makeCatalog(data.tree);
+        games = makeCatalog(data);
         const compactGames = games.map(({ files, ...game }) => game);
         try { localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), games: compactGames })); }
         catch (cacheError) { console.warn('Game list loaded, but could not cache it:', cacheError); }
