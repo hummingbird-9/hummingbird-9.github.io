@@ -77,7 +77,7 @@
     const BRANCH = 'main';
     // Read the small repository-root listing instead of the recursive tree.
     // The recursive tree is truncated because the separate games repository is very large.
-    const ROOT_API = `https://api.github.com/repos/${OWNER}/${REPO}/contents/?ref=${encodeURIComponent(BRANCH)}`;
+    const ROOT_API = `https://api.github.com/repos/${OWNER}/${REPO}/contents/?ref=${encodeURIComponent(BRANCH)}&per_page=1000`;
     // StaticDelivr serves GitHub HTML with an HTML content type and preserves relative asset paths.
     const GAME_PAGES_ROOT = `https://cdn.staticdelivr.com/gh/${OWNER}/${REPO}/${BRANCH}/`;
     // Keep jsDelivr for cover images and ZIP downloads.
