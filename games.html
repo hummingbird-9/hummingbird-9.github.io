@@ -78,10 +78,9 @@
     // Read the small repository-root listing instead of the recursive tree.
     // The recursive tree is truncated because the separate games repository is very large.
     const ROOT_API = `https://api.github.com/repos/${OWNER}/${REPO}/contents/?ref=${encodeURIComponent(BRANCH)}&per_page=1000`;
-    // StaticDelivr serves GitHub HTML with an HTML content type and preserves relative asset paths.
-    const GAME_PAGES_ROOT = `https://cdn.staticdelivr.com/gh/${OWNER}/${REPO}/${BRANCH}/`;
-    // Keep jsDelivr for cover images and ZIP downloads.
-    const CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OWNER}/${REPO}@${BRANCH}/`;
+    // Cloudflare serves game HTML with the correct MIME type and caches all game files.
+    // Keeping every file on this origin preserves relative asset paths and service workers.
+    const GAME_FILES_ROOT = 'https://hummingbird-games-cdn.humming6ird-9.workers.dev/';
     const CACHE_KEY = 'hummingbird-games-folder-catalog-v5';
     const PAGE_SIZE = 100;
     const BOOKMARKS_KEY = 'hummingbird-games-bookmarks-v1';
@@ -125,7 +124,7 @@
     }
 
     function gameUrl(game, htmlFile) {
-      return GAME_PAGES_ROOT + encodePath(game.folder + '/' + (htmlFile || 'index.html'));
+      return GAME_FILES_ROOT + encodePath(game.folder + '/' + (htmlFile || 'index.html'));
     }
 
     function escapeHtml(value) {
@@ -322,14 +321,14 @@
       img.onerror = () => {
         coverIndex += 1;
         if (coverIndex < coverCandidates.length) {
-          img.src = CDN_ROOT + encodePath(coverCandidates[coverIndex]);
+          img.src = GAME_FILES_ROOT + encodePath(coverCandidates[coverIndex]);
           return;
         }
         img.remove();
         addCoverPlaceholder();
       };
       thumbnail.appendChild(img);
-      img.src = CDN_ROOT + encodePath(coverCandidates[0]);
+      img.src = GAME_FILES_ROOT + encodePath(coverCandidates[0]);
 
       const bookmarkButton = document.createElement('button');
       bookmarkButton.type = 'button';
@@ -468,7 +467,7 @@
             const index = next++;
             const item = files[index];
             try {
-              const response = await fetch(CDN_ROOT + encodePath(item.path));
+              const response = await fetch(GAME_FILES_ROOT + encodePath(item.path));
               if (!response.ok) throw new Error('HTTP ' + response.status);
               const data = await response.arrayBuffer();
               const relativePath = item.path.slice(game.folder.length + 1);
