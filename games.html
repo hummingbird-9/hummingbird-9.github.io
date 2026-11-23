@@ -59,8 +59,7 @@
     <header class="game-viewer-navbar">
       <h2 id="gameViewerTitle">Game</h2>
       <div class="game-viewer-controls">
-        <button id="aboutBlankGame" class="utility-btn" type="button">Open in new tab</button>
-        <button id="downloadActiveGame" class="utility-btn" type="button">Download game</button>
+          <button id="downloadActiveGame" class="utility-btn" type="button">Download game</button>
         <button id="closeGame" class="utility-btn" type="button">Close</button>
       </div>
     </header>
@@ -127,9 +126,9 @@
       const file = htmlFile || 'index.html';
       const url = GAME_FILES_ROOT + encodePath(game.folder + '/' + file);
 
-      // Force the current direct 2026 Among Us entry point past cached HTML.
+      // Keep the replacement Among Us entry point fresh past cached HTML.
       if (game.folder === 'Among Us' && file === 'index.html') {
-        return url + '?v=20261123-amongus-2026-direct';
+        return url + '?v=amongus-direct-2';
       }
       return url;
     }
@@ -672,17 +671,6 @@
       htmlSelector.title = 'Choose a game first';
     }
 
-    function openGameInAboutBlank() {
-      if (!activeGame) return;
-      const file = htmlSelector.value || activeHtml || 'index.html';
-      // Open the game URL directly. This uses the same document origin and
-      // relative-asset behavior as the in-page game iframe.
-      const popup = window.open(gameUrl(activeGame, file), '_blank');
-      if (!popup) {
-        alert('Your browser blocked the new tab. Allow pop-ups for this site and try again.');
-      }
-    }
-
     document.getElementById('refreshGames').addEventListener('click', () => loadGames(true));
     randomGameButton.addEventListener('click', () => {
       const pool = visibleGames.length ? visibleGames : games;
@@ -763,7 +751,6 @@
     window.addEventListener('resize', checkGamesBottom);
     htmlSelector.addEventListener('change', loadActiveHtml);
     document.getElementById('closeGame').addEventListener('click', closeGame);
-    document.getElementById('aboutBlankGame').addEventListener('click', openGameInAboutBlank);
     document.getElementById('downloadActiveGame').addEventListener('click', event => {
       if (activeGame) downloadGame(activeGame, event.currentTarget);
     });
