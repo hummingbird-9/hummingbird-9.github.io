@@ -691,10 +691,30 @@
       }
       openGame(pool[Math.floor(Math.random() * pool.length)]);
     });
-    searchForm.addEventListener('submit', event => {
-      event.preventDefault();
+    let searchDebounceTimer = null;
+
+    function runGameSearch() {
       activeSearchQuery = searchBar.value.trim().toLowerCase();
       applySearch();
+    }
+
+    // Search automatically one second after the user stops typing.
+    searchBar.addEventListener('input', () => {
+      if (searchDebounceTimer !== null) clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        searchDebounceTimer = null;
+        runGameSearch();
+      }, 1000);
+    });
+
+    // Keep Enter and the Search button as immediate-submit shortcuts.
+    searchForm.addEventListener('submit', event => {
+      event.preventDefault();
+      if (searchDebounceTimer !== null) {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = null;
+      }
+      runGameSearch();
     });
     sortSelect.addEventListener('change', () => {
       sortMode = sortSelect.value;
@@ -716,6 +736,10 @@
     searchBar.addEventListener('keydown', event => {
       if (event.key === 'Escape' && searchBar.value) {
         searchBar.value = '';
+        if (searchDebounceTimer !== null) {
+          clearTimeout(searchDebounceTimer);
+          searchDebounceTimer = null;
+        }
         activeSearchQuery = '';
         applySearch();
       }
