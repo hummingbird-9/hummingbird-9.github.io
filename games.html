@@ -703,13 +703,13 @@
       applySearch();
     }
 
-    // Search automatically one second after the user stops typing.
+    // Search automatically half a second after the user stops typing.
     searchBar.addEventListener('input', () => {
       if (searchDebounceTimer !== null) clearTimeout(searchDebounceTimer);
       searchDebounceTimer = setTimeout(() => {
         searchDebounceTimer = null;
         runGameSearch();
-      }, 1000);
+      }, 500);
     });
 
     // Keep Enter and the Search button as immediate-submit shortcuts.
