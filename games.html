@@ -127,10 +127,9 @@
       const file = htmlFile || 'index.html';
       const url = GAME_FILES_ROOT + encodePath(game.folder + '/' + file);
 
-      // Bypass any cached pre-fix Among Us HTML that still contains the
-      // full-screen GameMonetize click overlay.
+      // Force the current direct 2026 Among Us entry point past cached HTML.
       if (game.folder === 'Among Us' && file === 'index.html') {
-        return url + '?v=20261123-freeplay-fix';
+        return url + '?v=20261123-amongus-2026-direct';
       }
       return url;
     }
@@ -589,7 +588,7 @@
       const frame = document.createElement('iframe');
       frame.id = 'gameFrame';
       frame.title = activeGame ? activeGame.title : 'Selected game';
-      frame.allow = 'autoplay; fullscreen; gamepad; pointer-lock; clipboard-read; clipboard-write';
+      frame.allow = 'autoplay; fullscreen; gamepad; clipboard-read; clipboard-write';
       frameWrap.appendChild(frame);
       return frame;
     }
