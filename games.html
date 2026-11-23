@@ -589,7 +589,7 @@
       const frame = document.createElement('iframe');
       frame.id = 'gameFrame';
       frame.title = activeGame ? activeGame.title : 'Selected game';
-      frame.allow = 'autoplay; fullscreen; gamepad; clipboard-read; clipboard-write';
+      frame.allow = 'autoplay; fullscreen; gamepad; pointer-lock; clipboard-read; clipboard-write';
       frameWrap.appendChild(frame);
       return frame;
     }
