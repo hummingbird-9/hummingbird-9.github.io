@@ -124,7 +124,15 @@
     }
 
     function gameUrl(game, htmlFile) {
-      return GAME_FILES_ROOT + encodePath(game.folder + '/' + (htmlFile || 'index.html'));
+      const file = htmlFile || 'index.html';
+      const url = GAME_FILES_ROOT + encodePath(game.folder + '/' + file);
+
+      // Bypass any cached pre-fix Among Us HTML that still contains the
+      // full-screen GameMonetize click overlay.
+      if (game.folder === 'Among Us' && file === 'index.html') {
+        return url + '?v=20261123-freeplay-fix';
+      }
+      return url;
     }
 
     function escapeHtml(value) {
