@@ -4,7 +4,7 @@
   // Keep the preference key used by the latest published site version so existing settings migrate cleanly.
   const SETTINGS_KEY = 'hummingbird_site_preferences_v1';
   const LEGACY_SETTINGS_KEY = 'hummingbird-site-settings-v2';
-  const LOGO_URL = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png';
+  const LOGO_URL = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png?v=site-logo4-20261127-2';
   const TAB_PRESETS_KEY = 'hummingbird_tab_disguise_presets_v1';
   const DEFAULT_FAVICON = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(5).png';
   const DEFAULTS = {
