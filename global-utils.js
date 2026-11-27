@@ -25,7 +25,7 @@
     compactCards: false,
     showRecentlyPlayed: false,
     hideGameThumbnails: false,
-    logoClickGame: 'flappy',
+    logoClickGame: 'pong',
     pastAccentColors: [],
     disguiseTitle: '',
     disguiseFaviconUrl: '',
@@ -56,6 +56,17 @@
 
     // Settings from the prior v1 UI used different property names and hex accents.
     const source = { ...legacy, ...stored };
+    // The former built-in default was Flappy Bird; switch that old default to Pong once.
+    try {
+      const migrationKey = 'hummingbird_logo_game_default_pong_v1';
+      if (!localStorage.getItem(migrationKey)) {
+        if (!source.logoClickGame || source.logoClickGame === 'flappy') {
+          source.logoClickGame = 'pong';
+          localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...stored, logoClickGame: 'pong' }));
+        }
+        localStorage.setItem(migrationKey, '1');
+      }
+    } catch (_) {}
     const brightness = source.brightness || source.theme || localStorage.getItem('system_theme_mode') || DEFAULTS.brightness;
     let background = source.background || DEFAULTS.background;
     if (background === 'original') background = 'gradient';
