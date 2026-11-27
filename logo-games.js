@@ -121,6 +121,7 @@
   }
 
   function reset() {
+    if (overlay) overlay.querySelector('.logo-game-help').textContent = helpText(mode);
     if (mode === 'flappy') {
       state = {
         score: 0, over: false, bird: { x: 210, y: 245, vy: 0 },
