@@ -46,14 +46,18 @@
 
     canvas = document.createElement('canvas');
     canvas.className = 'logo-game-inline-canvas';
-    canvas.width = WIDTH;
-    canvas.height = HEIGHT;
+    canvas.width = WIDTH / 2;
+    canvas.height = HEIGHT / 2;
     canvas.tabIndex = 0;
     canvas.setAttribute('role', 'img');
     canvas.setAttribute('aria-label', 'Mini game. Press Escape to return to the logo.');
     heroLogo.classList.add('is-playing-game');
     heroLogo.appendChild(canvas);
     context = canvas.getContext('2d');
+    if (context) {
+      context.imageSmoothingEnabled = false;
+      context.scale(0.5, 0.5);
+    }
     if (!context) {
       close();
       return false;
@@ -380,13 +384,12 @@
 
   function roundedRect(x, y, width, height, radius, fill) {
     context.fillStyle = fill;
-    context.beginPath();
-    context.roundRect(x, y, width, height, radius);
-    context.fill();
+    context.fillRect(Math.round(x), Math.round(y), Math.round(width), Math.round(height));
   }
 
   function draw() {
     if (!context || !state) return;
+    context.clearRect(0, 0, WIDTH, HEIGHT);
     if (mode === 'flappy') drawFlappy();
     else if (mode === 'dino') drawDino();
     else if (mode === 'snake') drawSnake();
@@ -396,29 +399,24 @@
   }
 
   function drawSky() {
-    const gradient = context.createLinearGradient(0, 0, 0, HEIGHT);
-    gradient.addColorStop(0, '#c7ecff');
-    gradient.addColorStop(1, '#eaf8ff');
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, WIDTH, HEIGHT);
+    // Intentionally empty: let the site's existing background show through.
   }
 
   function drawFlappy() {
     drawSky();
-    context.fillStyle = 'rgba(255,255,255,.82)';
-    [[140,95,46],[330,160,34],[630,86,48],[825,175,34]].forEach(cloud => {
-      context.beginPath(); context.arc(cloud[0],cloud[1],cloud[2],0,Math.PI*2); context.fill();
-      context.beginPath(); context.arc(cloud[0]+cloud[2],cloud[1]+8,cloud[2]*.75,0,Math.PI*2); context.fill();
+    context.fillStyle = 'rgba(255,255,255,.28)';
+    [[120,94,56,10],[315,154,42,8],[620,88,64,10],[820,174,46,8]].forEach(([x,y,w,h]) => {
+      context.fillRect(x, y, w, h);
     });
     state.pipes.forEach(pipe => {
       const top = pipe.gap - 92, bottom = pipe.gap + 92;
-      roundedRect(pipe.x, -8, 92, top - 8, 9, '#4d9e58');
-      roundedRect(pipe.x - 8, top - 24, 108, 25, 6, '#387d43');
-      roundedRect(pipe.x, bottom, 92, FLOOR - bottom, 9, '#4d9e58');
-      roundedRect(pipe.x - 8, bottom, 108, 25, 6, '#387d43');
+      roundedRect(pipe.x, -8, 88, top - 8, 0, '#4f9b48');
+      roundedRect(pipe.x - 8, top - 24, 104, 24, 0, '#367b38');
+      roundedRect(pipe.x, bottom, 88, FLOOR - bottom, 0, '#4f9b48');
+      roundedRect(pipe.x - 8, bottom, 104, 24, 0, '#367b38');
     });
-    context.fillStyle = '#d7c38c'; context.fillRect(0, FLOOR, WIDTH, HEIGHT-FLOOR);
-    context.fillStyle = '#7fae50'; context.fillRect(0, FLOOR, WIDTH, 12);
+    context.fillStyle = '#78934b'; context.fillRect(0, FLOOR, WIDTH, 5);
+    context.fillStyle = 'rgba(255,255,255,.20)'; context.fillRect(0, FLOOR + 7, WIDTH, 2);
     const bird = state.bird;
     context.save();
     context.translate(bird.x, bird.y);
@@ -426,26 +424,25 @@
     if (birdImage.complete && birdImage.naturalWidth) {
       context.drawImage(birdImage, -25, -25, 50, 50);
     } else {
-      context.fillStyle = '#3da66b'; context.beginPath(); context.arc(0,0,21,0,Math.PI*2); context.fill();
+      context.fillStyle = '#3da66b'; context.fillRect(-20,-20,40,40);
     }
     context.restore();
-    context.fillStyle = '#355047'; context.font = '700 24px system-ui'; context.fillText('FLAP', 28, 42);
+    context.fillStyle = 'var(--game-text, #ffffff)'; context.font = 'bold 24px monospace'; context.fillText('FLAP', 28, 42);
     context.font = '700 22px system-ui'; context.textAlign = 'right'; context.fillText(String(state.score), WIDTH - 88, 42); context.textAlign = 'left';
   }
 
   function drawDino() {
-    context.fillStyle = '#f7f5ec'; context.fillRect(0,0,WIDTH,HEIGHT);
-    context.fillStyle = '#d8d5c7'; context.font = '20px system-ui';
-    context.fillText('HI  ' + String(Math.floor(state.score)).padStart(5,'0'), WIDTH - 190, 46);
-    context.strokeStyle = '#9a9a8c'; context.lineWidth = 3;
+    context.fillStyle = 'rgba(255,255,255,.68)'; context.font = '20px monospace';
+    context.fillText('HI ' + String(Math.floor(state.score)).padStart(5,'0'), WIDTH - 190, 46);
+    context.strokeStyle = 'rgba(255,255,255,.5)'; context.lineWidth = 3;
     context.beginPath(); context.moveTo(0,FLOOR); context.lineTo(WIDTH,FLOOR); context.stroke();
     for (let i=0;i<6;i++) {
       const x = (i*220 - state.cloud*0.4) % (WIDTH+220);
-      context.fillStyle = '#deddd5'; context.fillRect(x, 110 + (i%2)*45, 52, 4);
+      context.fillStyle = 'rgba(255,255,255,.24)'; context.fillRect(x, 110 + (i%2)*45, 52, 4);
     }
     state.obstacles.forEach(obstacle => drawCactus(obstacle.x, FLOOR-obstacle.height, obstacle.width, obstacle.height));
     drawDinoRunner(state.runner.x, state.runner.y);
-    context.fillStyle = '#8a897d'; context.font = '700 21px system-ui'; context.fillText('DINO RUN', 28, 42);
+    context.fillStyle = 'rgba(255,255,255,.9)'; context.font = 'bold 21px monospace'; context.fillText('DINO', 28, 42);
   }
 
   function drawCactus(x,y,w,h) {
@@ -465,7 +462,7 @@
     context.fillRect(x+47,y+9,17,8);
     context.fillRect(x+47,y+23,10,7);
     context.fillRect(x+5,y+23,12,7);
-    context.fillStyle = '#f7f5ec'; context.fillRect(x+43,y+7,4,4);
+    context.fillStyle = '#e8e8df'; context.fillRect(x+43,y+7,4,4);
     const leg = Math.sin(performance.now()/65) > 0 ? 0 : 1;
     context.fillStyle = color;
     context.fillRect(x+16,y+40,9,leg?14:10);
@@ -473,54 +470,52 @@
   }
 
   function drawSnake() {
-    context.fillStyle = '#0c1711'; context.fillRect(0,0,WIDTH,HEIGHT);
-    context.strokeStyle = 'rgba(255,255,255,.035)'; context.lineWidth = 1;
+    context.strokeStyle = 'rgba(255,255,255,.13)'; context.lineWidth = 1;
     for (let x=0;x<=WIDTH;x+=24) { context.beginPath();context.moveTo(x,30);context.lineTo(x,HEIGHT-30);context.stroke(); }
     for (let y=30;y<=HEIGHT-30;y+=24) { context.beginPath();context.moveTo(0,y);context.lineTo(WIDTH,y);context.stroke(); }
     state.snake.forEach((part,index) => {
-      roundedRect(part.x*24+2,part.y*24+34,20,20,6,index===0?'#9af0ae':'#4fc477');
+      roundedRect(part.x*24+2,part.y*24+34,20,20,0,index===0?'#a4df55':'#58a647');
     });
-    context.fillStyle = '#ff8b73';
-    context.beginPath(); context.arc(state.food.x*24+12,state.food.y*24+44,9,0,Math.PI*2); context.fill();
-    context.fillStyle = '#e5f6e9'; context.font = '700 20px system-ui'; context.fillText('SNAKE', 26, 28);
+    context.fillStyle = '#e45b45';
+    context.fillRect(state.food.x*24+4,state.food.y*24+36,16,16);
+    context.fillStyle = '#ffffff'; context.font = 'bold 20px monospace'; context.fillText('SNAKE', 26, 28);
     context.textAlign = 'right'; context.fillText('Score: ' + state.score, WIDTH - 88, 28); context.textAlign = 'left';
   }
 
   function drawPong() {
-    context.fillStyle = '#081521'; context.fillRect(0,0,WIDTH,HEIGHT);
-    context.strokeStyle = 'rgba(255,255,255,.22)'; context.setLineDash([12,16]); context.lineWidth = 4;
-    context.beginPath(); context.moveTo(WIDTH/2,20); context.lineTo(WIDTH/2,HEIGHT-20); context.stroke(); context.setLineDash([]);
-    roundedRect(48,state.playerY,18,100,9,'#9af0ae');
-    roundedRect(WIDTH-66,state.cpuY,18,100,9,'#8fc8ef');
-    context.fillStyle = '#f6fbff'; context.beginPath(); context.arc(state.ball.x,state.ball.y,12,0,Math.PI*2); context.fill();
-    context.fillStyle = '#e8f4ff'; context.font = '700 56px system-ui'; context.textAlign = 'center';
+    context.fillStyle = 'rgba(255,255,255,.32)';
+    for (let y=24;y<HEIGHT-24;y+=34) context.fillRect(WIDTH/2-2,y,4,18);
+    roundedRect(48,state.playerY,18,100,0,'#8ebd4f');
+    roundedRect(WIDTH-66,state.cpuY,18,100,0,'#6f9cba');
+    context.fillStyle = '#ffffff'; context.fillRect(state.ball.x-8,state.ball.y-8,16,16);
+    context.fillStyle = '#ffffff'; context.font = 'bold 56px monospace'; context.textAlign = 'center';
     context.fillText(state.player,WIDTH/2-65,82); context.fillText(state.cpu,WIDTH/2+65,82);
-    context.textAlign = 'left'; context.font = '700 20px system-ui'; context.fillText('PONG',28,34);
+    context.textAlign = 'left'; context.font = 'bold 20px monospace'; context.fillText('PONG',28,34);
   }
 
   function drawInlineClose() {
-    context.save();
-    context.fillStyle = 'rgba(0,0,0,.32)';
-    context.beginPath();
-    context.arc(WIDTH - 36, 36, 23, 0, Math.PI * 2);
-    context.fill();
-    context.strokeStyle = '#fff';
-    context.lineWidth = 3;
-    context.lineCap = 'round';
-    context.beginPath();
-    context.moveTo(WIDTH - 43, 29); context.lineTo(WIDTH - 29, 43);
-    context.moveTo(WIDTH - 29, 29); context.lineTo(WIDTH - 43, 43);
-    context.stroke();
-    context.restore();
+    context.fillStyle = 'rgba(0,0,0,.42)';
+    context.fillRect(WIDTH - 78, 12, 62, 46);
+    context.fillStyle = '#ffffff';
+    context.font = 'bold 25px monospace';
+    context.textAlign = 'center';
+    context.fillText('[X]', WIDTH - 47, 43);
+    context.textAlign = 'left';
   }
 
   function drawGameOver() {
-    context.fillStyle = 'rgba(5,12,9,.58)'; context.fillRect(0,0,WIDTH,HEIGHT);
+    const boxX = 260, boxY = 196, boxW = 440, boxH = 142;
+    context.fillStyle = 'rgba(12,20,12,.88)';
+    context.fillRect(boxX, boxY, boxW, boxH);
+    context.strokeStyle = '#ffffff';
+    context.lineWidth = 4;
+    context.strokeRect(boxX, boxY, boxW, boxH);
     context.textAlign = 'center';
-    context.fillStyle = '#fff'; context.font = '800 44px system-ui';
-    context.fillText('Game over',WIDTH/2,HEIGHT/2-12);
-    context.font = '500 20px system-ui';
-    context.fillText('Tap or press a key to play again',WIDTH/2,HEIGHT/2+30);
+    context.fillStyle = '#ffffff';
+    context.font = 'bold 40px monospace';
+    context.fillText('GAME OVER', WIDTH/2, boxY + 54);
+    context.font = 'bold 17px monospace';
+    context.fillText('PRESS KEY / TAP TO RETRY', WIDTH/2, boxY + 100);
     context.textAlign = 'left';
   }
 
