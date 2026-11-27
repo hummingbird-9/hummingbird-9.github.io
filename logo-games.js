@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const LOGO_URL = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(5).png';
+  const LOGO_URL = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png';
   const WIDTH = 960;
   const HEIGHT = 540;
   const FLOOR = 445;
@@ -33,6 +33,13 @@
     overlay = document.createElement('section');
     overlay.id = overlayId;
     overlay.className = 'logo-game-overlay';
+    // Keep the game attached to the viewport even when a cached stylesheet is still in use.
+    Object.assign(overlay.style, {
+      position: 'fixed', inset: '0', zIndex: '2147483647',
+      display: 'grid', placeItems: 'center', padding: '18px',
+      background: 'rgba(2, 8, 5, .78)',
+      backdropFilter: 'blur(12px)', webkitBackdropFilter: 'blur(12px)'
+    });
     overlay.hidden = true;
     overlay.setAttribute('aria-hidden', 'true');
     overlay.innerHTML = [
@@ -50,7 +57,7 @@
       '  <p class="logo-game-help">Close to return to the normal logo. Press Escape at any time.</p>',
       '</div>'
     ].join('');
-    document.body.appendChild(overlay);
+    document.documentElement.appendChild(overlay);
     canvas = overlay.querySelector('canvas');
     context = canvas.getContext('2d');
     overlay.querySelector('.logo-game-close').addEventListener('click', close);
