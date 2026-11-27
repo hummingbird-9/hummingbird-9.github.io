@@ -1,15 +1,15 @@
 (() => {
   'use strict';
 
-  const LOGO_URL = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png';
+  const GAME_SPRITE_URL = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(5).png';
   const WIDTH = 960;
   const HEIGHT = 540;
   const FLOOR = 445;
   let heroLogo = null;
   let logoImage = null;
   let logoFallback = null;
-  let imageWasHidden = false;
-  let fallbackWasHidden = true;
+  let imageVisibility = '';
+  let fallbackVisibility = '';
   let canvas = null;
   let context = null;
   let snakeTouchStart = null;
@@ -18,8 +18,9 @@
   let frame = 0;
   let previousTime = 0;
   let pointerY = HEIGHT / 2;
-  const birdImage = new Image();
-  birdImage.src = LOGO_URL;
+  const gameSprite = new Image();
+  gameSprite.decoding = 'async';
+  gameSprite.src = GAME_SPRITE_URL;
 
   const titles = {
     flappy: 'Flappy Bird',
@@ -39,10 +40,11 @@
 
     logoImage = heroLogo.querySelector('.brand-logo');
     logoFallback = heroLogo.querySelector('.home-logo-fallback');
-    imageWasHidden = !!logoImage?.hidden;
-    fallbackWasHidden = !!logoFallback?.hidden;
-    if (logoImage) logoImage.hidden = true;
-    if (logoFallback) logoFallback.hidden = true;
+    imageVisibility = logoImage?.style.visibility || '';
+    fallbackVisibility = logoFallback?.style.visibility || '';
+    // visibility keeps the image's exact layout dimensions reserved underneath the canvas.
+    if (logoImage && !logoImage.hidden) logoImage.style.visibility = 'hidden';
+    if (logoFallback && !logoFallback.hidden) logoFallback.style.visibility = 'hidden';
 
     canvas = document.createElement('canvas');
     canvas.className = 'logo-game-inline-canvas';
@@ -133,8 +135,8 @@
     cancelAnimationFrame(frame);
     canvas.remove();
     heroLogo?.classList.remove('is-playing-game');
-    if (logoImage) logoImage.hidden = imageWasHidden;
-    if (logoFallback) logoFallback.hidden = fallbackWasHidden;
+    if (logoImage) logoImage.style.visibility = imageVisibility;
+    if (logoFallback) logoFallback.style.visibility = fallbackVisibility;
     canvas = null;
     context = null;
     state = null;
@@ -310,9 +312,9 @@
     }
     state.obstacles.forEach(obstacle => {
       obstacle.x -= state.speed * dt;
-      const hit = runner.x + 34 > obstacle.x &&
-        runner.x + 8 < obstacle.x + obstacle.width &&
-        runner.y + 48 > FLOOR - obstacle.height;
+      const hit = runner.x + 58 > obstacle.x &&
+        runner.x + 2 < obstacle.x + obstacle.width &&
+        runner.y + 54 > FLOOR - obstacle.height;
       if (hit) gameOver('Run ended. Score: ' + state.score + '.');
     });
     state.obstacles = state.obstacles.filter(item => item.x > -80);
@@ -362,11 +364,11 @@
     ball.x += ball.vx * dt;
     ball.y += ball.vy * dt;
     if (ball.y < 18 || ball.y > HEIGHT - 18) ball.vy *= -1;
-    if (ball.vx < 0 && ball.x < 75 && ball.y > state.playerY && ball.y < state.playerY + 100) {
-      ball.x = 75; ball.vx = Math.abs(ball.vx) * 1.04; ball.vy += (ball.y - (state.playerY + 50)) * 2.8;
+    if (ball.vx < 0 && ball.x < 86 && ball.y + 20 > state.playerY && ball.y - 20 < state.playerY + 100) {
+      ball.x = 86; ball.vx = Math.abs(ball.vx) * 1.04; ball.vy += (ball.y - (state.playerY + 50)) * 2.8;
     }
-    if (ball.vx > 0 && ball.x > WIDTH - 75 && ball.y > state.cpuY && ball.y < state.cpuY + 100) {
-      ball.x = WIDTH - 75; ball.vx = -Math.abs(ball.vx) * 1.03; ball.vy += (ball.y - (state.cpuY + 50)) * 2.4;
+    if (ball.vx > 0 && ball.x > WIDTH - 86 && ball.y + 20 > state.cpuY && ball.y - 20 < state.cpuY + 100) {
+      ball.x = WIDTH - 86; ball.vx = -Math.abs(ball.vx) * 1.03; ball.vy += (ball.y - (state.cpuY + 50)) * 2.4;
     }
     if (ball.x < 0) {
       state.cpu++; resetPongBall(1);
@@ -421,8 +423,8 @@
     context.save();
     context.translate(bird.x, bird.y);
     context.rotate(clamp(bird.vy / 900, -.4, .65));
-    if (birdImage.complete && birdImage.naturalWidth) {
-      context.drawImage(birdImage, -25, -25, 50, 50);
+    if (gameSprite.complete && gameSprite.naturalWidth) {
+      context.drawImage(gameSprite, -25, -25, 50, 50);
     } else {
       context.fillStyle = '#3da66b'; context.fillRect(-20,-20,40,40);
     }
@@ -455,6 +457,10 @@
   }
 
   function drawDinoRunner(x,y) {
+    if (gameSprite.complete && gameSprite.naturalWidth) {
+      context.drawImage(gameSprite, Math.round(x), Math.round(y - 4), 60, 58);
+      return;
+    }
     const color = '#4b554b';
     context.fillStyle = color;
     context.fillRect(x+10,y+13,31,30);
@@ -487,7 +493,11 @@
     for (let y=24;y<HEIGHT-24;y+=34) context.fillRect(WIDTH/2-2,y,4,18);
     roundedRect(48,state.playerY,18,100,0,'#8ebd4f');
     roundedRect(WIDTH-66,state.cpuY,18,100,0,'#6f9cba');
-    context.fillStyle = '#ffffff'; context.fillRect(state.ball.x-8,state.ball.y-8,16,16);
+    if (gameSprite.complete && gameSprite.naturalWidth) {
+      context.drawImage(gameSprite, Math.round(state.ball.x - 20), Math.round(state.ball.y - 20), 40, 40);
+    } else {
+      context.fillStyle = '#ffffff'; context.fillRect(state.ball.x-10,state.ball.y-10,20,20);
+    }
     context.fillStyle = '#ffffff'; context.font = 'bold 56px monospace'; context.textAlign = 'center';
     context.fillText(state.player,WIDTH/2-65,82); context.fillText(state.cpu,WIDTH/2+65,82);
     context.textAlign = 'left'; context.font = 'bold 20px monospace'; context.fillText('PONG',28,34);
