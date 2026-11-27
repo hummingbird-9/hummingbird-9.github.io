@@ -39,6 +39,13 @@
             </select>
           </label>
           <button id="bookmarkFilter" class="utility-btn" type="button" aria-pressed="false">☆ Bookmarks</button>
+          <label class="games-sort-control">
+            <span>Game source</span>
+            <select id="gamesFileSource" class="utility-btn" aria-label="Game file source">
+              <option value="cloudflare">Cloudflare CDN</option>
+              <option value="github">GitHub repo</option>
+            </select>
+          </label>
         </div>
       </section>
       <select id="htmlSelector" hidden aria-hidden="true" tabindex="-1" disabled>
@@ -78,9 +85,11 @@
     // Read the small repository-root listing instead of the recursive tree.
     // The recursive tree is truncated because the separate games repository is very large.
     const ROOT_API = `https://api.github.com/repos/${OWNER}/${REPO}/contents/?ref=${encodeURIComponent(BRANCH)}&per_page=1000`;
-    // Cloudflare serves game HTML with the correct MIME type and caches all game files.
-    // Keeping every file on this origin preserves relative asset paths and service workers.
+    // Cloudflare remains the default. The GitHub option uses a GitHub-backed renderer
+    // because raw.githubusercontent.com serves HTML as text/plain rather than executable HTML.
     const GAME_FILES_ROOT = 'https://cdn.humming6ird-9.workers.dev/';
+    const GITHUB_RENDER_ROOT = 'https://raw.githack.com/';
+    const FILE_SOURCE_KEY = 'hummingbird-games-file-source-v1';
     const CACHE_KEY = 'hummingbird-games-folder-catalog-v7-cloudflare-gta';
     const PAGE_SIZE = 100;
     const BOOKMARKS_KEY = 'hummingbird-games-bookmarks-v1';
@@ -103,6 +112,7 @@
     const pagination = document.getElementById('gamesPagination');
     const loadMoreButton = document.getElementById('loadMoreGames');
     const paginationStatus = document.getElementById('gamesPaginationStatus');
+    const gameFileSourceSelect = document.getElementById('gamesFileSource');
 
     let games = [];
     let visibleGames = [];
@@ -118,14 +128,40 @@
     let activeHtml = 'index.html';
     let activeLoadToken = 0;
     let isLoading = false;
+    let gameFileSource = loadGameFileSource();
+    gameFileSourceSelect.value = gameFileSource;
 
     function encodePath(path) {
       return String(path).split('/').map(part => encodeURIComponent(part)).join('/');
     }
 
+    function loadGameFileSource() {
+      try {
+        return localStorage.getItem(FILE_SOURCE_KEY) === 'github' ? 'github' : 'cloudflare';
+      } catch (_) {
+        return 'cloudflare';
+      }
+    }
+
+    function gameSourceLabel() {
+      return gameFileSource === 'github' ? 'the GitHub games repository' : 'the Cloudflare CDN';
+    }
+
+    function gameAssetUrl(game, relativePath) {
+      const filePath = String(relativePath || '').replace(/^\\/+/, '');
+      if (gameFileSource === 'github') {
+        const sourceRepo = game.sourceRepo || REPO;
+        const sourceBranch = game.sourceBranch || BRANCH;
+        const sourceRoot = game.sourceRoot !== undefined ? game.sourceRoot : game.folder;
+        const repositoryPath = [sourceRoot, filePath].filter(Boolean).join('/');
+        return GITHUB_RENDER_ROOT + [OWNER, sourceRepo, encodePath(sourceBranch), encodePath(repositoryPath)].join('/');
+      }
+      return GAME_FILES_ROOT + encodePath(game.folder + '/' + filePath);
+    }
+
     function gameUrl(game, htmlFile) {
       const file = htmlFile || 'index.html';
-      const url = GAME_FILES_ROOT + encodePath(game.folder + '/' + file);
+      const url = gameAssetUrl(game, file);
 
       if (file === 'index.html') {
         const entryVersions = {
@@ -335,8 +371,8 @@
       // cover files in the game folder. Never use random in-game screenshots as covers.
       const coverExtensions = ['webp', 'avif', 'png', 'jpg', 'jpeg', 'gif', 'bmp'];
       const coverCandidates = game.coverPath
-        ? [game.coverPath]
-        : coverExtensions.map(extension => `${game.folder}/cover.${extension}`);
+        ? [game.coverPath.startsWith(game.folder + '/') ? game.coverPath.slice(game.folder.length + 1) : game.coverPath]
+        : coverExtensions.map(extension => `cover.${extension}`);
 
       const img = document.createElement('img');
       img.className = 'game-thumbnail';
@@ -347,14 +383,14 @@
       img.onerror = () => {
         coverIndex += 1;
         if (coverIndex < coverCandidates.length) {
-          img.src = GAME_FILES_ROOT + encodePath(coverCandidates[coverIndex]);
+          img.src = gameAssetUrl(game, coverCandidates[coverIndex]);
           return;
         }
         img.remove();
         addCoverPlaceholder();
       };
       thumbnail.appendChild(img);
-      img.src = GAME_FILES_ROOT + encodePath(coverCandidates[0]);
+      img.src = gameAssetUrl(game, coverCandidates[0]);
 
       const bookmarkButton = document.createElement('button');
       bookmarkButton.type = 'button';
@@ -515,11 +551,15 @@
             const index = next++;
             const item = files[index];
             try {
-              const publicPath = game.sourceRepo ? game.folder + '/' + item.path : item.path;
-              const response = await fetch(GAME_FILES_ROOT + encodePath(publicPath));
+              const sourceRoot = game.sourceRepo
+                ? (game.sourceRoot || '')
+                : game.folder;
+              const relativePath = sourceRoot && item.path.startsWith(sourceRoot + '/')
+                ? item.path.slice(sourceRoot.length + 1)
+                : item.path;
+              const response = await fetch(gameAssetUrl(game, relativePath));
               if (!response.ok) throw new Error('HTTP ' + response.status);
               const data = await response.arrayBuffer();
-              const relativePath = game.sourceRepo ? item.path : item.path.slice(game.folder.length + 1);
               zip.file(relativePath, data);
             } catch (error) {
               failed.push(item.path + ' (' + error.message + ')');
@@ -566,7 +606,7 @@
       if (!forceRefresh && cached && Array.isArray(cached.games) && Date.now() - cached.savedAt < CACHE_TTL) {
         games = cached.games;
         applySearch();
-        setStatus('Loaded the saved game list.');
+        setStatus('Loaded the saved game list. Game files load from ' + gameSourceLabel() + '.');
         openGameFromAddress();
         isLoading = false;
         return;
@@ -589,14 +629,14 @@
         try { localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), games: compactGames })); }
         catch (cacheError) { console.warn('Game list loaded, but could not cache it:', cacheError); }
         applySearch();
-        setStatus(`Found ${games.length} games. Game files load through the Cloudflare CDN.`);
+        setStatus(`Found ${games.length} games. Game files load from ${gameSourceLabel()}.`);
         openGameFromAddress();
       } catch (error) {
         console.error('Game catalog load failed:', error);
         if (cached && Array.isArray(cached.games) && cached.games.length) {
           games = cached.games;
           applySearch();
-          setStatus('Could not refresh the catalog (' + error.message + '). Showing the last saved game list.');
+          setStatus('Could not refresh the catalog (' + error.message + '). Showing the last saved game list; game files load from ' + gameSourceLabel() + '.');
           openGameFromAddress();
         } else {
           games = [];
@@ -723,6 +763,20 @@
       htmlSelector.disabled = true;
       htmlSelector.title = 'Choose a game first';
     }
+
+    gameFileSourceSelect.addEventListener('change', () => {
+      const nextSource = gameFileSourceSelect.value === 'github' ? 'github' : 'cloudflare';
+      if (nextSource === gameFileSource) return;
+      gameFileSource = nextSource;
+      try {
+        localStorage.setItem(FILE_SOURCE_KEY, gameFileSource);
+      } catch (error) {
+        console.warn('Could not save the game file source:', error);
+      }
+      renderGames();
+      if (activeGame) loadActiveHtml();
+      setStatus('Game files now load from ' + gameSourceLabel() + '.');
+    });
 
     document.getElementById('refreshGames').addEventListener('click', () => loadGames(true));
     randomGameButton.addEventListener('click', () => {
