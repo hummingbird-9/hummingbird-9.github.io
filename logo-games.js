@@ -427,7 +427,7 @@
       context.fillStyle = '#3da66b'; context.fillRect(-20,-20,40,40);
     }
     context.restore();
-    context.fillStyle = 'var(--game-text, #ffffff)'; context.font = 'bold 24px monospace'; context.fillText('FLAP', 28, 42);
+    context.fillStyle = '#ffffff'; context.font = 'bold 24px monospace'; context.fillText('FLAP', 28, 42);
     context.font = '700 22px system-ui'; context.textAlign = 'right'; context.fillText(String(state.score), WIDTH - 88, 42); context.textAlign = 'left';
   }
 
