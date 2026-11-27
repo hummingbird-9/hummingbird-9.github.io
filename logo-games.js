@@ -5,10 +5,14 @@
   const WIDTH = 960;
   const HEIGHT = 540;
   const FLOOR = 445;
-  const overlayId = 'hummingbirdLogoGame';
-  let overlay = null;
+  let heroLogo = null;
+  let logoImage = null;
+  let logoFallback = null;
+  let imageWasHidden = false;
+  let fallbackWasHidden = true;
   let canvas = null;
   let context = null;
+  let snakeTouchStart = null;
   let mode = 'flappy';
   let state = null;
   let frame = 0;
@@ -28,60 +32,78 @@
     return Math.max(min, Math.min(max, value));
   }
 
-  function buildOverlay() {
-    if (overlay) return;
-    overlay = document.createElement('section');
-    overlay.id = overlayId;
-    overlay.className = 'logo-game-overlay';
-    // Keep the game attached to the viewport even when a cached stylesheet is still in use.
-    Object.assign(overlay.style, {
-      position: 'fixed', inset: '0', zIndex: '2147483647',
-      display: 'grid', placeItems: 'center', padding: '18px',
-      background: 'rgba(2, 8, 5, .78)',
-      backdropFilter: 'blur(12px)', webkitBackdropFilter: 'blur(12px)'
-    });
-    overlay.hidden = true;
-    overlay.setAttribute('aria-hidden', 'true');
-    overlay.innerHTML = [
-      '<div class="logo-game-dialog" role="dialog" aria-modal="true" aria-labelledby="logoGameTitle">',
-      '  <header class="logo-game-header">',
-      '    <div><p class="logo-game-kicker">humming[bird]Tech mini game</p><h2 id="logoGameTitle">Flappy Bird</h2></div>',
-      '    <button class="logo-game-close" type="button" aria-label="Close mini game" title="Back to logo">×</button>',
-      '  </header>',
-      '  <canvas class="logo-game-canvas" width="960" height="540" tabindex="0" aria-label="Mini game area"></canvas>',
-      '  <div class="logo-game-toolbar"><span class="logo-game-score" aria-live="polite">Score: 0</span><button class="logo-game-restart" type="button">Restart</button></div>',
-      '  <div class="logo-game-dpad" aria-label="Snake controls">',
-      '    <button type="button" data-direction="up" aria-label="Up">↑</button>',
-      '    <div><button type="button" data-direction="left" aria-label="Left">←</button><button type="button" data-direction="down" aria-label="Down">↓</button><button type="button" data-direction="right" aria-label="Right">→</button></div>',
-      '  </div>',
-      '  <p class="logo-game-help">Close to return to the normal logo. Press Escape at any time.</p>',
-      '</div>'
-    ].join('');
-    document.documentElement.appendChild(overlay);
-    canvas = overlay.querySelector('canvas');
+  function buildInlineGame() {
+    heroLogo = document.querySelector('.home-hero-logo');
+    if (!heroLogo) return false;
+    if (canvas && canvas.isConnected) return true;
+
+    logoImage = heroLogo.querySelector('.brand-logo');
+    logoFallback = heroLogo.querySelector('.home-logo-fallback');
+    imageWasHidden = !!logoImage?.hidden;
+    fallbackWasHidden = !!logoFallback?.hidden;
+    if (logoImage) logoImage.hidden = true;
+    if (logoFallback) logoFallback.hidden = true;
+
+    canvas = document.createElement('canvas');
+    canvas.className = 'logo-game-inline-canvas';
+    canvas.width = WIDTH;
+    canvas.height = HEIGHT;
+    canvas.tabIndex = 0;
+    canvas.setAttribute('role', 'img');
+    canvas.setAttribute('aria-label', 'Mini game. Press Escape to return to the logo.');
+    heroLogo.classList.add('is-playing-game');
+    heroLogo.appendChild(canvas);
     context = canvas.getContext('2d');
-    overlay.querySelector('.logo-game-close').addEventListener('click', close);
-    overlay.querySelector('.logo-game-restart').addEventListener('click', reset);
-    overlay.querySelectorAll('[data-direction]').forEach(button => {
-      button.addEventListener('click', () => setSnakeDirection(button.dataset.direction));
-    });
+    if (!context) {
+      close();
+      return false;
+    }
+
     canvas.addEventListener('pointerdown', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      canvas.focus({ preventScroll: true });
       canvas.setPointerCapture?.(event.pointerId);
       const point = pointerPosition(event);
-      pointerY = point.y;
+      if (point.x >= WIDTH - 76 && point.y <= 76) {
+        close();
+        return;
+      }
+      if (state?.over) reset();
       if (mode === 'flappy') flap();
       else if (mode === 'dino') jump();
+      else if (mode === 'snake') snakeTouchStart = point;
       else if (mode === 'pong') state.playerY = clamp(point.y - 48, 20, HEIGHT - 116);
     });
+
+    canvas.addEventListener('pointerup', event => {
+      event.stopPropagation();
+      if (mode !== 'snake' || !snakeTouchStart || !state || state.over) {
+        snakeTouchStart = null;
+        return;
+      }
+      const point = pointerPosition(event);
+      const dx = point.x - snakeTouchStart.x;
+      const dy = point.y - snakeTouchStart.y;
+      snakeTouchStart = null;
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < 18) return;
+      setSnakeDirection(Math.abs(dx) > Math.abs(dy)
+        ? (dx > 0 ? 'right' : 'left')
+        : (dy > 0 ? 'down' : 'up'));
+    });
+
+    canvas.addEventListener('pointercancel', () => { snakeTouchStart = null; });
+    canvas.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+    });
     canvas.addEventListener('pointermove', event => {
-      if (mode !== 'pong' || !event.buttons) return;
+      if (mode !== 'pong' || !event.buttons || !state) return;
       const point = pointerPosition(event);
       state.playerY = clamp(point.y - 48, 20, HEIGHT - 116);
     });
-    overlay.addEventListener('click', event => {
-      if (event.target === overlay) close();
-    });
     document.addEventListener('keydown', onKeyDown, true);
+    return true;
   }
 
   function pointerPosition(event) {
@@ -93,15 +115,8 @@
   }
 
   function open(nextMode) {
-    if (!titles[nextMode]) return;
-    buildOverlay();
+    if (!titles[nextMode] || !buildInlineGame()) return;
     mode = nextMode;
-    overlay.querySelector('#logoGameTitle').textContent = titles[mode];
-    overlay.querySelector('.logo-game-dpad').hidden = mode !== 'snake';
-    overlay.querySelector('.logo-game-help').textContent = helpText(mode);
-    overlay.hidden = false;
-    overlay.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('logo-game-open');
     reset();
     canvas.focus({ preventScroll: true });
     previousTime = performance.now();
@@ -110,25 +125,19 @@
   }
 
   function close() {
-    if (!overlay || overlay.hidden) return;
+    if (!canvas) return;
     cancelAnimationFrame(frame);
-    overlay.hidden = true;
-    overlay.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('logo-game-open');
+    canvas.remove();
+    heroLogo?.classList.remove('is-playing-game');
+    if (logoImage) logoImage.hidden = imageWasHidden;
+    if (logoFallback) logoFallback.hidden = fallbackWasHidden;
+    canvas = null;
+    context = null;
     state = null;
-  }
-
-  function helpText(which) {
-    return ({
-      flappy: 'Click, tap, or press Space to flap. Close to return to the normal logo.',
-      dino: 'Click, tap, or press Space / ↑ to jump. Close to return to the normal logo.',
-      snake: 'Use arrow keys or the on-screen arrows. Close to return to the normal logo.',
-      pong: 'Move your pointer or use ↑ / ↓ to control the paddle. First to 5 wins.'
-    })[which];
+    snakeTouchStart = null;
   }
 
   function reset() {
-    if (overlay) overlay.querySelector('.logo-game-help').textContent = helpText(mode);
     if (mode === 'flappy') {
       state = {
         score: 0, over: false, bird: { x: 210, y: 245, vy: 0 },
@@ -157,17 +166,13 @@
   }
 
   function updateScore() {
-    if (!overlay || !state) return;
-    const label = mode === 'pong'
-      ? 'You ' + state.player + ' — ' + state.cpu + ' CPU'
-      : 'Score: ' + state.score;
-    overlay.querySelector('.logo-game-score').textContent = label;
+    // Score text is painted into the game canvas.
   }
 
   function gameOver(message) {
     if (!state || state.over) return;
     state.over = true;
-    overlay.querySelector('.logo-game-help').textContent = message + ' Press Restart or tap the game to try again.';
+    state.endMessage = message;
   }
 
   function flap() {
@@ -197,12 +202,15 @@
   }
 
   function onKeyDown(event) {
-    if (!overlay || overlay.hidden) return;
+    if (!canvas || !canvas.isConnected) return;
     if (event.key === 'Escape') {
       event.preventDefault();
       close();
       return;
     }
+    if (!state) return;
+    if (state.over && mode !== 'flappy' && mode !== 'dino') reset();
+
     if (mode === 'flappy' && [' ', 'ArrowUp', 'w', 'W'].includes(event.key)) {
       event.preventDefault();
       flap();
@@ -236,7 +244,7 @@
   }, true);
 
   function loop(now) {
-    if (!overlay || overlay.hidden || !state) return;
+    if (!canvas || !canvas.isConnected || !state) return;
     const dt = clamp((now - previousTime) / 1000, 0, 0.035);
     previousTime = now;
     update(dt);
@@ -383,6 +391,7 @@
     else if (mode === 'dino') drawDino();
     else if (mode === 'snake') drawSnake();
     else if (mode === 'pong') drawPong();
+    drawInlineClose();
     if (state.over) drawGameOver();
   }
 
@@ -421,6 +430,7 @@
     }
     context.restore();
     context.fillStyle = '#355047'; context.font = '700 24px system-ui'; context.fillText('FLAP', 28, 42);
+    context.font = '700 22px system-ui'; context.textAlign = 'right'; context.fillText(String(state.score), WIDTH - 88, 42); context.textAlign = 'left';
   }
 
   function drawDino() {
@@ -473,6 +483,7 @@
     context.fillStyle = '#ff8b73';
     context.beginPath(); context.arc(state.food.x*24+12,state.food.y*24+44,9,0,Math.PI*2); context.fill();
     context.fillStyle = '#e5f6e9'; context.font = '700 20px system-ui'; context.fillText('SNAKE', 26, 28);
+    context.textAlign = 'right'; context.fillText('Score: ' + state.score, WIDTH - 88, 28); context.textAlign = 'left';
   }
 
   function drawPong() {
@@ -487,11 +498,29 @@
     context.textAlign = 'left'; context.font = '700 20px system-ui'; context.fillText('PONG',28,34);
   }
 
+  function drawInlineClose() {
+    context.save();
+    context.fillStyle = 'rgba(0,0,0,.32)';
+    context.beginPath();
+    context.arc(WIDTH - 36, 36, 23, 0, Math.PI * 2);
+    context.fill();
+    context.strokeStyle = '#fff';
+    context.lineWidth = 3;
+    context.lineCap = 'round';
+    context.beginPath();
+    context.moveTo(WIDTH - 43, 29); context.lineTo(WIDTH - 29, 43);
+    context.moveTo(WIDTH - 29, 29); context.lineTo(WIDTH - 43, 43);
+    context.stroke();
+    context.restore();
+  }
+
   function drawGameOver() {
-    context.fillStyle = 'rgba(5,12,9,.64)'; context.fillRect(0,0,WIDTH,HEIGHT);
+    context.fillStyle = 'rgba(5,12,9,.58)'; context.fillRect(0,0,WIDTH,HEIGHT);
     context.textAlign = 'center';
-    context.fillStyle = '#fff'; context.font = '800 48px system-ui'; context.fillText('Game over',WIDTH/2,HEIGHT/2-8);
-    context.font = '500 22px system-ui'; context.fillText('Press Restart to play again',WIDTH/2,HEIGHT/2+38);
+    context.fillStyle = '#fff'; context.font = '800 44px system-ui';
+    context.fillText('Game over',WIDTH/2,HEIGHT/2-12);
+    context.font = '500 20px system-ui';
+    context.fillText('Tap or press a key to play again',WIDTH/2,HEIGHT/2+30);
     context.textAlign = 'left';
   }
 
