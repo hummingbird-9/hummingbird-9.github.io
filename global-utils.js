@@ -4,9 +4,9 @@
   // Keep the preference key used by the latest published site version so existing settings migrate cleanly.
   const SETTINGS_KEY = 'hummingbird_site_preferences_v1';
   const LEGACY_SETTINGS_KEY = 'hummingbird-site-settings-v2';
-  const LOGO_URL = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png';
+  const LOGO_URL = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(5).png';
   const TAB_PRESETS_KEY = 'hummingbird_tab_disguise_presets_v1';
-  const DEFAULT_FAVICON = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png';
+  const DEFAULT_FAVICON = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(5).png';
   const DEFAULTS = {
     brightness: 'normal',
     background: 'gradient',
@@ -25,6 +25,7 @@
     compactCards: false,
     showRecentlyPlayed: false,
     hideGameThumbnails: false,
+    logoClickGame: 'flappy',
     pastAccentColors: [],
     disguiseTitle: '',
     disguiseFaviconUrl: '',
@@ -91,6 +92,7 @@
       compactCards: source.compactCards ?? source.compact ?? DEFAULTS.compactCards,
       showRecentlyPlayed: source.showRecentlyPlayed === true,
       hideGameThumbnails: source.hideGameThumbnails === true,
+      logoClickGame: ['off', 'flappy', 'dino', 'snake', 'pong'].includes(source.logoClickGame) ? source.logoClickGame : DEFAULTS.logoClickGame,
       pastAccentColors: Array.isArray(source.pastAccentColors)
         ? source.pastAccentColors.filter(color => typeof color === 'string' && /^#[0-9a-f]{6}$/i.test(color)).slice(0, 10)
         : [],
@@ -132,8 +134,15 @@
     clearLegacyAccountData();
     clearHardRefreshMarker();
     originalDocumentTitle = document.title;
-    const initialIcon = document.querySelector('link[rel~="icon"], link[rel="shortcut icon"]');
-    originalFaviconHref = initialIcon?.href || DEFAULT_FAVICON;
+    const iconLinks = [...document.querySelectorAll('link[rel~="icon"], link[rel="shortcut icon"]')];
+    originalFaviconHref = DEFAULT_FAVICON;
+    if (!iconLinks.length) {
+      const icon = document.createElement('link');
+      icon.rel = 'icon';
+      document.head.appendChild(icon);
+      iconLinks.push(icon);
+    }
+    iconLinks.forEach(icon => { icon.href = DEFAULT_FAVICON; });
     applySettings();
     injectSiteHeader();
     injectSiteFooter();
@@ -152,10 +161,26 @@
 
   function bindHomeLogoRefresh() {
     if (!document.body.classList.contains('home-page')) return;
-    document.querySelectorAll('.site-brand, .home-hero-logo').forEach(link => {
+    document.querySelectorAll('.site-brand').forEach(link => {
       if (link.dataset.hardRefreshBound === 'true') return;
       link.dataset.hardRefreshBound = 'true';
       link.addEventListener('click', hardRefreshCurrentDocument);
+    });
+    const heroLogo = document.querySelector('.home-hero-logo');
+    if (!heroLogo || heroLogo.dataset.logoGameBound === 'true') return;
+    heroLogo.dataset.logoGameBound = 'true';
+    heroLogo.addEventListener('click', event => {
+      if (settings.logoClickGame === 'off') {
+        hardRefreshCurrentDocument(event);
+        return;
+      }
+      const miniGames = window.HummingbirdLogoGames;
+      if (miniGames && typeof miniGames.open === 'function') {
+        event.preventDefault();
+        miniGames.open(settings.logoClickGame);
+      } else {
+        hardRefreshCurrentDocument(event);
+      }
     });
   }
 
@@ -333,6 +358,11 @@
           <label class="settings-check"><input id="settingHideGameThumbnails" type="checkbox"><span>Hide game thumbnails</span></label>
         </section>
 
+        <section class="settings-section"><h3>Home logo game</h3>
+          <label class="settings-field"><span>Game when clicking the large homepage logo</span><select id="settingLogoClickGame"><option value="flappy">Flappy Bird</option><option value="dino">Chrome Dinosaur</option><option value="snake">Snake</option><option value="pong">Pong</option><option value="off">Off — show the normal logo</option></select></label>
+          <p class="settings-description">The selected game opens when you click the large logo in the middle of Home. Close it to return to the logo. The small top-left logo always goes Home.</p>
+        </section>
+
         <section class="settings-section"><h3>Emergency disguise</h3>
           <p class="settings-description">Show a full-screen cover image and switch the browser tab to match. Press Escape or click the top-left hint to hide it.</p>
           <div class="settings-action-row"><button id="settingEmergencyKeyButton" type="button">Change shortcut (F9)</button><button id="resetEmergencyKey" type="button">Reset shortcut</button></div>
@@ -414,7 +444,7 @@
       settingSurfaceStyle: 'surfaceStyle', settingCompactCards: 'compactCards',
       settingReducedMotion: 'reducedMotion', settingLightweight: 'lightweight',
       settingContextMenu: 'customContextMenu', settingShowRecentlyPlayed: 'showRecentlyPlayed',
-      settingHideGameThumbnails: 'hideGameThumbnails', settingDisguiseTitle: 'disguiseTitle',
+      settingHideGameThumbnails: 'hideGameThumbnails', settingLogoClickGame: 'logoClickGame', settingDisguiseTitle: 'disguiseTitle',
       settingDisguiseFaviconUrl: 'disguiseFaviconUrl', settingEmergencyTemplate: 'emergencyTemplate',
       settingDisguiseOnLeave: 'disguiseOnLeave', settingStayDisguisedOnReturn: 'stayDisguisedOnReturn'
     };
@@ -928,6 +958,7 @@
       settingCompactCards: settings.compactCards, settingReducedMotion: settings.reducedMotion,
       settingLightweight: settings.lightweight, settingContextMenu: settings.customContextMenu,
       settingShowRecentlyPlayed: settings.showRecentlyPlayed, settingHideGameThumbnails: settings.hideGameThumbnails,
+      settingLogoClickGame: settings.logoClickGame,
       settingDisguiseTitle: settings.disguiseTitle, settingDisguiseFaviconUrl: settings.disguiseFaviconUrl,
       settingEmergencyTemplate: settings.emergencyTemplate, settingDisguiseOnLeave: settings.disguiseOnLeave,
       settingStayDisguisedOnReturn: settings.stayDisguisedOnReturn
