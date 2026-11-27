@@ -148,7 +148,7 @@
     }
 
     function gameAssetUrl(game, relativePath) {
-      const filePath = String(relativePath || '').replace(/^\\/+/, '');
+      const filePath = String(relativePath || '').split('/').filter(Boolean).join('/');
       if (gameFileSource === 'github') {
         const sourceRepo = game.sourceRepo || REPO;
         const sourceBranch = game.sourceBranch || BRANCH;
