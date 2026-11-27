@@ -2086,3 +2086,69 @@ body.emergency-disguise-active { overflow: hidden !important; }
 }
 
 
+
+
+/* Homepage logo mini games */
+body.logo-game-open { overflow: hidden; }
+.logo-game-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 15000;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(2, 8, 5, .78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.logo-game-overlay[hidden] { display: none !important; }
+.logo-game-dialog {
+  width: min(1040px, 100%);
+  max-height: calc(100vh - 36px);
+  overflow: auto;
+  padding: 18px;
+  border: 1px solid var(--panel-border, rgba(255,255,255,.2));
+  border-radius: 18px;
+  background: var(--panel, rgba(12,28,18,.96));
+  color: var(--page-text, #f4fff7);
+  box-shadow: 0 28px 90px rgba(0,0,0,.48);
+}
+.logo-game-header, .logo-game-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.logo-game-header { margin-bottom: 12px; }
+.logo-game-header h2 { margin: 2px 0 0; font-size: clamp(1.2rem,3vw,1.75rem); }
+.logo-game-kicker { margin: 0; color: var(--page-muted, #b5c7ba); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; }
+.logo-game-close { width: 42px; height: 42px; min-width: 42px; padding: 0; border-radius: 50%; font-size: 26px; line-height: 1; }
+.logo-game-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(62vh, 590px);
+  aspect-ratio: 16 / 9;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 12px;
+  background: #0b1711;
+  touch-action: manipulation;
+  outline-offset: 3px;
+}
+.logo-game-toolbar { padding-top: 12px; }
+.logo-game-score { color: var(--page-text, #f4fff7); font-weight: 750; font-variant-numeric: tabular-nums; }
+.logo-game-restart { min-width: 104px; margin: 0; }
+.logo-game-help { margin: 12px 0 0; color: var(--page-muted, #b5c7ba); font-size: .86rem; text-align: center; }
+.logo-game-dpad { display: none; gap: 8px; justify-content: center; margin: 12px auto 0; }
+.logo-game-dpad:not([hidden]) { display: grid; }
+.logo-game-dpad > div { display: flex; justify-content: center; gap: 8px; }
+.logo-game-dpad button { width: 48px; height: 42px; min-width: 48px; margin: 0; padding: 0; font-size: 20px; }
+@media (max-width: 640px) {
+  .logo-game-overlay { padding: 8px; }
+  .logo-game-dialog { padding: 12px; max-height: calc(100vh - 16px); border-radius: 14px; }
+  .logo-game-canvas { max-height: 54vh; }
+  .logo-game-help { font-size: .78rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-game-overlay { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
