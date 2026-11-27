@@ -2088,18 +2088,21 @@ body.emergency-disguise-active { overflow: hidden !important; }
 
 
 
-/* Mini games render directly in the homepage logo's existing space. */
+/* Keep the logo's original dimensions while the game is drawn over it. */
+.home-hero-logo { position:relative; }
 .home-hero-logo.is-playing-game {
   display:block;
   line-height:0;
   cursor:default;
 }
 .logo-game-inline-canvas {
+  position:absolute;
+  inset:0;
   display:block;
   width:100%;
   max-width:100%;
-  height:auto;
-  aspect-ratio:16 / 9;
+  height:100%;
+  aspect-ratio:auto;
   border:0;
   border-radius:0;
   outline-offset:4px;
@@ -2111,5 +2114,5 @@ body.emergency-disguise-active { overflow: hidden !important; }
   cursor:crosshair;
 }
 @media (max-width:640px) {
-  .logo-game-inline-canvas { width:100%; max-height:none; }
+  .logo-game-inline-canvas { width:100%; height:100%; max-height:none; }
 }
