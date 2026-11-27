@@ -470,6 +470,25 @@
         if (!response.ok) throw new Error(`Could not list ${directory || sourceRepo} (HTTP ${response.status}).`);
         const entries = await response.json();
         if (!Array.isArray(entries)) throw new Error('GitHub returned an unexpected file list.');
+
+        // GTA San Andreas is a source repo. The browser game only needs its web
+        // entry files plus the game data and WebAssembly package directories.
+        if (game.sourceRepo === 'GTA-San-Andreas' && !directory) {
+          const rootFiles = new Set([
+            'index.html', 'main.js', 'loader.js', 'worker.js',
+            'audio-worklet.js', 'mods.js'
+          ]);
+          const rootDirectories = new Set(['game', 'pkg']);
+          for (const entry of entries) {
+            if (entry.type === 'file' && rootFiles.has(entry.name)) {
+              files.push({ path: entry.path, size: entry.size || 0 });
+            } else if (entry.type === 'dir' && rootDirectories.has(entry.name)) {
+              pending.push(entry.path);
+            }
+          }
+          continue;
+        }
+
         for (const entry of entries) {
           if (entry.type === 'file') files.push({ path: entry.path, size: entry.size || 0 });
           else if (entry.type === 'dir') pending.push(entry.path);
