@@ -6,244 +6,76 @@
   <meta name="theme-color" content="#0a2e0a">
   <title>humming[bird]Tech</title>
   <link rel="stylesheet" href="style.css?v=20261115-shared-topbar-restore-15">
-  <link rel="shortcut icon" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png">
+  <link rel="shortcut icon" href="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(5).png">
 </head>
 <body class="home-page">
   <main class="home-page-main">
-    <a class="home-hero-logo" href="index.html" aria-label="Refresh humming[bird]Tech" title="Clear this page's saved cache and refresh">
-      <img class="brand-logo" src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png" alt="humming[bird]Tech" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+    <a class="home-hero-logo" href="index.html" aria-label="Play the selected home logo game" title="Play a mini game">
+      <img class="brand-logo" src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(5).png" alt="humming[bird]Tech" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
       <span class="home-logo-fallback" hidden>humming[bird]Tech</span>
     </a>
   </main>
+
   <section class="release-history" aria-labelledby="releaseHistoryTitle">
     <header class="release-history-header">
       <div>
         <p class="release-history-kicker">Release history</p>
-        <h2 id="releaseHistoryTitle">Beta 0.18</h2>
-        <p class="release-history-subtitle">Current beta · Updated November 12, 2026</p>
+        <h2 id="releaseHistoryTitle">Beta 0.19</h2>
+        <p class="release-history-subtitle">Current beta · Updated November 26, 2026</p>
       </div>
       <span class="release-history-current">Current version</span>
     </header>
-
     <details class="release-note" open>
-      <summary>
-        <time datetime="2026-11-12">November 12, 2026</time>
-        <span>Beta 0.18 — Interface and game library</span>
-      </summary>
-      <ul><li>Added a unified Home, Applications and Projects, Games, HummingWeb, Chat, and Settings tab bar.</li><li>Reduced the home screen to the logo and title, and moved the community Padlet into its own Chat tab.</li><li>Added theme, background, accent, font, corner, liquid-glass, motion, and lightweight controls in a plain inline Settings list.</li><li>Added game bookmarks, a 100-card loading limit, sorting, random launch, and search controls.</li><li>Added a default-off Recently played shelf option in Settings and reorganized the game controls into clear groups.</li><li>Added custom context-menu preferences and settings import/export.</li><li>Added Solid, Minimal, and Flat surfaces, more background choices, and a high-contrast theme.</li><li>Adjusted the HummingWeb viewport and added a fullscreen control.</li><li>Reorganized Games controls, made search submit on Enter or Search, and made game URLs update without adding browser-history entries.</li><li>Removed duplicate homepage branding and kept the release notes beneath the logo.</li></ul>
+      <summary><time datetime="2026-11-26">November 26, 2026</time><span>Beta 0.19 — Games, Cloudflare hosting, and homepage extras</span></summary>
+      <ul>
+        <li>Added GTA San Andreas to the game library.</li>
+        <li>Moved game pages, assets, covers, and downloads to the Cloudflare CDN backed by four Pages projects; the small game-folder catalog still reads GitHub metadata.</li>
+        <li>Added Flappy Bird, Chrome-style Dino, Snake, and Pong to the main homepage logo, with an Off option to keep the normal logo.</li>
+        <li>Updated the site logo and favicon.</li>
+        <li>Simplified the release-history descriptions.</li>
+      </ul>
     </details>
     <details class="release-note">
-      <summary>
-        <time datetime="2026-11-11">November 11, 2026</time>
-        <span>Settings and liquid-glass refinement</span>
-      </summary>
-      <ul><li>Expanded interface customization for Normal, Dark, and Light themes and separate page backgrounds.</li><li>Added fine controls for liquid-glass opacity, blur, corner roundness, accent color, and text scale.</li><li>Added lightweight-mode refinements and simplified shared navigation.</li></ul>
+      <summary><time datetime="2026-11-12">November 12, 2026</time><span>Beta 0.18 — Navigation and game library</span></summary>
+      <ul>
+        <li>Added a top tab bar and simplified the homepage.</li>
+        <li>Grouped appearance, game browsing, bookmarks, and accessibility controls in Settings.</li>
+        <li>Improved search, sorting, recently played, game launching, and HummingWeb.</li>
+      </ul>
     </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-11-09">November 9, 2026</time>
-        <span>Project catalog refresh</span>
-      </summary>
-      <ul><li>Updated the application and project repository catalog.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-11-05">November 5, 2026</time>
-        <span>Game catalog and player refresh</span>
-      </summary>
-      <ul><li>Changed the games catalog to discover top-level game folders with a direct index.html from the hummingbird-9/games repository.</li><li>Loaded game pages and relative assets from jsDelivr while preserving folder paths.</li><li>Added cached catalog metadata, refresh, search-query URLs, HTML entry selection, and the in-page player.</li><li>Added support for the game cover formats and thumbnail preference rules.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-11-04">November 4, 2026</time>
-        <span>Home navigation and HTML browser fixes</span>
-      </summary>
-      <ul><li>Simplified the homepage navigation and added an HTML browser for repository-hosted pages.</li><li>Updated home navigation labels and HTML-file discovery for the separate HTML browser.</li><li>Fixed duplicate HTML game listings and improved the game viewer/navigation.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-11-01">November 1, 2026</time>
-        <span>Game loading and memory cleanup</span>
-      </summary>
-      <ul><li>Restored GitHub Pages game launching and corrected game thumbnail handling.</li><li>Unload the game iframe on close so the embedded game document and its page-owned work are released.</li><li>Normalized game URLs to HTTPS.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-10-31">October 31, 2026</time>
-        <span>Repository-backed gallery and game discovery</span>
-      </summary>
-      <ul><li>Improved gallery thumbnails and loaded game projects from their repositories.</li><li>Fixed Celeste loading and added gallery tab options.</li><li>Added the One Piece Character Spinner repository entry.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-10-30">October 30, 2026</time>
-        <span>Game and project catalog expansion</span>
-      </summary>
-      <ul><li>Added the Mr.Mine repository to the project catalog and updated repository/CDN references.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-10-29">October 29, 2026</time>
-        <span>HummingWeb and repository-link improvements</span>
-      </summary>
-      <ul><li>Updated repository links and CDN handling for project resources.</li><li>Improved HummingProxy/search interactions and domain configuration.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-10-28">October 28, 2026</time>
-        <span>HummingWeb and HummingProxy refinements</span>
-      </summary>
-      <ul><li>Added HummingProxy page actions and embedded the proxy in the web page.</li><li>Refactored the page structure, search interactions, and script handling.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-10-27">October 27, 2026</time>
-        <span>HummingProxy embed</span>
-      </summary>
-      <ul><li>Added the HummingProxy iframe and the first embedded web-proxy layout.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-10-26">October 26, 2026</time>
-        <span>HummingWeb search interface</span>
-      </summary>
-      <ul><li>Added and refined the HummingWeb iframe/search page and its redirect behavior.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-10-23">October 23, 2026</time>
-        <span>Repository catalog maintenance</span>
-      </summary>
-      <ul><li>Updated the application and project repository catalog.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-10-19">October 19, 2026</time>
-        <span>Project catalog and HummingEngine</span>
-      </summary>
-      <ul><li>Expanded the repository catalog and corrected its JSON formatting.</li><li>Added HummingEngineController registration options.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-10-18">October 18, 2026</time>
-        <span>Site interface foundation</span>
-      </summary>
-      <ul><li>Reworked the home, gallery, and About page structure and shared styling.</li><li>Added dynamic project cards, repository links, and gallery search/error handling.</li><li>Added theme management, custom context-menu behavior, network-latency display, hardware diagnostics, and issue-report links.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-10-17">October 17, 2026</time>
-        <span>Site structure and navigation</span>
-      </summary>
-      <ul><li>Reorganized the main site pages and prepared the refreshed home and gallery layout.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-10-05">October 5, 2026</time>
-        <span>Early beta test interface</span>
-      </summary>
-      <ul><li>Added beta-test navigation and updated the early version information and site branding.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-08-30">August 30, 2026</time>
-        <span>Link and Firebase cleanup</span>
-      </summary>
-      <ul><li>Refined Firebase key handling and link behavior.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-06-04">June 4, 2026</time>
-        <span>GitHub Pages launch</span>
-      </summary>
-      <ul><li>Established the site&#39;s GitHub Pages domain and added the Free Education page.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-05-07">May 7, 2026</time>
-        <span>Beta testing link</span>
-      </summary>
-      <ul><li>Replaced the WW3 Trailer homepage action with a beta-test link.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-05-06">May 6, 2026</time>
-        <span>WW3 project page</span>
-      </summary>
-      <ul><li>Added and updated the WW3 Trailer page.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-04-20">April 20, 2026</time>
-        <span>Gallery branding update</span>
-      </summary>
-      <ul><li>Updated the gallery page title and favicon.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-03-24">March 24, 2026</time>
-        <span>Elmo Fight project</span>
-      </summary>
-      <ul><li>Added the Elmo Fight page and connected it from the homepage.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-03-13">March 13, 2026</time>
-        <span>HummingWeb search</span>
-      </summary>
-      <ul><li>Built out the HummingWeb search page and refined its search experience.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-03-11">March 11, 2026</time>
-        <span>Gallery and standalone page updates</span>
-      </summary>
-      <ul><li>Restored the gallery page and added the no-audio standalone page.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-03-05">March 5, 2026</time>
-        <span>Search, service worker, and application stability</span>
-      </summary>
-      <ul><li>Added service-worker registration and refined HummingWeb search and link handling.</li><li>Improved authentication-state management and script paths.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-03-04">March 4, 2026</time>
-        <span>HummingWeb and homepage refinements</span>
-      </summary>
-      <ul><li>Refined the HummingWeb search page, link handling, and homepage navigation.</li><li>Updated the early About/version presentation and added the WW3 video embed and gallery navigation.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-03-03">March 3, 2026</time>
-        <span>Gallery and game collection structure</span>
-      </summary>
-      <ul><li>Created the early gallery/home page structure and updated game catalog sorting and filtering.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-03-02">March 2, 2026</time>
-        <span>Game catalog entries</span>
-      </summary>
-      <ul><li>Added game catalog records including Outertale and Last Breath, Undertale, and corrected cover URL formatting.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-02-25">February 25, 2026</time>
-        <span>Game catalog entries and deployment setup</span>
-      </summary>
-      <ul><li>Updated the game catalog, including Eaglercraft 1.12.2, and adjusted special-entry metadata.</li><li>Added and configured the site domain.</li></ul>
-    </details>
-    <details class="release-note">
-      <summary>
-        <time datetime="2026-02-24">February 24, 2026</time>
-        <span>Game catalog foundation</span>
-      </summary>
-      <ul><li>Added the initial zone-management functionality and game-list foundation.</li><li>Introduced early dark-mode styling and the first game browsing controls.</li></ul>
-    </details>
-    <p class="release-history-footnote">Dates are shown in Pacific Time. Related maintenance commits are grouped with their feature update.</p>
-  </section>
-  <script src="global-utils.js?v=20261115-iframe-focus-disguise-fix-13"></script>
+    <details class="release-note"><summary><time datetime="2026-11-11">November 11, 2026</time><span>Settings and visual controls</span></summary><ul><li>Expanded theme, background, accent, liquid-glass, text-size, and lightweight-mode options.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-11-09">November 9, 2026</time><span>Project catalog</span></summary><ul><li>Refreshed the applications and projects catalog.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-11-05">November 5, 2026</time><span>Game library and player</span></summary><ul><li>Added folder-based game discovery, covers, cached listings, search, and the embedded player.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-11-04">November 4, 2026</time><span>Navigation and HTML discovery</span></summary><ul><li>Improved the navigation, standalone HTML browser, and game entry-point discovery.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-11-01">November 1, 2026</time><span>Game loading and cleanup</span></summary><ul><li>Fixed game launching and covers, and improved iframe cleanup and URL handling.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-10-31">October 31, 2026</time><span>Gallery and game discovery</span></summary><ul><li>Improved repository-backed gallery entries, thumbnails, and game discovery.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-10-30">October 30, 2026</time><span>Game and project catalog</span></summary><ul><li>Added Mr. Mine and refreshed project resource links.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-10-29">October 29, 2026</time><span>HummingWeb and resource links</span></summary><ul><li>Updated project links, proxy search, and CDN handling.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-10-28">October 28, 2026</time><span>HummingWeb and HummingProxy</span></summary><ul><li>Refined the embedded proxy, page structure, and search behavior.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-10-27">October 27, 2026</time><span>HummingProxy</span></summary><ul><li>Added the embedded HummingProxy page.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-10-26">October 26, 2026</time><span>HummingWeb search</span></summary><ul><li>Added and refined the HummingWeb search page and redirects.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-10-23">October 23, 2026</time><span>Catalog maintenance</span></summary><ul><li>Updated the applications and projects catalog.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-10-19">October 19, 2026</time><span>Project catalog and HummingEngine</span></summary><ul><li>Expanded the project catalog and added HummingEngine controller options.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-10-18">October 18, 2026</time><span>Site interface foundation</span></summary><ul><li>Established shared page layouts, gallery cards, search, themes, and site utilities.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-10-17">October 17, 2026</time><span>Site structure</span></summary><ul><li>Reorganized the main pages and navigation.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-10-05">October 5, 2026</time><span>Early beta interface</span></summary><ul><li>Added early beta navigation, version information, and branding.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-08-30">August 30, 2026</time><span>Link and Firebase cleanup</span></summary><ul><li>Refined Firebase key handling and links.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-06-04">June 4, 2026</time><span>GitHub Pages launch</span></summary><ul><li>Set up the site domain and added the Free Education page.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-05-07">May 7, 2026</time><span>Beta testing link</span></summary><ul><li>Added the beta-testing link to the homepage.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-05-06">May 6, 2026</time><span>WW3 project page</span></summary><ul><li>Added the WW3 Trailer project page.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-04-20">April 20, 2026</time><span>Gallery branding</span></summary><ul><li>Updated the gallery title and favicon.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-03-24">March 24, 2026</time><span>Elmo Fight</span></summary><ul><li>Added the Elmo Fight page and homepage link.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-03-13">March 13, 2026</time><span>HummingWeb search</span></summary><ul><li>Built the HummingWeb search experience.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-03-11">March 11, 2026</time><span>Gallery and standalone pages</span></summary><ul><li>Restored the gallery and added the standalone no-audio page.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-03-05">March 5, 2026</time><span>Search and stability</span></summary><ul><li>Added service-worker support and improved search, authentication state, and script paths.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-03-04">March 4, 2026</time><span>HummingWeb and homepage</span></summary><ul><li>Refined HummingWeb, homepage navigation, and the early About and video sections.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-03-03">March 3, 2026</time><span>Gallery and game collection</span></summary><ul><li>Created the early gallery layout and game sorting and filtering.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-03-02">March 2, 2026</time><span>Game catalog entries</span></summary><ul><li>Added early Undertale, Outertale, and Last Breath catalog entries.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-02-25">February 25, 2026</time><span>Game catalog and deployment</span></summary><ul><li>Expanded the game catalog and configured the site domain.</li></ul></details>
+    <details class="release-note"><summary><time datetime="2026-02-24">February 24, 2026</time><span>Game catalog foundation</span></summary><ul><li>Started the game list, basic site controls, and dark-mode styling.</li></ul></details>
+    <p class="release-history-footnote">Dates are shown in Pacific Time. Related maintenance changes are grouped with their feature update.</p>
+  </section>n>
+  <script src="global-utils.js?v=20261126-logo-games-1"></script>
+  <script src="logo-games.js?v=20261126-logo-games-1"></script>
 </body>
 </html>
