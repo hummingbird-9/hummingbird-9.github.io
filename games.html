@@ -22,7 +22,7 @@
       </div>
     </form>
     <div class="games-search-side-actions" aria-label="Quick actions">
-      <button id="refreshGames" class="utility-btn" type="button" title="Refresh the games from GitHub">↻ Refresh</button>
+      <button id="refreshGames" class="utility-btn" type="button" title="Refresh the game catalog">↻ Refresh</button>
       <button id="randomGame" class="utility-btn" type="button" title="Launch a random game">Random game</button>
     </div>
     </div>
@@ -80,8 +80,8 @@
     const ROOT_API = `https://api.github.com/repos/${OWNER}/${REPO}/contents/?ref=${encodeURIComponent(BRANCH)}&per_page=1000`;
     // Cloudflare serves game HTML with the correct MIME type and caches all game files.
     // Keeping every file on this origin preserves relative asset paths and service workers.
-    const GAME_FILES_ROOT = 'https://hummingbird-games-cdn.humming6ird-9.workers.dev/';
-    const CACHE_KEY = 'hummingbird-games-folder-catalog-v6';
+    const GAME_FILES_ROOT = 'https://cdn.humming6ird-9.workers.dev/';
+    const CACHE_KEY = 'hummingbird-games-folder-catalog-v7-cloudflare-gta';
     const PAGE_SIZE = 100;
     const BOOKMARKS_KEY = 'hummingbird-games-bookmarks-v1';
     const RECENT_KEY = 'hummingbird-games-recent-v1';
@@ -185,6 +185,20 @@
           htmlFiles: ['index.html'],
           coverPath: '',
           searchText: (folder + ' ' + title).toLowerCase()
+        });
+      }
+
+      // GTA San Andreas lives in its own game repository and is routed by the CDN Worker.
+      if (!result.some(game => game.folder === 'GTA-San-Andreas')) {
+        result.push({
+          folder: 'GTA-San-Andreas',
+          title: 'GTA San Andreas',
+          htmlFiles: ['index.html'],
+          coverPath: '',
+          searchText: 'gta san andreas grand theft auto san andreas gta sa',
+          sourceRepo: 'GTA-San-Andreas',
+          sourceBranch: 'main',
+          sourceRoot: ''
         });
       }
 
@@ -444,13 +458,16 @@
     }
 
     async function fetchGameFileList(game) {
-      const pending = [game.folder];
+      const sourceRepo = game.sourceRepo || REPO;
+      const sourceBranch = game.sourceBranch || BRANCH;
+      const pending = [game.sourceRoot !== undefined ? game.sourceRoot : game.folder];
       const files = [];
       while (pending.length) {
         const directory = pending.shift();
-        const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodePath(directory)}?ref=${encodeURIComponent(BRANCH)}`;
+        const path = directory ? '/' + encodePath(directory) : '';
+        const url = `https://api.github.com/repos/${OWNER}/${sourceRepo}/contents${path}?ref=${encodeURIComponent(sourceBranch)}`;
         const response = await fetch(url, { headers: { Accept: 'application/vnd.github+json' } });
-        if (!response.ok) throw new Error(`Could not list ${directory} (HTTP ${response.status}).`);
+        if (!response.ok) throw new Error(`Could not list ${directory || sourceRepo} (HTTP ${response.status}).`);
         const entries = await response.json();
         if (!Array.isArray(entries)) throw new Error('GitHub returned an unexpected file list.');
         for (const entry of entries) {
@@ -479,10 +496,11 @@
             const index = next++;
             const item = files[index];
             try {
-              const response = await fetch(GAME_FILES_ROOT + encodePath(item.path));
+              const publicPath = game.sourceRepo ? game.folder + '/' + item.path : item.path;
+              const response = await fetch(GAME_FILES_ROOT + encodePath(publicPath));
               if (!response.ok) throw new Error('HTTP ' + response.status);
               const data = await response.arrayBuffer();
-              const relativePath = item.path.slice(game.folder.length + 1);
+              const relativePath = game.sourceRepo ? item.path : item.path.slice(game.folder.length + 1);
               zip.file(relativePath, data);
             } catch (error) {
               failed.push(item.path + ' (' + error.message + ')');
@@ -535,7 +553,7 @@
         return;
       }
 
-      setStatus('Fetching game folders from hummingbird-9/games…');
+      setStatus('Fetching the game catalog…');
       totalEl.textContent = 'Loading…';
       try {
         const response = await fetch(ROOT_API, { headers: { Accept: 'application/vnd.github+json' } });
@@ -552,14 +570,14 @@
         try { localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), games: compactGames })); }
         catch (cacheError) { console.warn('Game list loaded, but could not cache it:', cacheError); }
         applySearch();
-        setStatus(`Found ${games.length} games from the GitHub folders.`);
+        setStatus(`Found ${games.length} games. Game files load through the Cloudflare CDN.`);
         openGameFromAddress();
       } catch (error) {
         console.error('Game catalog load failed:', error);
         if (cached && Array.isArray(cached.games) && cached.games.length) {
           games = cached.games;
           applySearch();
-          setStatus('Could not refresh GitHub (' + error.message + '). Showing the last saved game list.');
+          setStatus('Could not refresh the catalog (' + error.message + '). Showing the last saved game list.');
           openGameFromAddress();
         } else {
           games = [];
