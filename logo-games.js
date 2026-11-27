@@ -98,7 +98,7 @@
       event.stopPropagation();
     });
     canvas.addEventListener('pointermove', event => {
-      if (mode !== 'pong' || !event.buttons || !state) return;
+      if (mode !== 'pong' || !state) return;
       const point = pointerPosition(event);
       state.playerY = clamp(point.y - 48, 20, HEIGHT - 116);
     });
