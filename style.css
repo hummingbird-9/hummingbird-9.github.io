@@ -2103,8 +2103,10 @@ body.emergency-disguise-active { overflow: hidden !important; }
   border:0;
   border-radius:0;
   outline-offset:4px;
-  background:transparent;
+  background:transparent !important;
   box-shadow:none;
+  image-rendering:pixelated;
+  -ms-interpolation-mode:nearest-neighbor;
   touch-action:none;
   cursor:crosshair;
 }
