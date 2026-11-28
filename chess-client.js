@@ -5,7 +5,7 @@ const API='https://lichess.org';
 const TOKEN_KEY='hummingbird_lichess_board_token_v1';
 const PIECES={K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟︎'};
 const START_FEN='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-let token='',account=null,connected=false,eventAbort=null,gameAbort=null,seekAbort=null,activeGameId='',gameData=null,gameColor='',position=null,selected=-1,pendingChallenges=new Map(),proxyFrame=null,bridgeReady=null,proxyId=0;
+let token='',account=null,connected=false,eventAbort=null,gameAbort=null,seekAbort=null,challengeAbort=null,activeGameId='',gameData=null,gameColor='',position=null,selected=-1,pendingChallenges=new Map(),proxyFrame=null,bridgeReady=null,proxyId=0;
 const proxyPending=new Map(),streamBuffers=new WeakMap();
 class ApiError extends Error{constructor(status,body){super('Lichess API HTTP '+status+(body?': '+String(body).slice(0,160):''));this.status=status}}
 function status(text){$('gameStatus').textContent=text}
@@ -109,7 +109,13 @@ async function runStream(path,onEvent,signal,options){
     if(!stream.ok){stream.cancel();throw new ApiError(stream.status,'HummingProxy stream request failed')}
     await stream.done;
    }
-  }catch(error){if(signal.aborted)return;status(error.message||'Lichess stream disconnected');await delay(3500,signal)}
+  }catch(error){
+   if(signal.aborted)return;
+   status(error.message||'Lichess stream disconnected');
+   if(options.once)return;
+   await delay(error instanceof ApiError&&error.status===429?60000:3500,signal);
+  }
+  if(options.once)return;
   if(!signal.aborted)await delay(700,signal);
  }
 }
@@ -187,7 +193,7 @@ async function connect(){
  }catch(e){connected=false;account=null;controls();status(e.message)}
 }
 function disconnect(){
- connected=false;account=null;token='';eventAbort?.abort();eventAbort=null;gameAbort?.abort();gameAbort=null;seekAbort?.abort();seekAbort=null;
+ connected=false;account=null;token='';eventAbort?.abort();eventAbort=null;gameAbort?.abort();gameAbort=null;seekAbort?.abort();seekAbort=null;challengeAbort?.abort();challengeAbort=null;
  activeGameId='';gameData=null;gameColor='';position=null;selected=-1;pendingChallenges.clear();
  localStorage.removeItem(TOKEN_KEY);$('lichessToken').value='';controls();renderBoard();renderGame();renderChallenges();
  status('Disconnected. The local token has been cleared.');routeStatus('Direct API · proxy fallback ready');
@@ -206,16 +212,40 @@ async function answerChallenge(id,accept){
 }
 async function challengeUser(){
  const name=$('challengeUsername').value.trim();if(!name){status('Enter a Lichess username');return}
+ if(challengeAbort){status('Cancel the current outgoing challenge first.');return}
  const pair=$('challengeTime').value.split('|'),form=new URLSearchParams();
- form.set('rated',$('ratedGame').checked?'true':'false');form.set('variant','standard');form.set('color',$('challengeColor').value);form.set('clock.limit',pair[0]);form.set('clock.increment',pair[1]);
- try{status('Sending challenge to '+name+'…');await apiRequest('/api/challenge/'+encodeURIComponent(name),{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:form.toString()});status('Challenge sent to '+name+'. Waiting for acceptance…')}
- catch(e){status(e.message)}
+ form.set('rated',$('ratedGame').checked?'true':'false');form.set('variant','standard');
+ form.set('color',$('challengeColor').value);form.set('clock.limit',pair[0]);form.set('clock.increment',pair[1]);
+ form.set('keepAliveStream','true');
+ const controller=challengeAbort=new AbortController();
+ $('challengeButton').disabled=true;$('challengeCancelButton').disabled=false;$('challengeButton').textContent='Challenge open';
+ status('Sending challenge to '+name+'…');
+ runStream('/api/challenge/'+encodeURIComponent(name),event=>{
+   if(event.done){
+     status(event.done==='accepted'?'Challenge accepted. The game will arrive through your Lichess event stream.':'Challenge '+event.done+'.');
+     controller.abort();
+   }
+ },controller.signal,{method:'POST',body:form.toString(),headers:{'Content-Type':'application/x-www-form-urlencoded'},once:true})
+ .finally(()=>{
+   if(challengeAbort===controller)challengeAbort=null;
+   if(!challengeAbort){$('challengeButton').disabled=!connected;$('challengeButton').textContent='Send challenge';$('challengeCancelButton').disabled=true;}
+ });
+}
+function cancelOutgoingChallenge(){
+ if(!challengeAbort)return;
+ challengeAbort.abort();challengeAbort=null;
+ $('challengeButton').disabled=!connected;$('challengeButton').textContent='Send challenge';$('challengeCancelButton').disabled=true;
+ status('Outgoing challenge canceled by closing its keep-alive stream.');
 }
 async function findOpponent(){
  if(!connected)return;if(seekAbort){await cancelSeek();return}
  const pair=$('seekTime').value.split('|'),form=new URLSearchParams({rated:'false',time:pair[0],increment:pair[1],variant:'standard',color:'random'});
- seekAbort=new AbortController();$('seekButton').textContent='Cancel search';status('Searching Lichess for a random opponent…');
- runStream('/api/board/seek',()=>{},seekAbort.signal,{method:'POST',body:form.toString(),headers:{'Content-Type':'application/x-www-form-urlencoded'}});
+ const controller=seekAbort=new AbortController();
+ $('seekButton').textContent='Cancel search';status('Searching Lichess for a random opponent…');
+ runStream('/api/board/seek',()=>{},controller.signal,{method:'POST',body:form.toString(),headers:{'Content-Type':'application/x-www-form-urlencoded'},once:true})
+ .finally(()=>{
+   if(seekAbort===controller){seekAbort=null;$('seekButton').textContent='Find opponent';if(!activeGameId)status('Opponent search ended. Find another opponent to search again.');}
+ });
 }
 async function cancelSeek(){
  if(!seekAbort)return;seekAbort.abort();seekAbort=null;$('seekButton').textContent='Find opponent';
@@ -224,7 +254,7 @@ async function cancelSeek(){
 function startGame(id){
  seekAbort?.abort();seekAbort=null;$('seekButton').textContent='Find opponent';gameAbort?.abort();gameAbort=new AbortController();
  activeGameId=id;gameData=null;gameColor='';position=null;selected=-1;renderGame();status('Game '+id+' started. Loading board…');
- runStream('/api/board/game/stream/'+encodeURIComponent(id),handleGameEvent,gameAbort.signal);controls();
+ runStream('/api/board/game/stream/'+encodeURIComponent(id),handleGameEvent,gameAbort.signal,{once:true});controls();
 }
 function handleGameEvent(event){
  if(event.type==='gameFull'){
@@ -237,7 +267,7 @@ function handleGameEvent(event){
 }
 function applyState(state,fen){
  if(!state)return;position=replayMoves(fen||gameData?.initialFen||'startpos',state.moves||'');if(gameData)gameData.state=state;selected=-1;renderBoard();renderMoves();
- if(state.status&&state.status!=='started')status('Game finished — '+(state.winner?state.winner+' wins':'draw'));
+ if(state.status&&state.status!=='started'){status('Game finished — '+(state.winner?state.winner+' wins':'draw'));gameAbort?.abort();}
  else if(!gameColor)status('Game loaded, but account colour could not be identified');
  else if(position.turn===gameColor)status('Your move. Select one of your pieces, then a destination');
  else status('Opponent to move. Their moves arrive through the Lichess game stream');
@@ -270,7 +300,8 @@ async function resign(){
 }
 function bind(){
  $('connectButton').addEventListener('click',connect);$('disconnectButton').addEventListener('click',disconnect);
- $('challengeButton').addEventListener('click',challengeUser);$('seekButton').addEventListener('click',findOpponent);
+ $('challengeButton').addEventListener('click',challengeUser);$('challengeCancelButton').addEventListener('click',cancelOutgoingChallenge);
+ $('seekButton').addEventListener('click',findOpponent);
  $('resignButton').addEventListener('click',resign);$('chessBoard').addEventListener('click',boardClick);
  $('challengeUsername').addEventListener('keydown',e=>{if(e.key==='Enter')challengeUser()});
  window.addEventListener('pagehide',()=>{eventAbort?.abort();gameAbort?.abort();seekAbort?.abort()});
