@@ -10,7 +10,7 @@ function onBoard(i){return i>=0&&i<128&&!(i&0x88)}
 function side(p){return p==='.'?0:p===p.toUpperCase()?1:-1}
 function idx(f,r){return r*16+f}
 function squareName(i){return 'abcdefgh'[i&7]+(8-(i>>4))}
-function createGame(){const board=Array(128).fill('.'),back='RNBQKBNR';for(let f=0;f<8;f++){board[f]=back[f].toLowerCase();board[16+f]='p';board[96+f]='P';board[112+f]=back[f]}return{board,turn:1,castle:15,ep:-1,half:0,full:1,last:null,over:false,status:'White to move'}}
+function createGame(){const board=Array(128).fill('.'),back='RNBQKBNR';for(let f=0;f<8;f++){board[f]=back[f].toLowerCase();board[32+f]='p';board[96+f]='P';board[112+f]=back[f]}return{board,turn:1,castle:15,ep:-1,half:0,full:1,last:null,over:false,status:'White to move'}}
 function attacked(s,target,by){
  for(let r=0;r<8;r++)for(let f=0;f<8;f++){const from=idx(f,r),p=s.board[from];if(side(p)!==by)continue;const t=p.toLowerCase();
   if(t==='p'){const next=from-16*by;if(target===next-1||target===next+1)return true;continue}
@@ -22,7 +22,7 @@ function inCheck(s,color){const k=s.board.indexOf(color===1?'K':'k');return k<0|
 function pseudo(s){
  const out=[],add=(from,to,flag)=>{const p=s.board[from];if(p.toLowerCase()==='p'&&((to>>4)===0||(to>>4)===7))PROMOS.forEach(promotion=>out.push({from,to,promotion,flag:flag||''}));else out.push({from,to,promotion:'',flag:flag||''})};
  for(let r=0;r<8;r++)for(let f=0;f<8;f++){const from=idx(f,r),p=s.board[from];if(side(p)!==s.turn)continue;const t=p.toLowerCase();
-  if(t==='p'){const step=-16*s.turn,one=from+step;if(onBoard(one)&&s.board[one]==='.'){add(from,one);const home=s.turn===1?6:1,two=from+step*2;if(r===home&&s.board[two]==='.')add(from,two)}
+  if(t==='p'){const step=-16*s.turn,one=from+step;if(onBoard(one)&&s.board[one]==='.'){add(from,one);const home=s.turn===1?6:2,two=from+step*2;if(r===home&&s.board[two]==='.')add(from,two)}
    for(const d of [-1,1]){const to=one+d;if(!onBoard(to))continue;if(side(s.board[to])===-s.turn&&s.board[to].toLowerCase()!=='k')add(from,to);else if(to===s.ep&&s.board[to]==='.'&&s.board[to+16*s.turn]===(s.turn===1?'p':'P'))add(from,to,'ep')}continue}
   const dirs=t==='n'?KNIGHT:t==='b'?BISHOP:t==='r'?ROOK:t==='q'?BISHOP.concat(ROOK):KING;
   for(const d of dirs){let to=from+d;while(onBoard(to)){if(side(s.board[to])===s.turn)break;if(s.board[to].toLowerCase()!=='k')add(from,to);if(s.board[to]!=='.'||t==='n'||t==='k')break;to+=d}}
@@ -132,7 +132,7 @@ async function decodeCode(value){
 function waitForIce(pc,timeoutMs=12000){if(pc.iceGatheringState==='complete')return Promise.resolve(true);return new Promise(resolve=>{let finished=false;const timer=setTimeout(()=>finish(false),timeoutMs);function finish(complete){if(finished)return;finished=true;clearTimeout(timer);pc.removeEventListener('icegatheringstatechange',changed);resolve(complete)}function changed(){if(pc.iceGatheringState==='complete')finish(true)}pc.addEventListener('icegatheringstatechange',changed)})}
 async function createRoom(){
  if(!window.RTCPeerConnection){status('This browser does not support WebRTC.');return}
- room=$('roomName').value.trim();if(!room){status('Enter a room name first.');$('roomName').focus();return}
+ room=$('roomName').value.trim()||'Chess room';
  const choice=$('hostColor').value;
  const hostSide=choice==='random'?(Math.random()<0.5?1:-1):(choice==='black'?-1:1);
  $('offerCode').value='';$('copyOffer').disabled=true;$('answerCode').value='';$('connectGuest').disabled=true;
@@ -152,7 +152,7 @@ async function joinRoom(){
  let invite;try{invite=await decodeCode($('joinCode').value)}catch(e){status(e.message||'Paste a valid host invitation code first.');return}
  if(invite.version!==1||invite.type!=='offer'||!invite.sdp||!invite.room){status('That is not a valid Hummingbird LAN invitation.');return}
  const hostSide=invite.hostColor===-1?-1:1;
- playerName=$('guestName').value.trim()||'Guest';room=String(invite.room).slice(0,36);remoteName=String(invite.host||'Host').slice(0,24);
+ playerName=$('playerName').value.trim()||'Guest';room=String(invite.room).slice(0,36);remoteName=String(invite.host||'Host').slice(0,24);
  $('guestAnswer').value='';$('copyGuestAnswer').disabled=true;setupPeer(false,hostSide);
  status('Joining "'+room+'". You will play '+(myColor===1?'White':'Black')+'…');
  try{
@@ -173,7 +173,15 @@ async function connectGuest(){
  catch(e){status(e.message||'Could not accept the answer code.')}
 }
 async function copyText(value){if(!value){status('There is no code to copy yet.');return}try{await navigator.clipboard.writeText(value);status('Code copied. Send it to the other player.')}catch(_){status('Clipboard is unavailable. Select the code and copy it manually.')}}
+function setMode(mode){
+ const host=mode==='host';
+ $('rolePicker').hidden=true;$('lanWorkspace').hidden=false;
+ $('hostPanel').hidden=!host;$('joinPanel').hidden=host;
+ $('modeTitle').textContent=host?'Host a game':'Join a game';
+ $('roomStatus').textContent=host?'Choose your side and create an invitation.':'Paste the host invitation, then send back your answer code.';
+ }
 function init(){
+ $('chooseHost').addEventListener('click',()=>setMode('host'));$('chooseJoin').addEventListener('click',()=>setMode('join'));$('changeMode').addEventListener('click',()=>{$('rolePicker').hidden=false;$('lanWorkspace').hidden=true});
  $('createRoom').addEventListener('click',createRoom);$('joinRoom').addEventListener('click',joinRoom);$('connectGuest').addEventListener('click',connectGuest);
  $('copyOffer').addEventListener('click',()=>copyText($('offerCode').value));$('copyGuestAnswer').addEventListener('click',()=>copyText($('guestAnswer').value));
  $('newGame').addEventListener('click',()=>resetGame(true));
