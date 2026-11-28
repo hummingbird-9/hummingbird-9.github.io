@@ -1148,9 +1148,14 @@
       try {
         chessEngineProgress='Downloading Stockfish…';
         if(mode==='chess'&&state){state.status='Downloading Stockfish 19…';draw();}
-        const response=await fetch(url,{mode:'cors',credentials:'omit',cache:'force-cache'});
-        if(!response.ok) throw new Error('HTTP '+response.status+' from '+new URL(url).hostname);
-        const buffer=await response.arrayBuffer();
+        const controller=new AbortController();
+        const downloadTimer=setTimeout(()=>controller.abort(),18000);
+        let response,buffer;
+        try {
+          response=await fetch(url,{mode:'cors',credentials:'omit',cache:'force-cache',signal:controller.signal});
+          if(!response.ok) throw new Error('HTTP '+response.status+' from '+new URL(url).hostname);
+          buffer=await response.arrayBuffer();
+        } finally { clearTimeout(downloadTimer); }
         if(buffer.byteLength<500000) throw new Error('The Stockfish WASM download was incomplete ('+buffer.byteLength+' bytes).');
         return buffer;
       } catch(error) {
