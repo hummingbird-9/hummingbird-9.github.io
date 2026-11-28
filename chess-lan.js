@@ -89,7 +89,7 @@ function setupPeer(host){
 }
 function bytesToBase64Url(bytes){let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function base64UrlToBytes(value){const raw=value.trim().replace(/-/g,'+').replace(/_/g,'/'),padded=raw+'='.repeat((4-raw.length%4)%4),bin=atob(padded);return Uint8Array.from(bin,c=>c.charCodeAt(0))}
-const BASE91_ALPHABET="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^`{|}~\"";
+const BASE91_ALPHABET="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~\"";
 function bytesToBase91(bytes){
  let b=0,n=0,out='';
  for(const byte of bytes){
