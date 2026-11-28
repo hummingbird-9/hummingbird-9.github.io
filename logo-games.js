@@ -1160,7 +1160,7 @@
           return;
         }
         if(line.startsWith('bestmove ')) {
-          const best=line.split(/\\s+/)[1];
+          const best=line.split(/\s+/)[1];
           chessEngineThinking=false;
           if(chessEngineCancelRequested) {
             chessEngineCancelRequested=false;
@@ -1170,7 +1170,8 @@
           }
           const expected=chessEngineExpectedState;
           chessEngineExpectedState=null;
-          if(mode!=='chess'||!state||state!==expected||state.over||state.turn!==-1) return;
+          if(mode!=='chess'||!state||state.over||state.turn!==-1) return;
+          if(state!==expected) { requestStockfishMove(); return; }
           if(!best||best==='(none)') {
             updateChessStatus();draw();return;
           }
