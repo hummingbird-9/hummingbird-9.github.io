@@ -55,7 +55,7 @@ function applyAppearance(){
   let favicon=document.querySelector('link[data-custom-favicon]');
   if(!favicon){favicon=document.createElement('link');favicon.rel='icon';favicon.setAttribute('data-custom-favicon','');document.head.append(favicon);}
   const iconUrl=safeImage(settings.customFavicon);
-  favicon.href=searchPresentation?'https://www.google.com/favicon.ico':(iconUrl||appPath('/favicon.ico'));
+  favicon.href=(iconUrl||appPath('/img/humming.png'));
   root.style.setProperty('--color-a',hexColor(settings.colorA,'#0a2e0a'));
   root.style.setProperty('--color-b',hexColor(settings.colorB,'#1a5d1a'));
   root.style.setProperty('--accent',hexColor(settings.accent,'#90e4c1'));
