@@ -900,6 +900,8 @@
   const CHESS_KING = [-17,-16,-15,-1,1,15,16,17];
   const CHESS_GLYPH = {P:'♙',N:'♘',B:'♗',R:'♖',Q:'♕',p:'♟︎',n:'♞',b:'♝',r:'♜',q:'♛'};
   const CHESS_PROMOTIONS = ['q','r','b','n'];
+  const CHESS_BOT_VALUES = {p:100,n:320,b:335,r:500,q:900,k:20000};
+  let chessBotTimer = 0;
   const chessOnBoard = i => i >= 0 && i < 128 && !(i & 0x88);
   const chessSide = p => p === '.' ? 0 : p === p.toUpperCase() ? 1 : -1;
   const chessName = i => 'abcdefgh'[i & 7] + (8 - (i >> 4));
@@ -1090,13 +1092,74 @@
 
   function chessMove(m) {
     if(!state||state.over) return;
+    if(chessBotTimer) { clearTimeout(chessBotTimer); chessBotTimer=0; }
     const san=chessSan(state,m), previous=chessSnapshot(state), next=chessApplyBare(state,m);
     state={
       ...next,selected:-1,pendingPromotion:null,lastMove:{from:m.from,to:m.to},
       moveLog:state.moveLog.concat([{number:state.fullmove,white:state.turn===1,text:san}]),
       past:state.past.concat([previous]),over:false,status:''
     };
-    updateChessStatus(); draw();
+    updateChessStatus();
+    if(mode==='chess'&&!state.over&&state.turn===-1) {
+      state.status='Bot is thinking…';
+      const expected=state;
+      chessBotTimer=setTimeout(()=>{
+        chessBotTimer=0;
+        if(mode!=='chess'||state!==expected||state.over||state.turn!==-1)return;
+        const reply=chooseChessBotMove(state);
+        if(reply) chessMove(reply);
+      },220);
+    }
+    draw();
+  }
+
+  function evaluateChessForTurn(s) {
+    let score=0;
+    for(let rank=0;rank<8;rank++) for(let file=0;file<8;file++) {
+      const square=chessIndex(file,rank), piece=s.board[square];
+      if(piece==='.') continue;
+      const side=chessSide(piece), type=piece.toLowerCase();
+      const advance=side===1?6-rank:rank-1;
+      const center=7-(Math.abs(3.5-file)+Math.abs(3.5-rank));
+      let value=CHESS_BOT_VALUES[type]||0;
+      if(type==='p') value+=advance*7+center*2;
+      else if(type==='n'||type==='b') value+=center*7;
+      else if(type==='q') value+=center*2;
+      score+=side*value;
+    }
+    return score*s.turn;
+  }
+
+  function searchChessBot(s,depth,alpha,beta) {
+    const moves=chessLegalMoves(s);
+    if(!moves.length) return chessInCheck(s,s.turn)?-100000-depth:0;
+    if(depth<=0) return evaluateChessForTurn(s);
+    let best=-Infinity;
+    // Search captures first to improve alpha-beta pruning.
+    moves.sort((a,b)=>{
+      const av=s.board[a.to]==='.'?0:CHESS_BOT_VALUES[s.board[a.to].toLowerCase()]||0;
+      const bv=s.board[b.to]==='.'?0:CHESS_BOT_VALUES[s.board[b.to].toLowerCase()]||0;
+      return bv-av;
+    });
+    for(const move of moves) {
+      const score=-searchChessBot(chessApplyBare(s,move),depth-1,-beta,-alpha);
+      if(score>best) best=score;
+      if(score>alpha) alpha=score;
+      if(alpha>=beta) break;
+    }
+    return best;
+  }
+
+  function chooseChessBotMove(s) {
+    const moves=chessLegalMoves(s);
+    if(!moves.length) return null;
+    let best=-Infinity, choices=[];
+    for(const move of moves) {
+      const score=-searchChessBot(chessApplyBare(s,move),2,-Infinity,Infinity);
+      if(score>best+1) { best=score; choices=[move]; }
+      else if(Math.abs(score-best)<=1) choices.push(move);
+    }
+    return choices[Math.floor(Math.random()*choices.length)]||moves[0];
   }
 
   function chooseChessPromotion(piece) {
@@ -1107,13 +1170,19 @@
 
   function undoChessMove() {
     if(!state||!state.past.length) return;
-    const past=state.past.slice(), previous=past.pop();
+    if(chessBotTimer) { clearTimeout(chessBotTimer); chessBotTimer=0; }
+    const past=state.past.slice();
+    // After the bot has replied, undo both its move and the player's previous move.
+    const steps=state.turn===1&&past.length>=2?2:1;
+    let previous=null;
+    for(let i=0;i<steps;i++) previous=past.pop();
     state={...previous,past,selected:-1,pendingPromotion:null};
     updateChessStatus(); draw();
   }
 
   function resetChess() {
     if(mode!=='chess') return;
+    if(chessBotTimer) { clearTimeout(chessBotTimer); chessBotTimer=0; }
     state=createChessGame(); updateChessStatus(); draw();
   }
 
@@ -1136,6 +1205,7 @@
       return;
     }
     if(state.over) return;
+    if(state.turn!==1) { state.status='Bot is thinking…'; draw(); return; }
     const file=Math.floor((point.x-CHESS_BOARD_X)/CHESS_SQUARE);
     const rank=Math.floor((point.y-CHESS_BOARD_Y)/CHESS_SQUARE);
     if(file<0||file>=8||rank<0||rank>=8) return;
@@ -1209,7 +1279,7 @@
     context.font='bold 20px monospace'; context.fillText(state.status,530,132);
     context.font='16px monospace';
     context.fillText('The hummingbird is the king.',530,172);
-    context.fillText('Two players, same screen.',530,208);
+    context.fillText('You (White) vs Bot (Black).',530,208);
     context.fillText('Tap a piece, then a move.',530,232);
     context.fillText('R: restart   U: undo',530,268);
     context.font='bold 17px monospace'; context.fillText('MOVES',530,310);
@@ -1219,7 +1289,7 @@
     });
     drawChessButton(530,382,145,'UNDO',!state.past.length);
     drawChessButton(690,382,170,'NEW GAME',false);
-    drawChessButton(530,438,330,'PLAY ONLINE',false);
+    drawChessButton(530,438,330,'LAN MULTIPLAYER',false);
     if(state.pendingPromotion) {
       const left=CHESS_BOARD_X+62, top=CHESS_BOARD_Y+176;
       context.fillStyle='rgba(9,18,12,.95)'; context.fillRect(left,top,324,116);
