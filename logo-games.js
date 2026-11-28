@@ -968,7 +968,7 @@
         for(const sideStep of [-1,1]) {
           const to=one+sideStep;
           if(!chessOnBoard(to)) continue;
-          if(chessSide(s.board[to])===-s.turn) add(from,to);
+          if(chessSide(s.board[to])===-s.turn && s.board[to].toLowerCase()!=='k') add(from,to);
           else if(to===s.ep&&s.board[to]==='.'&&s.board[to+16*s.turn]===(s.turn===1?'p':'P')) add(from,to,'ep');
         }
         continue;
