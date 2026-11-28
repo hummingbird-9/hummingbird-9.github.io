@@ -907,16 +907,11 @@
   const CHESS_GLYPH = {P:'♙',N:'♘',B:'♗',R:'♖',Q:'♕',p:'♟︎',n:'♞',b:'♝',r:'♜',q:'♛'};
   const CHESS_PROMOTIONS = ['q','r','b','n'];
   const STOCKFISH_WORKER_PATH = 'engine/stockfish/stockfish-19-lite-single.js';
-  const STOCKFISH_WASM_URLS = [
-    'https://cdn.jsdelivr.net/npm/stockfish@19.0.1/bin/stockfish-19-lite-single.wasm',
-    'https://unpkg.com/stockfish@19.0.1/bin/stockfish-19-lite-single.wasm'
-  ];
   const CHESS_SKILL_LEVELS = 21;
   let chessEngineMoveTimer = 0;
   let chessEngineStartupTimer = 0;
   let chessEngineSearchTimer = 0;
   let chessEngineWorker = null;
-  let chessEngineWasmBlobUrl = null;
   let chessEngineStarting = false;
   let chessEngineReady = false;
   let chessEngineThinking = false;
@@ -1144,30 +1139,6 @@
     }
   }
 
-  async function fetchStockfishWasm() {
-    let lastError=null;
-    for(const url of STOCKFISH_WASM_URLS) {
-      try {
-        chessEngineProgress='Downloading Stockfish…';
-        if(mode==='chess'&&state){state.status='Downloading Stockfish 19…';draw();}
-        const controller=new AbortController();
-        const downloadTimer=setTimeout(()=>controller.abort(),18000);
-        let response,buffer;
-        try {
-          response=await fetch(url,{mode:'cors',credentials:'omit',cache:'force-cache',signal:controller.signal});
-          if(!response.ok) throw new Error('HTTP '+response.status+' from '+new URL(url).hostname);
-          buffer=await response.arrayBuffer();
-        } finally { clearTimeout(downloadTimer); }
-        if(buffer.byteLength<500000) throw new Error('The Stockfish WASM download was incomplete ('+buffer.byteLength+' bytes).');
-        return buffer;
-      } catch(error) {
-        lastError=error;
-        console.warn('[Chess] Stockfish WASM source failed:',url,error);
-      }
-    }
-    throw lastError||new Error('Could not download the Stockfish WASM file.');
-  }
-
   function failStockfish(message,error) {
     chessEngineStarting=false;chessEngineReady=false;chessEngineThinking=false;
     if(chessEngineStartupTimer){clearTimeout(chessEngineStartupTimer);chessEngineStartupTimer=0;}
@@ -1177,28 +1148,24 @@
     if(mode==='chess'&&state){state.status=message;draw();}
   }
 
-  async function ensureChessEngine() {
+  function ensureChessEngine() {
     if(chessEngineWorker||chessEngineStarting||chessEngineError) return;
     chessEngineStarting=true;chessEngineProgress='Starting Stockfish…';
     try {
       if(typeof WebAssembly!=='object') throw new Error('This browser does not support WebAssembly.');
       if(typeof Worker!=='function') throw new Error('This browser does not support Web Workers.');
-      const wasmBuffer=await fetchStockfishWasm();
-      if(!chessEngineStarting) return;
-      chessEngineWasmBlobUrl=URL.createObjectURL(new Blob([wasmBuffer],{type:'application/wasm'}));
       const workerUrl=new URL(STOCKFISH_WORKER_PATH,document.baseURI);
-      // The Stockfish.js worker reads the WASM URL from its URL fragment.
-      workerUrl.hash=encodeURIComponent(chessEngineWasmBlobUrl)+',worker';
+      // The matching WASM file sits beside the worker, so GitHub Pages serves both from this site.
       const worker=new Worker(workerUrl.toString(),{name:'Stockfish 19'});
       chessEngineWorker=worker;
-      chessEngineProgress='Starting Stockfish worker…';
+      chessEngineProgress='Loading local Stockfish WASM…';
       chessEngineStartupTimer=setTimeout(()=>{
-        if(!chessEngineReady) failStockfish('Stockfish did not finish starting. Check that the engine worker and WASM file are reachable.',new Error('Stockfish startup timed out after 30 seconds.'));
+        if(!chessEngineReady) failStockfish('Stockfish did not finish starting. The local WASM file may be missing from GitHub Pages.',new Error('Local Stockfish startup timed out after 30 seconds.'));
       },30000);
       worker.onmessage=event=>{
-        const rawLine=String(event.data||'').replace(/\0/g,'').trim();
-        // The Stockfish.js lite worker separates letters in UCI keywords (e.g. "b e s t m o v e").
-        const line=rawLine.replace(/\b(?:[a-z][ \t]){2,}[a-z]\b/gi,word=>word.replace(/[ \t]/g,''));
+        const rawLine=String(event.data||'').replace(/\\0/g,'').trim();
+        // Stockfish.js spaces out some UCI keywords in worker messages.
+        const line=rawLine.replace(/\\b(?:[a-z][ \\t]){2,}[a-z]\\b/gi,word=>word.replace(/[ \\t]/g,''));
         if(line==='uciok') {
           chessEngineProgress='Configuring Stockfish…';
           if(mode==='chess'&&state){state.status='Configuring Stockfish 19…';draw();}
@@ -1215,7 +1182,7 @@
           return;
         }
         if(line.startsWith('info ')) {
-          const depth=line.match(/\bdepth\s+(\d+)/);
+          const depth=line.match(/\\bdepth\\s+(\\d+)/);
           if(depth&&chessEngineThinking&&mode==='chess'&&state&&state.turn===-1) {
             state.status='Stockfish thinking · depth '+depth[1];
             draw();
@@ -1223,17 +1190,15 @@
           return;
         }
         if(line.startsWith('bestmove ')) {
-          const best=line.split(/\s+/)[1];
+          const best=line.split(/\\s+/)[1];
           if(chessEngineSearchTimer){clearTimeout(chessEngineSearchTimer);chessEngineSearchTimer=0;}
           chessEngineThinking=false;
           if(chessEngineCancelRequested) {
-            chessEngineCancelRequested=false;
-            chessEngineExpectedState=null;
+            chessEngineCancelRequested=false;chessEngineExpectedState=null;
             if(mode==='chess'&&state&&state.turn===-1&&!state.over) requestStockfishMove();
             return;
           }
-          const expected=chessEngineExpectedState;
-          chessEngineExpectedState=null;
+          const expected=chessEngineExpectedState;chessEngineExpectedState=null;
           if(mode!=='chess'||!state||state.over||state.turn!==-1) return;
           if(state!==expected) { requestStockfishMove(); return; }
           if(!best||best==='(none)') { updateChessStatus();draw();return; }
@@ -1250,7 +1215,7 @@
         }
       };
       worker.onerror=event=>{
-        const detail=event?.message||'The browser blocked or could not load the Stockfish worker.';
+        const detail=event?.message||'The local Stockfish worker or WASM file could not be loaded.';
         failStockfish('Stockfish worker failed: '+detail,new Error(detail));
       };
       worker.onmessageerror=event=>{
