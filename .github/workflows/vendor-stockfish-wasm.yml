@@ -1,0 +1,83 @@
+name: Vendor Stockfish 19 WASM
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/vendor-stockfish-wasm.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vendor-stockfish-19-wasm
+  cancel-in-progress: false
+
+jobs:
+  vendor:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out website
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Download and verify Stockfish 19 lite WASM
+        shell: bash
+        run: |
+          set -euo pipefail
+          target="engine/stockfish/stockfish-19-lite-single.wasm"
+          expected="ee4f115bdb2d32cadf96cada104a05b5ec257d7ad6f57582190b49bc71f096de"
+          tmp="$(mktemp)"
+          trap 'rm -f "$tmp"' EXIT
+          urls=(
+            "https://github.com/nmrugg/stockfish.js/releases/download/v19.0.1/stockfish-19-lite-single.wasm"
+            "https://unpkg.com/stockfish@19.0.1/bin/stockfish-19-lite-single.wasm"
+            "https://raw.githubusercontent.com/eple12/ClaudyWeb/main/stockfish/stockfish-19-lite-single.wasm"
+          )
+          verified=""
+          for url in "${urls[@]}"; do
+            echo "Trying $url"
+            if curl -fLsS --retry 2 --retry-all-errors --connect-timeout 15 --max-time 90 "$url" -o "$tmp"; then
+              actual="$(sha256sum "$tmp" | awk '{print $1}')"
+              if [[ "$actual" == "$expected" ]]; then
+                verified="$url"
+                break
+              fi
+              echo "Checksum mismatch for $url: $actual"
+            fi
+          done
+          if [[ -z "$verified" ]]; then
+            echo "::error::Could not fetch the exact Stockfish 19.0.1 lite single-threaded WASM build."
+            exit 1
+          fi
+          mkdir -p "$(dirname "$target")"
+          install -m 0644 "$tmp" "$target"
+          echo "Verified Stockfish WASM from $verified"
+          echo "SHA-256: $expected"
+          echo "Size: $(wc -c < "$target") bytes"
+
+      - name: Commit the self-hosted engine binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add engine/stockfish/stockfish-19-lite-single.wasm
+          if git diff --cached --quiet; then
+            echo "Stockfish WASM is already present and unchanged."
+            exit 0
+          fi
+          git commit -m "Add self-hosted Stockfish 19 WASM engine"
+          for attempt in 1 2 3 4 5; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            git fetch origin main
+            git rebase origin/main
+          done
+          echo "::error::Could not push the verified WASM asset."
+          exit 1
