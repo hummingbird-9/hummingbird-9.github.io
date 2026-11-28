@@ -107,7 +107,8 @@
       pastAccentColors: Array.isArray(source.pastAccentColors)
         ? source.pastAccentColors.filter(color => typeof color === 'string' && /^#[0-9a-f]{6}$/i.test(color)).slice(0, 10)
         : [],
-      disguiseTitle: typeof source.disguiseTitle === 'string' ? source.disguiseTitle.slice(0, 100) : '',
+      disguiseTitle: typeof source.disguiseTitle === 'string'
+        ? (source.disguiseTitle === 'Google Classroom' ? 'Home - Classroom' : source.disguiseTitle.slice(0, 100)) : '',
       disguiseFaviconUrl: typeof source.disguiseFaviconUrl === 'string' ? source.disguiseFaviconUrl.slice(0, 2000) : '',
       disguiseFaviconData: typeof source.disguiseFaviconData === 'string' && source.disguiseFaviconData.startsWith('data:image/') ? source.disguiseFaviconData : '',
       tabDisguiseActive: source.tabDisguiseActive === true,
@@ -630,24 +631,24 @@
 
   const BUILT_IN_TAB_PRESETS = {
     classroom: {
-      title: 'Google Classroom',
+      title: 'Home - Classroom',
       domain: 'classroom.google.com',
-      faviconUrl: 'img/humming.png'
+      faviconUrl: 'img/overlays/google-classroom-favicon.png?v=20261128'
     },
-    khan: { title: 'Khan Academy', domain: 'khanacademy.org' },
+    khan: { title: 'Home - Khan Academy', domain: 'khanacademy.org', faviconUrl: 'img/overlays/khan-academy-favicon.svg?v=20261128' },
     docs: {
       title: 'Google Docs',
       domain: 'docs.google.com',
       faviconUrl: 'img/humming.png'
     },
-    youtube: { title: 'YouTube', domain: 'youtube.com' },
-    wikipedia: { title: 'Wikipedia', domain: 'wikipedia.org' },
-    desmos: { title: 'Desmos', domain: 'desmos.com' },
+    youtube: { title: 'Home - YouTube', domain: 'youtube.com', faviconUrl: 'img/overlays/youtube-favicon.svg?v=20261128' },
+    wikipedia: { title: 'Home - Wikipedia', domain: 'wikipedia.org', faviconUrl: 'img/overlays/wikipedia-favicon.svg?v=20261128' },
+    desmos: { title: 'Home - Desmos', domain: 'desmos.com', faviconUrl: 'img/overlays/desmos-favicon.svg?v=20261128' },
     quizlet: { title: 'Quizlet', domain: 'quizlet.com' },
     gmail: {
-      title: 'Gmail',
+      title: 'Home - Gmail',
       domain: 'mail.google.com',
-      faviconUrl: 'img/humming.png'
+      faviconUrl: 'img/overlays/gmail-favicon.svg?v=20261128'
     },
     drive: {
       title: 'Google Drive',
@@ -658,10 +659,13 @@
   };
 
   function getPresetFaviconUrl(preset) {
-    return 'img/humming.png';
+    return preset && typeof preset.faviconUrl === 'string' && preset.faviconUrl
+      ? preset.faviconUrl
+      : DEFAULT_FAVICON;
   }
 
   function getBuiltInPresetForTitle(title) {
+    if (title === 'Google Classroom') return BUILT_IN_TAB_PRESETS.classroom;
     return Object.values(BUILT_IN_TAB_PRESETS).find(preset => preset.title === title) || null;
   }
 
@@ -743,6 +747,16 @@
     applyTabDisguise();
   }
 
+  function setFavicon(href) {
+    const link = getFaviconLink();
+    const source = String(href || '');
+    link.rel = 'icon';
+    link.type = source.startsWith('data:image/svg+xml') || /\.svg(?:[?#]|$)/i.test(source)
+      ? 'image/svg+xml'
+      : 'image/png';
+    link.href = source || DEFAULT_FAVICON;
+  }
+
   function getFaviconLink() {
     let link = document.querySelector('link[rel~="icon"], link[rel="shortcut icon"]');
     if (!link) {
@@ -765,10 +779,10 @@
       const resolvedUrl = preset
         ? getPresetFaviconUrl(preset)
         : savedUrl;
-      link.href = settings.disguiseFaviconData || resolvedUrl || originalFaviconHref || DEFAULT_FAVICON;
+      setFavicon(settings.disguiseFaviconData || resolvedUrl || originalFaviconHref || DEFAULT_FAVICON);
     } else {
       document.title = originalDocumentTitle;
-      link.href = originalFaviconHref || DEFAULT_FAVICON;
+      setFavicon(originalFaviconHref || DEFAULT_FAVICON);
     }
   }
 
@@ -907,7 +921,7 @@
     document.body.classList.add('emergency-disguise-active');
     const details = emergencyPresetDetails();
     document.title = details.title;
-    getFaviconLink().href = getPresetFaviconUrl(details);
+    setFavicon(getPresetFaviconUrl(details));
   }
 
   function exitEmergencyDisguise() {
