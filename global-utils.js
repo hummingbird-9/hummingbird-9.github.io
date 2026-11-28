@@ -412,7 +412,7 @@
               <label class="settings-field"><span>Social Studies circle</span><input id="settingClassroomAvatarColor1" type="color"></label>
               <label class="settings-field"><span>Actively Learn circle</span><input id="settingClassroomAvatarColor2" type="color"></label>
               <label class="settings-field"><span>Wonders circle</span><input id="settingClassroomAvatarColor3" type="color"></label>
-              <label class="settings-field"><span>McGraw Hill circle</span><input id="settingClassroomAvatarColor4" type="color"></label>
+              <label class="settings-field"><span>Math circle</span><input id="settingClassroomAvatarColor4" type="color"></label>
             </div>
           </details>
           <label class="settings-check"><input id="settingDisguiseOnLeave" type="checkbox"><span>Turn on the disguise when I leave this tab</span></label>
