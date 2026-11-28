@@ -2343,3 +2343,75 @@ body.settings-page .site-settings-panel .settings-footer button {
   .classroom-teacher-name { max-width:75%;font-size:11px; }
   .classroom-teacher-photo { width:45px;height:45px;right:8px;bottom:-11px; }
 }
+
+/* Simpler Classroom course tiles: no stock portraits or decorative generated-looking shapes. */
+.classroom-course-banner::after { display:none !important; }
+.classroom-course-title { max-width:78% !important; font-size:18px !important; font-weight:500 !important; }
+.classroom-teacher-name { margin-top:8px !important; font-size:12px !important; }
+.classroom-teacher-initials {
+  position:absolute;right:12px;bottom:-16px;z-index:2;
+  display:grid;place-items:center;
+  width:64px;height:64px;
+  border:2px solid #fff;border-radius:50%;
+  background:#b64a12;color:#fff;
+  font-size:25px;font-weight:400;letter-spacing:.02em;
+}
+.classroom-course-work { gap:0 !important; padding:12px 14px !important; }
+.classroom-work-item { display:flex; flex-direction:column; gap:4px; padding:5px 0; color:#202124; font-size:12px; line-height:1.35; }
+.classroom-work-item strong { color:#202124 !important; font-size:11px !important; font-weight:500 !important; }
+.classroom-course-card { border-radius:10px !important; box-shadow:none !important; }
+.classroom-course-actions { min-height:40px; }
+@media(max-width:720px) {
+  .classroom-teacher-initials { width:44px;height:44px;right:8px;bottom:-11px;font-size:17px; }
+  .classroom-course-title { max-width:100% !important; font-size:15px !important; }
+}
+
+/* Settings: one broad page column, no centered card/island. */
+body.settings-page #siteSettingsPanel {
+  width:min(1440px,calc(100% - 64px)) !important;
+  max-width:1440px !important;
+  margin:18px auto 54px !important;
+  padding:8px 0 48px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+body.settings-page .settings-panel-grid {
+  display:flex !important;
+  flex-direction:column !important;
+  gap:0 !important;
+  width:100%;
+}
+body.settings-page .site-settings-panel .settings-section {
+  width:100%;
+  padding:16px 0 12px !important;
+  border:0 !important;
+  border-bottom:1px solid var(--panel-border) !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+body.settings-page .settings-panel-heading {
+  width:100%;
+  padding:8px 0 16px !important;
+  border:0 !important;
+  border-bottom:1px solid var(--panel-border) !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+body.settings-page .site-settings-panel .settings-section h3 {
+  margin:0 0 9px;
+}
+body.settings-page .site-settings-panel .settings-field,
+body.settings-page .site-settings-panel .settings-range,
+body.settings-page .site-settings-panel .settings-check {
+  width:100%;
+  max-width:none;
+}
+@media(max-width:700px) {
+  body.settings-page #siteSettingsPanel { width:calc(100% - 28px) !important; }
+}
