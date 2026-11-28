@@ -1147,7 +1147,7 @@
       worker.onmessage=event=>{
         const rawLine=String(event.data||'').trim();
         // Stockfish.js emits some UCI words with a space between every character.
-        const line=rawLine.replace(/\b(?:[a-z]\s+){2,}[a-z]\b/gi,word=>word.replace(/\s+/g,''));
+        const line=rawLine.replace(/\b(?:[a-z][ \t]){2,}[a-z]\b/gi,word=>word.replace(/[ \t]/g,''));
         if(line==='uciok') {
           worker.postMessage('setoption name Threads value 1');
           worker.postMessage('setoption name Skill Level value '+chessEngineSkill);
