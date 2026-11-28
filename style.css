@@ -2368,8 +2368,8 @@ body.settings-page .site-settings-panel .settings-footer button {
 
 /* Settings: one broad page column, no centered card/island. */
 body.settings-page #siteSettingsPanel {
-  width:min(1440px,calc(100% - 64px)) !important;
-  max-width:1440px !important;
+  width:min(1200px,calc(100% - 64px)) !important;
+  max-width:1200px !important;
   margin:18px auto 54px !important;
   padding:8px 0 48px !important;
   border:0 !important;
