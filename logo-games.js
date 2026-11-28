@@ -104,6 +104,7 @@
         state.playerY = clamp(point.y - 50, 20, HEIGHT - 120);
         if (event.pointerType === 'mouse') requestPongPointerLock();
       }
+      else if (mode === 'tetris') tetrisTouchStart = point;
     });
 
     canvas.addEventListener('pointerup', event => {
