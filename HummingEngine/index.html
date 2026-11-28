@@ -24,7 +24,7 @@
     <main>
       <section id="home" class="home">
         <div class="logo-container" id="logo">
-          <img class="brand-logo" id="brandLogo" alt="HummingbirdTech logo" src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20%284%29.png">
+          <img class="brand-logo" id="brandLogo" alt="HummingbirdTech logo" src="../img/hummingbird-logo.svg">
           <span id="logoFallback" class="logo-fallback hidden">HummingProxy</span>
         </div>
         <h1>We launch hummingbirds out the back of a scramjet to search the web faster.</h1>
@@ -89,7 +89,7 @@
       </div>
       <label class="toggle"><span>Save in-app browsing history<small>Off by default. Enabling asks for confirmation. This only controls history stored by HummingProxy; it cannot control network or server logs.</small></span><input id="historyEnabled" type="checkbox"></label>
       <label class="field">Browser tab title<input id="customTabTitle" type="text" maxlength="80" placeholder="HummingProxy"></label>
-      <label class="field">Browser tab favicon URL<input id="customFavicon" type="url" placeholder="https://example.com/favicon.ico"></label>
+      <label class="field">Browser tab favicon URL<input id="customFavicon" type="url" placeholder="../img/hummingblock-7x7.png"></label>
       <label class="field">Search engine<select id="engine"><option value="duckduckgo">DuckDuckGo</option><option value="google" selected>Google</option><option value="firefox">Firefox (Google results)</option></select></label>
       <label class="field">Scramjet version<select id="scramjetVersion"><option value="2">Scramjet 2.0.67-alpha.2 (Pages default; experimental)</option><option value="1">Scramjet 1.1.0 (stable fallback)</option><option value="static">Static Scramjet 1.10 (legacy)</option></select></label>
       <label class="toggle"><span>Automatically fall back to the other Scramjet version if the selected one fails<small>Turn off to show the startup error without switching engines</small></span><input id="autoFallback" type="checkbox" checked></label>
@@ -129,7 +129,7 @@
       <div class="recovery-actions"><button id="recoveryRetry" type="button">Retry / reload</button><a href="repair.html" target="_blank" rel="noopener">Storage diagnostics</a></div>
     </aside>
     <div class="loader hidden" id="loader" role="status" aria-live="polite">
-      <div class="loading-bird" aria-hidden="true"><img src="https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20%285%29.png" alt=""></div>
+      <div class="loading-bird" aria-hidden="true"><img src="../img/hummingblock-7x7.png" alt=""></div>
       <p>our hummingbird army is looking for relevant sites</p>
       <progress id="loadProgress" class="load-progress" max="100" value="0" aria-label="Page loading progress"></progress>
       <small id="loadDetail">Connecting…</small>
