@@ -864,28 +864,36 @@
       const namePool = [
         'Avery Bennett', 'Jordan Hayes', 'Riley Brooks', 'Morgan Ellis',
         'Harper Collins', 'Cameron Reed', 'Peyton Flores', 'Miles Parker',
-        'Quinn Foster', 'Taylor Morgan', 'Casey Rivera', 'Jamie Carter'
+        'Quinn Foster', 'Taylor Morgan', 'Casey Rivera', 'Jamie Carter',
+        'Alex Morgan', 'Drew Sullivan', 'Robin Hayes', 'Sam Parker'
       ];
       for (let i = namePool.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [namePool[i], namePool[j]] = [namePool[j], namePool[i]];
       }
       const teachers = namePool.slice(0, 4);
-      const portraits = [
-        'https://images.unsplash.com/photo-1758685848142-06e158cf64bc?auto=format&fit=crop&crop=faces&w=180&h=180&q=82',
-        'https://images.unsplash.com/photo-1701096351544-7de3c7fa0272?auto=format&fit=crop&crop=faces&w=180&h=180&q=82',
-        'https://images.unsplash.com/photo-1754051486494-cfdbf29a589c?auto=format&fit=crop&crop=faces&w=180&h=180&q=82',
-        'https://images.unsplash.com/photo-1745434159123-5b99b94206ca?auto=format&fit=crop&crop=faces&w=180&h=180&q=82'
-      ];
+      const surname = index => teachers[index].split(' ').slice(-1)[0];
       const courses = [
-        { name: 'Art Elective', teacher: 0, color: '#a44bd2', task: 'Color and composition study', due: 'Due Friday' },
-        { name: 'English', teacher: 0, color: '#1685d2', task: 'Reading response · Chapter 4', due: 'Due tomorrow' },
-        { name: 'U.S. History', teacher: 0, color: '#e35d4e', task: 'Primary source analysis', due: 'Due Friday' },
-        { name: 'Science 8', teacher: 1, color: '#3e8e63', task: 'Light and reflection lab', due: 'Due tomorrow' },
-        { name: 'Math 1 (period 1)', teacher: 2, color: '#d81b60', task: 'Practice set · Linear equations', due: 'Due today' },
-        { name: 'Study Strategies / PE / Band', teacher: 0, color: '#087c67', task: 'Weekly check-in', due: 'Due Friday' },
-        { name: '8B PACS 26–27', teacher: 3, color: '#a77bca', task: 'Class updates and resources', due: 'New post' }
+        { name: 'Art Elective', teacher: 0, color: '#8c9da4', work: [] },
+        { name: 'English - ' + surname(0), teacher: 0, color: '#1685c5', work: [
+          ['Due today', 'Iqbal #2 · Persuasive Techniques'],
+          ['Due Friday', 'Persuasive — News Article']
+        ] },
+        { name: 'U.S. History - ' + surname(0), teacher: 0, color: '#d85b50', work: [
+          ['Due tomorrow', 'Ratification Poster'],
+          ['Due tomorrow', 'The Articles of Confederation · Cornell Notes']
+        ] },
+        { name: 'Science 8 (' + surname(1) + ')', teacher: 1, color: '#8a9ca3', work: [
+          ['Due tomorrow', 'Bending Light PhET Simulation']
+        ] },
+        { name: 'Math 1 (period 1)', teacher: 2, color: '#d81b60', work: [
+          ['Due today', '5.3.1 Exercises: 84, 85, 86–91'],
+          ['Due Friday', '5.3.2 & 5.3.3 Exercises']
+        ] },
+        { name: 'Study Strategies/PE/Band', teacher: 0, color: '#00574d', work: [] },
+        { name: '♫ 8B PACS 26–27', teacher: 3, color: '#b69b87', work: [] }
       ];
+      const initials = name => name.split(/\\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase();
       return `
         <div class="classroom-disguise">
           <header class="classroom-topbar">
@@ -907,15 +915,14 @@
             <div class="classroom-course-grid">
               ${courses.map(course => {
                 const name = teachers[course.teacher];
-                const photo = portraits[course.teacher];
                 return `
                   <article class="classroom-course-card">
                     <div class="classroom-course-banner" style="--course-color:${course.color}">
                       <div class="classroom-course-title">${escapeAttribute(course.name)}</div>
                       <div class="classroom-teacher-name">${escapeAttribute(name)}</div>
-                      <img class="classroom-teacher-photo" src="${photo}" alt="${escapeAttribute(name)}" title="Unsplash portrait photo">
+                      <div class="classroom-teacher-initials" aria-hidden="true">${escapeAttribute(initials(name))}</div>
                     </div>
-                    <div class="classroom-course-work"><strong>${escapeAttribute(course.due)}</strong><span>${escapeAttribute(course.task)}</span></div>
+                    <div class="classroom-course-work">${course.work.map(item => `<div class="classroom-work-item"><strong>${escapeAttribute(item[0])}</strong><span>${escapeAttribute(item[1])}</span></div>`).join('')}</div>
                     <div class="classroom-course-actions"><span>▣</span><span>▱</span><span>⋮</span></div>
                   </article>`;
               }).join('')}
