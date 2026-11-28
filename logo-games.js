@@ -914,6 +914,7 @@
   const CHESS_SKILL_LEVELS = 21;
   let chessEngineMoveTimer = 0;
   let chessEngineStartupTimer = 0;
+  let chessEngineSearchTimer = 0;
   let chessEngineWorker = null;
   let chessEngineWasmBlobUrl = null;
   let chessEngineStarting = false;
@@ -1134,6 +1135,7 @@
 
   function cancelChessEngineSearch() {
     if(chessEngineMoveTimer) { clearTimeout(chessEngineMoveTimer); chessEngineMoveTimer=0; }
+    if(chessEngineSearchTimer) { clearTimeout(chessEngineSearchTimer); chessEngineSearchTimer=0; }
     if(chessEngineThinking && chessEngineWorker) {
       chessEngineCancelRequested=true;
       try { chessEngineWorker.postMessage('stop'); } catch(_) {}
@@ -1213,7 +1215,7 @@
           return;
         }
         if(line.startsWith('info ')) {
-          const depth=line.match(/\\bdepth\\s+(\\d+)/);
+          const depth=line.match(/\bdepth\s+(\d+)/);
           if(depth&&chessEngineThinking&&mode==='chess'&&state&&state.turn===-1) {
             state.status='Stockfish thinking · depth '+depth[1];
             draw();
@@ -1221,7 +1223,8 @@
           return;
         }
         if(line.startsWith('bestmove ')) {
-          const best=line.split(/\\s+/)[1];
+          const best=line.split(/\s+/)[1];
+          if(chessEngineSearchTimer){clearTimeout(chessEngineSearchTimer);chessEngineSearchTimer=0;}
           chessEngineThinking=false;
           if(chessEngineCancelRequested) {
             chessEngineCancelRequested=false;
@@ -1273,7 +1276,18 @@
       chessEngineWorker.postMessage('setoption name Skill Level value '+chessEngineSkill);
       chessEngineWorker.postMessage('ucinewgame');
       chessEngineWorker.postMessage('position fen '+chessToFen(state));
-      chessEngineWorker.postMessage('go movetime 900');
+      chessEngineWorker.postMessage('go movetime 1200');
+      if(chessEngineSearchTimer)clearTimeout(chessEngineSearchTimer);
+      chessEngineSearchTimer=setTimeout(()=>{
+        chessEngineSearchTimer=0;
+        if(!chessEngineThinking)return;
+        chessEngineThinking=false;chessEngineExpectedState=null;
+        try{chessEngineWorker.postMessage('stop');}catch(_){}
+        if(mode==='chess'&&state&&state.turn===-1&&!state.over) {
+          state.status='Stockfish search timed out. Try a lower level or refresh the page.';
+          draw();
+        }
+      },10000);
     } catch(_) {
       chessEngineThinking=false;chessEngineExpectedState=null;
       state.status='Stockfish could not start the search.';draw();
