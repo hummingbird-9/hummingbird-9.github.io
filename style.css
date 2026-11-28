@@ -3,14 +3,14 @@
   --corner-radius: 9px;
   --glass-opacity: 0;
   --glass-blur: 10px;
-  --accent: #90e4c1;
+  --accent: var(--accent);
   --page-text: #f3faf5;
   --page-muted: rgba(243,250,245,.72);
   --panel: rgba(255,255,255,var(--glass-opacity));
   --panel-border: rgba(255,255,255,.22);
   --page-bg: linear-gradient(135deg,#0a2e0a,#1a5d1a,#0a2e0a,#1a5d1a);
   --card-text: #f3faf5;
-  --card-title: #90e4c1;
+  --card-title: var(--accent);
   --font-scale: 1;
 }
 
@@ -1396,7 +1396,7 @@ body.theme-normal {
   --page-text:#fff;
   --page-muted:rgba(255,255,255,.76);
   --card-text:#fff;
-  --card-title:#90E4C1;
+  --card-title:var(--accent);
   background-size:400% 400%;
   animation:gradientBG 20s ease infinite;
   color:#fff;
@@ -1608,16 +1608,15 @@ body.theme-dark.background-paper { --page-bg:#252522; }
 
 /* Exact Normal-mode controls from HummingWeb's modern theme. */
 body.theme-normal {
-  --accent:#90E4C1 !important;
-  --card-title:#90E4C1 !important;
+  --card-title:var(--accent) !important;
 }
 body.theme-normal button:not(.site-tab),
 body.theme-normal .open-page-btn,
 body.theme-normal .utility-btn,
 body.theme-normal .site-control-btn {
-  border:2px solid #90E4C1 !important;
+  border:2px solid var(--accent) !important;
   background:#000 !important;
-  color:#90E4C1 !important;
+  color:var(--accent) !important;
   border-radius:8px !important;
   padding:8px 15px !important;
   font-weight:700 !important;
@@ -1630,9 +1629,9 @@ body.theme-normal button:not(.site-tab):hover,
 body.theme-normal .open-page-btn:hover,
 body.theme-normal .utility-btn:hover,
 body.theme-normal .site-control-btn:hover {
-  border-color:#90E4C1 !important;
+  border-color:var(--accent) !important;
   background:#000 !important;
-  color:#90E4C1 !important;
+  color:var(--accent) !important;
   box-shadow:none !important;
   filter:brightness(1.12);
 }
@@ -1648,7 +1647,7 @@ body.theme-normal input[type="search"],
 body.theme-normal #searchBar,
 body.theme-normal #gallerySearch {
   background:rgba(0,0,0,.6) !important;
-  border:2px solid #90E4C1 !important;
+  border:2px solid var(--accent) !important;
   color:#fff !important;
   border-radius:12px !important;
   padding:15px !important;
