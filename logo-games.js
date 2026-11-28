@@ -907,10 +907,15 @@
   const CHESS_GLYPH = {P:'♙',N:'♘',B:'♗',R:'♖',Q:'♕',p:'♟︎',n:'♞',b:'♝',r:'♜',q:'♛'};
   const CHESS_PROMOTIONS = ['q','r','b','n'];
   const STOCKFISH_WORKER_PATH = 'engine/stockfish/stockfish-19-lite-single.js';
-  const STOCKFISH_WASM_URL = 'https://cdn.jsdelivr.net/npm/stockfish@19.0.1/bin/stockfish-19-lite-single.wasm';
+  const STOCKFISH_WASM_URLS = [
+    'https://cdn.jsdelivr.net/npm/stockfish@19.0.1/bin/stockfish-19-lite-single.wasm',
+    'https://unpkg.com/stockfish@19.0.1/bin/stockfish-19-lite-single.wasm'
+  ];
   const CHESS_SKILL_LEVELS = 21;
   let chessEngineMoveTimer = 0;
+  let chessEngineStartupTimer = 0;
   let chessEngineWorker = null;
+  let chessEngineWasmBlobUrl = null;
   let chessEngineStarting = false;
   let chessEngineReady = false;
   let chessEngineThinking = false;
@@ -918,6 +923,7 @@
   let chessEngineExpectedState = null;
   let chessEngineSkill = 8;
   let chessEngineError = '';
+  let chessEngineProgress = 'Not loaded';
   const chessOnBoard = i => i >= 0 && i < 128 && !(i & 0x88);
   const chessSide = p => p === '.' ? 0 : p === p.toUpperCase() ? 1 : -1;
   const chessName = i => 'abcdefgh'[i & 7] + (8 - (i >> 4));
@@ -1136,33 +1142,73 @@
     }
   }
 
-  function ensureChessEngine() {
+  async function fetchStockfishWasm() {
+    let lastError=null;
+    for(const url of STOCKFISH_WASM_URLS) {
+      try {
+        chessEngineProgress='Downloading Stockfish…';
+        if(mode==='chess'&&state){state.status='Downloading Stockfish 19…';draw();}
+        const response=await fetch(url,{mode:'cors',credentials:'omit',cache:'force-cache'});
+        if(!response.ok) throw new Error('HTTP '+response.status+' from '+new URL(url).hostname);
+        const buffer=await response.arrayBuffer();
+        if(buffer.byteLength<500000) throw new Error('The Stockfish WASM download was incomplete ('+buffer.byteLength+' bytes).');
+        return buffer;
+      } catch(error) {
+        lastError=error;
+        console.warn('[Chess] Stockfish WASM source failed:',url,error);
+      }
+    }
+    throw lastError||new Error('Could not download the Stockfish WASM file.');
+  }
+
+  function failStockfish(message,error) {
+    chessEngineStarting=false;chessEngineReady=false;chessEngineThinking=false;
+    if(chessEngineStartupTimer){clearTimeout(chessEngineStartupTimer);chessEngineStartupTimer=0;}
+    chessEngineError=message;
+    console.error('[Chess] Stockfish failed:',error||message);
+    if(chessEngineWorker){try{chessEngineWorker.terminate();}catch(_){}chessEngineWorker=null;}
+    if(mode==='chess'&&state){state.status=message;draw();}
+  }
+
+  async function ensureChessEngine() {
     if(chessEngineWorker||chessEngineStarting||chessEngineError) return;
-    chessEngineStarting=true;
+    chessEngineStarting=true;chessEngineProgress='Starting Stockfish…';
     try {
+      if(typeof WebAssembly!=='object') throw new Error('This browser does not support WebAssembly.');
+      if(typeof Worker!=='function') throw new Error('This browser does not support Web Workers.');
+      const wasmBuffer=await fetchStockfishWasm();
+      if(!chessEngineStarting) return;
+      chessEngineWasmBlobUrl=URL.createObjectURL(new Blob([wasmBuffer],{type:'application/wasm'}));
       const workerUrl=new URL(STOCKFISH_WORKER_PATH,document.baseURI);
-      workerUrl.hash=encodeURIComponent(STOCKFISH_WASM_URL)+',worker';
+      // The Stockfish.js worker reads the WASM URL from its URL fragment.
+      workerUrl.hash=encodeURIComponent(chessEngineWasmBlobUrl)+',worker';
       const worker=new Worker(workerUrl.toString(),{name:'Stockfish 19'});
       chessEngineWorker=worker;
+      chessEngineProgress='Starting Stockfish worker…';
+      chessEngineStartupTimer=setTimeout(()=>{
+        if(!chessEngineReady) failStockfish('Stockfish did not finish starting. Check that the engine worker and WASM file are reachable.',new Error('Stockfish startup timed out after 30 seconds.'));
+      },30000);
       worker.onmessage=event=>{
-        const rawLine=String(event.data||'').trim();
-        // Stockfish.js emits some UCI words with a space between every character.
-        const line=rawLine.replace(/\b(?:[a-z][ \t]){2,}[a-z]\b/gi,word=>word.replace(/[ \t]/g,''));
+        const rawLine=String(event.data||'').replace(/\\0/g,'').trim();
+        // The Stockfish.js lite worker separates letters in UCI keywords (e.g. "b e s t m o v e").
+        const line=rawLine.replace(/\\b(?:[a-z][ \\t]){2,}[a-z]\\b/gi,word=>word.replace(/[ \\t]/g,''));
         if(line==='uciok') {
-          worker.postMessage('setoption name Threads value 1');
+          chessEngineProgress='Configuring Stockfish…';
+          if(mode==='chess'&&state){state.status='Configuring Stockfish 19…';draw();}
           worker.postMessage('setoption name Skill Level value '+chessEngineSkill);
           worker.postMessage('isready');
           return;
         }
         if(line==='readyok') {
-          chessEngineStarting=false;
-          chessEngineReady=true;
+          if(chessEngineStartupTimer){clearTimeout(chessEngineStartupTimer);chessEngineStartupTimer=0;}
+          chessEngineStarting=false;chessEngineReady=true;chessEngineProgress='Ready';
+          console.info('[Chess] Stockfish 19 ready.');
           if(mode==='chess'&&state&&state.turn===-1&&!state.over) requestStockfishMove();
           else if(mode==='chess') { state.status='Stockfish 19 ready · Level '+chessEngineSkill; draw(); }
           return;
         }
         if(line.startsWith('info ')) {
-          const depth=line.match(/\bdepth\s+(\d+)/);
+          const depth=line.match(/\\bdepth\\s+(\\d+)/);
           if(depth&&chessEngineThinking&&mode==='chess'&&state&&state.turn===-1) {
             state.status='Stockfish thinking · depth '+depth[1];
             draw();
@@ -1170,7 +1216,7 @@
           return;
         }
         if(line.startsWith('bestmove ')) {
-          const best=line.split(/\s+/)[1];
+          const best=line.split(/\\s+/)[1];
           chessEngineThinking=false;
           if(chessEngineCancelRequested) {
             chessEngineCancelRequested=false;
@@ -1182,27 +1228,30 @@
           chessEngineExpectedState=null;
           if(mode!=='chess'||!state||state.over||state.turn!==-1) return;
           if(state!==expected) { requestStockfishMove(); return; }
-          if(!best||best==='(none)') {
-            updateChessStatus();draw();return;
-          }
+          if(!best||best==='(none)') { updateChessStatus();draw();return; }
           const from=(8-Number(best[1]))*16+'abcdefgh'.indexOf(best[0]);
           const to=(8-Number(best[3]))*16+'abcdefgh'.indexOf(best[2]);
           const promotion=(best[4]||'').toLowerCase();
           const move=chessLegalMoves(state).find(m=>m.from===from&&m.to===to&&(m.promotion||'')===promotion);
           if(move) chessMove(move);
-          else { state.status='Stockfish returned an invalid move.';draw(); }
+          else failStockfish('Stockfish returned an invalid move: '+best,new Error('Invalid UCI move: '+best));
+          return;
+        }
+        if(rawLine.toLowerCase().includes('error')||rawLine.toLowerCase().includes('abort')) {
+          failStockfish('Stockfish engine error. See the browser console for details.',new Error(rawLine));
         }
       };
-      worker.onerror=()=>{
-        chessEngineStarting=false;chessEngineReady=false;chessEngineThinking=false;
-        chessEngineError='Stockfish could not load. Check your connection and refresh the page.';
-        if(mode==='chess'&&state){state.status=chessEngineError;draw();}
+      worker.onerror=event=>{
+        const detail=event?.message||'The browser blocked or could not load the Stockfish worker.';
+        failStockfish('Stockfish worker failed: '+detail,new Error(detail));
       };
+      worker.onmessageerror=event=>{
+        failStockfish('Stockfish sent a message the page could not read.',event);
+      };
+      chessEngineProgress='Handshaking with Stockfish…';
       worker.postMessage('uci');
     } catch(error) {
-      chessEngineStarting=false;
-      chessEngineError='Stockfish could not start in this browser.';
-      if(mode==='chess'&&state){state.status=chessEngineError;draw();}
+      failStockfish('Stockfish could not start: '+(error?.message||String(error)),error);
     }
   }
 
@@ -1210,13 +1259,14 @@
     if(mode!=='chess'||!state||state.over||state.turn!==-1||chessEngineThinking) return;
     if(!chessEngineWorker) ensureChessEngine();
     if(chessEngineError) { state.status=chessEngineError;draw();return; }
-    if(!chessEngineReady) { state.status='Loading Stockfish 19…';draw();return; }
+    if(!chessEngineReady) { state.status=chessEngineProgress||'Loading Stockfish 19…';draw();ensureChessEngine();return; }
     chessEngineThinking=true;
     chessEngineExpectedState=state;
     state.status='Stockfish level '+chessEngineSkill+' is thinking…';
     draw();
     try {
       chessEngineWorker.postMessage('setoption name Skill Level value '+chessEngineSkill);
+      chessEngineWorker.postMessage('ucinewgame');
       chessEngineWorker.postMessage('position fen '+chessToFen(state));
       chessEngineWorker.postMessage('go movetime 900');
     } catch(_) {
