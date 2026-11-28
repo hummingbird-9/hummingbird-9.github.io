@@ -928,7 +928,7 @@
     const back = 'RNBQKBNR';
     for (let file=0; file<8; file++) {
       board[file] = back[file].toLowerCase();
-      board[32+file] = 'p';
+      board[16+file] = 'p';
       board[96+file] = 'P';
       board[112+file] = back[file];
     }
@@ -993,7 +993,7 @@
         const step=-16*s.turn, one=from+step;
         if(chessOnBoard(one)&&s.board[one]==='.') {
           add(from,one);
-          const home=s.turn===1?6:2, two=from+step*2;
+          const home=s.turn===1?6:1, two=from+step*2;
           if(rank===home&&s.board[two]==='.') add(from,two);
         }
         for(const sideStep of [-1,1]) {
@@ -1145,7 +1145,9 @@
       const worker=new Worker(workerUrl.toString(),{name:'Stockfish 19'});
       chessEngineWorker=worker;
       worker.onmessage=event=>{
-        const line=String(event.data||'').trim();
+        const rawLine=String(event.data||'').trim();
+        // Stockfish.js emits some UCI words with a space between every character.
+        const line=rawLine.replace(/\\b(?:[a-z]\\s+){2,}[a-z]\\b/gi,word=>word.replace(/\\s+/g,''));
         if(line==='uciok') {
           worker.postMessage('setoption name Threads value 1');
           worker.postMessage('setoption name Skill Level value '+chessEngineSkill);
@@ -1156,7 +1158,15 @@
           chessEngineStarting=false;
           chessEngineReady=true;
           if(mode==='chess'&&state&&state.turn===-1&&!state.over) requestStockfishMove();
-          else if(mode==='chess') draw();
+          else if(mode==='chess') { state.status='Stockfish 19 ready · Level '+chessEngineSkill; draw(); }
+          return;
+        }
+        if(line.startsWith('info ')) {
+          const depth=line.match(/\\bdepth\\s+(\\d+)/);
+          if(depth&&chessEngineThinking&&mode==='chess'&&state&&state.turn===-1) {
+            state.status='Stockfish thinking · depth '+depth[1];
+            draw();
+          }
           return;
         }
         if(line.startsWith('bestmove ')) {
