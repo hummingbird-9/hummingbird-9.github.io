@@ -221,6 +221,7 @@
           : 'Mini game. Press Escape to return to the logo.');
     if (mode === 'pong') startPongCrownScroll();
     reset();
+    if (mode === 'chess') ensureChessEngine();
     canvas.focus({ preventScroll: true });
     previousTime = performance.now();
     cancelAnimationFrame(frame);
@@ -313,6 +314,7 @@
       state.next = takeTetrisPiece();
       spawnTetrisPiece();
     } else if (mode === 'chess') {
+      cancelChessEngineSearch();
       state = createChessGame();
     }
     updateScore();
@@ -463,7 +465,11 @@
       const key = event.key.toLowerCase();
       if (key === 'r' || (state.over && key === 'enter')) {
         event.preventDefault();
-        reset();
+        resetChess();
+      } else if (key === '[' || key === '-') {
+        event.preventDefault(); setChessEngineSkill(chessEngineSkill - 1);
+      } else if (key === ']' || key === '=') {
+        event.preventDefault(); setChessEngineSkill(chessEngineSkill + 1);
       } else if (key === 'u' || key === 'backspace') {
         event.preventDefault();
         undoChessMove();
@@ -900,8 +906,18 @@
   const CHESS_KING = [-17,-16,-15,-1,1,15,16,17];
   const CHESS_GLYPH = {P:'♙',N:'♘',B:'♗',R:'♖',Q:'♕',p:'♟︎',n:'♞',b:'♝',r:'♜',q:'♛'};
   const CHESS_PROMOTIONS = ['q','r','b','n'];
-  const CHESS_BOT_VALUES = {p:100,n:320,b:335,r:500,q:900,k:20000};
-  let chessBotTimer = 0;
+  const STOCKFISH_WORKER_PATH = 'engine/stockfish/stockfish-19-lite-single.js';
+  const STOCKFISH_WASM_URL = 'https://cdn.jsdelivr.net/npm/stockfish@19.0.1/bin/stockfish-19-lite-single.wasm';
+  const CHESS_SKILL_LEVELS = 21;
+  let chessEngineMoveTimer = 0;
+  let chessEngineWorker = null;
+  let chessEngineStarting = false;
+  let chessEngineReady = false;
+  let chessEngineThinking = false;
+  let chessEngineCancelRequested = false;
+  let chessEngineExpectedState = null;
+  let chessEngineSkill = 8;
+  let chessEngineError = '';
   const chessOnBoard = i => i >= 0 && i < 128 && !(i & 0x88);
   const chessSide = p => p === '.' ? 0 : p === p.toUpperCase() ? 1 : -1;
   const chessName = i => 'abcdefgh'[i & 7] + (8 - (i >> 4));
@@ -1090,9 +1106,132 @@
     }
   }
 
+  function chessToFen(s) {
+    const rows=[];
+    for(let rank=0;rank<8;rank++) {
+      let row='',empty=0;
+      for(let file=0;file<8;file++) {
+        const piece=s.board[chessIndex(file,rank)];
+        if(piece==='.') empty++;
+        else { if(empty) row+=String(empty); empty=0; row+=piece; }
+      }
+      if(empty) row+=String(empty);
+      rows.push(row);
+    }
+    let castling='';
+    if(s.castle&1) castling+='K';
+    if(s.castle&2) castling+='Q';
+    if(s.castle&4) castling+='k';
+    if(s.castle&8) castling+='q';
+    return rows.join('/')+' '+(s.turn===1?'w':'b')+' '+(castling||'-')+' '+(s.ep<0?'-':chessName(s.ep))+' '+s.halfmove+' '+s.fullmove;
+  }
+
+  function cancelChessEngineSearch() {
+    if(chessEngineMoveTimer) { clearTimeout(chessEngineMoveTimer); chessEngineMoveTimer=0; }
+    if(chessEngineThinking && chessEngineWorker) {
+      chessEngineCancelRequested=true;
+      try { chessEngineWorker.postMessage('stop'); } catch(_) {}
+    } else {
+      chessEngineExpectedState=null;
+    }
+  }
+
+  function ensureChessEngine() {
+    if(chessEngineWorker||chessEngineStarting||chessEngineError) return;
+    chessEngineStarting=true;
+    try {
+      const workerUrl=new URL(STOCKFISH_WORKER_PATH,document.baseURI);
+      workerUrl.hash=encodeURIComponent(STOCKFISH_WASM_URL)+',worker';
+      const worker=new Worker(workerUrl.toString(),{name:'Stockfish 19'});
+      chessEngineWorker=worker;
+      worker.onmessage=event=>{
+        const line=String(event.data||'').trim();
+        if(line==='uciok') {
+          worker.postMessage('setoption name Threads value 1');
+          worker.postMessage('setoption name Skill Level value '+chessEngineSkill);
+          worker.postMessage('isready');
+          return;
+        }
+        if(line==='readyok') {
+          chessEngineStarting=false;
+          chessEngineReady=true;
+          if(mode==='chess'&&state&&state.turn===-1&&!state.over) requestStockfishMove();
+          else if(mode==='chess') draw();
+          return;
+        }
+        if(line.startsWith('bestmove ')) {
+          const best=line.split(/\\s+/)[1];
+          chessEngineThinking=false;
+          if(chessEngineCancelRequested) {
+            chessEngineCancelRequested=false;
+            chessEngineExpectedState=null;
+            if(mode==='chess'&&state&&state.turn===-1&&!state.over) requestStockfishMove();
+            return;
+          }
+          const expected=chessEngineExpectedState;
+          chessEngineExpectedState=null;
+          if(mode!=='chess'||!state||state!==expected||state.over||state.turn!==-1) return;
+          if(!best||best==='(none)') {
+            updateChessStatus();draw();return;
+          }
+          const from=(8-Number(best[1]))*16+'abcdefgh'.indexOf(best[0]);
+          const to=(8-Number(best[3]))*16+'abcdefgh'.indexOf(best[2]);
+          const promotion=(best[4]||'').toLowerCase();
+          const move=chessLegalMoves(state).find(m=>m.from===from&&m.to===to&&(m.promotion||'')===promotion);
+          if(move) chessMove(move);
+          else { state.status='Stockfish returned an invalid move.';draw(); }
+        }
+      };
+      worker.onerror=()=>{
+        chessEngineStarting=false;chessEngineReady=false;chessEngineThinking=false;
+        chessEngineError='Stockfish could not load. Check your connection and refresh the page.';
+        if(mode==='chess'&&state){state.status=chessEngineError;draw();}
+      };
+      worker.postMessage('uci');
+    } catch(error) {
+      chessEngineStarting=false;
+      chessEngineError='Stockfish could not start in this browser.';
+      if(mode==='chess'&&state){state.status=chessEngineError;draw();}
+    }
+  }
+
+  function requestStockfishMove() {
+    if(mode!=='chess'||!state||state.over||state.turn!==-1||chessEngineThinking) return;
+    if(!chessEngineWorker) ensureChessEngine();
+    if(chessEngineError) { state.status=chessEngineError;draw();return; }
+    if(!chessEngineReady) { state.status='Loading Stockfish 19…';draw();return; }
+    chessEngineThinking=true;
+    chessEngineExpectedState=state;
+    state.status='Stockfish level '+chessEngineSkill+' is thinking…';
+    draw();
+    try {
+      chessEngineWorker.postMessage('setoption name Skill Level value '+chessEngineSkill);
+      chessEngineWorker.postMessage('position fen '+chessToFen(state));
+      chessEngineWorker.postMessage('go movetime 900');
+    } catch(_) {
+      chessEngineThinking=false;chessEngineExpectedState=null;
+      state.status='Stockfish could not start the search.';draw();
+    }
+  }
+
+  function setChessEngineSkill(level) {
+    const next=clamp(Math.round(level),0,CHESS_SKILL_LEVELS-1);
+    if(next===chessEngineSkill) return;
+    chessEngineSkill=next;
+    if(chessEngineWorker&&chessEngineReady) {
+      if(chessEngineThinking) {
+        chessEngineCancelRequested=true;
+        try { chessEngineWorker.postMessage('stop'); } catch(_) {}
+      } else {
+        chessEngineWorker.postMessage('setoption name Skill Level value '+chessEngineSkill);
+      }
+    }
+    if(state&&mode==='chess') draw();
+  }
+
   function chessMove(m) {
     if(!state||state.over) return;
-    if(chessBotTimer) { clearTimeout(chessBotTimer); chessBotTimer=0; }
+    if(chessEngineMoveTimer) { clearTimeout(chessEngineMoveTimer); chessEngineMoveTimer=0; }
     const san=chessSan(state,m), previous=chessSnapshot(state), next=chessApplyBare(state,m);
     state={
       ...next,selected:-1,pendingPromotion:null,lastMove:{from:m.from,to:m.to},
@@ -1101,65 +1240,15 @@
     };
     updateChessStatus();
     if(mode==='chess'&&!state.over&&state.turn===-1) {
-      state.status='Bot is thinking…';
+      state.status=chessEngineReady?'Stockfish level '+chessEngineSkill+' is thinking…':'Loading Stockfish 19…';
       const expected=state;
-      chessBotTimer=setTimeout(()=>{
-        chessBotTimer=0;
+      chessEngineMoveTimer=setTimeout(()=>{
+        chessEngineMoveTimer=0;
         if(mode!=='chess'||state!==expected||state.over||state.turn!==-1)return;
-        const reply=chooseChessBotMove(state);
-        if(reply) chessMove(reply);
-      },220);
+        requestStockfishMove();
+      },160);
     }
     draw();
-  }
-
-  function evaluateChessForTurn(s) {
-    let score=0;
-    for(let rank=0;rank<8;rank++) for(let file=0;file<8;file++) {
-      const square=chessIndex(file,rank), piece=s.board[square];
-      if(piece==='.') continue;
-      const side=chessSide(piece), type=piece.toLowerCase();
-      const advance=side===1?6-rank:rank-1;
-      const center=7-(Math.abs(3.5-file)+Math.abs(3.5-rank));
-      let value=CHESS_BOT_VALUES[type]||0;
-      if(type==='p') value+=advance*7+center*2;
-      else if(type==='n'||type==='b') value+=center*7;
-      else if(type==='q') value+=center*2;
-      score+=side*value;
-    }
-    return score*s.turn;
-  }
-
-  function searchChessBot(s,depth,alpha,beta) {
-    const moves=chessLegalMoves(s);
-    if(!moves.length) return chessInCheck(s,s.turn)?-100000-depth:0;
-    if(depth<=0) return evaluateChessForTurn(s);
-    let best=-Infinity;
-    // Search captures first to improve alpha-beta pruning.
-    moves.sort((a,b)=>{
-      const av=s.board[a.to]==='.'?0:CHESS_BOT_VALUES[s.board[a.to].toLowerCase()]||0;
-      const bv=s.board[b.to]==='.'?0:CHESS_BOT_VALUES[s.board[b.to].toLowerCase()]||0;
-      return bv-av;
-    });
-    for(const move of moves) {
-      const score=-searchChessBot(chessApplyBare(s,move),depth-1,-beta,-alpha);
-      if(score>best) best=score;
-      if(score>alpha) alpha=score;
-      if(alpha>=beta) break;
-    }
-    return best;
-  }
-
-  function chooseChessBotMove(s) {
-    const moves=chessLegalMoves(s);
-    if(!moves.length) return null;
-    let best=-Infinity, choices=[];
-    for(const move of moves) {
-      const score=-searchChessBot(chessApplyBare(s,move),2,-Infinity,Infinity);
-      if(score>best+1) { best=score; choices=[move]; }
-      else if(Math.abs(score-best)<=1) choices.push(move);
-    }
-    return choices[Math.floor(Math.random()*choices.length)]||moves[0];
   }
 
   function chooseChessPromotion(piece) {
@@ -1170,7 +1259,7 @@
 
   function undoChessMove() {
     if(!state||!state.past.length) return;
-    if(chessBotTimer) { clearTimeout(chessBotTimer); chessBotTimer=0; }
+    cancelChessEngineSearch();
     const past=state.past.slice();
     // After the bot has replied, undo both its move and the player's previous move.
     const steps=state.turn===1&&past.length>=2?2:1;
@@ -1182,7 +1271,7 @@
 
   function resetChess() {
     if(mode!=='chess') return;
-    if(chessBotTimer) { clearTimeout(chessBotTimer); chessBotTimer=0; }
+    cancelChessEngineSearch();
     state=createChessGame(); updateChessStatus(); draw();
   }
 
@@ -1195,17 +1284,18 @@
       }
       return;
     }
-    if(point.y>=382&&point.y<=430) {
+    if(point.y>=242&&point.y<329&&point.x>=530&&point.x<860) {
+      const col=Math.floor((point.x-530)/47),row=Math.floor((point.y-242)/28),level=row*7+col;
+      if(col>=0&&col<7&&level<CHESS_SKILL_LEVELS&&(point.x-530)%47<=42) setChessEngineSkill(level);
+      return;
+    }
+    if(point.y>=470&&point.y<=516) {
       if(point.x>=530&&point.x<=675) undoChessMove();
       else if(point.x>=690&&point.x<=860) resetChess();
       return;
     }
-    if(point.y>=438&&point.y<=488&&point.x>=530&&point.x<=860) {
-      window.location.assign('chess-client.html');
-      return;
-    }
     if(state.over) return;
-    if(state.turn!==1) { state.status='Bot is thinking…'; draw(); return; }
+    if(state.turn!==1) { state.status='Stockfish is thinking…'; draw(); return; }
     const file=Math.floor((point.x-CHESS_BOARD_X)/CHESS_SQUARE);
     const rank=Math.floor((point.y-CHESS_BOARD_Y)/CHESS_SQUARE);
     if(file<0||file>=8||rank<0||rank>=8) return;
@@ -1275,21 +1365,30 @@
     context.fillStyle='#f0d9b5'; context.font='14px monospace';
     for(let file=0;file<8;file++) context.fillText('abcdefgh'[file],CHESS_BOARD_X+file*CHESS_SQUARE+25,CHESS_BOARD_Y+CHESS_BOARD_SIZE+18);
     for(let rank=0;rank<8;rank++) context.fillText(String(8-rank),CHESS_BOARD_X-17,CHESS_BOARD_Y+rank*CHESS_SQUARE+31);
-    context.fillStyle='#ffffff'; context.font='bold 30px monospace'; context.fillText('CHESS',530,92);
-    context.font='bold 20px monospace'; context.fillText(state.status,530,132);
-    context.font='16px monospace';
-    context.fillText('The hummingbird is the king.',530,172);
-    context.fillText('You (White) vs Bot (Black).',530,208);
-    context.fillText('Tap a piece, then a move.',530,232);
-    context.fillText('R: restart   U: undo',530,268);
-    context.font='bold 17px monospace'; context.fillText('MOVES',530,310);
-    context.font='16px monospace';
-    state.moveLog.slice(-7).forEach((m,i)=>{
-      context.fillText(String(m.number)+(m.white?'. ':'... ')+m.text,530,340+i*25);
+
+    context.fillStyle='#ffffff'; context.font='bold 30px monospace'; context.fillText('CHESS',530,88);
+    context.font='bold 17px monospace'; context.fillText(state.status,530,126);
+    context.font='15px monospace';
+    context.fillText('You (White) vs Stockfish 19.',530,164);
+    context.fillText('Tap a piece, then a move.',530,190);
+    context.font='bold 16px monospace'; context.fillText('STOCKFISH STRENGTH  '+chessEngineSkill+'/20',530,225);
+    for(let level=0;level<CHESS_SKILL_LEVELS;level++) {
+      const col=level%7,row=Math.floor(level/7),x=530+col*47,y=242+row*28;
+      context.fillStyle=level===chessEngineSkill?'#2f8d50':'rgba(255,255,255,.16)';
+      context.fillRect(x,y,42,22);
+      context.strokeStyle='rgba(255,255,255,.62)';context.lineWidth=1;context.strokeRect(x,y,42,22);
+      context.fillStyle='#ffffff';context.font='bold 13px monospace';context.textAlign='center';
+      context.fillText(String(level),x+21,y+16);context.textAlign='left';
+    }
+    context.fillStyle='#d7e8d4';context.font='12px monospace';
+    context.fillText('0 = easiest                         20 = strongest',530,333);
+    context.fillStyle='#ffffff';context.font='bold 16px monospace';context.fillText('MOVES',530,365);
+    context.font='15px monospace';
+    state.moveLog.slice(-4).forEach((m,i)=>{
+      context.fillText(String(m.number)+(m.white?'. ':'... ')+m.text,530,390+i*19);
     });
-    drawChessButton(530,382,145,'UNDO',!state.past.length);
-    drawChessButton(690,382,170,'NEW GAME',false);
-    drawChessButton(530,438,330,'LAN MULTIPLAYER',false);
+    drawChessButton(530,470,145,'UNDO',!state.past.length);
+    drawChessButton(690,470,170,'NEW GAME',false);
     if(state.pendingPromotion) {
       const left=CHESS_BOARD_X+62, top=CHESS_BOARD_Y+176;
       context.fillStyle='rgba(9,18,12,.95)'; context.fillRect(left,top,324,116);
