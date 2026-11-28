@@ -56,8 +56,12 @@ function render(){
   if(piece!=='.'){if(piece.toLowerCase()==='k'){const img=document.createElement('img');img.className='lan-king'+(piece==='k'?' black':'');img.src='img/hummingblock.png';img.alt=piece==='k'?'Black king':'White king';button.appendChild(img)}else{const span=document.createElement('span');span.className='lan-piece '+(side(piece)===1?'white':'black');span.textContent=GLYPH[piece];button.appendChild(span)}}
   if(file===0){const label=document.createElement('small');label.textContent=String(8-rank);button.appendChild(label)}root.appendChild(button)
  }
- $('whiteName').textContent=(role==='host'?playerName:remoteName)+' · White';$('blackName').textContent=(role==='guest'?playerName:remoteName)+' · Black';
- $('whiteSide').textContent=role==='host'?'You':'Peer';$('blackSide').textContent=role==='guest'?'You':'Peer';$('newGame').disabled=!connected;gameStatus(connected?game.status:'Waiting for a peer connection.');
+ const topColor=myColor===-1?1:-1,bottomColor=-topColor;
+ const nameForColor=color=>color===myColor?playerName:remoteName;
+ $('topName').textContent=nameForColor(topColor)+' · '+(topColor===1?'White':'Black');
+ $('bottomName').textContent=nameForColor(bottomColor)+' · '+(bottomColor===1?'White':'Black');
+ $('topSide').textContent=topColor===myColor?'You':'Peer';$('bottomSide').textContent=bottomColor===myColor?'You':'Peer';
+ $('newGame').disabled=!connected;gameStatus(connected?game.status:'Waiting for a peer connection.');
 }
 function resetGame(send){game=createGame();selected=-1;render();if(send&&channel&&channel.readyState==='open')channel.send(JSON.stringify({type:'reset'}))}
 function chooseSquare(to){
@@ -81,8 +85,8 @@ function attachChannel(ch){
  };
 }
 function closePeer(){connected=false;try{channel?.close()}catch(_){}try{peer?.close()}catch(_){}channel=null;peer=null}
-function setupPeer(host){
- closePeer();role=host?'host':'guest';myColor=host?1:-1;connected=false;game=createGame();selected=-1;peer=new RTCPeerConnection({iceServers:[]});
+function setupPeer(host,hostSide=1){
+ closePeer();role=host?'host':'guest';const assignedHostSide=hostSide===-1?-1:1;myColor=host?assignedHostSide:-assignedHostSide;connected=false;game=createGame();selected=-1;peer=new RTCPeerConnection({iceServers:[]});
  peer.onconnectionstatechange=()=>{if(peer.connectionState==='failed')status('Direct LAN connection failed. Confirm both devices are on the same Wi-Fi and allow local connections.');else if(peer.connectionState==='disconnected')status('Peer disconnected. Waiting for the connection to return…')};
  peer.oniceconnectionstatechange=()=>{if(peer.iceConnectionState==='failed')status('ICE connection failed. This network or browser may block direct local connections.')};
  if(host){channel=peer.createDataChannel('hummingbird-chess',{ordered:true});attachChannel(channel)}else peer.ondatachannel=e=>{channel=e.channel;attachChannel(channel)};
@@ -106,7 +110,7 @@ function base91ToBytes(value){
  return Uint8Array.from(out);
 }
 async function encodeCode(value){
- const compact={v:2,t:value.type==='offer'?'o':'a',r:value.room,n:value.host||value.guest||'',s:value.sdp};
+ const compact={v:2,t:value.type==='offer'?'o':'a',r:value.room,n:value.host||value.guest||'',c:value.type==='offer'?(value.hostColor===-1?'b':'w'):undefined,s:value.sdp};
  const source=JSON.stringify(compact);
  if(typeof CompressionStream==='function'){
   try{const stream=new Blob([source]).stream().pipeThrough(new CompressionStream('deflate'));const bytes=new Uint8Array(await new Response(stream).arrayBuffer());return 'HB3:'+bytesToBase91(bytes)}catch(_){}
@@ -121,29 +125,44 @@ async function decodeCode(value){
   const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'));
   const compact=JSON.parse(await new Response(stream).text());
   if(compact.v!==2||(compact.t!=='o'&&compact.t!=='a')||typeof compact.s!=='string')throw new Error('Invalid compressed invite code.');
-  return{version:1,type:compact.t==='o'?'offer':'answer',room:compact.r,host:compact.t==='o'?compact.n:undefined,guest:compact.t==='a'?compact.n:undefined,sdp:compact.s};
+  return{version:1,type:compact.t==='o'?'offer':'answer',room:compact.r,host:compact.t==='o'?compact.n:undefined,guest:compact.t==='a'?compact.n:undefined,hostColor:compact.c==='b'?-1:1,sdp:compact.s};
  }
  return JSON.parse(new TextDecoder().decode(base64UrlToBytes(input)));
 }
 function waitForIce(pc,timeoutMs=12000){if(pc.iceGatheringState==='complete')return Promise.resolve(true);return new Promise(resolve=>{let finished=false;const timer=setTimeout(()=>finish(false),timeoutMs);function finish(complete){if(finished)return;finished=true;clearTimeout(timer);pc.removeEventListener('icegatheringstatechange',changed);resolve(complete)}function changed(){if(pc.iceGatheringState==='complete')finish(true)}pc.addEventListener('icegatheringstatechange',changed)})}
 async function createRoom(){
-  if(!window.RTCPeerConnection){status('This browser does not support WebRTC.');return}
-  room=$('roomName').value.trim();if(!room){status('Give your room a name first.');$('roomName').focus();return}
-  $('offerCode').value='';$('copyOffer').disabled=true;$('connectGuest').disabled=true;$('answerCode').value='';$('copyAnswer').disabled=true;
-  playerName=$('playerName').value.trim()||'Host';setupPeer(true);status('Creating room and gathering local network details…');
-  try{const offer=await peer.createOffer();await peer.setLocalDescription(offer);status('Preparing the invitation code…');const iceComplete=await waitForIce(peer);
-   $('offerCode').value=await encodeCode({version:1,type:'offer',room,host:playerName,sdp:peer.localDescription.sdp});$('copyOffer').disabled=false;$('connectGuest').disabled=false;
-   status('Room "'+room+'" created. Copy the invitation code and send it to your friend. You are White.'+(iceComplete?'':' Local ICE gathering timed out, so this code may not connect; try creating the room again.'));render()
-  }catch(e){status(e.message||'Could not create the room.');closePeer()}
+ if(!window.RTCPeerConnection){status('This browser does not support WebRTC.');return}
+ room=$('roomName').value.trim();if(!room){status('Enter a room name first.');$('roomName').focus();return}
+ const choice=$('hostColor').value;
+ const hostSide=choice==='random'?(Math.random()<0.5?1:-1):(choice==='black'?-1:1);
+ $('offerCode').value='';$('copyOffer').disabled=true;$('answerCode').value='';$('connectGuest').disabled=true;
+ playerName=$('playerName').value.trim()||'Host';setupPeer(true,hostSide);
+ status('Creating "'+room+'" as '+(hostSide===1?'White':'Black')+'…');
+ try{
+  const offer=await peer.createOffer();await peer.setLocalDescription(offer);
+  status('Preparing your invitation code…');const iceComplete=await waitForIce(peer);
+  $('offerCode').value=await encodeCode({version:1,type:'offer',room,host:playerName,hostColor:hostSide,sdp:peer.localDescription.sdp});
+  $('copyOffer').disabled=false;$('connectGuest').disabled=false;
+  status('Room "'+room+'" is ready. You are '+(hostSide===1?'White':'Black')+'. Send the invitation code to your friend.'+(iceComplete?'':' Local ICE gathering timed out, so the code may not connect; try creating the room again.'));
+  render();
+ }catch(e){status(e.message||'Could not create the room.');closePeer()}
 }
 async function joinRoom(){
  if(!window.RTCPeerConnection){status('This browser does not support WebRTC.');return}
- let invite;try{invite=await decodeCode($('offerCode').value)}catch(e){status(e.message||'Paste a valid host invitation code first.');return}
+ let invite;try{invite=await decodeCode($('joinCode').value)}catch(e){status(e.message||'Paste a valid host invitation code first.');return}
  if(invite.version!==1||invite.type!=='offer'||!invite.sdp||!invite.room){status('That is not a valid Hummingbird LAN invitation.');return}
- playerName=$('playerName').value.trim()||'Guest';room=String(invite.room).slice(0,36);remoteName=String(invite.host||'Host').slice(0,24);$('roomName').value=room;$('answerCode').value='';$('copyAnswer').disabled=true;setupPeer(false);status('Joining "'+room+'" and gathering local network details…');
- try{await peer.setRemoteDescription({type:'offer',sdp:invite.sdp});const answer=await peer.createAnswer();await peer.setLocalDescription(answer);status('Preparing your answer code for "'+room+'”…');await waitForIce(peer);
-  $('answerCode').value=await encodeCode({version:1,type:'answer',room,guest:playerName,sdp:peer.localDescription.sdp});$('copyAnswer').disabled=false;
-  status('You are joining "'+room+'" as Black. Copy your answer code and send it back to the host.');render()
+ const hostSide=invite.hostColor===-1?-1:1;
+ playerName=$('guestName').value.trim()||'Guest';room=String(invite.room).slice(0,36);remoteName=String(invite.host||'Host').slice(0,24);
+ $('guestAnswer').value='';$('copyGuestAnswer').disabled=true;setupPeer(false,hostSide);
+ status('Joining "'+room+'". You will play '+(myColor===1?'White':'Black')+'…');
+ try{
+  await peer.setRemoteDescription({type:'offer',sdp:invite.sdp});
+  const answer=await peer.createAnswer();await peer.setLocalDescription(answer);
+  status('Preparing your answer code…');const iceComplete=await waitForIce(peer);
+  $('guestAnswer').value=await encodeCode({version:1,type:'answer',room,guest:playerName,sdp:peer.localDescription.sdp});
+  $('copyGuestAnswer').disabled=false;
+  status('You are '+(myColor===1?'White':'Black')+' in "'+room+'". Send the answer code back to the host.'+(iceComplete?'':' Local ICE gathering timed out, so the code may not connect; try joining again.'));
+  render();
  }catch(e){status(e.message||'Could not join this room.');closePeer()}
 }
 async function connectGuest(){
@@ -156,7 +175,7 @@ async function connectGuest(){
 async function copyText(value){if(!value){status('There is no code to copy yet.');return}try{await navigator.clipboard.writeText(value);status('Code copied. Send it to the other player.')}catch(_){status('Clipboard is unavailable. Select the code and copy it manually.')}}
 function init(){
  $('createRoom').addEventListener('click',createRoom);$('joinRoom').addEventListener('click',joinRoom);$('connectGuest').addEventListener('click',connectGuest);
- $('copyOffer').addEventListener('click',()=>copyText($('offerCode').value));$('copyAnswer').addEventListener('click',()=>copyText($('answerCode').value));
+ $('copyOffer').addEventListener('click',()=>copyText($('offerCode').value));$('copyGuestAnswer').addEventListener('click',()=>copyText($('guestAnswer').value));
  $('newGame').addEventListener('click',()=>resetGame(true));
  $('board').addEventListener('click',e=>{const b=e.target.closest('[data-square]');if(b)chooseSquare(Number(b.dataset.square))});
  window.addEventListener('pagehide',closePeer);render();
