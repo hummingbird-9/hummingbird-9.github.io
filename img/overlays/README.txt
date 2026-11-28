@@ -1,8 +1,6 @@
-Emergency overlay images
+Emergency overlay images and favicons
 
-All overlays are displayed directly as image files. Google Classroom uses google-classroom.png; its screenshot is not generated from HTML.
-
-Image files:
+Overlay screenshots:
 - google-classroom.png
 - khan-academy.png
 - youtube.png
@@ -10,4 +8,13 @@ Image files:
 - desmos.png
 - gmail.png
 
-PNG, JPG, JPEG, WebP, and AVIF are supported.
+Matching browser-tab favicons:
+- google-classroom-favicon.png (cropped from the supplied exact Classroom tab-icon reference)
+- khan-academy-favicon.svg
+- youtube-favicon.svg
+- wikipedia-favicon.svg
+- desmos-favicon.svg
+- gmail-favicon.svg
+
+Each emergency overlay sets its own matching favicon and a Home - [service] tab title.
+All favicons are stored locally; no external favicon service is required.
