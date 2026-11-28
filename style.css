@@ -3,7 +3,7 @@
   --corner-radius: 9px;
   --glass-opacity: 0;
   --glass-blur: 10px;
-  --accent: var(--accent);
+  --accent: #3B9B3D;
   --page-text: #f3faf5;
   --page-muted: rgba(243,250,245,.72);
   --panel: rgba(255,255,255,var(--glass-opacity));
