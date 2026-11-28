@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const GAME_SPRITE_URL = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(5).png';
+  const GAME_SPRITE_URL = 'img/hummingblock-7x7.png';
   const WIDTH = 960;
   const HEIGHT = 540;
   const FLOOR = 445;
@@ -35,7 +35,7 @@
     Z: [[1,1,0,0],[0,1,1,0],[0,0,0,0],[0,0,0,0]]
   };
   const tetrisBlockSprite = new Image();
-  tetrisBlockSprite.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAAq0lEQVR42l3NvQ7BUABA4XMbSSNUE2lLmXRqrDZNrMLchc1itJnsVkmfoYndZjHYPYBIhMRAiL9atJEaWDgPcD7RW9Ri/tqlQ3JGHgkgtGTuZhKvMmepnTAMhZW/QAAxgLupAhCIK69JQNcZkKhvy3QbT8bfpbtvozoaeqqAVMoUsc2IVvPw4/pS/2MOPbDNCE1NATBVRjwUHdGZWfH1IgC4mTIAupXluD7zBm08K/pWx110AAAAAElFTkSuQmCC';
+  tetrisBlockSprite.src = 'img/hummingblock-7x7.png';
   const gameSprite = new Image();
   gameSprite.decoding = 'async';
   gameSprite.src = GAME_SPRITE_URL;
