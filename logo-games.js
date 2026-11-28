@@ -1219,7 +1219,7 @@
     });
     drawChessButton(530,382,145,'UNDO',!state.past.length);
     drawChessButton(690,382,170,'NEW GAME',false);
-    drawChessButton(530,438,330,'PLAY ON LICHESS',false);
+    drawChessButton(530,438,330,'PLAY ONLINE',false);
     if(state.pendingPromotion) {
       const left=CHESS_BOARD_X+62, top=CHESS_BOARD_Y+176;
       context.fillStyle='rgba(9,18,12,.95)'; context.fillRect(left,top,324,116);
