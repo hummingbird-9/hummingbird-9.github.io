@@ -41,6 +41,19 @@
   gameSprite.src = GAME_SPRITE_URL;
   const chessKingImage = new Image();
   chessKingImage.decoding = 'async';
+  const chessDarkKingCanvas = document.createElement('canvas');
+  chessDarkKingCanvas.width = 7;
+  chessDarkKingCanvas.height = 7;
+  chessKingImage.onload = () => {
+    const darkContext = chessDarkKingCanvas.getContext('2d');
+    darkContext.clearRect(0, 0, 7, 7);
+    darkContext.drawImage(chessKingImage, 0, 0, 7, 7);
+    darkContext.globalCompositeOperation = 'source-atop';
+    darkContext.fillStyle = 'rgba(0, 0, 0, 0.48)';
+    darkContext.fillRect(0, 0, 7, 7);
+    darkContext.globalCompositeOperation = 'source-over';
+    if (mode === 'chess') draw();
+  };
   chessKingImage.src = 'img/hummingblock.png';
 
   const titles = {
@@ -1168,7 +1181,9 @@
         context.fillStyle=side===1?'rgba(255,255,255,.8)':'rgba(15,23,42,.85)';
         context.beginPath(); context.arc(x+28,y+28,23,0,Math.PI*2); context.fill();
         if(chessKingImage.complete&&chessKingImage.naturalWidth) {
-          context.drawImage(chessKingImage,x+7,y+7,42,42);
+          context.imageSmoothingEnabled = false;
+          context.drawImage(side === -1 && chessDarkKingCanvas ? chessDarkKingCanvas : chessKingImage,x+7,y+7,42,42);
+          context.imageSmoothingEnabled = true;
         } else {
           context.font='bold 42px serif'; context.textAlign='center';
           context.fillStyle=side===1?'#fffdf4':'#171717'; context.fillText('♚',x+28,y+43); context.textAlign='left';

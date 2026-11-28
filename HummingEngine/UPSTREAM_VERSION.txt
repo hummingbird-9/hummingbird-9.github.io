@@ -1,0 +1,4 @@
+Source repository: https://github.com/hummingbird-9/HummingEngine
+Source branch: main
+Source commit: 942a87c14404853174416106cfa21fc6cdb9df9a
+Merged into hummingbird-9.github.io while preserving the /HummingEngine/ GitHub Pages base path.

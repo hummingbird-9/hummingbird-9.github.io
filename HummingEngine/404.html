@@ -6,7 +6,7 @@
   const base = "/HummingEngine/";
   const requested = new URL(location.href);
   const params = requested.searchParams;
-  if (params.has('q') || params.has('open') || params.has('popup')) {
+  if (params.has("q") || params.has("open") || params.has("popup")) {
     location.replace(base + requested.search + requested.hash);
   } else {
     location.replace(base);
