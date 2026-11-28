@@ -4,9 +4,9 @@
   // Keep the preference key used by the latest published site version so existing settings migrate cleanly.
   const SETTINGS_KEY = 'hummingbird_site_preferences_v1';
   const LEGACY_SETTINGS_KEY = 'hummingbird-site-settings-v2';
-  const LOGO_URL = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png?v=site-logo4-20261127-2';
+  const LOGO_URL = '/img/hummingbird-logo.svg';
   const TAB_PRESETS_KEY = 'hummingbird_tab_disguise_presets_v1';
-  const DEFAULT_FAVICON = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(5).png';
+  const DEFAULT_FAVICON = '/img/hummingblock-7x7.png';
   const DEFAULTS = {
     brightness: 'normal',
     background: 'gradient',
@@ -181,14 +181,17 @@
     if (!heroLogo || heroLogo.dataset.logoGameBound === 'true') return;
     heroLogo.dataset.logoGameBound = 'true';
     heroLogo.addEventListener('click', event => {
-      if (settings.logoClickGame === 'off') {
+      // Re-read storage so an already-open homepage sees a game choice saved in another tab.
+      settings = readSettings();
+      const selectedGame = settings.logoClickGame;
+      if (selectedGame === 'off') {
         hardRefreshCurrentDocument(event);
         return;
       }
       const miniGames = window.HummingbirdLogoGames;
       if (miniGames && typeof miniGames.open === 'function') {
         event.preventDefault();
-        miniGames.open(settings.logoClickGame);
+        miniGames.open(selectedGame);
       } else {
         hardRefreshCurrentDocument(event);
       }
@@ -625,13 +628,13 @@
     classroom: {
       title: 'Google Classroom',
       domain: 'classroom.google.com',
-      faviconUrl: 'https://knowledge.workspace.google.com/static/images/icons/product/classroom.svg'
+      faviconUrl: '/img/hummingblock-7x7.png'
     },
     khan: { title: 'Khan Academy', domain: 'khanacademy.org' },
     docs: {
       title: 'Google Docs',
       domain: 'docs.google.com',
-      faviconUrl: 'https://knowledge.workspace.google.com/static/images/icons/product/docs.svg'
+      faviconUrl: '/img/hummingblock-7x7.png'
     },
     youtube: { title: 'YouTube', domain: 'youtube.com' },
     wikipedia: { title: 'Wikipedia', domain: 'wikipedia.org' },
@@ -640,18 +643,18 @@
     gmail: {
       title: 'Gmail',
       domain: 'mail.google.com',
-      faviconUrl: 'https://knowledge.workspace.google.com/static/images/icons/product/gmail.svg'
+      faviconUrl: '/img/hummingblock-7x7.png'
     },
     drive: {
       title: 'Google Drive',
       domain: 'drive.google.com',
-      faviconUrl: 'https://knowledge.workspace.google.com/static/images/icons/product/drive.svg'
+      faviconUrl: '/img/hummingblock-7x7.png'
     },
     canvas: { title: 'Canvas', domain: 'instructure.com' }
   };
 
   function getPresetFaviconUrl(preset) {
-    return preset.faviconUrl || `https://www.google.com/s2/favicons?domain=${encodeURIComponent(preset.domain)}&sz=64`;
+    return '/img/hummingblock-7x7.png';
   }
 
   function getBuiltInPresetForTitle(title) {
@@ -755,7 +758,7 @@
       const preset = getBuiltInPresetForTitle(settings.disguiseTitle);
       const savedUrl = settings.disguiseFaviconUrl || '';
       // Existing saved presets may still hold Google's generic favicon-service URL.
-      const resolvedUrl = preset && savedUrl.includes('google.com/s2/favicons')
+      const resolvedUrl = preset
         ? getPresetFaviconUrl(preset)
         : savedUrl;
       link.href = settings.disguiseFaviconData || resolvedUrl || originalFaviconHref || DEFAULT_FAVICON;
@@ -858,10 +861,10 @@
     const fileBase = EMERGENCY_IMAGE_FILES[key];
     const label = emergencyPresetDetails().title;
     return `
-      <img class="emergency-cover-image" data-cover-base="${escapeAttribute(fileBase)}" src="img/${escapeAttribute(fileBase)}.png" alt="${escapeAttribute(label)}" draggable="false">
+      <img class="emergency-cover-image" data-cover-base="${escapeAttribute(fileBase)}" src="img/overlays/${escapeAttribute(fileBase)}.png" alt="${escapeAttribute(label)}" draggable="false">
       <div class="emergency-cover-missing" hidden>
         <strong>Cover image not found</strong>
-        <span>Add <code>img/${escapeAttribute(fileBase)}.png</code> (or a JPG, JPEG, WebP, or AVIF) to the site's <code>img/</code> folder.</span>
+        <span>Add <code>img/overlays/${escapeAttribute(fileBase)}.png</code> (or a JPG, JPEG, WebP, or AVIF) to the site's <code>img/</code> folder.</span>
       </div>
       <button class="emergency-overlay-hint" type="button" aria-label="Hide screen overlay">Press Escape to hide overlay</button>`;
   }
