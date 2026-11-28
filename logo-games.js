@@ -18,6 +18,24 @@
   let frame = 0;
   let previousTime = 0;
   let pointerY = HEIGHT / 2;
+  let tetrisTouchStart = null;
+  let pongScrollAnchor = null;
+  const TETRIS_COLS = 10;
+  const TETRIS_ROWS = 20;
+  const TETRIS_CELL = 22;
+  const TETRIS_X = (WIDTH - TETRIS_COLS * TETRIS_CELL) / 2;
+  const TETRIS_Y = 50;
+  const TETRIS_SHAPES = {
+    I: [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+    J: [[1,0,0,0],[1,1,1,0],[0,0,0,0],[0,0,0,0]],
+    L: [[0,0,1,0],[1,1,1,0],[0,0,0,0],[0,0,0,0]],
+    O: [[0,1,1,0],[0,1,1,0],[0,0,0,0],[0,0,0,0]],
+    S: [[0,1,1,0],[1,1,0,0],[0,0,0,0],[0,0,0,0]],
+    T: [[0,1,0,0],[1,1,1,0],[0,0,0,0],[0,0,0,0]],
+    Z: [[1,1,0,0],[0,1,1,0],[0,0,0,0],[0,0,0,0]]
+  };
+  const tetrisBlockSprite = new Image();
+  tetrisBlockSprite.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAAq0lEQVR42l3NvQ7BUABA4XMbSSNUE2lLmXRqrDZNrMLchc1itJnsVkmfoYndZjHYPYBIhMRAiL9atJEaWDgPcD7RW9Ri/tqlQ3JGHgkgtGTuZhKvMmepnTAMhZW/QAAxgLupAhCIK69JQNcZkKhvy3QbT8bfpbtvozoaeqqAVMoUsc2IVvPw4/pS/2MOPbDNCE1NATBVRjwUHdGZWfH1IgC4mTIAupXluD7zBm08K/pWx110AAAAAElFTkSuQmCC';
   const gameSprite = new Image();
   gameSprite.decoding = 'async';
   gameSprite.src = GAME_SPRITE_URL;
@@ -26,7 +44,8 @@
     flappy: 'Flappy Bird',
     dino: 'Dino Run',
     snake: 'Snake',
-    pong: 'Pong'
+    pong: 'Pong',
+    tetris: 'Tetris'
   };
 
   function clamp(value, min, max) {
@@ -89,11 +108,21 @@
 
     canvas.addEventListener('pointerup', event => {
       event.stopPropagation();
+      const point = pointerPosition(event);
+      if (mode === 'tetris' && tetrisTouchStart && state && !state.over) {
+        const dx = point.x - tetrisTouchStart.x;
+        const dy = point.y - tetrisTouchStart.y;
+        tetrisTouchStart = null;
+        if (Math.max(Math.abs(dx), Math.abs(dy)) < 18) rotateTetrisPiece();
+        else if (Math.abs(dx) > Math.abs(dy)) moveTetrisPiece(dx > 0 ? 1 : -1, 0);
+        else if (dy > 0) softDropTetrisPiece();
+        else hardDropTetrisPiece();
+        return;
+      }
       if (mode !== 'snake' || !snakeTouchStart || !state || state.over) {
         snakeTouchStart = null;
         return;
       }
-      const point = pointerPosition(event);
       const dx = point.x - snakeTouchStart.x;
       const dy = point.y - snakeTouchStart.y;
       snakeTouchStart = null;
@@ -103,7 +132,10 @@
         : (dy > 0 ? 'down' : 'up'));
     });
 
-    canvas.addEventListener('pointercancel', () => { snakeTouchStart = null; });
+    canvas.addEventListener('pointercancel', () => {
+      snakeTouchStart = null;
+      tetrisTouchStart = null;
+    });
     canvas.addEventListener('click', event => {
       event.preventDefault();
       event.stopPropagation();
@@ -120,7 +152,7 @@
       state.playerY = clamp(point.y - 50, 20, HEIGHT - 120);
     });
     document.addEventListener('keydown', onKeyDown, true);
-    document.addEventListener('wheel', onPongWheel, { passive: false });
+    document.addEventListener('wheel', onPongWheel, { passive: false, capture: true });
     return true;
   }
 
@@ -156,10 +188,14 @@
 
   function open(nextMode) {
     if (!titles[nextMode] || !buildInlineGame()) return;
+    stopPongCrownScroll();
     mode = nextMode;
     canvas.setAttribute('aria-label', mode === 'pong'
-      ? 'Pong. Click to lock the mouse, or use the scroll wheel or drag to move your paddle. Press Escape to close.'
-      : 'Mini game. Press Escape to return to the logo.');
+      ? 'Pong. Click to lock the mouse, or turn the Digital Crown / scroll wheel to move your paddle. Press Escape to close.'
+      : mode === 'tetris'
+        ? 'Tetris. Use arrow keys or swipe to move, up arrow or tap to rotate, and space to hard drop.'
+        : 'Mini game. Press Escape to return to the logo.');
+    if (mode === 'pong') startPongCrownScroll();
     reset();
     canvas.focus({ preventScroll: true });
     previousTime = performance.now();
@@ -170,8 +206,9 @@
   function close() {
     if (!canvas) return;
     cancelAnimationFrame(frame);
+    stopPongCrownScroll();
     if (document.pointerLockElement === canvas) document.exitPointerLock?.();
-    document.removeEventListener('wheel', onPongWheel);
+    document.removeEventListener('wheel', onPongWheel, true);
     canvas.remove();
     heroLogo?.classList.remove('is-playing-game');
     if (logoImage) logoImage.style.visibility = imageVisibility;
@@ -180,6 +217,44 @@
     context = null;
     state = null;
     snakeTouchStart = null;
+    tetrisTouchStart = null;
+  }
+
+  function startPongCrownScroll() {
+    if (pongScrollAnchor) return;
+    const x = window.scrollX || 0;
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    pongScrollAnchor = { x, y, lastY: y };
+    window.addEventListener('scroll', onPongPageScroll, { passive: true, capture: true });
+  }
+
+  function stopPongCrownScroll() {
+    if (!pongScrollAnchor) return;
+    const anchor = pongScrollAnchor;
+    window.removeEventListener('scroll', onPongPageScroll, true);
+    pongScrollAnchor = null;
+    const currentX = window.scrollX || 0;
+    const currentY = window.scrollY || document.documentElement.scrollTop || 0;
+    if (currentX !== anchor.x || currentY !== anchor.y) window.scrollTo(anchor.x, anchor.y);
+  }
+
+  function onPongPageScroll() {
+    if (!pongScrollAnchor || mode !== 'pong' || !canvas || !state || state.over) return;
+    const currentY = window.scrollY || document.documentElement.scrollTop || 0;
+    const deltaY = currentY - pongScrollAnchor.lastY;
+    pongScrollAnchor.lastY = currentY;
+    if (deltaY) {
+      const rect = canvas.getBoundingClientRect();
+      const scale = rect.height > 0 ? HEIGHT / rect.height : 1;
+      state.playerY = clamp(state.playerY + deltaY * scale * 1.15, 20, HEIGHT - 120);
+    }
+    const currentX = window.scrollX || 0;
+    if (currentX !== pongScrollAnchor.x || currentY !== pongScrollAnchor.y) {
+      // Digital Crown scrolling changes the page in some watch browsers instead of emitting wheel events.
+      // Convert that scroll delta into paddle movement, then immediately pin the page back in place.
+      pongScrollAnchor.lastY = pongScrollAnchor.y;
+      window.scrollTo(pongScrollAnchor.x, pongScrollAnchor.y);
+    }
   }
 
   function reset() {
@@ -205,6 +280,14 @@
         playerY: 205, cpuY: 205, ball: { x: 480, y: 260, vx: 360, vy: 180 },
         up: false, down: false
       };
+    } else if (mode === 'tetris') {
+      state = {
+        score: 0, lines: 0, level: 1, over: false,
+        board: Array.from({ length: TETRIS_ROWS }, () => Array(TETRIS_COLS).fill(0)),
+        bag: [], next: null, active: null, dropTimer: 0
+      };
+      state.next = takeTetrisPiece();
+      spawnTetrisPiece();
     }
     updateScore();
     draw();
@@ -218,6 +301,102 @@
     if (!state || state.over) return;
     state.over = true;
     state.endMessage = message;
+  }
+
+  function takeTetrisPiece() {
+    if (!state.bag.length) {
+      state.bag = Object.keys(TETRIS_SHAPES).sort(() => Math.random() - 0.5);
+    }
+    return state.bag.pop();
+  }
+
+  function spawnTetrisPiece() {
+    const type = state.next || takeTetrisPiece();
+    state.next = takeTetrisPiece();
+    state.active = {
+      type,
+      matrix: TETRIS_SHAPES[type].map(row => row.slice()),
+      x: 3,
+      y: 0
+    };
+    if (!canPlaceTetris(state.active, 0, 0)) gameOver('The stack reached the top.');
+  }
+
+  function canPlaceTetris(piece, offsetX, offsetY, matrix = piece.matrix) {
+    for (let row = 0; row < matrix.length; row++) {
+      for (let col = 0; col < matrix[row].length; col++) {
+        if (!matrix[row][col]) continue;
+        const x = piece.x + col + offsetX;
+        const y = piece.y + row + offsetY;
+        if (x < 0 || x >= TETRIS_COLS || y >= TETRIS_ROWS) return false;
+        if (y >= 0 && state.board[y][x]) return false;
+      }
+    }
+    return true;
+  }
+
+  function moveTetrisPiece(dx, dy) {
+    if (!state || !state.active || state.over) return false;
+    if (!canPlaceTetris(state.active, dx, dy)) return false;
+    state.active.x += dx;
+    state.active.y += dy;
+    return true;
+  }
+
+  function rotateTetrisPiece() {
+    if (!state || !state.active || state.over) return;
+    const matrix = state.active.matrix;
+    const rotated = matrix[0].map((_, index) => matrix.map(row => row[index]).reverse());
+    for (const kick of [0, -1, 1, -2, 2]) {
+      if (canPlaceTetris(state.active, kick, 0, rotated)) {
+        state.active.x += kick;
+        state.active.matrix = rotated;
+        return;
+      }
+    }
+  }
+
+  function lockTetrisPiece() {
+    if (!state || !state.active) return;
+    const piece = state.active;
+    for (let row = 0; row < piece.matrix.length; row++) {
+      for (let col = 0; col < piece.matrix[row].length; col++) {
+        if (!piece.matrix[row][col]) continue;
+        const x = piece.x + col;
+        const y = piece.y + row;
+        if (y < 0) {
+          gameOver('The stack reached the top.');
+          return;
+        }
+        state.board[y][x] = 1;
+      }
+    }
+
+    const remaining = state.board.filter(row => row.some(cell => !cell));
+    const cleared = TETRIS_ROWS - remaining.length;
+    if (cleared) {
+      while (remaining.length < TETRIS_ROWS) remaining.unshift(Array(TETRIS_COLS).fill(0));
+      state.board = remaining;
+      state.lines += cleared;
+      state.score += [0, 100, 300, 500, 800][cleared] * state.level;
+      state.level = 1 + Math.floor(state.lines / 10);
+    }
+    state.active = null;
+    spawnTetrisPiece();
+  }
+
+  function softDropTetrisPiece() {
+    if (!state || !state.active || state.over) return;
+    if (moveTetrisPiece(0, 1)) state.score += 1;
+    else lockTetrisPiece();
+  }
+
+  function hardDropTetrisPiece() {
+    if (!state || !state.active || state.over) return;
+    let distance = 0;
+    while (moveTetrisPiece(0, 1)) distance++;
+    state.score += distance * 2;
+    lockTetrisPiece();
   }
 
   function flap() {
@@ -254,6 +433,13 @@
       return;
     }
     if (!state) return;
+    if (state.over && mode === 'tetris') {
+      if ([' ', 'Enter', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'ArrowDown'].includes(event.key)) {
+        event.preventDefault();
+        reset();
+      }
+      return;
+    }
     if (state.over && mode !== 'flappy' && mode !== 'dino') reset();
 
     if (mode === 'flappy' && [' ', 'ArrowUp', 'w', 'W'].includes(event.key)) {
@@ -279,6 +465,16 @@
       if (event.key === 'ArrowDown' || event.key.toLowerCase() === 's') {
         event.preventDefault(); state.down = true;
       }
+    } else if (mode === 'tetris') {
+      const key = event.key;
+      if (['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', ' ', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D'].includes(key)) {
+        event.preventDefault();
+        if (key === 'ArrowLeft' || key.toLowerCase() === 'a') moveTetrisPiece(-1, 0);
+        else if (key === 'ArrowRight' || key.toLowerCase() === 'd') moveTetrisPiece(1, 0);
+        else if (key === 'ArrowDown' || key.toLowerCase() === 's') softDropTetrisPiece();
+        else if (key === 'ArrowUp' || key.toLowerCase() === 'w') rotateTetrisPiece();
+        else if (key === ' ') hardDropTetrisPiece();
+      }
     }
   }
 
@@ -303,6 +499,7 @@
     else if (mode === 'dino') updateDino(dt);
     else if (mode === 'snake') updateSnake(dt);
     else if (mode === 'pong') updatePong(dt);
+    else if (mode === 'tetris') updateTetris(dt);
   }
 
   function updateFlappy(dt) {
@@ -393,6 +590,16 @@
     } while (state.snake.some(part => part.x === state.food.x && part.y === state.food.y) && tries < 100);
   }
 
+  function updateTetris(dt) {
+    if (!state.active) return;
+    state.dropTimer += dt;
+    const interval = Math.max(0.12, 0.72 - (state.level - 1) * 0.055);
+    while (state.dropTimer >= interval && !state.over) {
+      state.dropTimer -= interval;
+      if (!moveTetrisPiece(0, 1)) lockTetrisPiece();
+    }
+  }
+
   function updatePong(dt) {
     if (state.up) state.playerY -= 410 * dt;
     if (state.down) state.playerY += 410 * dt;
@@ -435,6 +642,7 @@
     else if (mode === 'dino') drawDino();
     else if (mode === 'snake') drawSnake();
     else if (mode === 'pong') drawPong();
+    else if (mode === 'tetris') drawTetris();
     drawInlineClose();
     if (state.over) drawGameOver();
   }
@@ -544,6 +752,103 @@
     context.fillText('CLICK: LOCK MOUSE   WHEEL / DRAG: MOVE', 28, HEIGHT - 20);
   }
 
+  function drawTetrisCell(col, row, alpha = 1, cellSize = TETRIS_CELL) {
+    const x = TETRIS_X + col * cellSize;
+    const y = TETRIS_Y + row * cellSize;
+    context.save();
+    context.globalAlpha = alpha;
+    context.fillStyle = 'rgba(120,160,100,.18)';
+    context.fillRect(x + 1, y + 1, cellSize - 2, cellSize - 2);
+    if (tetrisBlockSprite.complete && tetrisBlockSprite.naturalWidth) {
+      context.drawImage(tetrisBlockSprite, x + 1, y + 1, cellSize - 2, cellSize - 2);
+    } else {
+      context.fillStyle = '#8ebd4f';
+      context.fillRect(x + 2, y + 2, cellSize - 4, cellSize - 4);
+    }
+    context.strokeStyle = 'rgba(255,255,255,.18)';
+    context.lineWidth = 1;
+    context.strokeRect(x + 0.5, y + 0.5, cellSize - 1, cellSize - 1);
+    context.restore();
+  }
+
+  function drawTetris() {
+    const boardWidth = TETRIS_COLS * TETRIS_CELL;
+    const boardHeight = TETRIS_ROWS * TETRIS_CELL;
+    context.fillStyle = 'rgba(0,0,0,.24)';
+    context.fillRect(TETRIS_X, TETRIS_Y, boardWidth, boardHeight);
+    context.strokeStyle = 'rgba(255,255,255,.35)';
+    context.lineWidth = 3;
+    context.strokeRect(TETRIS_X - 2, TETRIS_Y - 2, boardWidth + 4, boardHeight + 4);
+
+    for (let row = 0; row < TETRIS_ROWS; row++) {
+      for (let col = 0; col < TETRIS_COLS; col++) {
+        if (state.board[row][col]) drawTetrisCell(col, row);
+        else {
+          context.strokeStyle = 'rgba(255,255,255,.07)';
+          context.lineWidth = 1;
+          context.strokeRect(TETRIS_X + col * TETRIS_CELL + .5,
+            TETRIS_Y + row * TETRIS_CELL + .5, TETRIS_CELL - 1, TETRIS_CELL - 1);
+        }
+      }
+    }
+
+    if (state.active) {
+      const piece = state.active;
+      // Ghost piece shows where the current shape will land.
+      let ghostY = piece.y;
+      while (canPlaceTetris(piece, 0, ghostY - piece.y + 1)) ghostY++;
+      piece.matrix.forEach((line, row) => line.forEach((filled, col) => {
+        if (!filled) return;
+        const boardRow = ghostY + row;
+        if (boardRow >= 0) drawTetrisCell(piece.x + col, boardRow, .22);
+      }));
+      piece.matrix.forEach((line, row) => line.forEach((filled, col) => {
+        if (filled && piece.y + row >= 0) drawTetrisCell(piece.x + col, piece.y + row);
+      }));
+    }
+
+    context.fillStyle = '#ffffff';
+    context.font = 'bold 30px monospace';
+    context.fillText('TETRIS', 118, 95);
+    context.font = 'bold 20px monospace';
+    context.fillText('SCORE', 120, 160);
+    context.font = 'bold 28px monospace';
+    context.fillText(String(state.score), 120, 195);
+    context.font = 'bold 20px monospace';
+    context.fillText('LINES', 120, 260);
+    context.font = 'bold 28px monospace';
+    context.fillText(String(state.lines), 120, 295);
+    context.font = 'bold 20px monospace';
+    context.fillText('LEVEL', 120, 360);
+    context.font = 'bold 28px monospace';
+    context.fillText(String(state.level), 120, 395);
+
+    context.font = 'bold 20px monospace';
+    context.fillText('NEXT', 650, 100);
+    const nextMatrix = TETRIS_SHAPES[state.next];
+    const previewCell = 20;
+    const previewX = 650;
+    const previewY = 125;
+    nextMatrix.forEach((line, row) => line.forEach((filled, col) => {
+      if (!filled) return;
+      context.save();
+      context.translate(previewX + col * previewCell, previewY + row * previewCell);
+      context.fillStyle = 'rgba(120,160,100,.18)';
+      context.fillRect(1, 1, previewCell - 2, previewCell - 2);
+      if (tetrisBlockSprite.complete && tetrisBlockSprite.naturalWidth) {
+        context.drawImage(tetrisBlockSprite, 1, 1, previewCell - 2, previewCell - 2);
+      } else {
+        context.fillStyle = '#8ebd4f';
+        context.fillRect(2, 2, previewCell - 4, previewCell - 4);
+      }
+      context.restore();
+    }));
+    context.font = '16px monospace';
+    context.fillText('ARROWS: MOVE / ROTATE', 650, 255);
+    context.fillText('SPACE: HARD DROP', 650, 282);
+    context.fillText('SWIPE: MOVE / DROP', 650, 309);
+  }
+
   function drawInlineClose() {
     context.fillStyle = 'rgba(0,0,0,.42)';
     context.fillRect(WIDTH - 78, 12, 62, 46);
@@ -566,7 +871,7 @@
     context.font = 'bold 40px monospace';
     context.fillText('GAME OVER', WIDTH/2, boxY + 54);
     context.font = 'bold 17px monospace';
-    context.fillText('PRESS KEY / TAP TO RETRY', WIDTH/2, boxY + 100);
+    context.fillText(mode === 'tetris' ? 'ARROWS / TAP TO RESTART' : 'PRESS KEY / TAP TO RETRY', WIDTH/2, boxY + 100);
     context.textAlign = 'left';
   }
 
