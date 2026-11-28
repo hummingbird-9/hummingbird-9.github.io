@@ -34,7 +34,14 @@
     emergencyKey: 'F9',
     emergencyTemplate: 'classroom',
     disguiseOnLeave: false,
-    stayDisguisedOnReturn: false
+    stayDisguisedOnReturn: false,
+    classroomTeacherName: 'Nicole Librearski',
+    classroomTeacherAvatarData: '',
+    classroomTeacherColor0: '#4e7fc3',
+    classroomTeacherColor1: '#3b9a58',
+    classroomTeacherColor2: '#f18a25',
+    classroomTeacherColor3: '#9270c9',
+    classroomTeacherColor4: '#27adb6'
   };
 
   let settings = readSettings();
@@ -114,7 +121,16 @@
       emergencyKey: typeof source.emergencyKey === 'string' && source.emergencyKey.length <= 12 ? source.emergencyKey : DEFAULTS.emergencyKey,
       emergencyTemplate: ['classroom', 'khan', 'youtube', 'wikipedia', 'desmos', 'gmail'].includes(source.emergencyTemplate) ? source.emergencyTemplate : DEFAULTS.emergencyTemplate,
       disguiseOnLeave: source.disguiseOnLeave === true,
-      stayDisguisedOnReturn: source.stayDisguisedOnReturn === true
+      stayDisguisedOnReturn: source.stayDisguisedOnReturn === true,
+      classroomTeacherName: typeof source.classroomTeacherName === 'string' && source.classroomTeacherName.trim()
+        ? source.classroomTeacherName.trim().slice(0, 60) : DEFAULTS.classroomTeacherName,
+      classroomTeacherAvatarData: typeof source.classroomTeacherAvatarData === 'string' && source.classroomTeacherAvatarData.startsWith('data:image/') && source.classroomTeacherAvatarData.length <= 400000
+        ? source.classroomTeacherAvatarData : DEFAULTS.classroomTeacherAvatarData,
+      classroomTeacherColor0: /^#[0-9a-f]{6}$/i.test(source.classroomTeacherColor0 || '') ? source.classroomTeacherColor0 : DEFAULTS.classroomTeacherColor0,
+      classroomTeacherColor1: /^#[0-9a-f]{6}$/i.test(source.classroomTeacherColor1 || '') ? source.classroomTeacherColor1 : DEFAULTS.classroomTeacherColor1,
+      classroomTeacherColor2: /^#[0-9a-f]{6}$/i.test(source.classroomTeacherColor2 || '') ? source.classroomTeacherColor2 : DEFAULTS.classroomTeacherColor2,
+      classroomTeacherColor3: /^#[0-9a-f]{6}$/i.test(source.classroomTeacherColor3 || '') ? source.classroomTeacherColor3 : DEFAULTS.classroomTeacherColor3,
+      classroomTeacherColor4: /^#[0-9a-f]{6}$/i.test(source.classroomTeacherColor4 || '') ? source.classroomTeacherColor4 : DEFAULTS.classroomTeacherColor4
     };
   }
 
@@ -385,6 +401,20 @@
             <option value="classroom">Google Classroom</option><option value="khan">Khan Academy</option><option value="youtube">YouTube</option><option value="wikipedia">Wikipedia</option><option value="desmos">Desmos</option><option value="gmail">Gmail</option>
           </select></label>
           <p class="settings-description">Overlay images live in <code>img/overlays/</code>. Already uploaded: <code>google-classroom.png</code> and <code>khan-academy.png</code>. Still missing: <code>youtube.png</code>, <code>wikipedia.png</code>, <code>desmos.png</code>, and <code>gmail.png</code>. JPG, JPEG, WebP, and AVIF also work.</p>
+          <details class="emergency-advanced-settings">
+            <summary>Further optimization</summary>
+            <label class="settings-field"><span>Teacher name</span><input id="settingClassroomTeacherName" type="text" maxlength="60" placeholder="Nicole Librearski"></label>
+            <label class="settings-field"><span>Teacher circle image</span><input id="settingClassroomAvatarImage" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif"></label>
+            <div class="settings-action-row"><button id="clearClassroomAvatar" type="button">Use initials instead</button></div>
+            <p class="settings-description">An uploaded image appears inside every teacher circle. Without one, the circle shows the teacher’s initials.</p>
+            <div class="classroom-avatar-color-grid">
+              <label class="settings-field"><span>Science circle</span><input id="settingClassroomAvatarColor0" type="color"></label>
+              <label class="settings-field"><span>Social Studies circle</span><input id="settingClassroomAvatarColor1" type="color"></label>
+              <label class="settings-field"><span>Actively Learn circle</span><input id="settingClassroomAvatarColor2" type="color"></label>
+              <label class="settings-field"><span>Wonders circle</span><input id="settingClassroomAvatarColor3" type="color"></label>
+              <label class="settings-field"><span>McGraw Hill circle</span><input id="settingClassroomAvatarColor4" type="color"></label>
+            </div>
+          </details>
           <label class="settings-check"><input id="settingDisguiseOnLeave" type="checkbox"><span>Turn on the disguise when I leave this tab</span></label>
           <label class="settings-check"><input id="settingStayDisguisedOnReturn" type="checkbox"><span>Keep the disguise on when I come back</span></label>
           <div class="settings-action-row"><button id="previewEmergencyDisguise" type="button">Preview emergency screen</button></div>
@@ -460,7 +490,13 @@
       settingContextMenu: 'customContextMenu', settingShowRecentlyPlayed: 'showRecentlyPlayed',
       settingHideGameThumbnails: 'hideGameThumbnails', settingLogoClickGame: 'logoClickGame', settingDisguiseTitle: 'disguiseTitle',
       settingDisguiseFaviconUrl: 'disguiseFaviconUrl', settingEmergencyTemplate: 'emergencyTemplate',
-      settingDisguiseOnLeave: 'disguiseOnLeave', settingStayDisguisedOnReturn: 'stayDisguisedOnReturn'
+      settingDisguiseOnLeave: 'disguiseOnLeave', settingStayDisguisedOnReturn: 'stayDisguisedOnReturn',
+      settingClassroomTeacherName: 'classroomTeacherName',
+      settingClassroomAvatarColor0: 'classroomTeacherColor0',
+      settingClassroomAvatarColor1: 'classroomTeacherColor1',
+      settingClassroomAvatarColor2: 'classroomTeacherColor2',
+      settingClassroomAvatarColor3: 'classroomTeacherColor3',
+      settingClassroomAvatarColor4: 'classroomTeacherColor4'
     };
     Object.entries(bindings).forEach(([id, key]) => {
       const control = document.getElementById(id);
@@ -480,6 +516,14 @@
       else enterEmergencyDisguise(true);
     });
     document.getElementById('settingDisguiseFaviconFile').addEventListener('change', handleFaviconUpload);
+    document.getElementById('settingClassroomAvatarImage').addEventListener('change', handleClassroomAvatarUpload);
+    document.getElementById('clearClassroomAvatar').addEventListener('click', () => {
+      settings.classroomTeacherAvatarData = '';
+      const upload = document.getElementById('settingClassroomAvatarImage');
+      if (upload) upload.value = '';
+      saveSettings();
+      if (emergencyOverlayActive && settings.emergencyTemplate === 'classroom') enterEmergencyDisguise(emergencyPreviewActive);
+    });
     document.querySelectorAll('[data-tab-preset]').forEach(button => {
       button.addEventListener('click', () => chooseBuiltInTabPreset(button.dataset.tabPreset));
     });
@@ -785,6 +829,26 @@
     }).catch(error => window.alert(error.message));
   }
 
+  function handleClassroomAvatarUpload(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      window.alert('Choose a valid image file.');
+      event.target.value = '';
+      return;
+    }
+    if (file.size > 256 * 1024) {
+      window.alert('Please choose a teacher image smaller than 256 KB.');
+      event.target.value = '';
+      return;
+    }
+    readImageFile(file).then(dataUrl => {
+      settings.classroomTeacherAvatarData = dataUrl;
+      saveSettings();
+      if (emergencyOverlayActive && settings.emergencyTemplate === 'classroom') enterEmergencyDisguise(emergencyPreviewActive);
+    }).catch(error => window.alert(error.message)).finally(() => { event.target.value = ''; });
+  }
+
   function readImageFile(file) {
     return new Promise((resolve, reject) => {
       if (!file.type.startsWith('image/')) { reject(new Error('Choose a valid image file.')); return; }
@@ -861,39 +925,21 @@
     const fileBase = EMERGENCY_IMAGE_FILES[key];
     const label = emergencyPresetDetails().title;
     if (key === 'classroom') {
-      const namePool = [
-        'Avery Bennett', 'Jordan Hayes', 'Riley Brooks', 'Morgan Ellis',
-        'Harper Collins', 'Cameron Reed', 'Peyton Flores', 'Miles Parker',
-        'Quinn Foster', 'Taylor Morgan', 'Casey Rivera', 'Jamie Carter',
-        'Alex Morgan', 'Drew Sullivan', 'Robin Hayes', 'Sam Parker'
+      const teacherName = settings.classroomTeacherName || DEFAULTS.classroomTeacherName;
+      const avatarImage = settings.classroomTeacherAvatarData || '';
+      const avatarColors = [
+        settings.classroomTeacherColor0, settings.classroomTeacherColor1,
+        settings.classroomTeacherColor2, settings.classroomTeacherColor3,
+        settings.classroomTeacherColor4
       ];
-      for (let i = namePool.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [namePool[i], namePool[j]] = [namePool[j], namePool[i]];
-      }
-      const teachers = namePool.slice(0, 4);
-      const surname = index => teachers[index].split(' ').slice(-1)[0];
       const courses = [
-        { name: 'Art Elective', teacher: 0, color: '#8c9da4', work: [] },
-        { name: 'English - ' + surname(0), teacher: 0, color: '#1685c5', work: [
-          ['Due today', 'Iqbal #2 · Persuasive Techniques'],
-          ['Due Friday', 'Persuasive — News Article']
-        ] },
-        { name: 'U.S. History - ' + surname(0), teacher: 0, color: '#d85b50', work: [
-          ['Due tomorrow', 'Ratification Poster'],
-          ['Due tomorrow', 'The Articles of Confederation · Cornell Notes']
-        ] },
-        { name: 'Science 8 (' + surname(1) + ')', teacher: 1, color: '#8a9ca3', work: [
-          ['Due tomorrow', 'Bending Light PhET Simulation']
-        ] },
-        { name: 'Math 1 (period 1)', teacher: 2, color: '#d81b60', work: [
-          ['Due today', '5.3.1 Exercises: 84, 85, 86–91'],
-          ['Due Friday', '5.3.2 & 5.3.3 Exercises']
-        ] },
-        { name: 'Study Strategies/PE/Band', teacher: 0, color: '#00574d', work: [] },
-        { name: '♫ 8B PACS 26–27', teacher: 3, color: '#b69b87', work: [] }
+        { name: 'Science', color: '#0878b9' },
+        { name: 'Social Studies', color: '#315fcb' },
+        { name: 'Actively Learn', color: '#0b858b' },
+        { name: 'Wonders Grade 4 Class', color: '#586f79' },
+        { name: 'McGraw Hill Class', color: '#354c56' }
       ];
-      const initials = name => name.split(/\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase();
+      const initials = teacherName.split(/\\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase();
       return `
         <div class="classroom-disguise">
           <header class="classroom-topbar">
@@ -905,27 +951,28 @@
           <aside class="classroom-sidebar">
             <div class="classroom-nav-item is-active"><b>⌂</b> Home</div>
             <div class="classroom-nav-item"><b>▣</b> Calendar</div>
-            <div class="classroom-nav-item"><b>✦</b> Gemini</div>
             <div class="classroom-nav-heading">Enrolled <span>⌃</span></div>
             <div class="classroom-nav-item"><b>☑</b> To-do</div>
             ${courses.map(course => `<div class="classroom-nav-item classroom-course-nav"><i style="background:${course.color}"></i>${escapeAttribute(course.name)}</div>`).join('')}
             <div class="classroom-nav-item classroom-archived"><b>▣</b> Archived classes</div>
+            <div class="classroom-nav-item"><b>⚙</b> Settings</div>
           </aside>
           <main class="classroom-main">
+            <div class="classroom-main-notice">You don’t have any assigned class learning tools</div>
+            <div class="classroom-heading"><span>Classes</span><span class="classroom-add-class">＋ &nbsp;Add class</span></div>
             <div class="classroom-course-grid">
-              ${courses.map(course => {
-                const name = teachers[course.teacher];
-                return `
-                  <article class="classroom-course-card">
-                    <div class="classroom-course-banner" style="--course-color:${course.color}">
-                      <div class="classroom-course-title">${escapeAttribute(course.name)}</div>
-                      <div class="classroom-teacher-name">${escapeAttribute(name)}</div>
-                      <div class="classroom-teacher-initials" aria-hidden="true">${escapeAttribute(initials(name))}</div>
+              ${courses.map((course, index) => `
+                <article class="classroom-course-card">
+                  <div class="classroom-course-banner" style="--course-color:${course.color}">
+                    <div class="classroom-course-title">${escapeAttribute(course.name)}</div>
+                    <div class="classroom-teacher-name">${escapeAttribute(teacherName)}</div>
+                    <div class="classroom-teacher-initials" style="--teacher-avatar-color:${escapeAttribute(avatarColors[index] || '#4e7fc3')}" aria-hidden="true">
+                      ${avatarImage ? `<img class="classroom-teacher-avatar-image" src="${escapeAttribute(avatarImage)}" alt="">` : escapeAttribute(initials)}
                     </div>
-                    <div class="classroom-course-work">${course.work.map(item => `<div class="classroom-work-item"><strong>${escapeAttribute(item[0])}</strong><span>${escapeAttribute(item[1])}</span></div>`).join('')}</div>
-                    <div class="classroom-course-actions"><span>▣</span><span>▱</span><span>⋮</span></div>
-                  </article>`;
-              }).join('')}
+                  </div>
+                  <div class="classroom-course-work"></div>
+                  <div class="classroom-course-actions"><span>▣</span><span>▱</span><span>⋮</span></div>
+                </article>`).join('')}
             </div>
             <div class="classroom-help">ⓘ</div>
           </main>
@@ -1022,6 +1069,9 @@
     applySettings();
     updateRangeOutputs();
     renderPastAccentColors();
+    if (key.startsWith('classroomTeacher') && emergencyOverlayActive && settings.emergencyTemplate === 'classroom') {
+      enterEmergencyDisguise(emergencyPreviewActive);
+    }
     if (key === 'emergencyTemplate' && emergencyOverlayActive) enterEmergencyDisguise(emergencyPreviewActive);
   }
 
@@ -1047,7 +1097,13 @@
       settingLogoClickGame: settings.logoClickGame,
       settingDisguiseTitle: settings.disguiseTitle, settingDisguiseFaviconUrl: settings.disguiseFaviconUrl,
       settingEmergencyTemplate: settings.emergencyTemplate, settingDisguiseOnLeave: settings.disguiseOnLeave,
-      settingStayDisguisedOnReturn: settings.stayDisguisedOnReturn
+      settingStayDisguisedOnReturn: settings.stayDisguisedOnReturn,
+      settingClassroomTeacherName: settings.classroomTeacherName,
+      settingClassroomAvatarColor0: settings.classroomTeacherColor0,
+      settingClassroomAvatarColor1: settings.classroomTeacherColor1,
+      settingClassroomAvatarColor2: settings.classroomTeacherColor2,
+      settingClassroomAvatarColor3: settings.classroomTeacherColor3,
+      settingClassroomAvatarColor4: settings.classroomTeacherColor4
     };
     Object.entries(values).forEach(([id, value]) => {
       const control = document.getElementById(id);
