@@ -36,7 +36,7 @@
     disguiseOnLeave: false,
     stayDisguisedOnReturn: false,
     classroomTeacherName: 'Nicole Librearski',
-    classroomTeacherAvatarData: '',
+    classroomTeacherAvatarData: 'img/overlays/classroom-floral-avatar.svg',
     classroomTeacherColor0: '#4e7fc3',
     classroomTeacherColor1: '#3b9a58',
     classroomTeacherColor2: '#f18a25',
@@ -124,7 +124,7 @@
       stayDisguisedOnReturn: source.stayDisguisedOnReturn === true,
       classroomTeacherName: typeof source.classroomTeacherName === 'string' && source.classroomTeacherName.trim()
         ? source.classroomTeacherName.trim().slice(0, 60) : DEFAULTS.classroomTeacherName,
-      classroomTeacherAvatarData: typeof source.classroomTeacherAvatarData === 'string' && source.classroomTeacherAvatarData.startsWith('data:image/') && source.classroomTeacherAvatarData.length <= 400000
+      classroomTeacherAvatarData: typeof source.classroomTeacherAvatarData === 'string' && ((source.classroomTeacherAvatarData.startsWith('data:image/') && source.classroomTeacherAvatarData.length <= 400000) || source.classroomTeacherAvatarData === 'img/overlays/classroom-floral-avatar.svg')
         ? source.classroomTeacherAvatarData : DEFAULTS.classroomTeacherAvatarData,
       classroomTeacherColor0: /^#[0-9a-f]{6}$/i.test(source.classroomTeacherColor0 || '') ? source.classroomTeacherColor0 : DEFAULTS.classroomTeacherColor0,
       classroomTeacherColor1: /^#[0-9a-f]{6}$/i.test(source.classroomTeacherColor1 || '') ? source.classroomTeacherColor1 : DEFAULTS.classroomTeacherColor1,
@@ -405,8 +405,8 @@
             <summary>Further optimization</summary>
             <label class="settings-field"><span>Teacher name</span><input id="settingClassroomTeacherName" type="text" maxlength="60" placeholder="Nicole Librearski"></label>
             <label class="settings-field"><span>Teacher circle image</span><input id="settingClassroomAvatarImage" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif"></label>
-            <div class="settings-action-row"><button id="clearClassroomAvatar" type="button">Use initials instead</button></div>
-            <p class="settings-description">An uploaded image appears inside every teacher circle. Without one, the circle shows the teacher’s initials.</p>
+            <div class="settings-action-row"><button id="clearClassroomAvatar" type="button">Restore original flower image</button></div>
+            <p class="settings-description">The original flower picture stays in each circle. Your tint changes its color while keeping the floral details visible. Upload a different image to replace it.</p>
             <div class="classroom-avatar-color-grid">
               <label class="settings-field"><span>Science circle</span><input id="settingClassroomAvatarColor0" type="color"></label>
               <label class="settings-field"><span>Social Studies circle</span><input id="settingClassroomAvatarColor1" type="color"></label>
@@ -518,7 +518,7 @@
     document.getElementById('settingDisguiseFaviconFile').addEventListener('change', handleFaviconUpload);
     document.getElementById('settingClassroomAvatarImage').addEventListener('change', handleClassroomAvatarUpload);
     document.getElementById('clearClassroomAvatar').addEventListener('click', () => {
-      settings.classroomTeacherAvatarData = '';
+      settings.classroomTeacherAvatarData = DEFAULTS.classroomTeacherAvatarData;
       const upload = document.getElementById('settingClassroomAvatarImage');
       if (upload) upload.value = '';
       saveSettings();
@@ -926,7 +926,7 @@
     const label = emergencyPresetDetails().title;
     if (key === 'classroom') {
       const teacherName = settings.classroomTeacherName || DEFAULTS.classroomTeacherName;
-      const avatarImage = settings.classroomTeacherAvatarData || '';
+      const avatarImage = settings.classroomTeacherAvatarData || DEFAULTS.classroomTeacherAvatarData;
       const avatarColors = [
         settings.classroomTeacherColor0, settings.classroomTeacherColor1,
         settings.classroomTeacherColor2, settings.classroomTeacherColor3,
@@ -939,7 +939,7 @@
         { name: 'Wonders Grade 4 Class', color: '#586f79' },
         { name: 'McGraw Hill Class', color: '#354c56' }
       ];
-      const initials = teacherName.split(/\\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase();
+
       return `
         <div class="classroom-disguise">
           <header class="classroom-topbar">
@@ -967,7 +967,8 @@
                     <div class="classroom-course-title">${escapeAttribute(course.name)}</div>
                     <div class="classroom-teacher-name">${escapeAttribute(teacherName)}</div>
                     <div class="classroom-teacher-initials" style="--teacher-avatar-color:${escapeAttribute(avatarColors[index] || '#4e7fc3')}" aria-hidden="true">
-                      ${avatarImage ? `<img class="classroom-teacher-avatar-image" src="${escapeAttribute(avatarImage)}" alt="">` : escapeAttribute(initials)}
+                      <img class="classroom-teacher-avatar-image" src="${escapeAttribute(avatarImage)}" alt="">
+                      <span class="classroom-teacher-avatar-tint"></span>
                     </div>
                   </div>
                   <div class="classroom-course-work"></div>
