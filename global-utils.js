@@ -4,9 +4,9 @@
   // Keep the preference key used by the latest published site version so existing settings migrate cleanly.
   const SETTINGS_KEY = 'hummingbird_site_preferences_v1';
   const LEGACY_SETTINGS_KEY = 'hummingbird-site-settings-v2';
-  const LOGO_URL = '/img/hummingbird-logo.svg';
+  const LOGO_URL = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(4).png?v=site-logo4-20261127-2';
   const TAB_PRESETS_KEY = 'hummingbird_tab_disguise_presets_v1';
-  const DEFAULT_FAVICON = '/img/hummingblock-7x7.png';
+  const DEFAULT_FAVICON = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(5).png';
   const DEFAULTS = {
     brightness: 'normal',
     background: 'gradient',
@@ -654,7 +654,7 @@
   };
 
   function getPresetFaviconUrl(preset) {
-    return '/img/hummingblock-7x7.png';
+    return preset.faviconUrl || `https://www.google.com/s2/favicons?domain=${encodeURIComponent(preset.domain)}&sz=64`;
   }
 
   function getBuiltInPresetForTitle(title) {
@@ -758,7 +758,7 @@
       const preset = getBuiltInPresetForTitle(settings.disguiseTitle);
       const savedUrl = settings.disguiseFaviconUrl || '';
       // Existing saved presets may still hold Google's generic favicon-service URL.
-      const resolvedUrl = preset
+      const resolvedUrl = preset && savedUrl.includes('google.com/s2/favicons')
         ? getPresetFaviconUrl(preset)
         : savedUrl;
       link.href = settings.disguiseFaviconData || resolvedUrl || originalFaviconHref || DEFAULT_FAVICON;
