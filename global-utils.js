@@ -893,7 +893,7 @@
         { name: 'Study Strategies/PE/Band', teacher: 0, color: '#00574d', work: [] },
         { name: '♫ 8B PACS 26–27', teacher: 3, color: '#b69b87', work: [] }
       ];
-      const initials = name => name.split(/\\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase();
+      const initials = name => name.split(/\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase();
       return `
         <div class="classroom-disguise">
           <header class="classroom-topbar">
