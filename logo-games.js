@@ -1189,9 +1189,9 @@
         if(!chessEngineReady) failStockfish('Stockfish did not finish starting. Check that the engine worker and WASM file are reachable.',new Error('Stockfish startup timed out after 30 seconds.'));
       },30000);
       worker.onmessage=event=>{
-        const rawLine=String(event.data||'').replace(/\\0/g,'').trim();
+        const rawLine=String(event.data||'').replace(/\0/g,'').trim();
         // The Stockfish.js lite worker separates letters in UCI keywords (e.g. "b e s t m o v e").
-        const line=rawLine.replace(/\\b(?:[a-z][ \\t]){2,}[a-z]\\b/gi,word=>word.replace(/[ \\t]/g,''));
+        const line=rawLine.replace(/\b(?:[a-z][ \t]){2,}[a-z]\b/gi,word=>word.replace(/[ \t]/g,''));
         if(line==='uciok') {
           chessEngineProgress='Configuring Stockfish…';
           if(mode==='chess'&&state){state.status='Configuring Stockfish 19…';draw();}
