@@ -87,7 +87,7 @@ function setupPeer(host){
  peer.oniceconnectionstatechange=()=>{if(peer.iceConnectionState==='failed')status('ICE connection failed. This network or browser may block direct local connections.')};
  if(host){channel=peer.createDataChannel('hummingbird-chess',{ordered:true});attachChannel(channel)}else peer.ondatachannel=e=>{channel=e.channel;attachChannel(channel)};
 }
-function bytesToBase64Url(bytes){let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(bin).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/,'')}
+function bytesToBase64Url(bytes){let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function base64UrlToBytes(value){const raw=value.trim().replace(/-/g,'+').replace(/_/g,'/'),padded=raw+'='.repeat((4-raw.length%4)%4),bin=atob(padded);return Uint8Array.from(bin,c=>c.charCodeAt(0))}
 async function encodeCode(value){
  const compact={v:2,t:value.type==='offer'?'o':'a',r:value.room,n:value.host||value.guest||'',s:value.sdp};
@@ -108,7 +108,7 @@ async function decodeCode(value){
  }
  return JSON.parse(new TextDecoder().decode(base64UrlToBytes(input)));
 }
-function waitForIce(pc){if(pc.iceGatheringState==='complete')return Promise.resolve();return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{cleanup();reject(new Error('Gathering local network candidates timed out.'))},20000);function changed(){if(pc.iceGatheringState==='complete'){cleanup();resolve()}}function cleanup(){clearTimeout(timer);pc.removeEventListener('icegatheringstatechange',changed)}pc.addEventListener('icegatheringstatechange',changed)})}
+function waitForIce(pc,timeoutMs=12000){if(pc.iceGatheringState==='complete')return Promise.resolve(true);return new Promise(resolve=>{let finished=false;const timer=setTimeout(()=>finish(false),timeoutMs);function finish(complete){if(finished)return;finished=true;clearTimeout(timer);pc.removeEventListener('icegatheringstatechange',changed);resolve(complete)}function changed(){if(pc.iceGatheringState==='complete')finish(true)}pc.addEventListener('icegatheringstatechange',changed)})}
 async function createRoom(){
  if(!window.RTCPeerConnection){status('This browser does not support WebRTC.');return}
  room=$('roomName').value.trim();if(!room){status('Give your room a name first.');$('roomName').focus();return}
@@ -122,7 +122,7 @@ async function joinRoom(){
  if(!window.RTCPeerConnection){status('This browser does not support WebRTC.');return}
  let invite;try{invite=await decodeCode($('offerCode').value)}catch(e){status(e.message||'Paste a valid host invitation code first.');return}
  if(invite.version!==1||invite.type!=='offer'||!invite.sdp||!invite.room){status('That is not a valid Hummingbird LAN invitation.');return}
- playerName=$('playerName').value.trim()||'Guest';room=String(invite.room).slice(0,36);remoteName=String(invite.host||'Host').slice(0,24);$('roomName').value=room;setupPeer(false);
+ playerName=$('playerName').value.trim()||'Guest';room=String(invite.room).slice(0,36);remoteName=String(invite.host||'Host').slice(0,24);$('roomName').value=room;$('answerCode').value='';$('copyAnswer').disabled=true;setupPeer(false);status('Joining "'+room+'" and gathering local network details…');
  try{await peer.setRemoteDescription({type:'offer',sdp:invite.sdp});const answer=await peer.createAnswer();await peer.setLocalDescription(answer);status('Preparing your answer code for "'+room+'”…');await waitForIce(peer);
   $('answerCode').value=await encodeCode({version:1,type:'answer',room,guest:playerName,sdp:peer.localDescription.sdp});$('copyAnswer').disabled=false;
   status('You are joining "'+room+'" as Black. Copy your answer code and send it back to the host.');render()
