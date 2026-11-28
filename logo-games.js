@@ -1285,9 +1285,9 @@
       }
       return;
     }
-    if(point.y>=242&&point.y<329&&point.x>=530&&point.x<860) {
-      const col=Math.floor((point.x-530)/47),row=Math.floor((point.y-242)/28),level=row*7+col;
-      if(col>=0&&col<7&&level<CHESS_SKILL_LEVELS&&(point.x-530)%47<=42) setChessEngineSkill(level);
+    if(point.y>=244&&point.y<=306&&point.x>=530&&point.x<=860) {
+      const level=Math.round(clamp((point.x-545)/300,0,1)*(CHESS_SKILL_LEVELS-1));
+      setChessEngineSkill(level);
       return;
     }
     if(point.y>=470&&point.y<=516) {
@@ -1372,21 +1372,26 @@
     context.font='15px monospace';
     context.fillText('You (White) vs Stockfish 19.',530,164);
     context.fillText('Tap a piece, then a move.',530,190);
-    context.font='bold 16px monospace'; context.fillText('STOCKFISH STRENGTH  '+chessEngineSkill+'/20',530,225);
+    context.font='bold 16px monospace'; context.fillText('STOCKFISH LEVEL  '+chessEngineSkill+'/20',530,225);
+    const sliderLeft=545,sliderRight=845,sliderY=270;
+    context.strokeStyle='rgba(255,255,255,.35)';context.lineWidth=6;
+    context.beginPath();context.moveTo(sliderLeft,sliderY);context.lineTo(sliderRight,sliderY);context.stroke();
     for(let level=0;level<CHESS_SKILL_LEVELS;level++) {
-      const col=level%7,row=Math.floor(level/7),x=530+col*47,y=242+row*28;
-      context.fillStyle=level===chessEngineSkill?'#2f8d50':'rgba(255,255,255,.16)';
-      context.fillRect(x,y,42,22);
-      context.strokeStyle='rgba(255,255,255,.62)';context.lineWidth=1;context.strokeRect(x,y,42,22);
-      context.fillStyle='#ffffff';context.font='bold 13px monospace';context.textAlign='center';
-      context.fillText(String(level),x+21,y+16);context.textAlign='left';
+      const x=sliderLeft+(sliderRight-sliderLeft)*level/(CHESS_SKILL_LEVELS-1);
+      context.strokeStyle=level===chessEngineSkill?'#ffffff':'rgba(255,255,255,.55)';
+      context.lineWidth=level===chessEngineSkill?4:2;
+      context.beginPath();context.moveTo(x,sliderY-8);context.lineTo(x,sliderY+8);context.stroke();
     }
+    const selectedX=sliderLeft+(sliderRight-sliderLeft)*chessEngineSkill/(CHESS_SKILL_LEVELS-1);
+    context.fillStyle='#2f9b5b';context.strokeStyle='#ffffff';context.lineWidth=2;
+    context.beginPath();context.arc(selectedX,sliderY,10,0,Math.PI*2);context.fill();context.stroke();
     context.fillStyle='#d7e8d4';context.font='12px monospace';
-    context.fillText('0 = easiest                         20 = strongest',530,333);
-    context.fillStyle='#ffffff';context.font='bold 16px monospace';context.fillText('MOVES',530,365);
+    context.fillText('0 · EASIEST',530,302);context.textAlign='right';
+    context.fillText('20 · STRONGEST',860,302);context.textAlign='left';
+    context.fillStyle='#ffffff';context.font='bold 16px monospace';context.fillText('MOVES',530,350);
     context.font='15px monospace';
-    state.moveLog.slice(-4).forEach((m,i)=>{
-      context.fillText(String(m.number)+(m.white?'. ':'... ')+m.text,530,390+i*19);
+    state.moveLog.slice(-5).forEach((m,i)=>{
+      context.fillText(String(m.number)+(m.white?'. ':'... ')+m.text,530,375+i*19);
     });
     drawChessButton(530,470,145,'UNDO',!state.past.length);
     drawChessButton(690,470,170,'NEW GAME',false);
