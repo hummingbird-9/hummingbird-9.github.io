@@ -17,7 +17,7 @@
     glassBlur: 10,
     liquidGlass: true,
     accent: 'green',
-    customAccent: '#76e6a0',
+    customAccent: '#3B9B3D',
     fontScale: 100,
     lightweight: false,
     customContextMenu: true,
@@ -270,12 +270,12 @@
 
   function accentColor(name) {
     return ({
-      green: '#90e4c1',
+      green: '#3B9B3D',
       blue: '#718b91',
       violet: '#897d91',
       amber: '#b58b53',
       slate: '#68746d'
-    })[name] || (name === 'custom' && /^#[0-9a-f]{6}$/i.test(settings.customAccent) ? settings.customAccent : '#48b982');
+    })[name] || (name === 'custom' && /^#[0-9a-f]{6}$/i.test(settings.customAccent) ? settings.customAccent : '#3B9B3D');
   }
 
   function injectSiteHeader() {
