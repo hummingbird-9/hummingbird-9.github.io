@@ -9,7 +9,7 @@ body.lan-chess-page{display:block;min-height:100vh;padding:20px;overflow-x:hidde
 .lan-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .lan-brand{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none;font-weight:800}
 .lan-brand img{width:46px;height:46px;object-fit:contain}
-.lan-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:16px;align-items:start}
+.lan-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:16px;align-items:start}.lan-controls{display:grid;gap:12px;min-width:0}.lan-help{font-weight:400;color:var(--page-muted);font-size:12px}.lan-board-card{min-width:0;align-self:start}
 .lan-card{min-width:0;padding:16px;border:1px solid var(--panel-border);border-radius:var(--corner-radius);background:var(--panel);backdrop-filter:blur(var(--glass-blur))}
 .lan-fields{display:grid;gap:9px}.lan-fields label{display:grid;gap:5px;font-size:13px}
 .lan-fields input,.lan-fields textarea{width:100%;min-width:0;max-width:100%;box-sizing:border-box}
@@ -39,22 +39,40 @@ body.lan-chess-page{display:block;min-height:100vh;padding:20px;overflow-x:hidde
 <header class="lan-header"><a class="lan-brand" href="index.html"><img src="img/humminglogo.png" alt=""><span>LAN Chess</span></a><a href="index.html">Back to homepage</a></header>
 <section><h1 style="margin:0 0 6px">Play Chess over your local network</h1><p class="lan-muted" style="margin:0">No account, token, game server or backend. One player creates a named room and shares a compact, compressed invitation code; the other joins with that code. Moves travel directly between browsers over WebRTC.</p></section>
 <div class="lan-grid">
-<section class="lan-card"><h2 style="margin:0 0 12px">Create or join a room</h2><div class="lan-fields">
-<label>Your player name<input id="playerName" maxlength="24" placeholder="Player" value="Player"></label>
+<div class="lan-controls">
+<section class="lan-card">
+<h2 style="margin:0 0 12px">1. Host a game</h2>
+<div class="lan-fields">
+<label>Your name<input id="playerName" maxlength="24" placeholder="Player" value="Player"></label>
 <label>Room name<input id="roomName" maxlength="36" placeholder="e.g. Friday chess"></label>
-<div class="lan-actions"><button id="createRoom" type="button">Create room (White)</button></div>
-<p class="lan-muted" style="margin:0">Share the invitation code with your friend. They will see the room name after pasting it.</p>
-<label>Host invitation code<textarea id="offerCode" spellcheck="false" placeholder="A short compressed invitation appears here, or paste your friend's code"></textarea></label>
-<div class="lan-actions"><button id="copyOffer" type="button" class="secondary" disabled>Copy invitation</button><button id="joinRoom" type="button">Join room (Black)</button></div>
-<label>Guest answer code<textarea id="answerCode" spellcheck="false" placeholder="The guest copies their short answer code and sends it back to the host"></textarea></label>
-<div class="lan-actions"><button id="copyAnswer" type="button" class="secondary" disabled>Copy answer</button><button id="connectGuest" type="button" disabled>Connect guest</button></div>
-</div><div id="roomStatus" class="lan-status" style="margin-top:13px">Not connected. Create a room or paste your friend's invitation code.</div>
-<p class="lan-muted" style="margin:10px 0 0">The room name is included in the invite code, not broadcast over Wi-Fi. Share the code through a message or nearby sharing.</p></section>
-<section class="lan-card"><div class="lan-player-row"><strong id="blackName">Black</strong><span id="blackSide" class="lan-pill">Guest</span></div>
+<label>Play as<select id="hostColor"><option value="random">Random side</option><option value="white">White</option><option value="black">Black</option></select></label>
+<div class="lan-actions"><button id="createRoom" type="button">Create room &amp; get invite</button></div>
+<label>Invitation code <span class="lan-help">Send this to your friend</span><textarea id="offerCode" readonly spellcheck="false" placeholder="Your invitation code will appear here"></textarea></label>
+<div class="lan-actions"><button id="copyOffer" type="button" class="secondary" disabled>Copy invitation</button></div>
+<p class="lan-muted" style="margin:0">After your friend joins, ask them to send you their answer code.</p>
+<label>Friend's answer code<textarea id="answerCode" spellcheck="false" placeholder="Paste your friend's answer code here"></textarea></label>
+<div class="lan-actions"><button id="connectGuest" type="button" disabled>Connect to friend</button></div>
+</div>
+</section>
+<section class="lan-card">
+<h2 style="margin:0 0 12px">2. Join a game</h2>
+<div class="lan-fields">
+<label>Your name<input id="guestName" maxlength="24" placeholder="Player" value="Player"></label>
+<label>Host invitation code <span class="lan-help">Paste the code your friend sent you</span><textarea id="joinCode" spellcheck="false" placeholder="Paste the host's invitation code here"></textarea></label>
+<div class="lan-actions"><button id="joinRoom" type="button">Join room</button></div>
+<label>Your answer code <span class="lan-help">Send this back to the host</span><textarea id="guestAnswer" readonly spellcheck="false" placeholder="Your answer code will appear after joining"></textarea></label>
+<div class="lan-actions"><button id="copyGuestAnswer" type="button" class="secondary" disabled>Copy answer code</button></div>
+</div>
+</section>
+<div id="roomStatus" class="lan-status">Create a room to host, or paste a friend's invitation to join.</div>
+</div>
+<section class="lan-card lan-board-card">
+<div class="lan-player-row"><strong id="topName">Black</strong><span id="topSide" class="lan-pill">Peer</span></div>
 <div id="board" class="lan-board" aria-label="Chessboard"></div>
-<div class="lan-player-row"><strong id="whiteName">White</strong><span id="whiteSide" class="lan-pill">Host</span></div>
+<div class="lan-player-row"><strong id="bottomName">White</strong><span id="bottomSide" class="lan-pill">You</span></div>
 <div id="gameStatus" class="lan-status">Waiting for a peer connection.</div>
-<div class="lan-actions" style="margin-top:10px"><label style="display:flex;align-items:center;gap:7px;font-size:13px">Promote to<select id="promotion"><option value="q">Queen</option><option value="r">Rook</option><option value="b">Bishop</option><option value="n">Knight</option></select></label><button id="newGame" type="button" class="secondary" disabled>New game</button></div></section>
+<div class="lan-actions" style="margin-top:10px"><label style="display:flex;align-items:center;gap:7px;font-size:13px">Promote to<select id="promotion"><option value="q">Queen</option><option value="r">Rook</option><option value="b">Bishop</option><option value="n">Knight</option></select></label><button id="newGame" type="button" class="secondary" disabled>New game</button></div>
+</section>
 </div>
 <aside class="lan-note"><strong>Backend-free connection note:</strong> browsers cannot scan Wi-Fi for other browser rooms. The invite/answer exchange is the signaling step WebRTC needs; after that, chess moves go peer-to-peer on the local network. Both players must be on the same LAN, allow local peer connections, and keep this page open. This uses no STUN or relay server.</aside>
-</main><script src="chess-lan.js?v=20261127-lan-6" defer></script></body></html>
+</main><script src="chess-lan.js?v=20261127-lan-7" defer></script></body></html>
