@@ -35,17 +35,21 @@
     Z: [[1,1,0,0],[0,1,1,0],[0,0,0,0],[0,0,0,0]]
   };
   const tetrisBlockSprite = new Image();
-  tetrisBlockSprite.src = 'img/hummingblock-7x7.png';
+  tetrisBlockSprite.src = 'img/hummingblock.png';
   const gameSprite = new Image();
   gameSprite.decoding = 'async';
   gameSprite.src = GAME_SPRITE_URL;
+  const chessKingImage = new Image();
+  chessKingImage.decoding = 'async';
+  chessKingImage.src = 'img/hummingblock.png';
 
   const titles = {
     flappy: 'Flappy Bird',
     dino: 'Dino Run',
     snake: 'Snake',
     pong: 'Pong',
-    tetris: 'Tetris'
+    tetris: 'Tetris',
+    chess: 'Chess'
   };
 
   function clamp(value, min, max) {
@@ -96,7 +100,11 @@
         close();
         return;
       }
-      if (state?.over) reset();
+      if (state?.over && mode !== 'chess') reset();
+      if (mode === 'chess') {
+        handleChessClick(point);
+        return;
+      }
       if (mode === 'flappy') flap();
       else if (mode === 'dino') jump();
       else if (mode === 'snake') snakeTouchStart = point;
@@ -195,7 +203,9 @@
       ? 'Pong. Click to lock the mouse, or turn the Digital Crown / scroll wheel to move your paddle. Press Escape to close.'
       : mode === 'tetris'
         ? 'Tetris. Use arrow keys or swipe to move, up arrow or tap to rotate, and space to hard drop.'
-        : 'Mini game. Press Escape to return to the logo.');
+        : mode === 'chess'
+          ? 'Chess. Tap or click a piece, then a highlighted destination. R restarts, U undoes.'
+          : 'Mini game. Press Escape to return to the logo.');
     if (mode === 'pong') startPongCrownScroll();
     reset();
     canvas.focus({ preventScroll: true });
@@ -289,6 +299,8 @@
       };
       state.next = takeTetrisPiece();
       spawnTetrisPiece();
+    } else if (mode === 'chess') {
+      state = createChessGame();
     }
     updateScore();
     draw();
@@ -434,6 +446,20 @@
       return;
     }
     if (!state) return;
+    if (mode === 'chess') {
+      const key = event.key.toLowerCase();
+      if (key === 'r' || (state.over && key === 'enter')) {
+        event.preventDefault();
+        reset();
+      } else if (key === 'u' || key === 'backspace') {
+        event.preventDefault();
+        undoChessMove();
+      } else if (state.pendingPromotion && ['q', 'r', 'b', 'n'].includes(key)) {
+        event.preventDefault();
+        chooseChessPromotion(key);
+      }
+      return;
+    }
     if (state.over && mode === 'tetris') {
       if ([' ', 'Enter', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'ArrowDown'].includes(event.key)) {
         event.preventDefault();
@@ -644,8 +670,9 @@
     else if (mode === 'snake') drawSnake();
     else if (mode === 'pong') drawPong();
     else if (mode === 'tetris') drawTetris();
+    else if (mode === 'chess') drawChess();
     drawInlineClose();
-    if (state.over) drawGameOver();
+    if (state.over && mode !== 'chess') drawGameOver();
   }
 
   function drawSky() {
@@ -848,6 +875,343 @@
     context.fillText('ARROWS: MOVE / ROTATE', 650, 255);
     context.fillText('SPACE: HARD DROP', 650, 282);
     context.fillText('SWIPE: MOVE / DROP', 650, 309);
+  }
+
+  const CHESS_BOARD_X = 30;
+  const CHESS_BOARD_Y = 42;
+  const CHESS_SQUARE = 56;
+  const CHESS_BOARD_SIZE = CHESS_SQUARE * 8;
+  const CHESS_KNIGHT = [-33,-31,-18,-14,14,18,31,33];
+  const CHESS_BISHOP = [-17,-15,15,17];
+  const CHESS_ROOK = [-16,-1,1,16];
+  const CHESS_KING = [-17,-16,-15,-1,1,15,16,17];
+  const CHESS_GLYPH = {P:'♙',N:'♘',B:'♗',R:'♖',Q:'♕',p:'♟︎',n:'♞',b:'♝',r:'♜',q:'♛'};
+  const CHESS_PROMOTIONS = ['q','r','b','n'];
+  const chessOnBoard = i => i >= 0 && i < 128 && !(i & 0x88);
+  const chessSide = p => p === '.' ? 0 : p === p.toUpperCase() ? 1 : -1;
+  const chessName = i => 'abcdefgh'[i & 7] + (8 - (i >> 4));
+  const chessIndex = (file,rank) => rank * 16 + file;
+
+  function createChessGame() {
+    const board = Array(128).fill('.');
+    const back = 'RNBQKBNR';
+    for (let file=0; file<8; file++) {
+      board[file] = back[file].toLowerCase();
+      board[16+file] = 'p';
+      board[96+file] = 'P';
+      board[112+file] = back[file];
+    }
+    return {
+      board, turn:1, castle:15, ep:-1, halfmove:0, fullmove:1,
+      selected:-1, pendingPromotion:null, lastMove:null,
+      moveLog:[], past:[], over:false, status:'White to move'
+    };
+  }
+
+  function chessSnapshot(s) {
+    return {
+      board:s.board.slice(), turn:s.turn, castle:s.castle, ep:s.ep,
+      halfmove:s.halfmove, fullmove:s.fullmove, selected:-1,
+      pendingPromotion:null, lastMove:s.lastMove ? {...s.lastMove} : null,
+      moveLog:s.moveLog.slice(), over:s.over, status:s.status
+    };
+  }
+
+  function chessAttacked(s,target,by) {
+    for (let rank=0; rank<8; rank++) for (let file=0; file<8; file++) {
+      const from=chessIndex(file,rank), piece=s.board[from];
+      if (chessSide(piece)!==by) continue;
+      const type=piece.toLowerCase();
+      if (type==='p') {
+        const next=from-16*by;
+        if (target===next-1 || target===next+1) return true;
+        continue;
+      }
+      const offsets=type==='n'?CHESS_KNIGHT:type==='b'?CHESS_BISHOP:
+        type==='r'?CHESS_ROOK:type==='q'?CHESS_BISHOP.concat(CHESS_ROOK):CHESS_KING;
+      for (const d of offsets) {
+        let to=from+d;
+        while(chessOnBoard(to)) {
+          if(to===target) return true;
+          if(s.board[to]!=='.'||type==='n'||type==='k') break;
+          to+=d;
+        }
+      }
+    }
+    return false;
+  }
+
+  function chessInCheck(s,color) {
+    const king=s.board.indexOf(color===1?'K':'k');
+    return king<0 || chessAttacked(s,king,-color);
+  }
+
+  function chessPseudoMoves(s) {
+    const out=[];
+    const add=(from,to,flag)=>{
+      const p=s.board[from];
+      if(p.toLowerCase()==='p' && ((to>>4)===0 || (to>>4)===7)) {
+        CHESS_PROMOTIONS.forEach(promotion=>out.push({from,to,promotion,flag:flag||''}));
+      } else out.push({from,to,promotion:'',flag:flag||''});
+    };
+    for(let rank=0;rank<8;rank++) for(let file=0;file<8;file++) {
+      const from=chessIndex(file,rank), piece=s.board[from];
+      if(chessSide(piece)!==s.turn) continue;
+      const type=piece.toLowerCase();
+      if(type==='p') {
+        const step=-16*s.turn, one=from+step;
+        if(chessOnBoard(one)&&s.board[one]==='.') {
+          add(from,one);
+          const home=s.turn===1?6:1, two=from+step*2;
+          if(rank===home&&s.board[two]==='.') add(from,two);
+        }
+        for(const sideStep of [-1,1]) {
+          const to=one+sideStep;
+          if(!chessOnBoard(to)) continue;
+          if(chessSide(s.board[to])===-s.turn) add(from,to);
+          else if(to===s.ep&&s.board[to]==='.'&&s.board[to+16*s.turn]===(s.turn===1?'p':'P')) add(from,to,'ep');
+        }
+        continue;
+      }
+      const offsets=type==='n'?CHESS_KNIGHT:type==='b'?CHESS_BISHOP:
+        type==='r'?CHESS_ROOK:type==='q'?CHESS_BISHOP.concat(CHESS_ROOK):CHESS_KING;
+      for(const d of offsets) {
+        let to=from+d;
+        while(chessOnBoard(to)) {
+          if(chessSide(s.board[to])===s.turn) break;
+          if(s.board[to].toLowerCase()!=='k') add(from,to);
+          if(s.board[to]!=='.'||type==='n'||type==='k') break;
+          to+=d;
+        }
+      }
+      const home=s.turn===1?116:4, rook=s.turn===1?'R':'r';
+      const kBit=s.turn===1?1:4, qBit=s.turn===1?2:8;
+      if(type==='k'&&from===home&&!chessInCheck(s,s.turn)) {
+        if((s.castle&kBit)&&s.board[home+3]===rook&&s.board[home+1]==='.'&&s.board[home+2]==='.'&&
+          !chessAttacked(s,home+1,-s.turn)&&!chessAttacked(s,home+2,-s.turn)) add(from,home+2,'castle');
+        if((s.castle&qBit)&&s.board[home-4]===rook&&s.board[home-1]==='.'&&s.board[home-2]==='.'&&s.board[home-3]==='.'&&
+          !chessAttacked(s,home-1,-s.turn)&&!chessAttacked(s,home-2,-s.turn)) add(from,home-2,'castle');
+      }
+    }
+    return out;
+  }
+
+  function chessApplyBare(s,m) {
+    const board=s.board.slice(), piece=board[m.from], captured=board[m.to];
+    board[m.from]='.';
+    board[m.to]=m.promotion?(s.turn===1?m.promotion.toUpperCase():m.promotion):piece;
+    if(m.flag==='ep') board[m.to+16*s.turn]='.';
+    if(m.flag==='castle') {
+      const rookFrom=m.to>m.from?m.from+3:m.from-4;
+      const rookTo=m.to>m.from?m.from+1:m.from-1;
+      board[rookTo]=board[rookFrom]; board[rookFrom]='.';
+    }
+    let castle=s.castle;
+    const rookBits={119:1,112:2,7:4,0:8};
+    if(piece==='K') castle&=~3;
+    if(piece==='k') castle&=~12;
+    if(piece.toLowerCase()==='r') castle&=~(rookBits[m.from]||0);
+    if(captured.toLowerCase()==='r') castle&=~(rookBits[m.to]||0);
+    return {
+      board,turn:-s.turn,castle,
+      ep:piece.toLowerCase()==='p'&&Math.abs(m.to-m.from)===32?(m.to+m.from)/2:-1,
+      halfmove:piece.toLowerCase()==='p'||captured!=='.'||m.flag==='ep'?0:s.halfmove+1,
+      fullmove:s.fullmove+(s.turn===-1?1:0)
+    };
+  }
+
+  function chessLegalMoves(s) {
+    return chessPseudoMoves(s).filter(m=>!chessInCheck(chessApplyBare(s,m),s.turn));
+  }
+
+  function chessSan(s,m) {
+    if(m.flag==='castle') return m.to>m.from?'O-O':'O-O-O';
+    const piece=s.board[m.from], type=piece.toUpperCase(), capture=s.board[m.to]!=='.'||m.flag==='ep';
+    let out='';
+    if(type!=='P') {
+      out=type;
+      const others=chessLegalMoves(s).filter(x=>x.to===m.to&&x.from!==m.from&&s.board[x.from]===piece);
+      if(others.length) {
+        const sameFile=others.some(x=>(x.from&7)===(m.from&7));
+        const sameRank=others.some(x=>(x.from>>4)===(m.from>>4));
+        out+=!sameFile?'abcdefgh'[m.from&7]:!sameRank?String(8-(m.from>>4)):chessName(m.from);
+      }
+    } else if(capture) out='abcdefgh'[m.from&7];
+    out+=(capture?'x':'')+chessName(m.to);
+    if(m.promotion) out+='='+m.promotion.toUpperCase();
+    const next=chessApplyBare(s,m);
+    if(chessInCheck(next,next.turn)) out+=chessLegalMoves(next).length?'+':'#';
+    return out;
+  }
+
+  function chessSignature(s) { return s.board.join('')+'|'+s.turn+'|'+s.castle+'|'+s.ep; }
+
+  function chessInsufficient(s) {
+    const pieces=[];
+    for(let rank=0;rank<8;rank++) for(let file=0;file<8;file++) {
+      const i=chessIndex(file,rank), p=s.board[i];
+      if(p!=='.'&&p.toLowerCase()!=='k') pieces.push({type:p.toLowerCase(),square:i});
+    }
+    if(!pieces.length) return true;
+    if(pieces.length===1&&(pieces[0].type==='b'||pieces[0].type==='n')) return true;
+    return pieces.every(p=>p.type==='b')&&new Set(pieces.map(p=>((p.square>>4)+(p.square&7))%2)).size===1;
+  }
+
+  function updateChessStatus() {
+    const moves=chessLegalMoves(state), check=chessInCheck(state,state.turn);
+    const repetitions=[state].concat(state.past).filter(s=>chessSignature(s)===chessSignature(state)).length;
+    if(!moves.length) {
+      state.over=true;
+      state.status=check?'Checkmate — '+(state.turn===1?'Black':'White')+' wins.':'Draw — stalemate.';
+    } else if(chessInsufficient(state)) {
+      state.over=true; state.status='Draw — insufficient material.';
+    } else if(state.halfmove>=100) {
+      state.over=true; state.status='Draw — fifty-move rule.';
+    } else if(repetitions>=3) {
+      state.over=true; state.status='Draw — threefold repetition.';
+    } else {
+      state.over=false;
+      state.status=(state.turn===1?'White':'Black')+' to move'+(check?' · Check':'');
+    }
+  }
+
+  function chessMove(m) {
+    if(!state||state.over) return;
+    const san=chessSan(state,m), previous=chessSnapshot(state), next=chessApplyBare(state,m);
+    state={
+      ...next,selected:-1,pendingPromotion:null,lastMove:{from:m.from,to:m.to},
+      moveLog:state.moveLog.concat([{number:state.fullmove,white:state.turn===1,text:san}]),
+      past:state.past.concat([previous]),over:false,status:''
+    };
+    updateChessStatus(); draw();
+  }
+
+  function chooseChessPromotion(piece) {
+    if(!state||!state.pendingPromotion) return;
+    const m=state.pendingPromotion.find(x=>x.promotion===piece);
+    if(m) chessMove(m);
+  }
+
+  function undoChessMove() {
+    if(!state||!state.past.length) return;
+    const past=state.past.slice(), previous=past.pop();
+    state={...previous,past,selected:-1,pendingPromotion:null};
+    updateChessStatus(); draw();
+  }
+
+  function resetChess() {
+    if(mode!=='chess') return;
+    state=createChessGame(); updateChessStatus(); draw();
+  }
+
+  function handleChessClick(point) {
+    if(!state) return;
+    if(state.pendingPromotion) {
+      const left=CHESS_BOARD_X+62, top=CHESS_BOARD_Y+176, width=324;
+      if(point.y>=top&&point.y<=top+116&&point.x>=left&&point.x<=left+width) {
+        chooseChessPromotion(CHESS_PROMOTIONS[Math.min(3,Math.floor((point.x-left)/81))]);
+      }
+      return;
+    }
+    if(point.y>=382&&point.y<=430) {
+      if(point.x>=530&&point.x<=675) undoChessMove();
+      else if(point.x>=690&&point.x<=860) resetChess();
+      return;
+    }
+    if(state.over) return;
+    const file=Math.floor((point.x-CHESS_BOARD_X)/CHESS_SQUARE);
+    const rank=Math.floor((point.y-CHESS_BOARD_Y)/CHESS_SQUARE);
+    if(file<0||file>=8||rank<0||rank>=8) return;
+    const target=chessIndex(file,rank), legal=chessLegalMoves(state);
+    if(state.selected>=0) {
+      const candidates=legal.filter(m=>m.from===state.selected&&m.to===target);
+      if(candidates.length>1&&candidates[0].promotion) { state.pendingPromotion=candidates; draw(); return; }
+      if(candidates.length===1) { chessMove(candidates[0]); return; }
+    }
+    state.selected=chessSide(state.board[target])===state.turn?target:-1;
+    draw();
+  }
+
+  function drawChessButton(x,y,width,label,disabled) {
+    context.fillStyle=disabled?'rgba(255,255,255,.12)':'rgba(255,255,255,.22)';
+    context.fillRect(x,y,width,42);
+    context.strokeStyle='rgba(255,255,255,.55)'; context.lineWidth=2;
+    context.strokeRect(x,y,width,42);
+    context.fillStyle=disabled?'rgba(255,255,255,.4)':'#ffffff';
+    context.font='bold 17px monospace'; context.textAlign='center';
+    context.fillText(label,x+width/2,y+27); context.textAlign='left';
+  }
+
+  function drawChess() {
+    const legal=state.over?[]:chessLegalMoves(state);
+    const targets=state.selected>=0?legal.filter(m=>m.from===state.selected):[];
+    for(let rank=0;rank<8;rank++) for(let file=0;file<8;file++) {
+      const square=chessIndex(file,rank), x=CHESS_BOARD_X+file*CHESS_SQUARE, y=CHESS_BOARD_Y+rank*CHESS_SQUARE;
+      context.fillStyle=(rank+file)%2?'#b58863':'#f0d9b5';
+      context.fillRect(x,y,CHESS_SQUARE,CHESS_SQUARE);
+      if(state.lastMove&&(square===state.lastMove.from||square===state.lastMove.to)) {
+        context.fillStyle='rgba(250,204,21,.38)'; context.fillRect(x,y,CHESS_SQUARE,CHESS_SQUARE);
+      }
+      if(square===state.selected) {
+        context.fillStyle='rgba(250,204,21,.62)'; context.fillRect(x,y,CHESS_SQUARE,CHESS_SQUARE);
+      }
+      if(targets.some(m=>m.to===square)) {
+        context.strokeStyle='rgba(22,101,52,.85)'; context.lineWidth=4;
+        context.beginPath();
+        if(state.board[square]==='.') { context.arc(x+28,y+28,7,0,Math.PI*2); context.fillStyle='#166534'; context.fill(); }
+        else { context.arc(x+28,y+28,23,0,Math.PI*2); context.stroke(); }
+      }
+      const piece=state.board[square];
+      if(piece==='.') continue;
+      const side=chessSide(piece);
+      if(piece.toLowerCase()==='k') {
+        context.fillStyle=side===1?'rgba(255,255,255,.8)':'rgba(15,23,42,.85)';
+        context.beginPath(); context.arc(x+28,y+28,23,0,Math.PI*2); context.fill();
+        if(chessKingImage.complete&&chessKingImage.naturalWidth) {
+          context.drawImage(chessKingImage,x+7,y+7,42,42);
+        } else {
+          context.font='bold 42px serif'; context.textAlign='center';
+          context.fillStyle=side===1?'#fffdf4':'#171717'; context.fillText('♚',x+28,y+43); context.textAlign='left';
+        }
+      } else {
+        context.font='48px "DejaVu Sans","Segoe UI Symbol",serif';
+        context.textAlign='center'; context.textBaseline='middle'; context.lineWidth=2;
+        context.strokeStyle=side===1?'#1b1b1b':'#f4eadb';
+        context.fillStyle=side===1?'#fffdf4':'#171717';
+        context.strokeText(CHESS_GLYPH[piece],x+28,y+29);
+        context.fillText(CHESS_GLYPH[piece],x+28,y+29);
+        context.textAlign='left'; context.textBaseline='alphabetic';
+      }
+    }
+    context.fillStyle='#f0d9b5'; context.font='14px monospace';
+    for(let file=0;file<8;file++) context.fillText('abcdefgh'[file],CHESS_BOARD_X+file*CHESS_SQUARE+25,CHESS_BOARD_Y+CHESS_BOARD_SIZE+18);
+    for(let rank=0;rank<8;rank++) context.fillText(String(8-rank),CHESS_BOARD_X-17,CHESS_BOARD_Y+rank*CHESS_SQUARE+31);
+    context.fillStyle='#ffffff'; context.font='bold 30px monospace'; context.fillText('CHESS',530,92);
+    context.font='bold 20px monospace'; context.fillText(state.status,530,132);
+    context.font='16px monospace';
+    context.fillText('The hummingbird is the king.',530,172);
+    context.fillText('Two players, same screen.',530,208);
+    context.fillText('Tap a piece, then a move.',530,232);
+    context.fillText('R: restart   U: undo',530,268);
+    context.font='bold 17px monospace'; context.fillText('MOVES',530,310);
+    context.font='16px monospace';
+    state.moveLog.slice(-7).forEach((m,i)=>{
+      context.fillText(String(m.number)+(m.white?'. ':'... ')+m.text,530,340+i*25);
+    });
+    drawChessButton(530,382,145,'UNDO',!state.past.length);
+    drawChessButton(690,382,170,'NEW GAME',false);
+    if(state.pendingPromotion) {
+      const left=CHESS_BOARD_X+62, top=CHESS_BOARD_Y+176;
+      context.fillStyle='rgba(9,18,12,.95)'; context.fillRect(left,top,324,116);
+      context.strokeStyle='#ffffff'; context.lineWidth=2; context.strokeRect(left,top,324,116);
+      context.fillStyle='#ffffff'; context.font='bold 18px monospace'; context.textAlign='center';
+      context.fillText('PROMOTE TO',left+162,top+31);
+      ['♕','♖','♗','♘'].forEach((glyph,i)=>{
+        context.font='38px serif'; context.fillStyle=state.turn===1?'#fffdf4':'#171717';
+        context.fillText(glyph,left+40+i*81,top+88);
+      });
+      context.textAlign='left';
+    }
   }
 
   function drawInlineClose() {
