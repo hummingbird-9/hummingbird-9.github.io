@@ -350,7 +350,7 @@
     panel.className = 'site-settings-panel';
     panel.hidden = false;
     panel.innerHTML = `
-      <div class="settings-panel-heading"><h2>Settings</h2></div>
+      <div class="settings-panel-heading"><div><h2>Settings</h2><p>Personalize how humming[bird]Tech looks and works.</p></div><span class="settings-beta-label">BETA TEST</span></div>
       <label class="settings-search"><span>Find a setting</span><input id="settingsSearch" type="search" placeholder="Search settings…" autocomplete="off"></label>
       <div class="settings-panel-grid">
         <section class="settings-section"><h3>Appearance</h3>
@@ -384,7 +384,7 @@
           <label class="settings-field"><span>Cover image</span><select id="settingEmergencyTemplate">
             <option value="classroom">Google Classroom</option><option value="khan">Khan Academy</option><option value="youtube">YouTube</option><option value="wikipedia">Wikipedia</option><option value="desmos">Desmos</option><option value="gmail">Gmail</option>
           </select></label>
-          <p class="settings-description">Add these files to the site's <code>img/</code> folder: <code>google-classroom</code>, <code>khan-academy</code>, <code>youtube</code>, <code>wikipedia</code>, <code>desmos</code>, and <code>gmail</code>. PNG, JPG, JPEG, WebP, and AVIF are supported.</p>
+          <p class="settings-description">Overlay images live in <code>img/overlays/</code>. Already uploaded: <code>google-classroom.png</code> and <code>khan-academy.png</code>. Still missing: <code>youtube.png</code>, <code>wikipedia.png</code>, <code>desmos.png</code>, and <code>gmail.png</code>. JPG, JPEG, WebP, and AVIF also work.</p>
           <label class="settings-check"><input id="settingDisguiseOnLeave" type="checkbox"><span>Turn on the disguise when I leave this tab</span></label>
           <label class="settings-check"><input id="settingStayDisguisedOnReturn" type="checkbox"><span>Keep the disguise on when I come back</span></label>
           <div class="settings-action-row"><button id="previewEmergencyDisguise" type="button">Preview emergency screen</button></div>
@@ -437,7 +437,7 @@
     const header = document.getElementById('siteHeader');
     if (!header) return;
     document.body.classList.add('settings-page');
-    document.title = 'Settings | humming[bird]Tech';
+    document.title = 'Settings (Beta test) | humming[bird]Tech';
     header.insertAdjacentElement('afterend', panel);
     document.getElementById('settingsExport').addEventListener('click', exportSiteData);
     document.getElementById('settingsImport').addEventListener('click', () => document.getElementById('settingsImportFile').click());
@@ -860,11 +860,76 @@
     const key = EMERGENCY_IMAGE_FILES[settings.emergencyTemplate] ? settings.emergencyTemplate : 'classroom';
     const fileBase = EMERGENCY_IMAGE_FILES[key];
     const label = emergencyPresetDetails().title;
+    if (key === 'classroom') {
+      const namePool = [
+        'Avery Bennett', 'Jordan Hayes', 'Riley Brooks', 'Morgan Ellis',
+        'Harper Collins', 'Cameron Reed', 'Peyton Flores', 'Miles Parker',
+        'Quinn Foster', 'Taylor Morgan', 'Casey Rivera', 'Jamie Carter'
+      ];
+      for (let i = namePool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [namePool[i], namePool[j]] = [namePool[j], namePool[i]];
+      }
+      const teachers = namePool.slice(0, 4);
+      const portraits = [
+        'https://images.unsplash.com/photo-1758685848142-06e158cf64bc?auto=format&fit=crop&crop=faces&w=180&h=180&q=82',
+        'https://images.unsplash.com/photo-1701096351544-7de3c7fa0272?auto=format&fit=crop&crop=faces&w=180&h=180&q=82',
+        'https://images.unsplash.com/photo-1754051486494-cfdbf29a589c?auto=format&fit=crop&crop=faces&w=180&h=180&q=82',
+        'https://images.unsplash.com/photo-1745434159123-5b99b94206ca?auto=format&fit=crop&crop=faces&w=180&h=180&q=82'
+      ];
+      const courses = [
+        { name: 'Art Elective', teacher: 0, color: '#a44bd2', task: 'Color and composition study', due: 'Due Friday' },
+        { name: 'English', teacher: 0, color: '#1685d2', task: 'Reading response · Chapter 4', due: 'Due tomorrow' },
+        { name: 'U.S. History', teacher: 0, color: '#e35d4e', task: 'Primary source analysis', due: 'Due Friday' },
+        { name: 'Science 8', teacher: 1, color: '#3e8e63', task: 'Light and reflection lab', due: 'Due tomorrow' },
+        { name: 'Math 1 (period 1)', teacher: 2, color: '#d81b60', task: 'Practice set · Linear equations', due: 'Due today' },
+        { name: 'Study Strategies / PE / Band', teacher: 0, color: '#087c67', task: 'Weekly check-in', due: 'Due Friday' },
+        { name: '8B PACS 26–27', teacher: 3, color: '#a77bca', task: 'Class updates and resources', due: 'New post' }
+      ];
+      return `
+        <div class="classroom-disguise">
+          <header class="classroom-topbar">
+            <span class="classroom-menu-mark">☰</span>
+            <span class="classroom-app-mark">▣</span>
+            <span class="classroom-brand">Classroom</span>
+            <span class="classroom-top-spacer"></span><span class="classroom-top-action">＋</span><span class="classroom-app-grid">⠿</span><span class="classroom-account-dot">●</span>
+          </header>
+          <aside class="classroom-sidebar">
+            <div class="classroom-nav-item is-active"><b>⌂</b> Home</div>
+            <div class="classroom-nav-item"><b>▣</b> Calendar</div>
+            <div class="classroom-nav-item"><b>✦</b> Gemini</div>
+            <div class="classroom-nav-heading">Enrolled <span>⌃</span></div>
+            <div class="classroom-nav-item"><b>☑</b> To-do</div>
+            ${courses.map(course => `<div class="classroom-nav-item classroom-course-nav"><i style="background:${course.color}"></i>${escapeAttribute(course.name)}</div>`).join('')}
+            <div class="classroom-nav-item classroom-archived"><b>▣</b> Archived classes</div>
+          </aside>
+          <main class="classroom-main">
+            <div class="classroom-course-grid">
+              ${courses.map(course => {
+                const name = teachers[course.teacher];
+                const photo = portraits[course.teacher];
+                return `
+                  <article class="classroom-course-card">
+                    <div class="classroom-course-banner" style="--course-color:${course.color}">
+                      <div class="classroom-course-title">${escapeAttribute(course.name)}</div>
+                      <div class="classroom-teacher-name">${escapeAttribute(name)}</div>
+                      <img class="classroom-teacher-photo" src="${photo}" alt="${escapeAttribute(name)}" title="Unsplash portrait photo">
+                    </div>
+                    <div class="classroom-course-work"><strong>${escapeAttribute(course.due)}</strong><span>${escapeAttribute(course.task)}</span></div>
+                    <div class="classroom-course-actions"><span>▣</span><span>▱</span><span>⋮</span></div>
+                  </article>`;
+              }).join('')}
+            </div>
+            <div class="classroom-help">ⓘ</div>
+          </main>
+        </div>
+        <button class="emergency-overlay-hint" type="button" aria-label="Hide screen overlay">Press Escape to hide overlay</button>`;
+    }
     return `
       <img class="emergency-cover-image" data-cover-base="${escapeAttribute(fileBase)}" src="img/overlays/${escapeAttribute(fileBase)}.png" alt="${escapeAttribute(label)}" draggable="false">
       <div class="emergency-cover-missing" hidden>
         <strong>Cover image not found</strong>
-        <span>Add <code>img/overlays/${escapeAttribute(fileBase)}.png</code> (or a JPG, JPEG, WebP, or AVIF) to the site's <code>img/</code> folder.</span>
+        <span>Add <code>img/overlays/${escapeAttribute(fileBase)}.png</code> (or a JPG, JPEG, WebP, or AVIF) to the site's <code>img/overlays/</code> folder.</span>
       </div>
       <button class="emergency-overlay-hint" type="button" aria-label="Hide screen overlay">Press Escape to hide overlay</button>`;
   }
@@ -889,7 +954,7 @@
       coverImage.addEventListener('error', () => {
         extensionIndex += 1;
         if (extensionIndex < extensions.length) {
-          coverImage.src = `img/${coverImage.dataset.coverBase}.${extensions[extensionIndex]}`;
+          coverImage.src = `img/overlays/${coverImage.dataset.coverBase}.${extensions[extensionIndex]}`;
           return;
         }
         coverImage.hidden = true;
