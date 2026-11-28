@@ -56,7 +56,7 @@
       </div>
       <div class="chess-client-row" style="margin-top:10px"><button id="connectButton" type="button">Connect Lichess</button><button id="disconnectButton" type="button" class="secondary">Disconnect / clear token</button><a href="https://lichess.org/account/oauth/token" target="_blank" rel="noopener noreferrer">Create token</a></div>
       <p class="chess-client-muted" style="margin:10px 0 0">Required permissions: <code>board:play</code>, <code>challenge:read</code>, and <code>challenge:write</code>. Your token stays in this browser; it is not sent to our website server. Remembering it is optional.</p>
-      <p class="chess-client-warning">Lichess requires API clients to send an app-identifying User-Agent. Browsers do not let static pages override that header, so Lichess may reject or rate-limit this direct client. The HummingProxy fallback tunnels only the Lichess API requests and move streams; a fully compliant custom User-Agent needs a small server-side relay.</p>
+      <p class="chess-client-warning">Lichess requires API clients to send an app-identifying User-Agent. Chrome silently drops User-Agent overrides made by fetch(), so Lichess may reject or rate-limit this static client. The HummingProxy fallback tunnels only API requests and move streams; it cannot add the branded header, so guaranteed compliance needs a small server-side relay.</p>
     </section>
     <div class="chess-client-layout">
       <section class="chess-client-card">
