@@ -69,7 +69,9 @@
       event.preventDefault();
       event.stopPropagation();
       canvas.focus({ preventScroll: true });
-      canvas.setPointerCapture?.(event.pointerId);
+      if (mode !== 'pong' || event.pointerType !== 'mouse' || typeof canvas.requestPointerLock !== 'function') {
+        canvas.setPointerCapture?.(event.pointerId);
+      }
       const point = pointerPosition(event);
       if (point.x >= WIDTH - 76 && point.y <= 76) {
         close();
@@ -79,7 +81,10 @@
       if (mode === 'flappy') flap();
       else if (mode === 'dino') jump();
       else if (mode === 'snake') snakeTouchStart = point;
-      else if (mode === 'pong') state.playerY = clamp(point.y - 48, 20, HEIGHT - 116);
+      else if (mode === 'pong') {
+        state.playerY = clamp(point.y - 50, 20, HEIGHT - 120);
+        if (event.pointerType === 'mouse') requestPongPointerLock();
+      }
     });
 
     canvas.addEventListener('pointerup', event => {
@@ -105,10 +110,17 @@
     });
     canvas.addEventListener('pointermove', event => {
       if (mode !== 'pong' || !state) return;
+      if (document.pointerLockElement === canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const scale = rect.height > 0 ? HEIGHT / rect.height : 1;
+        state.playerY = clamp(state.playerY + (event.movementY || 0) * scale, 20, HEIGHT - 120);
+        return;
+      }
       const point = pointerPosition(event);
-      state.playerY = clamp(point.y - 48, 20, HEIGHT - 116);
+      state.playerY = clamp(point.y - 50, 20, HEIGHT - 120);
     });
     document.addEventListener('keydown', onKeyDown, true);
+    document.addEventListener('wheel', onPongWheel, { passive: false });
     return true;
   }
 
@@ -120,9 +132,34 @@
     };
   }
 
+  function requestPongPointerLock() {
+    if (!canvas || mode !== 'pong' || document.pointerLockElement === canvas ||
+        typeof canvas.requestPointerLock !== 'function') return;
+    try {
+      const result = canvas.requestPointerLock();
+      if (result && typeof result.catch === 'function') result.catch(() => {});
+    } catch (_) {
+      // Pointer Lock is unavailable or denied in some browsers; drag and wheel remain available.
+    }
+  }
+
+  function onPongWheel(event) {
+    if (!canvas || !canvas.isConnected || mode !== 'pong' || !state || state.over) return;
+    event.preventDefault();
+    let delta = event.deltaY;
+    if (event.deltaMode === 1) delta *= 16;
+    else if (event.deltaMode === 2) delta *= HEIGHT;
+    const rect = canvas.getBoundingClientRect();
+    const scale = rect.height > 0 ? HEIGHT / rect.height : 1;
+    state.playerY = clamp(state.playerY + delta * scale * 0.65, 20, HEIGHT - 120);
+  }
+
   function open(nextMode) {
     if (!titles[nextMode] || !buildInlineGame()) return;
     mode = nextMode;
+    canvas.setAttribute('aria-label', mode === 'pong'
+      ? 'Pong. Click to lock the mouse, or use the scroll wheel or drag to move your paddle. Press Escape to close.'
+      : 'Mini game. Press Escape to return to the logo.');
     reset();
     canvas.focus({ preventScroll: true });
     previousTime = performance.now();
@@ -133,6 +170,8 @@
   function close() {
     if (!canvas) return;
     cancelAnimationFrame(frame);
+    if (document.pointerLockElement === canvas) document.exitPointerLock?.();
+    document.removeEventListener('wheel', onPongWheel);
     canvas.remove();
     heroLogo?.classList.remove('is-playing-game');
     if (logoImage) logoImage.style.visibility = imageVisibility;
@@ -501,6 +540,8 @@
     context.fillStyle = '#ffffff'; context.font = 'bold 56px monospace'; context.textAlign = 'center';
     context.fillText(state.player,WIDTH/2-65,82); context.fillText(state.cpu,WIDTH/2+65,82);
     context.textAlign = 'left'; context.font = 'bold 20px monospace'; context.fillText('PONG',28,34);
+    context.font = 'bold 15px monospace';
+    context.fillText('CLICK: LOCK MOUSE   WHEEL / DRAG: MOVE', 28, HEIGHT - 20);
   }
 
   function drawInlineClose() {
