@@ -110,13 +110,14 @@ async function decodeCode(value){
 }
 function waitForIce(pc,timeoutMs=12000){if(pc.iceGatheringState==='complete')return Promise.resolve(true);return new Promise(resolve=>{let finished=false;const timer=setTimeout(()=>finish(false),timeoutMs);function finish(complete){if(finished)return;finished=true;clearTimeout(timer);pc.removeEventListener('icegatheringstatechange',changed);resolve(complete)}function changed(){if(pc.iceGatheringState==='complete')finish(true)}pc.addEventListener('icegatheringstatechange',changed)})}
 async function createRoom(){
- if(!window.RTCPeerConnection){status('This browser does not support WebRTC.');return}
- room=$('roomName').value.trim();if(!room){status('Give your room a name first.');$('roomName').focus();return}
- playerName=$('playerName').value.trim()||'Host';setupPeer(true);
- try{const offer=await peer.createOffer();await peer.setLocalDescription(offer);status('Preparing the local invitation code…');await waitForIce(peer);
-  $('offerCode').value=await encodeCode({version:1,type:'offer',room,host:playerName,sdp:peer.localDescription.sdp});$('copyOffer').disabled=false;$('connectGuest').disabled=false;
-  status('Room "'+room+'" created. Copy the invitation code and send it to your friend. You are White.');render()
- }catch(e){status(e.message||'Could not create the room.');closePeer()}
+  if(!window.RTCPeerConnection){status('This browser does not support WebRTC.');return}
+  room=$('roomName').value.trim();if(!room){status('Give your room a name first.');$('roomName').focus();return}
+  $('offerCode').value='';$('copyOffer').disabled=true;$('connectGuest').disabled=true;$('answerCode').value='';$('copyAnswer').disabled=true;
+  playerName=$('playerName').value.trim()||'Host';setupPeer(true);status('Creating room and gathering local network details…');
+  try{const offer=await peer.createOffer();await peer.setLocalDescription(offer);status('Preparing the invitation code…');const iceComplete=await waitForIce(peer);
+   $('offerCode').value=await encodeCode({version:1,type:'offer',room,host:playerName,sdp:peer.localDescription.sdp});$('copyOffer').disabled=false;$('connectGuest').disabled=false;
+   status('Room "'+room+'" created. Copy the invitation code and send it to your friend. You are White.'+(iceComplete?'':' Local ICE gathering timed out, so this code may not connect; try creating the room again.'));render()
+  }catch(e){status(e.message||'Could not create the room.');closePeer()}
 }
 async function joinRoom(){
  if(!window.RTCPeerConnection){status('This browser does not support WebRTC.');return}
