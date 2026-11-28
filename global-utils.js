@@ -937,7 +937,7 @@
         { name: 'Social Studies', color: '#315fcb' },
         { name: 'Actively Learn', color: '#0b858b' },
         { name: 'Wonders Grade 4 Class', color: '#586f79' },
-        { name: 'McGraw Hill Class', color: '#354c56' }
+        { name: 'Math', color: '#354c56' }
       ];
 
       return `
