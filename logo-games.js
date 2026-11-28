@@ -1163,9 +1163,7 @@
         if(!chessEngineReady) failStockfish('Stockfish did not finish starting. The local WASM file may be missing from GitHub Pages.',new Error('Local Stockfish startup timed out after 30 seconds.'));
       },30000);
       worker.onmessage=event=>{
-        const rawLine=String(event.data||'').replace(/\\0/g,'').trim();
-        // Stockfish.js spaces out some UCI keywords in worker messages.
-        const line=rawLine.replace(/\\b(?:[a-z][ \\t]){2,}[a-z]\\b/gi,word=>word.replace(/[ \\t]/g,''));
+        const line=String(event.data||'').trim();
         if(line==='uciok') {
           chessEngineProgress='Configuring Stockfish…';
           if(mode==='chess'&&state){state.status='Configuring Stockfish 19…';draw();}
@@ -1182,7 +1180,7 @@
           return;
         }
         if(line.startsWith('info ')) {
-          const depth=line.match(/\\bdepth\\s+(\\d+)/);
+          const depth=line.match(/\bdepth\s+(\d+)/);
           if(depth&&chessEngineThinking&&mode==='chess'&&state&&state.turn===-1) {
             state.status='Stockfish thinking · depth '+depth[1];
             draw();
@@ -1190,7 +1188,7 @@
           return;
         }
         if(line.startsWith('bestmove ')) {
-          const best=line.split(/\\s+/)[1];
+          const best=line.split(/\s+/)[1];
           if(chessEngineSearchTimer){clearTimeout(chessEngineSearchTimer);chessEngineSearchTimer=0;}
           chessEngineThinking=false;
           if(chessEngineCancelRequested) {
