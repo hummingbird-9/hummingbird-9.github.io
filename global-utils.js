@@ -258,7 +258,7 @@
     body.style.setProperty('--glass-blur', `${clamp(settings.glassBlur, 0, 24)}px`);
     body.style.setProperty('--accent', accentColor(settings.accent));
     body.style.setProperty('--custom-page-background', settings.customBackground);
-    body.style.setProperty('--font-scale', String(clamp(settings.fontScale, 85, 130) / 100));
+    document.documentElement.style.setProperty('--font-scale', String(clamp(settings.fontScale, 85, 130) / 100));
     updateHeaderLabels();
     applyTabDisguise();
   }
