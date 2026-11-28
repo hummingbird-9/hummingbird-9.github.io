@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const GAME_SPRITE_URL = 'img/hummingblock-7x7.png';
+  const GAME_SPRITE_URL = 'https://uploads.onecompiler.io/447kr4gf2/44f9wbztv/humming%5Bbird%5DTech%20logo%20(5).png';
   const WIDTH = 960;
   const HEIGHT = 540;
   const FLOOR = 445;
