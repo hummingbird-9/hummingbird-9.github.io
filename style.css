@@ -2415,3 +2415,122 @@ body.settings-page .site-settings-panel .settings-check {
 @media(max-width:700px) {
   body.settings-page #siteSettingsPanel { width:calc(100% - 28px) !important; }
 }
+
+
+/* Settings controls: compact type and subtle interaction feedback. */
+body.settings-page .settings-panel-heading h2 {
+  font-size:1.48rem !important;
+  letter-spacing:-.025em;
+}
+body.settings-page .settings-panel-heading p {
+  font-size:.84rem !important;
+  line-height:1.4;
+}
+body.settings-page .settings-beta-label {
+  font-size:.65rem;
+  padding:5px 9px;
+}
+body.settings-page .settings-search {
+  gap:12px;
+  padding:8px 0 11px;
+  font-size:.84rem;
+}
+body.settings-page .settings-search input {
+  width:min(320px,55%) !important;
+  min-height:34px;
+  padding:7px 9px !important;
+  font-size:.84rem;
+  border-radius:7px !important;
+}
+body.settings-page .site-settings-panel .settings-section h3 {
+  font-size:.88rem !important;
+  letter-spacing:.045em;
+}
+body.settings-page .site-settings-panel .settings-field,
+body.settings-page .site-settings-panel .settings-range,
+body.settings-page .site-settings-panel .settings-check,
+body.settings-page .settings-description {
+  font-size:.86rem !important;
+}
+body.settings-page .site-settings-panel .settings-field select,
+body.settings-page .site-settings-panel .settings-field input[type="color"],
+body.settings-page .site-settings-panel input:not([type="checkbox"]):not([type="range"]):not([type="file"]),
+body.settings-page .site-settings-panel .settings-action-row button,
+body.settings-page .site-settings-panel .settings-preset-grid button,
+body.settings-page .site-settings-panel .settings-footer button {
+  font-size:.84rem !important;
+}
+body.settings-page .site-settings-panel .settings-field select {
+  min-height:34px;
+  padding:7px 9px !important;
+}
+body.settings-page .site-settings-panel :is(
+  button,
+  select,
+  input[type="search"],
+  input[type="text"],
+  input[type="url"],
+  input[type="color"],
+  input[type="file"]
+) {
+  transition:
+    background-color .16s ease,
+    border-color .16s ease,
+    box-shadow .16s ease,
+    transform .16s ease,
+    color .16s ease;
+}
+body.settings-page .site-settings-panel :is(
+  button,
+  select,
+  input[type="search"],
+  input[type="text"],
+  input[type="url"],
+  input[type="color"]
+):hover {
+  border-color:color-mix(in srgb,var(--accent) 62%,var(--panel-border)) !important;
+  background-color:color-mix(in srgb,var(--panel) 88%,var(--accent) 12%) !important;
+}
+body.settings-page .site-settings-panel button:hover {
+  transform:translateY(-1px);
+  box-shadow:0 3px 10px rgba(0,0,0,.12) !important;
+}
+body.settings-page .site-settings-panel button:active {
+  transform:translateY(0) scale(.99);
+  box-shadow:none !important;
+}
+body.settings-page .site-settings-panel :is(
+  button,
+  select,
+  input[type="search"],
+  input[type="text"],
+  input[type="url"],
+  input[type="color"],
+  input[type="file"],
+  input[type="checkbox"],
+  input[type="range"]
+):focus-visible {
+  outline:2px solid var(--accent) !important;
+  outline-offset:2px;
+}
+body.settings-page .site-settings-panel .settings-check input[type="checkbox"] {
+  transition:accent-color .16s ease,transform .16s ease;
+}
+body.settings-page .site-settings-panel .settings-check input[type="checkbox"]:hover {
+  transform:scale(1.08);
+}
+body.settings-page .site-settings-panel .settings-range input[type="range"]:hover {
+  filter:brightness(1.12);
+}
+@media(max-width:700px) {
+  body.settings-page .settings-search input { width:100% !important; }
+  body.settings-page .settings-panel-heading h2 { font-size:1.38rem !important; }
+}
+@media(prefers-reduced-motion:reduce) {
+  body.settings-page .site-settings-panel *,
+  body.settings-page .site-settings-panel *::before,
+  body.settings-page .site-settings-panel *::after {
+    transition:none !important;
+    transform:none !important;
+  }
+}
