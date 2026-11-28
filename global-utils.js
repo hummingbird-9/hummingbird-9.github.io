@@ -103,7 +103,7 @@
       compactCards: source.compactCards ?? source.compact ?? DEFAULTS.compactCards,
       showRecentlyPlayed: source.showRecentlyPlayed === true,
       hideGameThumbnails: source.hideGameThumbnails === true,
-      logoClickGame: ['off', 'flappy', 'dino', 'snake', 'pong'].includes(source.logoClickGame) ? source.logoClickGame : DEFAULTS.logoClickGame,
+      logoClickGame: ['off', 'flappy', 'dino', 'snake', 'pong', 'tetris'].includes(source.logoClickGame) ? source.logoClickGame : DEFAULTS.logoClickGame,
       pastAccentColors: Array.isArray(source.pastAccentColors)
         ? source.pastAccentColors.filter(color => typeof color === 'string' && /^#[0-9a-f]{6}$/i.test(color)).slice(0, 10)
         : [],
@@ -370,7 +370,7 @@
         </section>
 
         <section class="settings-section"><h3>Home logo game</h3>
-          <label class="settings-field"><span>Game when clicking the large homepage logo</span><select id="settingLogoClickGame"><option value="flappy">Flappy Bird</option><option value="dino">Chrome Dinosaur</option><option value="snake">Snake</option><option value="pong">Pong</option><option value="off">Off — show the normal logo</option></select></label>
+          <label class="settings-field"><span>Game when clicking the large homepage logo</span><select id="settingLogoClickGame"><option value="flappy">Flappy Bird</option><option value="dino">Chrome Dinosaur</option><option value="snake">Snake</option><option value="pong">Pong</option><option value="tetris">Tetris</option><option value="off">Off — show the normal logo</option></select></label>
           <p class="settings-description">The selected game opens when you click the large logo in the middle of Home. Close it to return to the logo. The small top-left logo always goes Home.</p>
         </section>
 
