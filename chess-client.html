@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#102d19">
+  <title>Chess · humming[bird]Tech</title>
+  <link rel="icon" type="image/png" href="img/humming.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body.chess-client-page{display:block;min-height:100vh;padding:20px;overflow-x:hidden}
+    .chess-client-shell{width:min(1180px,100%);margin:0 auto;display:grid;gap:18px}
+    .chess-client-header{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .chess-client-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;font-weight:800}
+    .chess-client-brand img{width:48px;height:48px;object-fit:contain}
+    .chess-client-layout{display:grid;grid-template-columns:minmax(280px,560px) minmax(280px,1fr);gap:18px;align-items:start}
+    .chess-client-card{padding:16px;border:1px solid var(--panel-border);border-radius:var(--corner-radius);background:var(--panel);backdrop-filter:blur(var(--glass-blur));min-width:0}
+    .chess-client-board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));width:100%;aspect-ratio:1;border:2px solid rgba(255,255,255,.24);overflow:hidden;border-radius:5px;touch-action:manipulation}
+    .chess-client-square{border:0;border-radius:0;padding:0;margin:0;min-width:0;min-height:0;aspect-ratio:1;display:grid;place-items:center;position:relative;color:#161616;cursor:pointer}
+    .chess-client-square.light{background:#f0d9b5}.chess-client-square.dark{background:#b58863}
+    .chess-client-square.selected{box-shadow:inset 0 0 0 4px #facc15}
+    .chess-client-square img.king{width:78%;height:78%;object-fit:contain;image-rendering:pixelated}
+    .chess-client-square img.king.black-king{filter:brightness(.48) saturate(.82) contrast(1.08)}
+    .chess-client-piece{font:clamp(24px,5.3vw,50px)/1 "DejaVu Sans","Segoe UI Symbol",serif;display:block;line-height:1}
+    .chess-client-piece.white{color:#fffdf4;text-shadow:-1px -1px 1px #222,1px 1px 1px #222}
+    .chess-client-piece.black{color:#171717;text-shadow:-1px -1px 1px #eee8dc,1px 1px 1px #eee8dc}
+    .chess-client-square small{position:absolute;left:3px;top:2px;font:10px monospace;opacity:.7}
+    .chess-client-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .chess-client-field{display:grid;gap:5px;min-width:0}
+    .chess-client-field input,.chess-client-field select{width:100%;min-width:0;max-width:100%;color:var(--page-text)}
+    .chess-client-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .chess-client-fields .wide{grid-column:1/-1}
+    .chess-client-muted{color:var(--page-muted);font-size:13px;line-height:1.45}
+    .chess-client-status{padding:10px 12px;border-radius:8px;background:rgba(255,255,255,.08);font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+    .chess-client-list{display:grid;gap:8px}
+    .chess-client-challenge{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border:1px solid var(--panel-border);border-radius:8px}
+    .chess-client-challenge strong{display:block}.chess-client-challenge small{color:var(--page-muted)}
+    .chess-client-moves{max-height:190px;overflow:auto;font:13px/1.6 ui-monospace,monospace;white-space:pre-wrap}
+    .chess-client-player{display:flex;justify-content:space-between;gap:10px;align-items:center}
+    .chess-client-tag{font-size:11px;padding:3px 7px;border:1px solid var(--panel-border);border-radius:99px}
+    .chess-client-warning{font-size:12px;color:#f0c77a;line-height:1.45}
+    @media(max-width:780px){body.chess-client-page{padding:12px}.chess-client-layout{grid-template-columns:1fr}.chess-client-card{padding:12px}.chess-client-board{max-width:560px;margin:0 auto}.chess-client-fields{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body class="chess-client-page">
+  <main class="chess-client-shell">
+    <header class="chess-client-header">
+      <a class="chess-client-brand" href="index.html"><img src="img/humminglogo.png" alt=""><span>Chess</span></a>
+      <div class="chess-client-row"><span class="chess-client-tag">Lichess Board API</span><a href="index.html">Back to homepage</a></div>
+    </header>
+    <section class="chess-client-card">
+      <div class="chess-client-row" style="justify-content:space-between"><strong>Lichess connection</strong><span id="routeStatus" class="chess-client-tag">Direct API · proxy fallback ready</span></div>
+      <div class="chess-client-fields" style="margin-top:12px">
+        <label class="chess-client-field wide"><span>Personal access token</span><input id="lichessToken" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your Lichess token"></label>
+        <label class="chess-client-row wide" style="font-size:13px"><input id="rememberToken" type="checkbox" checked>Remember this token on this device</label>
+      </div>
+      <div class="chess-client-row" style="margin-top:10px"><button id="connectButton" type="button">Connect Lichess</button><button id="disconnectButton" type="button" class="secondary">Disconnect / clear token</button><a href="https://lichess.org/account/oauth/token" target="_blank" rel="noopener noreferrer">Create token</a></div>
+      <p class="chess-client-muted" style="margin:10px 0 0">Required permissions: <code>board:play</code>, <code>challenge:read</code>, and <code>challenge:write</code>. Your token stays in this browser; it is not sent to our website server.</p>
+    </section>
+    <div class="chess-client-layout">
+      <section class="chess-client-card">
+        <div class="chess-client-player" style="margin-bottom:8px"><strong id="blackPlayer">Black</strong><span id="blackClock" class="chess-client-tag">—</span></div>
+        <div id="chessBoard" class="chess-client-board" aria-label="Chessboard"></div>
+        <div class="chess-client-player" style="margin-top:8px"><strong id="whitePlayer">White</strong><span id="whiteClock" class="chess-client-tag">—</span></div>
+        <div id="gameStatus" class="chess-client-status" style="margin-top:12px">Connect a Lichess account to start a game.</div>
+        <div class="chess-client-row" style="margin-top:10px">
+          <label class="chess-client-field" style="width:120px"><span>Promotion</span><select id="promotionPiece"><option value="q">Queen</option><option value="r">Rook</option><option value="b">Bishop</option><option value="n">Knight</option></select></label>
+          <button id="resignButton" type="button" class="secondary" disabled>Resign</button>
+        </div>
+      </section>
+      <aside class="chess-client-card">
+        <h2 style="margin-top:0">Play someone on Lichess</h2>
+        <div class="chess-client-fields">
+          <label class="chess-client-field wide"><span>Find a random opponent</span><select id="seekTime"><option value="10|0">10 + 0 · Rapid</option><option value="15|10">15 + 10 · Rapid</option><option value="30|0">30 + 0 · Classical</option></select></label>
+          <button id="seekButton" type="button" class="wide" disabled>Find opponent</button>
+          <label class="chess-client-field wide"><span>Or challenge a Lichess username</span><input id="challengeUsername" type="text" autocomplete="off" placeholder="Lichess username"></label>
+          <label class="chess-client-field"><span>Time control</span><select id="challengeTime"><option value="600|0">10 + 0</option><option value="300|3">5 + 3</option><option value="900|10">15 + 10</option></select></label>
+          <label class="chess-client-field"><span>Colour</span><select id="challengeColor"><option value="random">Random</option><option value="white">White</option><option value="black">Black</option></select></label>
+          <label class="chess-client-row wide" style="font-size:13px"><input id="ratedGame" type="checkbox">Rated game</label>
+          <button id="challengeButton" type="button" class="wide" disabled>Send challenge</button>
+        </div>
+        <h3>Incoming challenges</h3><div id="incomingChallenges" class="chess-client-list"><p class="chess-client-muted">Connect to receive challenges.</p></div>
+        <h3>Moves</h3><div id="moveList" class="chess-client-moves chess-client-muted">No active game.</div>
+        <p class="chess-client-warning">Lichess Board API play must be human-controlled. No chess engine, move suggestions, or outside assistance is provided.</p>
+      </aside>
+    </div>
+  </main>
+  <script src="chess-client.js?v=20261127-board-api-1" defer></script>
+</body></html>
