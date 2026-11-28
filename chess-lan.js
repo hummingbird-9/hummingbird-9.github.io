@@ -89,19 +89,36 @@ function setupPeer(host){
 }
 function bytesToBase64Url(bytes){let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function base64UrlToBytes(value){const raw=value.trim().replace(/-/g,'+').replace(/_/g,'/'),padded=raw+'='.repeat((4-raw.length%4)%4),bin=atob(padded);return Uint8Array.from(bin,c=>c.charCodeAt(0))}
+const BASE91_ALPHABET="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^`{|}~\"";
+function bytesToBase91(bytes){
+ let b=0,n=0,out='';
+ for(const byte of bytes){
+  b|=byte<<n;n+=8;
+  if(n>13){let v=b&8191;if(v>88){b>>>=13;n-=13}else{v=b&16383;b>>>=14;n-=14}out+=BASE91_ALPHABET[v%91]+BASE91_ALPHABET[Math.floor(v/91)]}
+ }
+ if(n){out+=BASE91_ALPHABET[b%91];if(n>7||b>90)out+=BASE91_ALPHABET[Math.floor(b/91)]}
+ return out;
+}
+function base91ToBytes(value){
+ let b=0,n=0,v=-1;const out=[];
+ for(const ch of value){const d=BASE91_ALPHABET.indexOf(ch);if(d<0)throw new Error('Invalid character in invite code.');if(v<0)v=d;else{v+=d*91;b|=v<<n;n+=(v&8191)>88?13:14;do{out.push(b&255);b>>>=8;n-=8}while(n>7);v=-1}}
+ if(v>=0)out.push((b|(v<<n))&255);
+ return Uint8Array.from(out);
+}
 async function encodeCode(value){
  const compact={v:2,t:value.type==='offer'?'o':'a',r:value.room,n:value.host||value.guest||'',s:value.sdp};
  const source=JSON.stringify(compact);
  if(typeof CompressionStream==='function'){
-  try{const stream=new Blob([source]).stream().pipeThrough(new CompressionStream('deflate'));const bytes=new Uint8Array(await new Response(stream).arrayBuffer());return 'HB2:'+bytesToBase64Url(bytes)}catch(_){}
+  try{const stream=new Blob([source]).stream().pipeThrough(new CompressionStream('deflate'));const bytes=new Uint8Array(await new Response(stream).arrayBuffer());return 'HB3:'+bytesToBase91(bytes)}catch(_){}
  }
  return bytesToBase64Url(new TextEncoder().encode(JSON.stringify(value)));
 }
 async function decodeCode(value){
  const input=String(value||'').trim();
- if(input.startsWith('HB2:')){
+ if(input.startsWith('HB3:')||input.startsWith('HB2:')){
   if(typeof DecompressionStream!=='function')throw new Error('This browser cannot read compressed Hummingbird invite codes. Update your browser.');
-  const bytes=base64UrlToBytes(input.slice(4)),stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'));
+  const bytes=input.startsWith('HB3:')?base91ToBytes(input.slice(4)):base64UrlToBytes(input.slice(4));
+  const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'));
   const compact=JSON.parse(await new Response(stream).text());
   if(compact.v!==2||(compact.t!=='o'&&compact.t!=='a')||typeof compact.s!=='string')throw new Error('Invalid compressed invite code.');
   return{version:1,type:compact.t==='o'?'offer':'answer',room:compact.r,host:compact.t==='o'?compact.n:undefined,guest:compact.t==='a'?compact.n:undefined,sdp:compact.s};
