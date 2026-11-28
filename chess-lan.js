@@ -87,31 +87,50 @@ function setupPeer(host){
  peer.oniceconnectionstatechange=()=>{if(peer.iceConnectionState==='failed')status('ICE connection failed. This network or browser may block direct local connections.')};
  if(host){channel=peer.createDataChannel('hummingbird-chess',{ordered:true});attachChannel(channel)}else peer.ondatachannel=e=>{channel=e.channel;attachChannel(channel)};
 }
-function encodeCode(value){const bytes=new TextEncoder().encode(JSON.stringify(value));let bin='';for(let i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]);return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
-function decodeCode(value){const raw=value.trim().replace(/-/g,'+').replace(/_/g,'/'),padded=raw+'='.repeat((4-raw.length%4)%4),bin=atob(padded),bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));return JSON.parse(new TextDecoder().decode(bytes))}
+function bytesToBase64Url(bytes){let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(bin).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/,'')}
+function base64UrlToBytes(value){const raw=value.trim().replace(/-/g,'+').replace(/_/g,'/'),padded=raw+'='.repeat((4-raw.length%4)%4),bin=atob(padded);return Uint8Array.from(bin,c=>c.charCodeAt(0))}
+async function encodeCode(value){
+ const compact={v:2,t:value.type==='offer'?'o':'a',r:value.room,n:value.host||value.guest||'',s:value.sdp};
+ const source=JSON.stringify(compact);
+ if(typeof CompressionStream==='function'){
+  try{const stream=new Blob([source]).stream().pipeThrough(new CompressionStream('deflate'));const bytes=new Uint8Array(await new Response(stream).arrayBuffer());return 'HB2:'+bytesToBase64Url(bytes)}catch(_){}
+ }
+ return bytesToBase64Url(new TextEncoder().encode(JSON.stringify(value)));
+}
+async function decodeCode(value){
+ const input=String(value||'').trim();
+ if(input.startsWith('HB2:')){
+  if(typeof DecompressionStream!=='function')throw new Error('This browser cannot read compressed Hummingbird invite codes. Update your browser.');
+  const bytes=base64UrlToBytes(input.slice(4)),stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'));
+  const compact=JSON.parse(await new Response(stream).text());
+  if(compact.v!==2||(compact.t!=='o'&&compact.t!=='a')||typeof compact.s!=='string')throw new Error('Invalid compressed invite code.');
+  return{version:1,type:compact.t==='o'?'offer':'answer',room:compact.r,host:compact.t==='o'?compact.n:undefined,guest:compact.t==='a'?compact.n:undefined,sdp:compact.s};
+ }
+ return JSON.parse(new TextDecoder().decode(base64UrlToBytes(input)));
+}
 function waitForIce(pc){if(pc.iceGatheringState==='complete')return Promise.resolve();return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{cleanup();reject(new Error('Gathering local network candidates timed out.'))},20000);function changed(){if(pc.iceGatheringState==='complete'){cleanup();resolve()}}function cleanup(){clearTimeout(timer);pc.removeEventListener('icegatheringstatechange',changed)}pc.addEventListener('icegatheringstatechange',changed)})}
 async function createRoom(){
  if(!window.RTCPeerConnection){status('This browser does not support WebRTC.');return}
  room=$('roomName').value.trim();if(!room){status('Give your room a name first.');$('roomName').focus();return}
  playerName=$('playerName').value.trim()||'Host';setupPeer(true);
  try{const offer=await peer.createOffer();await peer.setLocalDescription(offer);status('Preparing the local invitation code…');await waitForIce(peer);
-  $('offerCode').value=encodeCode({version:1,type:'offer',room,host:playerName,sdp:peer.localDescription.sdp});$('copyOffer').disabled=false;$('connectGuest').disabled=false;
+  $('offerCode').value=await encodeCode({version:1,type:'offer',room,host:playerName,sdp:peer.localDescription.sdp});$('copyOffer').disabled=false;$('connectGuest').disabled=false;
   status('Room "'+room+'" created. Copy the invitation code and send it to your friend. You are White.');render()
  }catch(e){status(e.message||'Could not create the room.');closePeer()}
 }
 async function joinRoom(){
  if(!window.RTCPeerConnection){status('This browser does not support WebRTC.');return}
- let invite;try{invite=decodeCode($('offerCode').value)}catch(_){status('Paste a valid host invitation code first.');return}
+ let invite;try{invite=await decodeCode($('offerCode').value)}catch(e){status(e.message||'Paste a valid host invitation code first.');return}
  if(invite.version!==1||invite.type!=='offer'||!invite.sdp||!invite.room){status('That is not a valid Hummingbird LAN invitation.');return}
  playerName=$('playerName').value.trim()||'Guest';room=String(invite.room).slice(0,36);remoteName=String(invite.host||'Host').slice(0,24);$('roomName').value=room;setupPeer(false);
  try{await peer.setRemoteDescription({type:'offer',sdp:invite.sdp});const answer=await peer.createAnswer();await peer.setLocalDescription(answer);status('Preparing your answer code for "'+room+'”…');await waitForIce(peer);
-  $('answerCode').value=encodeCode({version:1,type:'answer',room,guest:playerName,sdp:peer.localDescription.sdp});$('copyAnswer').disabled=false;
+  $('answerCode').value=await encodeCode({version:1,type:'answer',room,guest:playerName,sdp:peer.localDescription.sdp});$('copyAnswer').disabled=false;
   status('You are joining "'+room+'" as Black. Copy your answer code and send it back to the host.');render()
  }catch(e){status(e.message||'Could not join this room.');closePeer()}
 }
 async function connectGuest(){
  if(!peer||role!=='host'){status('Create a room on this device first.');return}
- let answer;try{answer=decodeCode($('answerCode').value)}catch(_){status('Paste your friend’s answer code first.');return}
+ let answer;try{answer=await decodeCode($('answerCode').value)}catch(e){status(e.message||'Paste your friend’s answer code first.');return}
  if(answer.version!==1||answer.type!=='answer'||!answer.sdp||answer.room!==room){status('The answer code does not match this room.');return}
  try{remoteName=String(answer.guest||'Guest').slice(0,24);await peer.setRemoteDescription({type:'answer',sdp:answer.sdp});status('Answer accepted. Connecting directly to '+remoteName+'…')}
  catch(e){status(e.message||'Could not accept the answer code.')}
