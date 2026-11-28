@@ -2119,3 +2119,227 @@ body.emergency-disguise-active { overflow: hidden !important; }
 @media (max-width:640px) {
   .logo-game-inline-canvas { width:100%; height:100%; max-height:none; }
 }
+
+
+/* Settings is a regular page, not a floating glass window. */
+body.settings-page { min-height:100vh; }
+body.settings-page #siteSettingsPanel {
+  width:min(1120px,calc(100% - 40px)) !important;
+  max-width:1120px;
+  margin:20px auto 64px !important;
+  padding:10px 0 48px !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+body.settings-page .settings-panel-heading {
+  display:flex !important;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding:12px 0 18px !important;
+  border-bottom:1px solid var(--panel-border);
+}
+body.settings-page .settings-panel-heading h2 {
+  margin:0;
+  font-size:clamp(1.6rem,3vw,2.1rem);
+  letter-spacing:-.035em;
+}
+body.settings-page .settings-panel-heading p {
+  margin:5px 0 0;
+  color:var(--page-muted);
+  font-size:.92rem;
+}
+.settings-beta-label {
+  display:inline-flex;
+  align-items:center;
+  padding:6px 10px;
+  border:1px solid color-mix(in srgb,var(--accent) 55%,var(--panel-border));
+  border-radius:999px;
+  color:var(--accent);
+  background:transparent;
+  font-size:.72rem;
+  font-weight:750;
+  letter-spacing:.09em;
+  white-space:nowrap;
+}
+body.settings-page .settings-panel-grid {
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  column-gap:52px;
+  row-gap:0;
+  align-items:start;
+}
+body.settings-page .site-settings-panel .settings-section {
+  min-width:0;
+  padding:18px 0 14px !important;
+  border-bottom:1px solid var(--panel-border) !important;
+  background:transparent !important;
+}
+body.settings-page .site-settings-panel .settings-section h3 {
+  margin:0 0 10px;
+  color:var(--page-text);
+  font-size:.95rem;
+  font-weight:750;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+}
+body.settings-page .site-settings-panel .settings-field,
+body.settings-page .site-settings-panel .settings-range,
+body.settings-page .site-settings-panel .settings-check {
+  background:transparent;
+}
+body.settings-page .site-settings-panel .settings-footer {
+  padding:20px 0 0 !important;
+}
+body.settings-page .site-settings-panel .settings-search {
+  margin:14px 0 4px;
+  border-bottom:0;
+}
+body.settings-page .site-settings-panel .settings-search input {
+  width:min(380px,58%);
+  border-radius:8px !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+}
+body.settings-page .site-settings-panel .settings-field select,
+body.settings-page .site-settings-panel .settings-footer button {
+  border-radius:8px !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+@media(max-width:780px) {
+  body.settings-page #siteSettingsPanel { width:calc(100% - 28px) !important; }
+  body.settings-page .settings-panel-grid { grid-template-columns:1fr; column-gap:0; }
+  body.settings-page .settings-panel-heading { align-items:flex-start; }
+}
+@media(max-width:460px) {
+  body.settings-page .settings-panel-heading { flex-direction:column; }
+  body.settings-page .site-settings-panel .settings-search { flex-direction:column; align-items:stretch; }
+  body.settings-page .site-settings-panel .settings-search input { width:100%; }
+}
+
+/* A familiar, clean Classroom-style disguise with fictional teacher names. */
+.classroom-disguise {
+  position:absolute;
+  inset:0;
+  display:grid;
+  grid-template-columns:268px minmax(0,1fr);
+  grid-template-rows:66px minmax(0,1fr);
+  overflow:hidden;
+  background:#f8f9fa;
+  color:#202124;
+  font-family:Arial,Roboto,sans-serif;
+}
+.classroom-topbar {
+  grid-column:1 / -1;
+  display:flex;
+  align-items:center;
+  gap:20px;
+  padding:0 24px;
+  border-bottom:1px solid #dadce0;
+  background:#fff;
+}
+.classroom-menu-mark { color:#5f6368; font-size:24px; }
+.classroom-app-mark {
+  display:grid; place-items:center;
+  width:32px; height:32px;
+  border-radius:5px;
+  background:#0f9d58;
+  color:#fff; font-size:21px;
+}
+.classroom-brand { color:#5f6368; font-size:22px; }
+.classroom-top-spacer { flex:1; }
+.classroom-top-action,.classroom-app-grid { color:#5f6368; font-size:24px; }
+.classroom-account-dot { display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#e8f0fe;color:#4285f4; }
+.classroom-sidebar {
+  grid-column:1; grid-row:2;
+  overflow:hidden;
+  padding:14px 12px;
+  border-right:1px solid #e0e3e7;
+  background:#fff;
+}
+.classroom-nav-item {
+  display:flex; align-items:center; gap:17px;
+  min-height:44px;
+  margin:2px 0;
+  padding:0 14px;
+  border-radius:0 24px 24px 0;
+  color:#3c4043;
+  font-size:14px;
+}
+.classroom-nav-item b { width:20px; color:#5f6368; font-size:18px; text-align:center; }
+.classroom-nav-item.is-active { background:#e8f0fe; color:#1967d2; }
+.classroom-nav-item.is-active b { color:#1967d2; }
+.classroom-nav-heading { display:flex; justify-content:space-between; padding:22px 14px 6px; color:#5f6368; font-size:13px; font-weight:700; }
+.classroom-course-nav { min-height:38px; padding-left:17px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.classroom-course-nav i { flex:0 0 12px; width:12px; height:12px; border-radius:50%; }
+.classroom-archived { margin-top:16px; border-top:1px solid #e0e3e7; padding-top:12px; }
+.classroom-main {
+  grid-column:2;grid-row:2;overflow:auto;
+  padding:18px 22px 28px;
+  background:#fff;
+}
+.classroom-course-grid {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+}
+.classroom-course-card {
+  display:flex; flex-direction:column; min-width:0; min-height:250px;
+  overflow:hidden; border:1px solid #dadce0; border-radius:11px;
+  background:#fff;
+}
+.classroom-course-banner {
+  position:relative; min-height:92px; padding:17px 14px 12px;
+  background:var(--course-color); color:#fff; overflow:hidden;
+}
+.classroom-course-banner::after {
+  content:"";position:absolute;right:-30px;top:-45px;width:145px;height:145px;
+  border:18px solid rgba(255,255,255,.10);border-radius:35px;transform:rotate(25deg);
+}
+.classroom-course-title {
+  position:relative;z-index:1;max-width:72%;font-size:19px;line-height:1.2;font-weight:600;
+}
+.classroom-teacher-name {
+  position:relative;z-index:1;margin-top:8px;font-size:12px;color:rgba(255,255,255,.95);
+}
+.classroom-teacher-photo {
+  position:absolute;z-index:2;right:12px;bottom:-16px;
+  width:68px;height:68px;border:3px solid rgba(255,255,255,.9);
+  border-radius:50%;object-fit:cover;background:#e8eaed;
+}
+.classroom-course-work {
+  display:flex;flex-direction:column;gap:7px;flex:1;padding:16px 14px;
+  color:#3c4043;font-size:13px;line-height:1.35;
+}
+.classroom-course-work strong { color:#5f6368;font-size:12px;font-weight:500; }
+.classroom-course-actions {
+  display:flex;justify-content:flex-end;gap:24px;padding:10px 16px;
+  border-top:1px solid #e8eaed;color:#5f6368;font-size:18px;
+}
+.classroom-help { margin:22px 4px 0 auto;color:#5f6368; }
+@media(max-width:1050px) {
+  .classroom-disguise { grid-template-columns:220px minmax(0,1fr); }
+  .classroom-course-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+@media(max-width:720px) {
+  .classroom-disguise { grid-template-columns:62px minmax(0,1fr); grid-template-rows:58px minmax(0,1fr); }
+  .classroom-topbar { gap:12px;padding:0 12px; }
+  .classroom-brand { font-size:18px; }
+  .classroom-sidebar { padding:10px 5px; }
+  .classroom-nav-item { justify-content:center;padding:0 4px;font-size:0; }
+  .classroom-nav-item b { width:auto;font-size:18px; }
+  .classroom-nav-heading,.classroom-course-nav,.classroom-archived { display:none; }
+  .classroom-main { padding:12px; }
+  .classroom-course-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:9px; }
+  .classroom-course-card { min-height:210px; }
+  .classroom-course-banner { min-height:90px;padding:12px 10px; }
+  .classroom-course-title { font-size:15px;max-width:100%; }
+  .classroom-teacher-name { max-width:75%;font-size:11px; }
+  .classroom-teacher-photo { width:45px;height:45px;right:8px;bottom:-11px; }
+}
