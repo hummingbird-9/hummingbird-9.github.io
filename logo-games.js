@@ -928,7 +928,7 @@
     const back = 'RNBQKBNR';
     for (let file=0; file<8; file++) {
       board[file] = back[file].toLowerCase();
-      board[16+file] = 'p';
+      board[32+file] = 'p';
       board[96+file] = 'P';
       board[112+file] = back[file];
     }
@@ -993,7 +993,7 @@
         const step=-16*s.turn, one=from+step;
         if(chessOnBoard(one)&&s.board[one]==='.') {
           add(from,one);
-          const home=s.turn===1?6:1, two=from+step*2;
+          const home=s.turn===1?6:2, two=from+step*2;
           if(rank===home&&s.board[two]==='.') add(from,two);
         }
         for(const sideStep of [-1,1]) {
