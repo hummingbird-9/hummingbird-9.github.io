@@ -182,7 +182,11 @@ function renderChallenges(){
   actions.append(accept,decline);item.append(detail,actions);area.appendChild(item);
  }
 }
-function controls(){ $('seekButton').disabled=!connected;$('challengeButton').disabled=!connected;$('resignButton').disabled=!connected||!activeGameId;$('connectButton').textContent=connected?'Connected':'Connect Lichess'}
+function controls(){
+ $('seekButton').disabled=!connected;$('challengeButton').disabled=!connected||!!challengeAbort;
+ $('challengeCancelButton').disabled=!challengeAbort;$('resignButton').disabled=!connected||!activeGameId;
+ $('connectButton').textContent=connected?'Connected':'Connect Lichess';
+}
 async function connect(){
  token=$('lichessToken').value.trim();if(!token){status('Paste your Lichess token first');return}
  if($('rememberToken').checked)localStorage.setItem(TOKEN_KEY,token);else localStorage.removeItem(TOKEN_KEY);
@@ -248,8 +252,10 @@ async function findOpponent(){
  });
 }
 async function cancelSeek(){
- if(!seekAbort)return;seekAbort.abort();seekAbort=null;$('seekButton').textContent='Find opponent';
- try{await apiRequest('/api/board/seek',{method:'DELETE'})}catch(_){}status('Opponent search cancelled');
+ if(!seekAbort)return;
+ seekAbort.abort();seekAbort=null;
+ $('seekButton').textContent='Find opponent';
+ status('Opponent search cancelled by closing the seek stream.');
 }
 function startGame(id){
  seekAbort?.abort();seekAbort=null;$('seekButton').textContent='Find opponent';gameAbort?.abort();gameAbort=new AbortController();
